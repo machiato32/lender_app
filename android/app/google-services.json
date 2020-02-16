@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1068784935461",
+    "firebase_url": "https://csocsort-a6def.firebaseio.com",
+    "project_id": "csocsort-a6def",
+    "storage_bucket": "csocsort-a6def.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068784935461:android:2b851b38d3da768ab655cc",
+        "android_client_info": {
+          "package_name": "csocsort.hu.machiato32.csocsort_szamla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068784935461-9nd1t3hjl4g5fvvb05akv85go0jvvglr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApOZayAsUXx8GIkknFhIDDms4mHEk4SzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068784935461-9nd1t3hjl4g5fvvb05akv85go0jvvglr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
