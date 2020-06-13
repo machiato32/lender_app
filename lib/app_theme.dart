@@ -6,9 +6,7 @@ class AppTheme{
   static final Map<String, ThemeData> darkThemes = {'amberDarkTheme':amberDarkTheme, 'greenDarkTheme':greenDarkTheme, 'pinkDarkTheme':pinkDarkTheme, 'seaBlueDarkTheme':seaBlueDarkTheme};
 
   static final ThemeData greenLightTheme = ThemeData(
-    appBarTheme: AppBarTheme(
-      color: Colors.green,
-    ),
+    brightness: Brightness.light,
     primaryColor: Colors.green,
     accentColor: Colors.green[700],
     scaffoldBackgroundColor: Colors.grey[200],
@@ -21,6 +19,12 @@ class AppTheme{
       onBackground: Colors.white,
       surface: Colors.grey[400],
       onSurface: Colors.grey[300]
+    ),
+    cardTheme: CardTheme(
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3),
+      ),
+      elevation: 1,
     ),
     textTheme: TextTheme(
       title: TextStyle(
@@ -45,27 +49,30 @@ class AppTheme{
   );
   static final ThemeData greenDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
-        color: Colors.grey[900],
-        textTheme: TextTheme(
-            title: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)
-        ),
-        actionsIconTheme: IconThemeData(color: Colors.white),
-        iconTheme: IconThemeData(color: Colors.white)
+        brightness: Brightness.dark
     ),
+    brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
     primaryColor: Colors.green[700],
     accentColor: Colors.green[700],
-    scaffoldBackgroundColor: Colors.grey[900],
-    colorScheme: ColorScheme.light(
-      primary: Colors.grey[200],
+    scaffoldBackgroundColor: Colors.black,
+    colorScheme: ColorScheme.dark(
+      primary: Colors.grey[700],
       secondary: Colors.green[700],
       onPrimary: Colors.black, //history icon
-      onSecondary: Colors.grey[400], //icons in button
-      onBackground: Colors.grey[800], //box decoration
+      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[800], //box shadow
+      onSurface: Colors.grey[500], //box shadow
     ),
     dividerColor: Colors.white,
+    cardTheme: CardTheme(
+      color: Color.fromARGB(255, 25, 25, 25),
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      elevation: 5,
+    ),
     textTheme: TextTheme(
       title: TextStyle(
           fontWeight: FontWeight.bold,
@@ -83,14 +90,15 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.grey[400]
+          color: Color.fromARGB(255, 25, 25, 25),
       ),
     ),
   );
   static final ThemeData amberLightTheme = ThemeData(
-    appBarTheme: AppBarTheme(
-      color: Colors.amber[700],
-    ),
+//    appBarTheme: AppBarTheme(
+//      color: Colors.amber[700],
+//    ),
+    brightness: Brightness.light,
     primaryColor: Colors.amber[700],
     accentColor: Colors.amber[400],
     scaffoldBackgroundColor: Colors.grey[200],
@@ -123,31 +131,47 @@ class AppTheme{
           fontSize: 20,
           color: Colors.white
       ),
+
+    ),
+    cardTheme: CardTheme(
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3),
+      ),
+//          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
+      elevation: 1,
     ),
   );
   static final ThemeData amberDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
-      color: Colors.grey[900],
-      textTheme: TextTheme(
-        title: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)
-      ),
-      actionsIconTheme: IconThemeData(color: Colors.white),
-      iconTheme: IconThemeData(color: Colors.white)
+      //color: Colors.grey[900],
+      brightness: Brightness.dark,
+
     ),
+    brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
     primaryColor: Colors.amber[400],
     accentColor: Colors.amber[400],
-    scaffoldBackgroundColor: Colors.grey[900],
-    colorScheme: ColorScheme.light(
-        primary: Colors.grey[200],
+    scaffoldBackgroundColor: Colors.black,
+    colorScheme: ColorScheme.dark(
+        primary: Colors.grey[400],
         secondary: Colors.amber[400],
+        background: Colors.grey[500],
         onPrimary: Colors.black, //history icon
-        onSecondary: Colors.grey[700], //icons in button
-        onBackground: Colors.grey[800], //box decoration
+        onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+        onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
         surface: Colors.grey[400], //history date
-        onSurface: Colors.grey[800], //box shadow
+        onSurface: Colors.grey[500], //box shadow
     ),
     dividerColor: Colors.white,
+    cardTheme: CardTheme(
+      color: Color.fromARGB(255, 25, 25, 25),
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+
+      ),
+//          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
+      elevation: 5,
+    ),
     textTheme: TextTheme(
       title: TextStyle(
           fontWeight: FontWeight.bold,
@@ -165,33 +189,37 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.grey[700]
+          color: Color.fromARGB(255, 25, 25, 25)
       ),
     ),
   );
   static final ThemeData pinkDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
-        color: Colors.grey[900],
-        textTheme: TextTheme(
-            title: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)
-        ),
-        actionsIconTheme: IconThemeData(color: Colors.white),
-        iconTheme: IconThemeData(color: Colors.white)
+        brightness: Brightness.dark
     ),
+    brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
     primaryColor: Colors.pink[300],
     accentColor: Colors.pink[300],
-    scaffoldBackgroundColor: Colors.grey[900],
-    colorScheme: ColorScheme.light(
+    scaffoldBackgroundColor: Colors.black,
+    colorScheme: ColorScheme.dark(
       primary: Colors.grey[200],
       secondary: Colors.pink[300],
+      background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
-      onSecondary: Colors.grey[700], //icons in button
-      onBackground: Colors.grey[800], //box decoration
+      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[800], //box shadow
+      onSurface: Colors.grey[500], //box shadow
     ),
     dividerColor: Colors.white,
+    cardTheme: CardTheme(
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3),
+      ),
+      color: Color.fromARGB(255, 25, 25, 25),
+      elevation: 1,
+    ),
     textTheme: TextTheme(
       title: TextStyle(
           fontWeight: FontWeight.bold,
@@ -209,14 +237,12 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.grey[700]
+          color: Color.fromARGB(255, 25, 25, 25),
       ),
     ),
   );
   static final ThemeData pinkLightTheme = ThemeData(
-    appBarTheme: AppBarTheme(
-      color: Colors.purple[300],
-    ),
+    brightness: Brightness.light,
     primaryColor: Colors.purple[300],
     accentColor: Colors.pink[300],
     scaffoldBackgroundColor: Colors.grey[200],
@@ -229,6 +255,13 @@ class AppTheme{
         onBackground: Colors.white,
         surface: Colors.grey[400],
         onSurface: Colors.grey[300]
+    ),
+    cardTheme: CardTheme(
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3),
+      ),
+//          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
+      elevation: 1,
     ),
     textTheme: TextTheme(
       title: TextStyle(
@@ -253,27 +286,33 @@ class AppTheme{
   );
   static final ThemeData seaBlueDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
-        color: Colors.grey[900],
-        textTheme: TextTheme(
-            title: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)
-        ),
-        actionsIconTheme: IconThemeData(color: Colors.white),
-        iconTheme: IconThemeData(color: Colors.white)
+        brightness: Brightness.dark
     ),
+    brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
-    primaryColor: Colors.blue[700],
-    accentColor: Colors.blue[700],
-    scaffoldBackgroundColor: Colors.grey[900],
-    colorScheme: ColorScheme.light(
+    primaryColor: Colors.blue[900],
+    accentColor: Colors.blue[900],
+    scaffoldBackgroundColor: Colors.black,
+    colorScheme: ColorScheme.dark(
       primary: Colors.grey[200],
       secondary: Colors.blue[900],
+      background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
-      onSecondary: Colors.grey[500], //icons in button
-      onBackground: Colors.grey[800], //box decoration
+      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[800], //box shadow
+      onSurface: Colors.grey[500], //box shadowox shadow
     ),
     dividerColor: Colors.white,
+    cardTheme: CardTheme(
+      color: Color.fromARGB(255, 25, 25, 25),
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+
+      ),
+//          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
+      elevation: 5,
+    ),
     textTheme: TextTheme(
       title: TextStyle(
           fontWeight: FontWeight.bold,
@@ -291,14 +330,13 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.grey[500]
+          color: Color.fromARGB(255, 25, 25, 25)
       ),
     ),
   );
   static final ThemeData seaBlueLightTheme = ThemeData(
-    appBarTheme: AppBarTheme(
-      color: Colors.blue[700],
-    ),
+
+    brightness: Brightness.light,
     primaryColor: Colors.blue[700],
     accentColor: Colors.blue[900],
     scaffoldBackgroundColor: Colors.grey[200],
@@ -311,6 +349,13 @@ class AppTheme{
         onBackground: Colors.white,
         surface: Colors.grey[400],
         onSurface: Colors.grey[300]
+    ),
+    cardTheme: CardTheme(
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3),
+      ),
+//          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
+      elevation: 1,
     ),
     textTheme: TextTheme(
       title: TextStyle(

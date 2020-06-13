@@ -14,16 +14,21 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Beállítások'),),
-      body: ListView(
-        padding: EdgeInsets.only(top: 4),
-        children: <Widget>[
-          SwitchUser(),
-          Visibility(
-            visible: (name!=''),
-            child: ChangePin()
-          ),
-          ColorPicker(),
-        ],
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+        child: ListView(
+          children: <Widget>[
+            SwitchUser(),
+            Visibility(
+              visible: (name!=''),
+              child: ChangePin()
+            ),
+            ColorPicker(),
+          ],
+        ),
       ),
 
     );

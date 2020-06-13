@@ -4,7 +4,18 @@ import 'dart:convert';
 import 'main.dart';
 import 'balances.dart';
 
+class SavedExpense{
+  String name, note;
+  List<String> names;
+  int amount;
+  int ID;
+  SavedExpense({this.name, this.names, this.amount, this.note, this.ID});
+}
+
 class NewExpense extends StatefulWidget {
+  final Key key;
+  final SavedExpense expense;
+  NewExpense({this.key, this.expense});
   @override
   _NewExpenseState createState() => _NewExpenseState();
 }
@@ -26,6 +37,18 @@ class _NewExpenseState extends State<NewExpense> {
 
   }
 
+  Future<bool> _deleteElement(int id) async {
+    Map<String, dynamic> map = {
+      "type":'delete',
+      "Transaction_Id":id
+    };
+
+    String encoded = json.encode(map);
+    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+
+    return response.statusCode==200;
+  }
+
   Future<bool> postNewExpense(List<String> names, int amount, String note) async{
     waiting=true;
     Map<String, dynamic> map = {
@@ -44,9 +67,17 @@ class _NewExpenseState extends State<NewExpense> {
 
   }
 
+  void setValues(){
+    noteController.text = widget.expense.note;
+    amountController.text=widget.expense.amount.toString();
+  }
+
   @override
   void initState() {
     super.initState();
+    if(widget.expense!=null){
+      setValues();
+    }
     names = getNames();
   }
   @override
@@ -60,20 +91,10 @@ class _NewExpenseState extends State<NewExpense> {
         },
         child: ListView(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      blurRadius: 10,
-                      spreadRadius: 5,
-                    )
-                  ]
-              ),
+            Card(
+
+              child: Padding(
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -114,12 +135,19 @@ class _NewExpenseState extends State<NewExpense> {
                             for(String name in snapshot.data){
                               checkboxBool.putIfAbsent(name, () => false);
                             }
+                            if(widget.expense!=null && widget.expense.names!=null){
+                              for(String name in widget.expense.names){
+                                checkboxBool[name]=true;
+                              }
+                              widget.expense.names=null;
+                            }
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxHeight: 300),
                               child: ListView(
                                 shrinkWrap: true,
                                 children: snapshot.data.map<CheckboxListTile>((String name)=>
                                     CheckboxListTile(
+                                      activeColor: Theme.of(context).primaryColor,
                                       title: Text(name, style: Theme.of(context).textTheme.body2,),
                                       value: checkboxBool[name],
                                       onChanged: (bool newValue){
@@ -137,11 +165,25 @@ class _NewExpenseState extends State<NewExpense> {
                         },
                       ),
                     ),
+                    RaisedButton.icon(
+                      color: Theme.of(context).colorScheme.secondary,
+                      label: Text('Inverz kijelölés', style: Theme.of(context).textTheme.button),
+                      icon: Icon(Icons.check_box, color: Theme.of(context).colorScheme.onSecondary),
+                      onPressed: (){
+                        FocusScope.of(context).unfocus();
+                        for(String name in checkboxBool.keys){
+                          checkboxBool[name]=!checkboxBool[name];
+                        }
+                        setState(() {
+
+                        });
+                      },
+                    ),
                     SizedBox(height: 20,),
                     Center(
                       child: RaisedButton.icon(
                         color: Theme.of(context).colorScheme.secondary,
-                        label: Text('Fizetés', style: Theme.of(context).textTheme.button),
+                        label: Text('Mehet', style: Theme.of(context).textTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                         onPressed: (){
                           FocusScope.of(context).unfocus();
@@ -152,6 +194,9 @@ class _NewExpenseState extends State<NewExpense> {
                           checkboxBool.forEach((String key, bool value) {
                             if(value) names.add(key);
                           });
+                          if(widget.expense!=null){
+                            _deleteElement(widget.expense.ID);
+                          }
                           success=postNewExpense(names, amount, note);
                           setState(() {
 

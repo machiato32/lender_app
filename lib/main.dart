@@ -91,7 +91,11 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Csocsort számla'),
+        centerTitle: true,
+        title: Text(
+          'Csocsort számla',
+          style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+        ),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: (choice){
@@ -123,21 +127,10 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           children: <Widget>[
 
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8,8,8,4),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      blurRadius: 10,
-                      spreadRadius: 5,
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(2)
-                ),
+            Card(
+
+              child: Padding(
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
