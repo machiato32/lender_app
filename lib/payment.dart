@@ -65,20 +65,9 @@ class _PaymentState extends State<Payment> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          blurRadius: 10,
-                          spreadRadius: 5,
-                        )
-                      ]
-                  ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

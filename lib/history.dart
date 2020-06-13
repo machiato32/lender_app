@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'main.dart';
+import 'new_expense.dart';
 
 class HistoryData {
   DateTime date;
@@ -70,47 +71,35 @@ class _HistoryState extends State<History> {
   }
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(8,4,8,4),
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onBackground,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  blurRadius: 10,
-                  spreadRadius: 5,
-                )
-              ],
-              borderRadius: BorderRadius.circular(2)
-          ),
-          child: Column(
-            children: <Widget>[
-              Text('Előzmények', style: Theme.of(context).textTheme.title,),
-              SizedBox(height: 40,),
-              Center(
-                child: FutureBuilder(
-                  future: history,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      return ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 400),
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: generateHistory(snapshot.data)
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: <Widget>[
+            Text('Előzmények', style: Theme.of(context).textTheme.title,),
+            SizedBox(height: 40,),
+            Center(
+              child: FutureBuilder(
+                future: history,
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 400),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: generateHistory(snapshot.data)
 //                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                        ),
-                      );
-                    }
-                    return CircularProgressIndicator();
-                  },
-                ),
+                      ),
+                    );
+                  }
+                  return CircularProgressIndicator();
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
   List<Widget> generateHistory(List<HistoryData> data){
     Function callback=this.callback;
@@ -233,46 +222,99 @@ class _HistoryElementState extends State<HistoryElement> {
               ],
             ),
             Container(
-              child: FlatButton(
-                onPressed: (){
-                  showDialog(
-                    context: context,
-                    child: Dialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      backgroundColor: Theme.of(context).colorScheme.onBackground,
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
-                            SizedBox(height: 15,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: (){
+                      showDialog(
+                          context: context,
+                          child: Dialog(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            backgroundColor: Theme.of(context).colorScheme.onBackground,
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
+                                  SizedBox(height: 15,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      RaisedButton(
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          onPressed: (){
+                                            Navigator.pop(context);
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+                                              expense: new SavedExpense(name: widget.data.fromUser,
+                                                  names: widget.data.toUser,
+                                                  amount: widget.data.amount,
+                                                  note: widget.data.note,
+                                                  ID: widget.data.transactionID
+                                              ),
+                                            )));
+                                          },
+                                          child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                      ),
+                                      RaisedButton(
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          onPressed: (){ Navigator.pop(context);},
+                                          child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                      );
+                    },
+                    child: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
+                  ),
+                  FlatButton(
+                    onPressed: (){
+                      showDialog(
+                        context: context,
+                        child: Dialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          backgroundColor: Theme.of(context).colorScheme.onBackground,
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                RaisedButton(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  onPressed: (){
-                                    _deleteElement(widget.data.transactionID);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                ),
-                                RaisedButton(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                    onPressed: (){ Navigator.pop(context);},
-                                    child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
+                                SizedBox(height: 15,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    RaisedButton(
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      onPressed: (){
+                                        _deleteElement(widget.data.transactionID);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                    ),
+                                    RaisedButton(
+                                        color: Theme.of(context).colorScheme.secondary,
+                                        onPressed: (){ Navigator.pop(context);},
+                                        child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                    )
+                                  ],
                                 )
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  );
-                },
-                child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
+                            ),
+                          ),
+                        )
+                      );
+                    },
+                    child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
+                  ),
+                ],
               )
             )
           ],

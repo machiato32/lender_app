@@ -38,20 +38,10 @@ class _ChangePinState extends State<ChangePin> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(8,4,8,4),
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onBackground,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.onSurface,
-                blurRadius: 10,
-                spreadRadius: 5,
-              )
-            ]
-        ),
+    return Card(
+      
+      child: Padding(
+        padding: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -86,7 +76,7 @@ class _ChangePinState extends State<ChangePin> {
             Container(
                 padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Még egyszer?', style: Theme.of(context).textTheme.button,)
+                child: Text('Még egyszer', style: Theme.of(context).textTheme.button,)
             ),
             TextField(
               controller: confirmPin,

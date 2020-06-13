@@ -35,21 +35,10 @@ class _BalancesState extends State<Balances> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8,4,8,4),
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onBackground,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.onSurface,
-                blurRadius: 10,
-                spreadRadius: 5,
-              )
-            ],
-            borderRadius: BorderRadius.circular(2)
-        ),
+    return Card(
+
+      child: Padding(
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
