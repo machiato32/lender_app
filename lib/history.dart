@@ -103,20 +103,20 @@ class _HistoryState extends State<History> {
   }
   List<Widget> generateHistory(List<HistoryData> data){
     Function callback=this.callback;
-    return data.map((element){return HistoryElement(data: element, callback: callback,);}).toList();
+    return data.map((element){return HistoryEntry(data: element, callback: callback,);}).toList();
   }
 
 }
 
-class HistoryElement extends StatefulWidget {
+class HistoryEntry extends StatefulWidget {
   final HistoryData data;
   final Function callback;
-  const HistoryElement({this.data, this.callback});
+  const HistoryEntry({this.data, this.callback});
   @override
-  _HistoryElementState createState() => _HistoryElementState();
+  _HistoryEntryState createState() => _HistoryEntryState();
 }
 
-class _HistoryElementState extends State<HistoryElement> {
+class _HistoryEntryState extends State<HistoryEntry> {
   Color dateColor;
   Icon icon;
   TextStyle style;

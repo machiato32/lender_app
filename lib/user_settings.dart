@@ -4,12 +4,12 @@ import 'change_pin.dart';
 import 'main.dart';
 import 'color_picker.dart';
 
-class SignIn extends StatefulWidget {
+class Settings extends StatefulWidget {
   @override
-  _SignInState createState() => _SignInState();
+  _SettingsState createState() => _SettingsState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

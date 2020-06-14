@@ -7,6 +7,7 @@ import 'history.dart';
 import 'balances.dart';
 import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
+import 'shopping.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,7 +79,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     getPrefs().then((_prefs){
       if(!_prefs.containsKey('name')){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
       }else{
         setState(() {
           name=_prefs.get('name');
@@ -96,24 +97,66 @@ class _MainPageState extends State<MainPage> {
           'Csocsort számla',
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
         ),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: (choice){
-              if(choice=='Beállítások'){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
-              }
 
-            },
-            itemBuilder: (BuildContext context){
-              return ['Beállítások'].map((String choice){
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          )
-        ],
+      ),
+      drawer: Drawer(
+        elevation: 16,
+        child: ListView(
+          padding: EdgeInsets.all(0),
+          children: <Widget>[
+            DrawerHeader(
+              child: SizedBox(height: 10),
+
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+
+              )
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).textTheme.body1.color,
+              ),
+              title: Text(
+                'Felhasználó',
+                style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.wb_sunny,
+                color: Theme.of(context).textTheme.body1.color,
+              ),
+              title: Text(
+                'Még sok dolog',
+                style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+//                Navigator.push(context,
+//                    MaterialPageRoute(builder: (context) => Print()));
+              },
+            ),
+
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Probléma jelentése',
+                style: Theme.of(context).textTheme.body1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {},
+              enabled: false,
+            )
+          ],
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: (){
@@ -159,12 +202,18 @@ class _MainPageState extends State<MainPage> {
                       label: Text('Fizettem valakinek', style: Theme.of(context).textTheme.button),
                       onPressed: ()  {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
                     ),
-
+                    RaisedButton.icon(
+                      color: Theme.of(context).colorScheme.secondary,
+                      icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
+                      label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
+                      onPressed: ()  {/*if(name!="")*/ Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute()));},
+                    ),
                   ],
                 ),
               ),
             ),
             Balances(),
+            ShoppingList(),
             History()
           ],
         ),

@@ -203,7 +203,7 @@ class AppTheme{
     accentColor: Colors.pink[300],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
-      primary: Colors.grey[200],
+      primary: Colors.pink[300],
       secondary: Colors.pink[300],
       background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
@@ -212,7 +212,6 @@ class AppTheme{
       surface: Colors.grey[400], //history date
       onSurface: Colors.grey[500], //box shadow
     ),
-    dividerColor: Colors.white,
     cardTheme: CardTheme(
       shape:RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(3),
@@ -233,7 +232,7 @@ class AppTheme{
       body1: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.pink[300],
+        color: Colors.white,
       ),
       button: TextStyle(
           fontSize: 20,
