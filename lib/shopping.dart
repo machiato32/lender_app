@@ -470,14 +470,18 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
                         label: Text('Mehet', style: Theme.of(context).textTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                         onPressed: (){
+
                           FocusScope.of(context).unfocus();
                           success=null;
                           String quantity = quantityController.text;
                           String item = itemController.text;
-                          success=_postNewShopping(item, quantity);
-                          if(widget.data!=null){
-                            _deleteShopping(widget.data.shoppingId);
+                          if(quantity!='' && item!=''){
+                            success=_postNewShopping(item, quantity);
+                            if(widget.data!=null){
+                              _deleteShopping(widget.data.shoppingId);
+                            }
                           }
+
                           setState(() {
 
                           });
