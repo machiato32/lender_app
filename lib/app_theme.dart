@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//TODO: I should use the material.io template...
+
 class AppTheme{
   AppTheme._();
   static final Map<String, ThemeData> lightThemes = {'amberLightTheme':amberLightTheme, 'greenLightTheme':greenLightTheme, 'pinkLightTheme':pinkLightTheme, 'seaBlueLightTheme':seaBlueLightTheme};

@@ -3,19 +3,25 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'balances.dart';
+import 'shopping.dart';
 
 class SavedExpense{
   String name, note;
   List<String> names;
   int amount;
-  int ID;
-  SavedExpense({this.name, this.names, this.amount, this.note, this.ID});
+  int iD;
+  SavedExpense({this.name, this.names, this.amount, this.note, this.iD});
+}
+
+enum ExpenseType{
+  fromShopping, fromSavedExpense, newExpense
 }
 
 class NewExpense extends StatefulWidget {
-  final Key key;
+  final ExpenseType type;
   final SavedExpense expense;
-  NewExpense({this.key, this.expense});
+  final ShoppingData shoppingData;
+  NewExpense({@required this.type, this.expense, this.shoppingData});
   @override
   _NewExpenseState createState() => _NewExpenseState();
 }
@@ -37,7 +43,7 @@ class _NewExpenseState extends State<NewExpense> {
 
   }
 
-  Future<bool> _deleteElement(int id) async {
+  Future<bool> _deleteExpense(int id) async {
     Map<String, dynamic> map = {
       "type":'delete',
       "Transaction_Id":id
@@ -45,6 +51,18 @@ class _NewExpenseState extends State<NewExpense> {
 
     String encoded = json.encode(map);
     http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+
+    return response.statusCode==200;
+  }
+  Future<bool> _fulfillShopping(int id) async {
+    Map<String, dynamic> map = {
+      "type":'fulfill',
+      "fulfilled_by":name,
+      "id":id
+    };
+
+    String encoded = json.encode(map);
+    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
 
     return response.statusCode==200;
   }
@@ -67,16 +85,20 @@ class _NewExpenseState extends State<NewExpense> {
 
   }
 
-  void setValues(){
-    noteController.text = widget.expense.note;
-    amountController.text=widget.expense.amount.toString();
+  void setInitialValues(){
+    if(widget.type==ExpenseType.fromSavedExpense){
+      noteController.text = widget.expense.note;
+      amountController.text=widget.expense.amount.toString();
+    }else{
+      noteController.text=widget.shoppingData.quantity+' '+widget.shoppingData.item;
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    if(widget.expense!=null){
-      setValues();
+    if(widget.type==ExpenseType.fromSavedExpense || widget.type==ExpenseType.fromShopping){
+      setInitialValues();
     }
     names = getNames();
   }
@@ -135,11 +157,13 @@ class _NewExpenseState extends State<NewExpense> {
                             for(String name in snapshot.data){
                               checkboxBool.putIfAbsent(name, () => false);
                             }
-                            if(widget.expense!=null && widget.expense.names!=null){
+                            if(widget.type==ExpenseType.fromSavedExpense && widget.expense.names!=null){
                               for(String name in widget.expense.names){
                                 checkboxBool[name]=true;
                               }
                               widget.expense.names=null;
+                            }else if(widget.type==ExpenseType.fromShopping){
+                              checkboxBool[widget.shoppingData.user]=true;
                             }
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxHeight: 300),
@@ -194,10 +218,13 @@ class _NewExpenseState extends State<NewExpense> {
                           checkboxBool.forEach((String key, bool value) {
                             if(value) names.add(key);
                           });
-                          if(widget.expense!=null){
-                            _deleteElement(widget.expense.ID);
+                          if(widget.type==ExpenseType.fromSavedExpense){
+                            _deleteExpense(widget.expense.iD);
+                          }else if(widget.type==ExpenseType.fromShopping){
+                            _fulfillShopping(widget.shoppingData.shoppingId);
                           }
                           success=postNewExpense(names, amount, note);
+
                           setState(() {
 
                           });

@@ -247,12 +247,12 @@ class _HistoryEntryState extends State<HistoryEntry> {
                                           color: Theme.of(context).colorScheme.secondary,
                                           onPressed: (){
                                             Navigator.pop(context);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.fromSavedExpense,
                                               expense: new SavedExpense(name: widget.data.fromUser,
                                                   names: widget.data.toUser,
                                                   amount: widget.data.amount,
                                                   note: widget.data.note,
-                                                  ID: widget.data.transactionID
+                                                  iD: widget.data.transactionID
                                               ),
                                             )));
                                           },

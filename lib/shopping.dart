@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'new_expense.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -98,8 +99,11 @@ class _ShoppingListState extends State<ShoppingList> {
     );
   }
   List<Widget> _generateShoppingList(List<ShoppingData> data){
+    data=data.where((element) => element.fulfilled==false).toList();
     Function callback=this.callback;
-    return data.map((element){return ShoppingListEntry(data: element, callback: callback,);}).toList();
+    return data.map((element){
+      return ShoppingListEntry(data: element, callback: callback,);
+    }).toList();
   }
 }
 
@@ -119,10 +123,10 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   String quantity;
   String user;
 
-  Future<bool> _deleteElement(int id) async {
+  Future<bool> _deleteShopping(int id) async {
     Map<String, dynamic> map = {
       "type":'delete',
-      "Transaction_Id":id
+      "id":id.toString()
     };
 
     String encoded = json.encode(map);
@@ -201,14 +205,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: (){
                                                 Navigator.pop(context);
-//                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
-//                                                  expense: new SavedExpense(name: widget.data.fromUser,
-//                                                      names: widget.data.toUser,
-//                                                      amount: widget.data.amount,
-//                                                      note: widget.data.note,
-//                                                      ID: widget.data.transactionID
-//                                                  ),
-//                                                )));
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute(data: widget.data,)));
                                               },
                                               child: Text('Igen', style: Theme.of(context).textTheme.button)
                                           ),
@@ -248,7 +245,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                             RaisedButton(
                                                 color: Theme.of(context).colorScheme.secondary,
                                                 onPressed: (){
-                                                  _deleteElement(widget.data.shoppingId);
+                                                  _deleteShopping(widget.data.shoppingId);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Text('Igen', style: Theme.of(context).textTheme.button)
@@ -337,14 +334,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                             color: Theme.of(context).colorScheme.secondary,
                                             onPressed: (){
                                               Navigator.pop(context);
-//                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
-//                                                  expense: new SavedExpense(name: widget.data.fromUser,
-//                                                      names: widget.data.toUser,
-//                                                      amount: widget.data.amount,
-//                                                      note: widget.data.note,
-//                                                      ID: widget.data.transactionID
-//                                                  ),
-//                                                )));
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+                                                  type: ExpenseType.fromShopping, shoppingData: widget.data,
+                                                )));
                                             },
                                             child: Text('Igen', style: Theme.of(context).textTheme.button)
                                         ),
@@ -376,6 +368,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
 
 class ShoppingRoute extends StatefulWidget {
+  final ShoppingData data;
+  ShoppingRoute({this.data});
+
   @override
   _ShoppingRouteState createState() => _ShoppingRouteState();
 }
@@ -386,7 +381,7 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
   Future<bool> success;
   bool waiting=false;
 
-  Future<bool> _postNewRequest(String item, String quantity) async{
+  Future<bool> _postNewShopping(String item, String quantity) async{
     waiting=true;
     Map<String, dynamic> map = {
       "type":"request",
@@ -401,6 +396,31 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
 
     return response.statusCode==200;
 
+  }
+
+  Future<bool> _deleteShopping(int id) async {
+    Map<String, dynamic> map = {
+      "type":'delete',
+      "id":id.toString()
+    };
+
+    String encoded = json.encode(map);
+    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+
+    return response.statusCode==200;
+  }
+
+  void setInitialValues(){
+    itemController.text=widget.data.item;
+    quantityController.text=widget.data.quantity;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.data!=null){
+      setInitialValues();
+    }
   }
 
   @override
@@ -454,7 +474,10 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
                           success=null;
                           String quantity = quantityController.text;
                           String item = itemController.text;
-                          success=_postNewRequest(item, quantity);
+                          success=_postNewShopping(item, quantity);
+                          if(widget.data!=null){
+                            _deleteShopping(widget.data.shoppingId);
+                          }
                           setState(() {
 
                           });

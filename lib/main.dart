@@ -114,11 +114,11 @@ class _MainPageState extends State<MainPage> {
             ),
             ListTile(
               leading: Icon(
-                Icons.account_circle,
+                Icons.settings,
                 color: Theme.of(context).textTheme.body1.color,
               ),
               title: Text(
-                'Felhasználó',
+                'Beállítások',
                 style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
               ),
               onTap: () {
@@ -194,7 +194,7 @@ class _MainPageState extends State<MainPage> {
                       icon: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
                       label: Text('Vettem valamit', style: Theme.of(context).textTheme.button),
 
-                      onPressed: () {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense()));},
+                      onPressed: () {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
                     ),
                     RaisedButton.icon(
                       color: Theme.of(context).colorScheme.secondary,
