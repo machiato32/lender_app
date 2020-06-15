@@ -45,10 +45,10 @@ class _CsocsortAppState extends State<CsocsortApp>{
           first=false;
         }
         return MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Csocsort',
           theme: appState.theme,
           home: MainPage(
-            title: 'Flutter Demo Home Page',
+            title: 'Csocsort Main Page',
           ),
         );
 
@@ -102,24 +102,26 @@ class _MainPageState extends State<MainPage> {
       drawer: Drawer(
         elevation: 16,
         child: ListView(
-          padding: EdgeInsets.all(0),
+          padding: EdgeInsets.only(top:23),
           children: <Widget>[
             DrawerHeader(
               child: SizedBox(height: 10),
 
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color: Colors.white,
+                image: DecorationImage(
+                    image: AssetImage('assets/csocsort_logo.png'))
 
               )
             ),
             ListTile(
               leading: Icon(
                 Icons.settings,
-                color: Theme.of(context).textTheme.body1.color,
+                color: Theme.of(context).textTheme.body2.color,
               ),
               title: Text(
                 'Beállítások',
-                style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.body2,
               ),
               onTap: () {
                 Navigator.push(context,
@@ -130,11 +132,11 @@ class _MainPageState extends State<MainPage> {
             ListTile(
               leading: Icon(
                 Icons.wb_sunny,
-                color: Theme.of(context).textTheme.body1.color,
+                color: Theme.of(context).textTheme.body2.color,
               ),
               title: Text(
                 'Még sok dolog',
-                style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.body2,
               ),
               onTap: () {
 //                Navigator.push(context,
@@ -150,7 +152,7 @@ class _MainPageState extends State<MainPage> {
               ),
               title: Text(
                 'Probléma jelentése',
-                style: Theme.of(context).textTheme.body1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               onTap: () {},
               enabled: false,
