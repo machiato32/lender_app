@@ -79,7 +79,9 @@ class _HistoryState extends State<History> {
             Text('Előzmények', style: Theme.of(context).textTheme.title,),
             SizedBox(height: 40,),
             Center(
-              child: FutureBuilder(
+              child:
+//                HistoryEntry(data: HistoryData(amount: 100, type: 'new_expense', date: DateTime.now(), fromUser: 'Samu', note: 'valami meg inkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb naaaaagyon hosszu szoveeeeeeeeg', toUser: ['Panka'], transactionID: 11 ), callback: this.callback,)
+              FutureBuilder(
                 future: history,
                 builder: (context, snapshot){
                   if(snapshot.hasData){
@@ -155,7 +157,8 @@ class _HistoryEntryState extends State<HistoryEntry> {
         borderRadius: BorderRadius.circular(4),
       );
       if(widget.data.toUser.length>1 && widget.data.toUser[1]!=''){
-        names = widget.data.toUser[0]+' és még ${widget.data.toUser.length-1}';
+        names=widget.data.toUser.join(', ');
+//        names = widget.data.toUser[0]+' és még ${widget.data.toUser.length-1}';
       }else{
         names=widget.data.toUser[0];
       }
@@ -188,169 +191,158 @@ class _HistoryEntryState extends State<HistoryEntry> {
       amount = (-widget.data.amount).toString();
       boxDecoration=BoxDecoration();
     }
-    if(type==0 || type==2){
-      return Container(
-        decoration: boxDecoration,
-        padding: EdgeInsets.all(4),
-        margin: EdgeInsets.only(bottom: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    icon,
-                    Text(' - '+names, style: style),
-                    Text(': '+amount, style: style)
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 20,),
-                    Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 20,),
-                    Text(note, style: TextStyle(color: dateColor, fontSize: 15),)
-                  ],
-                ),
-                SizedBox(height: 4,)
-              ],
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: (){
-                      showDialog(
-                          context: context,
-                          child: Dialog(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                            backgroundColor: Theme.of(context).colorScheme.onBackground,
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-                                  SizedBox(height: 15,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: <Widget>[
-                                      RaisedButton(
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          onPressed: (){
-                                            Navigator.pop(context);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.fromSavedExpense,
-                                              expense: new SavedExpense(name: widget.data.fromUser,
-                                                  names: widget.data.toUser,
-                                                  amount: widget.data.amount,
-                                                  note: widget.data.note,
-                                                  iD: widget.data.transactionID
-                                              ),
-                                            )));
-                                          },
-                                          child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                      ),
-                                      RaisedButton(
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          onPressed: (){ Navigator.pop(context);},
-                                          child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                      );
-                    },
-                    child: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-                  ),
-                  FlatButton(
-                    onPressed: (){
-                      showDialog(
-                        context: context,
-                        child: Dialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                          backgroundColor: Theme.of(context).colorScheme.onBackground,
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
-                                SizedBox(height: 15,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: <Widget>[
-                                    RaisedButton(
-                                      color: Theme.of(context).colorScheme.secondary,
-                                      onPressed: (){
-                                        _deleteElement(widget.data.transactionID);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                    ),
-                                    RaisedButton(
-                                        color: Theme.of(context).colorScheme.secondary,
-                                        onPressed: (){ Navigator.pop(context);},
-                                        child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      );
-                    },
-                    child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
-                  ),
-                ],
-              )
-            )
-          ],
-        ),
-      );
-    }
     return Container(
       decoration: boxDecoration,
-      padding: EdgeInsets.all(4),
       margin: EdgeInsets.only(bottom: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              icon,
-              Text(' - '+names, style: style),
-              Text(': '+amount, style: style)
-            ],
+      child: Material(
+        type: MaterialType.transparency,
+
+        child: InkWell(
+          onTap: (){},
+          borderRadius: BorderRadius.circular(4.0),
+
+          child: Padding(
+
+            padding: EdgeInsets.all(4),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          icon,
+                          Flexible(child: Text(' - '+names, style: style, overflow: TextOverflow.ellipsis,)),
+                          Text(': '+amount, style: style,)
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 20,),
+                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+
+                        children: <Widget>[
+                          SizedBox(width: 20,),
+                          Flexible(
+                            child: Text(note, style: TextStyle(color: dateColor, fontSize: 15),overflow: TextOverflow.ellipsis,),
+                            flex: 1,
+                          ),
+
+                        ],
+                      ),
+                      SizedBox(height: 4,)
+                    ],
+                  ),
+                ),
+//                  Container(
+//                    child: Row(
+//                      mainAxisAlignment: MainAxisAlignment.end,
+//                      children: <Widget>[
+//                        FlatButton(
+//                          onPressed: (){
+//                            showDialog(
+//                                context: context,
+//                                child: Dialog(
+//                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+//                                  backgroundColor: Theme.of(context).colorScheme.onBackground,
+//                                  child: Container(
+//                                    padding: EdgeInsets.all(8),
+//                                    child: Column(
+//                                      crossAxisAlignment: CrossAxisAlignment.center,
+//                                      mainAxisSize: MainAxisSize.min,
+//                                      children: <Widget>[
+//                                        Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
+//                                        SizedBox(height: 15,),
+//                                        Row(
+//                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                                          children: <Widget>[
+//                                            RaisedButton(
+//                                                color: Theme.of(context).colorScheme.secondary,
+//                                                onPressed: (){
+//                                                  Navigator.pop(context);
+//                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.fromSavedExpense,
+//                                                    expense: new SavedExpense(name: widget.data.fromUser,
+//                                                        names: widget.data.toUser,
+//                                                        amount: widget.data.amount,
+//                                                        note: widget.data.note,
+//                                                        iD: widget.data.transactionID
+//                                                    ),
+//                                                  )));
+//                                                },
+//                                                child: Text('Igen', style: Theme.of(context).textTheme.button)
+//                                            ),
+//                                            RaisedButton(
+//                                                color: Theme.of(context).colorScheme.secondary,
+//                                                onPressed: (){ Navigator.pop(context);},
+//                                                child: Text('Nem', style: Theme.of(context).textTheme.button)
+//                                            )
+//                                          ],
+//                                        )
+//                                      ],
+//                                    ),
+//                                  ),
+//                                )
+//                            );
+//                          },
+//                          child: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
+//                        ),
+//                        FlatButton(
+//                          onPressed: (){
+//                            showDialog(
+//                              context: context,
+//                              child: Dialog(
+//                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+//                                backgroundColor: Theme.of(context).colorScheme.onBackground,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(8),
+//                                  child: Column(
+//                                    crossAxisAlignment: CrossAxisAlignment.center,
+//                                    mainAxisSize: MainAxisSize.min,
+//                                    children: <Widget>[
+//                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
+//                                      SizedBox(height: 15,),
+//                                      Row(
+//                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                                        children: <Widget>[
+//                                          RaisedButton(
+//                                            color: Theme.of(context).colorScheme.secondary,
+//                                            onPressed: (){
+//                                              _deleteElement(widget.data.transactionID);
+//                                              Navigator.pop(context);
+//                                            },
+//                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
+//                                          ),
+//                                          RaisedButton(
+//                                              color: Theme.of(context).colorScheme.secondary,
+//                                              onPressed: (){ Navigator.pop(context);},
+//                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
+//                                          )
+//                                        ],
+//                                      )
+//                                    ],
+//                                  ),
+//                                ),
+//                              )
+//                            );
+//                          },
+//                          child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
+//                        ),
+//                      ],
+//                    )
+//                  )
+              ],
+            ),
           ),
-          Row(
-            children: <Widget>[
-              SizedBox(width: 20,),
-              Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              SizedBox(width: 20,),
-              Text(note, style: TextStyle(color: dateColor, fontSize: 15),)
-            ],
-          ),
-          SizedBox(height: 4,)
-        ],
+        ),
       ),
     );
+
   }
 }
 

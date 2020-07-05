@@ -127,6 +127,7 @@ class _NewExpenseState extends State<NewExpense> {
                       child: Text('Mennyiért vettél?', style: Theme.of(context).textTheme.button,)
                     ),
                     TextField(
+                      decoration: InputDecoration(hintText: 'A teljes végösszeg'),
                       controller: amountController,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
@@ -213,6 +214,7 @@ class _NewExpenseState extends State<NewExpense> {
                           FocusScope.of(context).unfocus();
                           success=null;
                           int amount = int.parse(amountController.text);
+                          if(amount<0) return;
                           String note = noteController.text;
                           List<String> names = new List<String>();
                           checkboxBool.forEach((String key, bool value) {
