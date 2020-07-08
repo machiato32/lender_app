@@ -22,7 +22,7 @@ void main() async {
   runApp(ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(), child: CsocsortApp(themeName: themeName,)));
 }
-  String name='';
+  String currentUser='';
 
 
 class CsocsortApp extends StatefulWidget {
@@ -47,9 +47,11 @@ class _CsocsortAppState extends State<CsocsortApp>{
         return MaterialApp(
           title: 'Csocsort',
           theme: appState.theme,
-          home: MainPage(
-            title: 'Csocsort Main Page',
-          ),
+//          home: MainPage(
+//            title: 'Csocsort Main Page',
+//          ),
+          onGenerateRoute: Router.generateRoute,
+          initialRoute: '/',
         );
 
       },
@@ -82,7 +84,7 @@ class _MainPageState extends State<MainPage> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
       }else{
         setState(() {
-          name=_prefs.get('name');
+          currentUser=_prefs.get('name');
         });
       }
     });
@@ -185,7 +187,7 @@ class _MainPageState extends State<MainPage> {
                         children: <Widget>[
                           Icon(Icons.account_circle, color: Theme.of(context).textTheme.body1.color,),
                           SizedBox(width: 5,),
-                          Text('Szia $name!'),
+                          Text('Szia $currentUser!'),
                         ],
                       ),
                       alignment: Alignment.topRight),
@@ -196,19 +198,19 @@ class _MainPageState extends State<MainPage> {
                       icon: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
                       label: Text('Vettem valamit', style: Theme.of(context).textTheme.button),
 
-                      onPressed: () {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
+                      onPressed: () {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
                     ),
                     RaisedButton.icon(
                       color: Theme.of(context).colorScheme.secondary,
                       icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.onSecondary),
                       label: Text('Fizettem valakinek', style: Theme.of(context).textTheme.button),
-                      onPressed: ()  {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
+                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
                     ),
                     RaisedButton.icon(
                       color: Theme.of(context).colorScheme.secondary,
                       icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
                       label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
-                      onPressed: ()  {if(name!="") Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute()));},
+                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute()));},
                     ),
                   ],
                 ),
@@ -222,5 +224,20 @@ class _MainPageState extends State<MainPage> {
       ),
 
     );
+  }
+}
+
+class Router {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(builder: (_) => MainPage());
+      default:
+        return MaterialPageRoute(
+            builder: (_) => Scaffold(
+              body: Center(
+                  child: Text('No route defined for ${settings.name}')),
+            ));
+    }
   }
 }

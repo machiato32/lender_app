@@ -23,7 +23,7 @@ class _SettingsState extends State<Settings> {
           children: <Widget>[
             SwitchUser(),
             Visibility(
-              visible: (name!=''),
+              visible: (currentUser!=''),
               child: ChangePin()
             ),
             ColorPicker(),

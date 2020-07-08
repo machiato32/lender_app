@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'balances.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 class Payment extends StatefulWidget {
   @override
   _PaymentState createState() => _PaymentState();
@@ -21,7 +23,7 @@ class _PaymentState extends State<Payment> {
     Map<String, dynamic> response2 = jsonDecode(response.body);
 
     List<String> list = response2['names'].cast<String>();
-    list.remove(name);
+    list.remove(currentUser);
     dropdownValue=list[0];
     return list;
 
@@ -31,7 +33,7 @@ class _PaymentState extends State<Payment> {
     waiting=true;
     Map<String,dynamic> map = {
       'type':'payment',
-      'from_name':name,
+      'from_name':currentUser,
       'to_name':toName,
       'amount':amount,
       'note':note
@@ -55,7 +57,7 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: Text('De hát én fizettem na'),),
+      appBar: AppBar(title: Text('Fizetés'),),
       body:
         GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -74,7 +76,7 @@ class _PaymentState extends State<Payment> {
                       Container(
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                          child: Text('Kinek?', style: Theme.of(context).textTheme.button)
+                          child: Text('Akinek fizettél', style: Theme.of(context).textTheme.button)
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
@@ -108,7 +110,7 @@ class _PaymentState extends State<Payment> {
                       Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Mennyit?', style: Theme.of(context).textTheme.button,)
+                        child: Text('Összeg', style: Theme.of(context).textTheme.button,)
                       ),
                       TextField(
                         controller: amountController,
@@ -120,7 +122,7 @@ class _PaymentState extends State<Payment> {
                       Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Megjegyzés:', style: Theme.of(context).textTheme.button)
+                        child: Text('Megjegyzés', style: Theme.of(context).textTheme.button)
                       ),
                       TextField(
                         controller: noteController,
@@ -133,15 +135,53 @@ class _PaymentState extends State<Payment> {
                           color: Theme.of(context).colorScheme.secondary,
                           label: Text('Fizetés', style: Theme.of(context).textTheme.button),
                           icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
+                          onPressed: () async {
                             FocusScope.of(context).unfocus();
                             success=null;
                             int amount = int.parse(amountController.text);
                             String note = noteController.text;
-                            success=postPayment(amount, note, dropdownValue);
-                            setState(() {
+                            if(await postPayment(amount, note, dropdownValue)){
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.green,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check, color: Colors.white,),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            }else{
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.red,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.clear),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Text("A tranzakció könyvelése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            }
 
-                            });
                           },
                         ),
                       ),

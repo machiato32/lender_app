@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'main.dart';
 import 'balances.dart';
 import 'shopping.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SavedExpense{
   String name, note;
@@ -57,7 +58,7 @@ class _NewExpenseState extends State<NewExpense> {
   Future<bool> _fulfillShopping(int id) async {
     Map<String, dynamic> map = {
       "type":'fulfill',
-      "fulfilled_by":name,
+      "fulfilled_by":currentUser,
       "id":id
     };
 
@@ -71,7 +72,7 @@ class _NewExpenseState extends State<NewExpense> {
     waiting=true;
     Map<String, dynamic> map = {
       "type":"new_expense",
-      "from_name":name,
+      "from_name":currentUser,
       "to_names":names,
       "amount":amount,
       "note":note
@@ -105,7 +106,7 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Vettem dolgokat')),
+      appBar: AppBar(title: Text('Bevásárlás')),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -124,7 +125,7 @@ class _NewExpenseState extends State<NewExpense> {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Mennyiért vettél?', style: Theme.of(context).textTheme.button,)
+                      child: Text('Amennyit fizettél', style: Theme.of(context).textTheme.button,)
                     ),
                     TextField(
                       decoration: InputDecoration(hintText: 'A teljes végösszeg'),
@@ -137,9 +138,10 @@ class _NewExpenseState extends State<NewExpense> {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Mit vettél?', style: Theme.of(context).textTheme.button,)
+                      child: Text('Megjegyzés', style: Theme.of(context).textTheme.button,)
                     ),
                     TextField(
+                      decoration: InputDecoration(hintText: 'Tárgyrag nélkül'),
                       controller: noteController,
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
@@ -148,7 +150,7 @@ class _NewExpenseState extends State<NewExpense> {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Kinek/kiknek vetted?', style: Theme.of(context).textTheme.button,)
+                      child: Text('Akinek vetted', style: Theme.of(context).textTheme.button,)
                     ),
                     Center(
                       child: FutureBuilder(
@@ -210,9 +212,8 @@ class _NewExpenseState extends State<NewExpense> {
                         color: Theme.of(context).colorScheme.secondary,
                         label: Text('Mehet', style: Theme.of(context).textTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                        onPressed: (){
+                        onPressed: () async {
                           FocusScope.of(context).unfocus();
-                          success=null;
                           int amount = int.parse(amountController.text);
                           if(amount<0) return;
                           String note = noteController.text;
@@ -220,37 +221,63 @@ class _NewExpenseState extends State<NewExpense> {
                           checkboxBool.forEach((String key, bool value) {
                             if(value) names.add(key);
                           });
+                          Function f;
+                          var param;
                           if(widget.type==ExpenseType.fromSavedExpense){
-                            _deleteExpense(widget.expense.iD);
+                            f=_deleteExpense;
+                            param=widget.expense.iD;
                           }else if(widget.type==ExpenseType.fromShopping){
-                            _fulfillShopping(widget.shoppingData.shoppingId);
+                            f=_fulfillShopping;
+                            param=widget.shoppingData.shoppingId;
+                          }else{
+                            f=(par){return true;};
+                            param=5;
                           }
-                          success=postNewExpense(names, amount, note);
+                          if(await f(param) && await postNewExpense(names, amount, note)){
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              color: Colors.green,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.check, color: Colors.white,),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                          }else{
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.clear),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Text("A tranzakció könyvelése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                          }
+//                          Navigator.pop(context);
+//                          Navigator.of(context).popUntil((route)=> route.settings.name=='/');
 
-                          setState(() {
-
-                          });
                         },
-                      ),
-                    ),
-                    Center(
-                      child: FutureBuilder(
-                          future: success,
-                          builder: (context, snapshot){
-                            if(snapshot.hasData){
-                              waiting=false;
-                              if(snapshot.data){
-                                return Icon(Icons.check, color: Colors.green, size: 30,);
-                              }else{
-                                return Icon(Icons.clear, color: Colors.red, size: 30,);
-                              }
-                            }
-                            if(waiting){
-                              return CircularProgressIndicator();
-                            }
-                            return SizedBox();
-                          }
-
                       ),
                     ),
                   ],

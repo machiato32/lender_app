@@ -143,7 +143,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     user = widget.data.user;
     quantity = widget.data.quantity;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date);
-    if(widget.data.user==name){
+    if(widget.data.user==currentUser){
       style=Theme.of(context).textTheme.button;
       dateColor=Theme.of(context).textTheme.button.color;
       return Card(
@@ -385,7 +385,7 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
     waiting=true;
     Map<String, dynamic> map = {
       "type":"request",
-      "user":name,
+      "user":currentUser,
       "name":item,
       "quantity":quantity
     };

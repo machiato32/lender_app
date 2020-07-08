@@ -114,7 +114,7 @@ class _BalancesState extends State<Balances> {
   List<Widget> _fromFuture(context, snapshot){
 
     return snapshot.data.map<Widget>((Person person){
-      if(person.name==name){
+      if(person.name==currentUser){
         return Column(
           children: <Widget>[
             Container(

@@ -22,7 +22,7 @@ class _SwitchUserState extends State<SwitchUser> {
     Map<String, dynamic> response2 = jsonDecode(response.body);
 
     List<String> list = response2['names'].cast<String>();
-    list.remove(name);
+    list.remove(currentUser);
     dropdownValue=list[0];
     return list;
 
@@ -134,7 +134,7 @@ class _SwitchUserState extends State<SwitchUser> {
                       waiting=false;
                       if(snapshot.data){
                         getPrefs().then((_prefs){
-                          name=dropdownValue;
+                          currentUser=dropdownValue;
                           _prefs.setString('name', dropdownValue);
                         });
                         return Icon(Icons.check, color: Colors.green, size: 30,);

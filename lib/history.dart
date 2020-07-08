@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'main.dart';
-import 'new_expense.dart';
+import 'history_new_route.dart';
 
 class HistoryData {
   DateTime date;
@@ -33,6 +33,7 @@ class HistoryData {
 class History extends StatefulWidget {
   @override
   _HistoryState createState() => _HistoryState();
+
 }
 
 class _HistoryState extends State<History> {
@@ -40,32 +41,39 @@ class _HistoryState extends State<History> {
   
   Future<List<HistoryData>> getHistory() async{
     Map<String,dynamic> map ={
-      'name':name
+      'name':currentUser
     };
     String encoded = jsonEncode(map);
     http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/history/', body: encoded);
-
+    
     List<dynamic> decoded = jsonDecode(response.body)['history'];
 
     List<HistoryData> history = new List<HistoryData>();
     decoded.forEach((element){history.add(HistoryData.fromJson(element));});
     history = history.reversed.toList();
+    int a=5;
     return history;
   }
 
-  void callback(){
+  void callback() {
+
     setState(() {
+      history = null;
       history=getHistory();
     });
+
   }
 
   @override
   void initState() {
-    super.initState();
+    history=null;
     history = getHistory();
+    super.initState();
+
   }
   @override
   void didUpdateWidget(History oldWidget) {
+    history=null;
     history = getHistory();
     super.didUpdateWidget(oldWidget);
   }
@@ -129,20 +137,6 @@ class _HistoryEntryState extends State<HistoryEntry> {
   String amount;
   int type;
 
-  Future<bool> _deleteElement(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "Transaction_Id":id
-    };
-
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-
-    widget.callback();
-
-    return response.statusCode==200;
-  }
-
   @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date);
@@ -171,7 +165,7 @@ class _HistoryEntryState extends State<HistoryEntry> {
       names = widget.data.fromUser;
       amount = (-widget.data.amount).toString();
       boxDecoration=BoxDecoration();
-    }else if(widget.data.fromUser==name){
+    }else if(widget.data.fromUser==currentUser){
       type=2;
       icon=Icon(Icons.call_made, color: Theme.of(context).textTheme.button.color);
       style=Theme.of(context).textTheme.button;
@@ -198,7 +192,12 @@ class _HistoryEntryState extends State<HistoryEntry> {
         type: MaterialType.transparency,
 
         child: InkWell(
-          onTap: (){},
+          onTap: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryRoute(data: widget.data,))).then((val){
+              widget.callback();
+            });
+
+          },
           borderRadius: BorderRadius.circular(4.0),
 
           child: Padding(
@@ -240,102 +239,7 @@ class _HistoryEntryState extends State<HistoryEntry> {
                     ],
                   ),
                 ),
-//                  Container(
-//                    child: Row(
-//                      mainAxisAlignment: MainAxisAlignment.end,
-//                      children: <Widget>[
-//                        FlatButton(
-//                          onPressed: (){
-//                            showDialog(
-//                                context: context,
-//                                child: Dialog(
-//                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-//                                  backgroundColor: Theme.of(context).colorScheme.onBackground,
-//                                  child: Container(
-//                                    padding: EdgeInsets.all(8),
-//                                    child: Column(
-//                                      crossAxisAlignment: CrossAxisAlignment.center,
-//                                      mainAxisSize: MainAxisSize.min,
-//                                      children: <Widget>[
-//                                        Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-//                                        SizedBox(height: 15,),
-//                                        Row(
-//                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                          children: <Widget>[
-//                                            RaisedButton(
-//                                                color: Theme.of(context).colorScheme.secondary,
-//                                                onPressed: (){
-//                                                  Navigator.pop(context);
-//                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.fromSavedExpense,
-//                                                    expense: new SavedExpense(name: widget.data.fromUser,
-//                                                        names: widget.data.toUser,
-//                                                        amount: widget.data.amount,
-//                                                        note: widget.data.note,
-//                                                        iD: widget.data.transactionID
-//                                                    ),
-//                                                  )));
-//                                                },
-//                                                child: Text('Igen', style: Theme.of(context).textTheme.button)
-//                                            ),
-//                                            RaisedButton(
-//                                                color: Theme.of(context).colorScheme.secondary,
-//                                                onPressed: (){ Navigator.pop(context);},
-//                                                child: Text('Nem', style: Theme.of(context).textTheme.button)
-//                                            )
-//                                          ],
-//                                        )
-//                                      ],
-//                                    ),
-//                                  ),
-//                                )
-//                            );
-//                          },
-//                          child: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-//                        ),
-//                        FlatButton(
-//                          onPressed: (){
-//                            showDialog(
-//                              context: context,
-//                              child: Dialog(
-//                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-//                                backgroundColor: Theme.of(context).colorScheme.onBackground,
-//                                child: Container(
-//                                  padding: EdgeInsets.all(8),
-//                                  child: Column(
-//                                    crossAxisAlignment: CrossAxisAlignment.center,
-//                                    mainAxisSize: MainAxisSize.min,
-//                                    children: <Widget>[
-//                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
-//                                      SizedBox(height: 15,),
-//                                      Row(
-//                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                        children: <Widget>[
-//                                          RaisedButton(
-//                                            color: Theme.of(context).colorScheme.secondary,
-//                                            onPressed: (){
-//                                              _deleteElement(widget.data.transactionID);
-//                                              Navigator.pop(context);
-//                                            },
-//                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
-//                                          ),
-//                                          RaisedButton(
-//                                              color: Theme.of(context).colorScheme.secondary,
-//                                              onPressed: (){ Navigator.pop(context);},
-//                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
-//                                          )
-//                                        ],
-//                                      )
-//                                    ],
-//                                  ),
-//                                ),
-//                              )
-//                            );
-//                          },
-//                          child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
-//                        ),
-//                      ],
-//                    )
-//                  )
+
               ],
             ),
           ),

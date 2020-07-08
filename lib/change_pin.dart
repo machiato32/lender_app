@@ -21,7 +21,7 @@ class _ChangePinState extends State<ChangePin> {
     waiting=true;
     Map<String,dynamic> map ={
       'type':'change',
-      'name':name,
+      'name':currentUser,
       'pin':oldPin,
       'new_pin':newPin
     };
@@ -91,39 +91,75 @@ class _ChangePinState extends State<ChangePin> {
                 color: Theme.of(context).colorScheme.secondary,
                 label: Text('Küldés', style: Theme.of(context).textTheme.button),
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                onPressed: (){
+                onPressed: () async {
                   FocusScope.of(context).unfocus();
                   success=null;
                   if(confirmPin.text==newPin.text){
-                    success=postNewPin(int.parse(oldPin.text), int.parse(newPin.text));
+                    if(await postNewPin(int.parse(oldPin.text), int.parse(newPin.text))){
+                      Widget toast = Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          color: Colors.green,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.check),
+                            SizedBox(
+                              width: 12.0,
+                            ),
+                            Text("A pint sikeresen megváltoztattuk!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                          ],
+                        ),
+                      );
+                      FlutterToast ft = FlutterToast(context);
+                      ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                    }else{
+                      Widget toast = Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          color: Colors.red,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.clear),
+                            SizedBox(
+                              width: 12.0,
+                            ),
+                            Text("A pin megváltoztatása sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                          ],
+                        ),
+                      );
+                      FlutterToast ft = FlutterToast(context);
+                      ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                    }
                   }else{
-                    Fluttertoast.showToast(msg: 'Az új pin és az újrázás nem ugyanaz :(');
+                    Widget toast = Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        color: Colors.red,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.clear, color: Colors.white,),
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Text("A két megadott pin nem egyezik!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                        ],
+                      ),
+                    );
+                    FlutterToast ft = FlutterToast(context);
+                    ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
                   }
-                  setState(() {
-
-                  });
                 },
               ),
             ),
-            Center(
-              child: FutureBuilder(
-                  future: success,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      waiting=false;
-                      if(snapshot.data){
-                        return Icon(Icons.check, color: Colors.green, size: 30,);
-                      }else{
-                        return Icon(Icons.clear, color: Colors.red, size: 30,);
-                      }
-                    }
-                    if(waiting){
-                      return CircularProgressIndicator();
-                    }
-                    return SizedBox();
-                  }
-              ),
-            )
           ],
         ),
       ),
