@@ -176,7 +176,7 @@ class _HistoryRouteState extends State<HistoryRoute> {
                                                               SizedBox(
                                                                 width: 12.0,
                                                               ),
-                                                              Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                                             ],
                                                           ),
                                                         );
@@ -196,7 +196,7 @@ class _HistoryRouteState extends State<HistoryRoute> {
                                                               SizedBox(
                                                                 width: 12.0,
                                                               ),
-                                                              Text("A tranzakciót törlése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                                             ],
                                                           ),
                                                         );

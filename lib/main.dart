@@ -210,7 +210,7 @@ class _MainPageState extends State<MainPage> {
                       color: Theme.of(context).colorScheme.secondary,
                       icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
                       label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
-                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute()));},
+                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));},
                     ),
                   ],
                 ),

@@ -109,7 +109,7 @@ class _ChangePinState extends State<ChangePin> {
                             SizedBox(
                               width: 12.0,
                             ),
-                            Text("A pint sikeresen megváltoztattuk!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                            Flexible(child: Text("A pint sikeresen megváltoztattuk!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                           ],
                         ),
                       );
@@ -129,7 +129,7 @@ class _ChangePinState extends State<ChangePin> {
                             SizedBox(
                               width: 12.0,
                             ),
-                            Text("A pin megváltoztatása sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                            Flexible(child: Text("A pin megváltoztatása sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                           ],
                         ),
                       );
@@ -150,7 +150,7 @@ class _ChangePinState extends State<ChangePin> {
                           SizedBox(
                             width: 12.0,
                           ),
-                          Text("A két megadott pin nem egyezik!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                          Flexible(child: Text("A két megadott pin nem egyezik!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                         ],
                       ),
                     );

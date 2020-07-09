@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'main.dart';
-import 'history_new_route.dart';
+import 'history_route.dart';
 
 class HistoryData {
   DateTime date;
@@ -45,7 +45,7 @@ class _HistoryState extends State<History> {
     };
     String encoded = jsonEncode(map);
     http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/history/', body: encoded);
-    
+
     List<dynamic> decoded = jsonDecode(response.body)['history'];
 
     List<HistoryData> history = new List<HistoryData>();
@@ -94,7 +94,7 @@ class _HistoryState extends State<History> {
                 builder: (context, snapshot){
                   if(snapshot.hasData){
                     return ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 400),
+                      constraints: BoxConstraints(maxHeight: 700),
                       child: ListView(
                         shrinkWrap: true,
                         children: generateHistory(snapshot.data)

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'new_expense.dart';
+import 'shopping_route.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ShoppingData {
   DateTime date;
@@ -51,6 +52,7 @@ class _ShoppingListState extends State<ShoppingList> {
 
   void callback(){
     setState(() {
+      shoppingList=null;
       shoppingList=_getShoppingList();
     });
   }
@@ -58,10 +60,12 @@ class _ShoppingListState extends State<ShoppingList> {
   @override
   void initState() {
     super.initState();
+    shoppingList=null;
     shoppingList = _getShoppingList();
   }
   @override
   void didUpdateWidget(ShoppingList oldWidget) {
+    shoppingList=null;
     shoppingList = _getShoppingList();
     super.didUpdateWidget(oldWidget);
   }
@@ -117,25 +121,16 @@ class ShoppingListEntry extends StatefulWidget {
 
 class _ShoppingListEntryState extends State<ShoppingListEntry> {
   Color dateColor;
+  Icon icon;
   TextStyle style;
+  BoxDecoration boxDecoration;
+
   String date;
   String item;
   String quantity;
   String user;
 
-  Future<bool> _deleteShopping(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "id":id.toString()
-    };
 
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-
-    widget.callback();
-
-    return response.statusCode==200;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,236 +141,169 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     if(widget.data.user==currentUser){
       style=Theme.of(context).textTheme.button;
       dateColor=Theme.of(context).textTheme.button.color;
-      return Card(
+      icon=Icon(Icons.check_box, color: dateColor);
+      boxDecoration=BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
-        margin: EdgeInsets.only(bottom: 4),
-        child: Padding(
-          padding: EdgeInsets.all(4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.check_box, color: dateColor,),
-                      Text(' - '+user, style: TextStyle(color: dateColor, fontSize: 23)),
-
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(width: 20,),
-                      Text(quantity+' '+item, style: style),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(width: 20,),
-                      Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                    ],
-                  ),
-                  SizedBox(height: 4,)
-                ],
-              ),
-              Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      FlatButton(
-                        onPressed: (){
-                          showDialog(
-                              context: context,
-                              child: Dialog(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                backgroundColor: Theme.of(context).colorScheme.onBackground,
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-                                      SizedBox(height: 15,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          RaisedButton(
-                                              color: Theme.of(context).colorScheme.secondary,
-                                              onPressed: (){
-                                                Navigator.pop(context);
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute(data: widget.data,)));
-                                              },
-                                              child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                          ),
-                                          RaisedButton(
-                                              color: Theme.of(context).colorScheme.secondary,
-                                              onPressed: (){ Navigator.pop(context);},
-                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                          );
-                        },
-                        child: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-                      ),
-                      FlatButton(
-                          onPressed: (){
-                            showDialog(
-                                context: context,
-                                child: Dialog(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                  backgroundColor: Theme.of(context).colorScheme.onBackground,
-                                  child: Container(
-                                    padding: EdgeInsets.all(8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.title,),
-                                        SizedBox(height: 15,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: <Widget>[
-                                            RaisedButton(
-                                                color: Theme.of(context).colorScheme.secondary,
-                                                onPressed: (){
-                                                  _deleteShopping(widget.data.shoppingId);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                            ),
-                                            RaisedButton(
-                                                color: Theme.of(context).colorScheme.secondary,
-                                                onPressed: (){ Navigator.pop(context);},
-                                                child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                            );
-                          },
-                          child: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
-                      ),
-                    ],
-                  )
-              )
-            ],
-          ),
-        ),
-
+        borderRadius: BorderRadius.circular(4),
       );
     }else{
       style=Theme.of(context).textTheme.body2;
       dateColor=Theme.of(context).colorScheme.surface;
-      Color iconColor = Theme.of(context).textTheme.body2.color;
-      return Container(
-        padding: EdgeInsets.all(4),
-        margin: EdgeInsets.only(bottom: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.check_box, color: iconColor),
-                    Text(' - '+user, style: TextStyle(color: iconColor, fontSize: 23)),
+      icon=Icon(Icons.check, color: style.color,);
+      boxDecoration=BoxDecoration();
 
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 20,),
-                    Text(quantity+' '+item, style: style),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 20,),
-                    Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                  ],
-                ),
-                SizedBox(height: 4,)
-              ],
-            ),
-            Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: (){
-                        showDialog(
-                            context: context,
-                            child: Dialog(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                              backgroundColor: Theme.of(context).colorScheme.onBackground,
-                              child: Container(
-                                padding: EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('Megvetted a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-                                    SizedBox(height: 15,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        RaisedButton(
-                                            color: Theme.of(context).colorScheme.secondary,
-                                            onPressed: (){
-                                              Navigator.pop(context);
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
-                                                  type: ExpenseType.fromShopping, shoppingData: widget.data,
-                                                )));
-                                            },
-                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
-                                        ),
-                                        RaisedButton(
-                                            color: Theme.of(context).colorScheme.secondary,
-                                            onPressed: (){ Navigator.pop(context); },
-                                            child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                        );
-                      },
-                      child: Icon(Icons.check, color: iconColor),
-                    ),
-
-                  ],
-                )
-            )
-          ],
-        ),
-      );
+//      return Container(
+//        padding: EdgeInsets.all(4),
+//        margin: EdgeInsets.only(bottom: 4),
+//        child: Row(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget>[
+//            Column(
+//              crossAxisAlignment: CrossAxisAlignment.start,
+//              children: <Widget>[
+//                Row(
+//                  children: <Widget>[
+//                    Icon(Icons.check_box, color: iconColor),
+//                    Text(' - '+user, style: TextStyle(color: iconColor, fontSize: 23)),
+//
+//                  ],
+//                ),
+//                Row(
+//                  children: <Widget>[
+//                    SizedBox(width: 20,),
+//                    Text(quantity+' '+item, style: style),
+//                  ],
+//                ),
+//                Row(
+//                  children: <Widget>[
+//                    SizedBox(width: 20,),
+//                    Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
+//                  ],
+//                ),
+//                SizedBox(height: 4,)
+//              ],
+//            ),
+//            Container(
+//                child: Row(
+//                  mainAxisAlignment: MainAxisAlignment.end,
+//                  children: <Widget>[
+//                    FlatButton(
+//                      onPressed: (){
+//                        showDialog(
+//                            context: context,
+//                            child: Dialog(
+//                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+//                              backgroundColor: Theme.of(context).colorScheme.onBackground,
+//                              child: Container(
+//                                padding: EdgeInsets.all(8),
+//                                child: Column(
+//                                  crossAxisAlignment: CrossAxisAlignment.center,
+//                                  mainAxisSize: MainAxisSize.min,
+//                                  children: <Widget>[
+//                                    Text('Megvetted a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
+//                                    SizedBox(height: 15,),
+//                                    Row(
+//                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                                      children: <Widget>[
+//                                        RaisedButton(
+//                                            color: Theme.of(context).colorScheme.secondary,
+//                                            onPressed: (){
+//                                              Navigator.pop(context);
+//                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+//                                                  type: ExpenseType.fromShopping, shoppingData: widget.data,
+//                                                )));
+//                                            },
+//                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
+//                                        ),
+//                                        RaisedButton(
+//                                            color: Theme.of(context).colorScheme.secondary,
+//                                            onPressed: (){ Navigator.pop(context); },
+//                                            child: Text('Nem', style: Theme.of(context).textTheme.button)
+//                                        )
+//                                      ],
+//                                    )
+//                                  ],
+//                                ),
+//                              ),
+//                            )
+//                        );
+//                      },
+//                      child: Icon(Icons.check, color: iconColor),
+//                    ),
+//
+//                  ],
+//                )
+//            )
+//          ],
+//        ),
+//      );
     }
+    return Container(
+      decoration: boxDecoration,
+      margin: EdgeInsets.only(bottom: 4),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute(data: widget.data,))).then((val){
+              widget.callback();
+            });
+          },
+          borderRadius: BorderRadius.circular(4.0),
+          child: Padding(
+            padding: EdgeInsets.all(4),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          icon,
+                          Flexible(child: Text(' - '+user, style: style, overflow: TextOverflow.ellipsis)),
+
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 20,),
+                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 20,),
+                          Flexible(child: Text(quantity+' '+item, style: style.copyWith(fontSize: 15), overflow: TextOverflow.ellipsis)),
+                        ],
+                      ),
+
+                      SizedBox(height: 4,)
+                    ],
+                  ),
+                ),
+              ],
+
+            ),
+          ),
+        ),
+      ),
+
+    );
   }
 }
 
 
-class ShoppingRoute extends StatefulWidget {
+class AddShoppingRoute extends StatefulWidget {
   final ShoppingData data;
-  ShoppingRoute({this.data});
+  AddShoppingRoute({this.data});
 
   @override
-  _ShoppingRouteState createState() => _ShoppingRouteState();
+  _AddShoppingRouteState createState() => _AddShoppingRouteState();
 }
 
-class _ShoppingRouteState extends State<ShoppingRoute> {
+class _AddShoppingRouteState extends State<AddShoppingRoute> {
   TextEditingController itemController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   Future<bool> success;
@@ -469,48 +397,66 @@ class _ShoppingRouteState extends State<ShoppingRoute> {
                         color: Theme.of(context).colorScheme.secondary,
                         label: Text('Mehet', style: Theme.of(context).textTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                        onPressed: (){
+                        onPressed: () async {
 
                           FocusScope.of(context).unfocus();
                           success=null;
                           String quantity = quantityController.text;
                           String item = itemController.text;
                           if(quantity!='' && item!=''){
-                            success=_postNewShopping(item, quantity);
+                            if(await _postNewShopping(item, quantity)){
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.green,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check, color: Colors.white,),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Flexible(child: Text("A tételt sikeresen felvettük a bevásárlólistára!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                              setState(() {
+
+                              });
+                            }else{
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.red,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.clear, color: Colors.white,),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Flexible(child: Text("A tétel felvétele sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            }
                             if(widget.data!=null){
                               _deleteShopping(widget.data.shoppingId);
                             }
                           }
-
-                          setState(() {
-
-                          });
                         },
                       ),
                     ),
                   ],
                 ),
-              ),
-            ),
-
-            Center(
-              child: FutureBuilder(
-                  future: success,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      waiting=false;
-                      if(snapshot.data){
-                        return Icon(Icons.check, color: Colors.green, size: 30,);
-                      }else{
-                        return Icon(Icons.clear, color: Colors.red, size: 30,);
-                      }
-                    }
-                    if(waiting){
-                      return CircularProgressIndicator();
-                    }
-                    return SizedBox();
-                  }
-
               ),
             ),
             ShoppingList(),

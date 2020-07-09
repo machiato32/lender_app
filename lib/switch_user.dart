@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SwitchUser extends StatefulWidget {
   @override
@@ -115,14 +116,56 @@ class _SwitchUserState extends State<SwitchUser> {
                 color: Theme.of(context).colorScheme.secondary,
                 label: Text('Küldés', style: Theme.of(context).textTheme.button),
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                onPressed: (){
+                onPressed: () async {
                   FocusScope.of(context).unfocus();
                   success=null;
                   int pin = int.parse(pinController.text);
-                  success=postValidate(pin, dropdownValue);
-                  setState(() {
+                  if(await postValidate(pin, dropdownValue)){
+                    getPrefs().then((_prefs){
+                      currentUser=dropdownValue;
+                      _prefs.setString('name', dropdownValue);
+                    });
+                    Widget toast = Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        color: Colors.green,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.check),
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                        ],
+                      ),
+                    );
+                    FlutterToast ft = FlutterToast(context);
+                    ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                  }else{
+                    Widget toast = Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        color: Colors.red,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.clear),
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Flexible(child: Text("A bejelentkezés sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                        ],
+                      ),
+                    );
+                    FlutterToast ft = FlutterToast(context);
+                    ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                  }
 
-                  });
                 },
             ),
              ),

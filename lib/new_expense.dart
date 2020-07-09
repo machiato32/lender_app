@@ -247,7 +247,7 @@ class _NewExpenseState extends State<NewExpense> {
                                   SizedBox(
                                     width: 12.0,
                                   ),
-                                  Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                  Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                 ],
                               ),
                             );
@@ -267,7 +267,7 @@ class _NewExpenseState extends State<NewExpense> {
                                   SizedBox(
                                     width: 12.0,
                                   ),
-                                  Text("A tranzakció könyvelése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
+                                  Flexible(child: Text("A tranzakció könyvelése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                 ],
                               ),
                             );
