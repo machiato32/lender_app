@@ -65,15 +65,15 @@ class _HistoryState extends State<History> {
 
   @override
   void initState() {
-//    history=null;
+    history=null;
     history = getHistory();
     super.initState();
 
   }
   @override
   void didUpdateWidget(History oldWidget) {
-//    history=null;
-//    history = getHistory();
+    history=null;
+    history = getHistory();
     super.didUpdateWidget(oldWidget);
   }
   @override
