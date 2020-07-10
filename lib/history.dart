@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'main.dart';
 import 'history_route.dart';
+import 'all_history_route.dart';
 
 class HistoryData {
   DateTime date;
@@ -51,7 +52,6 @@ class _HistoryState extends State<History> {
     List<HistoryData> history = new List<HistoryData>();
     decoded.forEach((element){history.add(HistoryData.fromJson(element));});
     history = history.reversed.toList();
-    int a=5;
     return history;
   }
 
@@ -61,20 +61,19 @@ class _HistoryState extends State<History> {
       history = null;
       history=getHistory();
     });
-
   }
 
   @override
   void initState() {
-    history=null;
+//    history=null;
     history = getHistory();
     super.initState();
 
   }
   @override
   void didUpdateWidget(History oldWidget) {
-    history=null;
-    history = getHistory();
+//    history=null;
+//    history = getHistory();
     super.didUpdateWidget(oldWidget);
   }
   @override
@@ -86,25 +85,36 @@ class _HistoryState extends State<History> {
           children: <Widget>[
             Text('Előzmények', style: Theme.of(context).textTheme.title,),
             SizedBox(height: 40,),
-            Center(
-              child:
-//                HistoryEntry(data: HistoryData(amount: 100, type: 'new_expense', date: DateTime.now(), fromUser: 'Samu', note: 'valami meg inkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb naaaaagyon hosszu szoveeeeeeeeg', toUser: ['Panka'], transactionID: 11 ), callback: this.callback,)
-              FutureBuilder(
-                future: history,
-                builder: (context, snapshot){
-                  if(snapshot.hasData){
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 700),
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: generateHistory(snapshot.data)
+            Column(
+              children: <Widget>[
+                FutureBuilder(
+                  future: history,
+                  builder: (context, snapshot){
+                    if(snapshot.hasData){
+                      return Column(
+                        children: <Widget>[
+                          Column(
+                              children: generateHistory(snapshot.data)
+                          ),
+                          Visibility(
+                            visible: (snapshot.data as List).length>0,
+                            child: FlatButton.icon(
+                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
+                                icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
+                                label: Text('Több', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary
+                            ),
+                          )
+                        ],
+//                        children: generateHistory(snapshot.data)
 //                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                      ),
-                    );
-                  }
-                  return CircularProgressIndicator();
-                },
-              ),
+                      );
+                    }
+                    return CircularProgressIndicator();
+                  },
+                ),
+
+              ],
             ),
           ],
         ),
@@ -112,6 +122,9 @@ class _HistoryState extends State<History> {
     );
   }
   List<Widget> generateHistory(List<HistoryData> data){
+    if(data.length>5){
+      data=data.take(5).toList();
+    }
     Function callback=this.callback;
     return data.map((element){return HistoryEntry(data: element, callback: callback,);}).toList();
   }

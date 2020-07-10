@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'all_shopping_route.dart';
 
 class ShoppingData {
   DateTime date;
@@ -84,13 +85,23 @@ class _ShoppingListState extends State<ShoppingList> {
                 future: shoppingList,
                 builder: (context, snapshot){
                   if(snapshot.hasData){
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 400),
-                      child: ListView(
-                          shrinkWrap: true,
-                          children: _generateShoppingList(snapshot.data)
+                    return Column(
+                      children: <Widget>[
+                        Column(
+                            children: _generateShoppingList(snapshot.data)
+                        ),
+                        Visibility(
+                          visible: (snapshot.data as List).where((element) => element.fulfilled==false).toList().length>0,
+                          child: FlatButton.icon(
+                              onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
+                              icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
+                              label: Text('Több', style: Theme.of(context).textTheme.button,),
+                              color: Theme.of(context).colorScheme.secondary
+                          ),
+                        )
+                      ],
+//                        children: generateHistory(snapshot.data)
 //                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                      ),
                     );
                   }
                   return CircularProgressIndicator();
@@ -104,6 +115,9 @@ class _ShoppingListState extends State<ShoppingList> {
   }
   List<Widget> _generateShoppingList(List<ShoppingData> data){
     data=data.where((element) => element.fulfilled==false).toList();
+    if(data.length>3){
+      data=data.take(3).toList();
+    }
     Function callback=this.callback;
     return data.map((element){
       return ShoppingListEntry(data: element, callback: callback,);
@@ -151,92 +165,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       dateColor=Theme.of(context).colorScheme.surface;
       icon=Icon(Icons.check, color: style.color,);
       boxDecoration=BoxDecoration();
-
-//      return Container(
-//        padding: EdgeInsets.all(4),
-//        margin: EdgeInsets.only(bottom: 4),
-//        child: Row(
-//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//          children: <Widget>[
-//            Column(
-//              crossAxisAlignment: CrossAxisAlignment.start,
-//              children: <Widget>[
-//                Row(
-//                  children: <Widget>[
-//                    Icon(Icons.check_box, color: iconColor),
-//                    Text(' - '+user, style: TextStyle(color: iconColor, fontSize: 23)),
-//
-//                  ],
-//                ),
-//                Row(
-//                  children: <Widget>[
-//                    SizedBox(width: 20,),
-//                    Text(quantity+' '+item, style: style),
-//                  ],
-//                ),
-//                Row(
-//                  children: <Widget>[
-//                    SizedBox(width: 20,),
-//                    Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-//                  ],
-//                ),
-//                SizedBox(height: 4,)
-//              ],
-//            ),
-//            Container(
-//                child: Row(
-//                  mainAxisAlignment: MainAxisAlignment.end,
-//                  children: <Widget>[
-//                    FlatButton(
-//                      onPressed: (){
-//                        showDialog(
-//                            context: context,
-//                            child: Dialog(
-//                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-//                              backgroundColor: Theme.of(context).colorScheme.onBackground,
-//                              child: Container(
-//                                padding: EdgeInsets.all(8),
-//                                child: Column(
-//                                  crossAxisAlignment: CrossAxisAlignment.center,
-//                                  mainAxisSize: MainAxisSize.min,
-//                                  children: <Widget>[
-//                                    Text('Megvetted a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-//                                    SizedBox(height: 15,),
-//                                    Row(
-//                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                      children: <Widget>[
-//                                        RaisedButton(
-//                                            color: Theme.of(context).colorScheme.secondary,
-//                                            onPressed: (){
-//                                              Navigator.pop(context);
-//                                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
-//                                                  type: ExpenseType.fromShopping, shoppingData: widget.data,
-//                                                )));
-//                                            },
-//                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
-//                                        ),
-//                                        RaisedButton(
-//                                            color: Theme.of(context).colorScheme.secondary,
-//                                            onPressed: (){ Navigator.pop(context); },
-//                                            child: Text('Nem', style: Theme.of(context).textTheme.button)
-//                                        )
-//                                      ],
-//                                    )
-//                                  ],
-//                                ),
-//                              ),
-//                            )
-//                        );
-//                      },
-//                      child: Icon(Icons.check, color: iconColor),
-//                    ),
-//
-//                  ],
-//                )
-//            )
-//          ],
-//        ),
-//      );
     }
     return Container(
       decoration: boxDecoration,
@@ -354,7 +282,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Ezt szeretném')),
+      appBar: AppBar(title: Text('Új listaelem felvétele')),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -372,24 +300,26 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                     Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Mit szeretnél?', style: Theme.of(context).textTheme.button,)
+                        child: Text('Tétel', style: Theme.of(context).textTheme.button,)
                     ),
                     TextField(
                       controller: itemController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
+                      decoration: InputDecoration(hintText: 'Amit szeretnél'),
                     ),
                     SizedBox(height: 20,),
                     Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Mennyit szeretnél?', style: Theme.of(context).textTheme.button,)
+                        child: Text('Darabszám', style: Theme.of(context).textTheme.button,)
                     ),
                     TextField(
                       controller: quantityController,
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
+                      decoration: InputDecoration(hintText: 'Amennyit szeretnél'),
                     ),
                     SizedBox(height: 20,),
                     Center(
