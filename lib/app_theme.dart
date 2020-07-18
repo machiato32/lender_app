@@ -62,10 +62,10 @@ class AppTheme{
       primary: Colors.green[700],
       secondary: Colors.green[700],
       onPrimary: Colors.black, //history icon
-      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onSecondary: Colors.white,
       onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[500], //box shadow
+      onSurface: Colors.grey[700],
     ),
     cardTheme: CardTheme(
       color: Color.fromARGB(255, 25, 25, 25),
@@ -91,7 +91,7 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Color.fromARGB(255, 25, 25, 25),
+          color: Colors.white,
       ),
     ),
   );
@@ -101,12 +101,12 @@ class AppTheme{
 //    ),
     brightness: Brightness.light,
     primaryColor: Colors.amber[700],
-    accentColor: Colors.amber[400],
+    accentColor: Colors.amber[500],
     scaffoldBackgroundColor: Colors.grey[200],
     canvasColor: Colors.grey[200],
     colorScheme: ColorScheme.light(
         primary: Colors.amber[700],
-        secondary: Colors.amber[400],
+        secondary: Colors.amber[500],
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onBackground: Colors.white,
@@ -126,7 +126,7 @@ class AppTheme{
       body1: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.amber[400],
+        color: Colors.amber[500],
       ),
       button: TextStyle(
           fontSize: 20,
@@ -161,7 +161,7 @@ class AppTheme{
         onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
         onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
         surface: Colors.grey[400], //history date
-        onSurface: Colors.grey[500], //box shadow
+        onSurface: Colors.grey[700],
     ),
     cardTheme: CardTheme(
       color: Color.fromARGB(255, 25, 25, 25),
@@ -207,10 +207,10 @@ class AppTheme{
       secondary: Colors.pink[300],
       background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
-      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onSecondary: Colors.white,
       onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[500], //box shadow
+      onSurface: Colors.grey[700], //box shadow
     ),
     cardTheme: CardTheme(
       shape:RoundedRectangleBorder(
@@ -235,8 +235,9 @@ class AppTheme{
         color: Colors.pink[300],
       ),
       button: TextStyle(
-          fontSize: 20,
-          color: Color.fromARGB(255, 25, 25, 25),
+        fontSize: 20,
+//          color: Color.fromARGB(255, 25, 25, 25),
+        color: Colors.white
       ),
     ),
   );
@@ -297,10 +298,10 @@ class AppTheme{
       secondary: Colors.blue[800],
       background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
-      onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
+      onSecondary: Colors.white,
       onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
-      onSurface: Colors.grey[500], //box shadowox shadow
+      onSurface: Colors.grey[700],
     ),
     cardTheme: CardTheme(
       color: Color.fromARGB(255, 25, 25, 25),
@@ -328,7 +329,7 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Color.fromARGB(255, 25, 25, 25)
+          color: Colors.white,
       ),
     ),
   );

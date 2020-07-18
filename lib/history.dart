@@ -153,7 +153,7 @@ class _HistoryEntryState extends State<HistoryEntry> {
   @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date);
-    note = (widget.data.note=='')?'(nincs megjegyzés)':widget.data.note;
+    note = (widget.data.note=='')?'(Nincs megjegyzés)':widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     if(widget.data.type=='add_expense'){
       type=0;
       icon=Icon(Icons.shopping_cart, color: Theme.of(context).textTheme.button.color);
@@ -226,26 +226,27 @@ class _HistoryEntryState extends State<HistoryEntry> {
                       Row(
                         children: <Widget>[
                           icon,
-                          Flexible(child: Text(' - '+names, style: style, overflow: TextOverflow.ellipsis,)),
+                          Flexible(child: Text('  '+note, style: style,overflow: TextOverflow.ellipsis,),),
                           Text(': '+amount, style: style,)
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 20,),
-                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                        ],
-                      ),
+
                       Row(
                         mainAxisSize: MainAxisSize.max,
 
                         children: <Widget>[
-                          SizedBox(width: 20,),
+                          SizedBox(width: 33,),
                           Flexible(
-                            child: Text(note, style: TextStyle(color: dateColor, fontSize: 15),overflow: TextOverflow.ellipsis,),
+                            child: Text(names, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,),
                             flex: 1,
                           ),
 
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 33,),
+                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
                         ],
                       ),
                       SizedBox(height: 4,)

@@ -150,7 +150,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   Widget build(BuildContext context) {
     item = widget.data.item;
     user = widget.data.user;
-    quantity = widget.data.quantity;
+    quantity = widget.data.quantity[0].toUpperCase()+widget.data.quantity.substring(1);
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date);
     if(widget.data.user==currentUser){
       style=Theme.of(context).textTheme.button;
@@ -190,22 +190,22 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                       Row(
                         children: <Widget>[
                           icon,
-                          Flexible(child: Text(' - '+user, style: style, overflow: TextOverflow.ellipsis)),
-
+                          Flexible(child: Text('  '+quantity+' '+item, style: style, overflow: TextOverflow.ellipsis)),
                         ],
                       ),
                       Row(
                         children: <Widget>[
-                          SizedBox(width: 20,),
+                          SizedBox(width: 33,),
+                          Flexible(child: Text(user, style: style.copyWith(fontSize: 15), overflow: TextOverflow.ellipsis)),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 33,),
                           Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 20,),
-                          Flexible(child: Text(quantity+' '+item, style: style.copyWith(fontSize: 15), overflow: TextOverflow.ellipsis)),
-                        ],
-                      ),
+
 
                       SizedBox(height: 4,)
                     ],
@@ -334,7 +334,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                           String quantity = quantityController.text;
                           String item = itemController.text;
                           if(quantity!='' && item!=''){
-                            Future<bool> success = _postNewShopping(quantity, item);
+                            Future<bool> success = _postNewShopping(item, quantity);
                             showDialog(
                               barrierDismissible: false,
                               context: context,
