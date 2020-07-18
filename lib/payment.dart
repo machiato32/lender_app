@@ -137,74 +137,76 @@ class _PaymentState extends State<Payment> {
                           icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
-                            success=null;
                             int amount = int.parse(amountController.text);
                             String note = noteController.text;
-                            if(await postPayment(amount, note, dropdownValue)){
-                              Widget toast = Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  color: Colors.green,
+                            Future<bool> success = postPayment(amount, note, dropdownValue);
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              child: Dialog(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                child: FutureBuilder(
+                                  future: success,
+                                  builder: (context, snapshot){
+                                    if(snapshot.hasData){
+                                      if(snapshot.data){
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                            SizedBox(height: 15,),
+                                            FlatButton.icon(
+                                              icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                              onPressed: (){
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              },
+                                              label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                              color: Theme.of(context).colorScheme.secondary,
+                                            )
+                                          ],
+                                        );
+//                                          FlutterToast ft = FlutterToast(context);
+//                                          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+//                                          return Center();
+                                      }else{
+                                        return Container(
+                                          color: Colors.transparent ,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                              SizedBox(height: 15,),
+                                              FlatButton.icon(
+                                                icon: Icon(Icons.clear, color: Colors.white,),
+                                                onPressed: (){
+                                                  Navigator.pop(context);
+                                                },
+                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                color: Colors.red,
+                                              )
+                                            ],
+                                          ),
+                                        );
+//                                          FlutterToast ft = FlutterToast(context);
+//                                          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+//                                          Navigator.pop(context);
+//                                          return Center();
+                                      }
+                                    }else{
+                                      return Center(child: CircularProgressIndicator());
+                                    }
+                                  },
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.check, color: Colors.white,),
-                                    SizedBox(
-                                      width: 12.0,
-                                    ),
-                                    Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
-                                  ],
-                                ),
-                              );
-                              FlutterToast ft = FlutterToast(context);
-                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-                            }else{
-                              Widget toast = Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  color: Colors.red,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.clear),
-                                    SizedBox(
-                                      width: 12.0,
-                                    ),
-                                    Text("A tranzakció könyvelése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white)),
-                                  ],
-                                ),
-                              );
-                              FlutterToast ft = FlutterToast(context);
-                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-                            }
+                              )
+                            );
 
                           },
                         ),
                       ),
-                      Center(
-                        child: FutureBuilder(
-                            future: success,
-                            builder: (context, snapshot){
-                              if(snapshot.hasData){
-                                waiting=false;
-                                if(snapshot.data){
-                                  return Icon(Icons.check, color: Colors.green, size: 30,);
-                                }else{
-                                  return Icon(Icons.clear, color: Colors.red, size: 30,);
-                                }
-                              }
-                              if(waiting){
-                                return CircularProgressIndicator();
-                              }
-                              return SizedBox();
-                            }
 
-                        ),
-                      ),
                     ],
                   ),
                 ),
