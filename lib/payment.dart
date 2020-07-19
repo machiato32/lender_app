@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'main.dart';
 import 'balances.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 class Payment extends StatefulWidget {
   @override
@@ -24,7 +25,8 @@ class _PaymentState extends State<Payment> {
 
     List<String> list = response2['names'].cast<String>();
     list.remove(currentUser);
-    dropdownValue=list[0];
+//    list.insert(0, 'Válaszd ki a személyt!');
+//    dropdownValue=list[0];
     return list;
 
   }
@@ -73,18 +75,67 @@ class _PaymentState extends State<Payment> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                          child: Text('Akinek fizettél', style: Theme.of(context).textTheme.button)
+
+                      Row(
+                        children: <Widget>[
+                          Text('Összeg', style: Theme.of(context).textTheme.body2,),
+                          SizedBox(width: 20,),
+                          Flexible(
+                            child: TextField(
+                              controller: amountController,
+                              decoration: InputDecoration(
+                                hintText: 'Ft',
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                  //  when the TextFormField in unfocused
+                                ) ,
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                ) ,
+
+                              ),
+                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                              keyboardType: TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ -\\,]'))],
+                            ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
+                      SizedBox(height: 20,),
+                      Row(
+                        children: <Widget>[
+                          Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
+                          SizedBox(width: 20,),
+                          Flexible(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Mamut',
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                  //  when the TextFormField in unfocused
+                                ) ,
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                ) ,
+
+                              ),
+                              controller: noteController,
+                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20,),
+                      Divider(),
+                      Center(
                         child: FutureBuilder(
                           future: names,
                           builder: (context, snapshot) {
                             if(snapshot.hasData){
                               return DropdownButton(
+                                hint: Text('Válaszd ki a személyt!', style: Theme.of(context).textTheme.body2,),
                                 value: dropdownValue,
                                 onChanged: (String newValue) {
                                   setState(() {
@@ -106,29 +157,6 @@ class _PaymentState extends State<Payment> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10,),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Összeg', style: Theme.of(context).textTheme.button,)
-                      ),
-                      TextField(
-                        controller: amountController,
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      SizedBox(height: 20,),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Megjegyzés', style: Theme.of(context).textTheme.button)
-                      ),
-                      TextField(
-                        controller: noteController,
-                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                      ),
                       SizedBox(height: 30,),
                       Center(
                         child: RaisedButton.icon(
@@ -137,6 +165,29 @@ class _PaymentState extends State<Payment> {
                           icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
+                            //TODO: catch exceptions
+                            if(dropdownValue==null){
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.red,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.clear, color: Colors.white,),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                              return;
+                            }
                             int amount = int.parse(amountController.text);
                             String note = noteController.text;
                             Future<bool> success = postPayment(amount, note, dropdownValue);

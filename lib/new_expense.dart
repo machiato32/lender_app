@@ -5,6 +5,7 @@ import 'main.dart';
 import 'balances.dart';
 import 'shopping.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 class SavedExpense{
   String name, note;
@@ -128,35 +129,70 @@ class _NewExpenseState extends State<NewExpense> {
                   children: <Widget>[
                     SizedBox(height: 10,),
                     Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Amennyit fizettél', style: Theme.of(context).textTheme.button,)
-                    ),
-                    TextField(
-                      decoration: InputDecoration(hintText: 'A teljes végösszeg'),
-                      controller: amountController,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Text('Végösszeg', style: Theme.of(context).textTheme.body2,),
+                              SizedBox(width: 20,),
+                              Flexible(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Ft',
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                      //  when the TextFormField in unfocused
+                                    ) ,
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                    ) ,
+
+                                  ),
+                                  controller: amountController,
+                                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                                  cursorColor: Theme.of(context).colorScheme.secondary,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ -\\,]'))],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20,),
+//                    Container(
+//                      padding: EdgeInsets.all(5),
+//                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
+//                      child: Text('Megjegyzés', style: Theme.of(context).textTheme.button,)
+//                    ),
+                          Row(
+                            children: <Widget>[
+                              Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
+                              SizedBox(width: 15,),
+                              Flexible(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Dolgok',
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                      //  when the TextFormField in unfocused
+                                    ) ,
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                    ) ,
+
+                                  ),
+                                  controller: noteController,
+                                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                                  cursorColor: Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20,),
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Megjegyzés', style: Theme.of(context).textTheme.button,)
-                    ),
-                    TextField(
-                      decoration: InputDecoration(hintText: 'Tárgyrag nélkül'),
-                      controller: noteController,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                    SizedBox(height: 20,),
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                      child: Text('Akinek vetted', style: Theme.of(context).textTheme.button,)
-                    ),
+                    Divider(),
                     Center(
                       child: FutureBuilder(
                         future: names,
@@ -174,7 +210,7 @@ class _NewExpenseState extends State<NewExpense> {
                               checkboxBool[widget.shoppingData.user]=true;
                             }
                             return ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: 300),
+                              constraints: BoxConstraints(maxHeight: 310),
                               child: ListView(
                                 shrinkWrap: true,
                                 children: snapshot.data.map<CheckboxListTile>((String name)=>
@@ -197,19 +233,34 @@ class _NewExpenseState extends State<NewExpense> {
                         },
                       ),
                     ),
-                    RaisedButton.icon(
-                      color: Theme.of(context).colorScheme.secondary,
-                      label: Text('Inverz kijelölés', style: Theme.of(context).textTheme.button),
-                      icon: Icon(Icons.check_box, color: Theme.of(context).colorScheme.onSecondary),
-                      onPressed: (){
-                        FocusScope.of(context).unfocus();
-                        for(String name in checkboxBool.keys){
-                          checkboxBool[name]=!checkboxBool[name];
-                        }
-                        setState(() {
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        RaisedButton.icon(
+                          color: Theme.of(context).colorScheme.secondary,
+                          label: Text('Inverz kijelölés', style: Theme.of(context).textTheme.button),
+                          icon: Icon(Icons.check_box, color: Theme.of(context).colorScheme.onSecondary),
+                          onPressed: (){
+                            FocusScope.of(context).unfocus();
+                            for(String name in checkboxBool.keys){
+                              checkboxBool[name]=!checkboxBool[name];
+                            }
+                            setState(() {
 
-                        });
-                      },
+                            });
+                          },
+                        ),
+                        Flexible(
+                          child: Text(
+                            amountController.text!='' && checkboxBool.values.where((element)=>element==true).toList().length>0?
+                            (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+' Ft/fő':
+                            '',
+                            style: Theme.of(context).textTheme.body1,
+
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20,),
                     Center(
@@ -218,8 +269,10 @@ class _NewExpenseState extends State<NewExpense> {
                         label: Text('Mehet', style: Theme.of(context).textTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                         onPressed: () async {
+                          //TODO: catch exceptions with
                           FocusScope.of(context).unfocus();
-                          int amount = int.parse(amountController.text);
+                          //TODO: round will not be needed
+                          int amount = double.parse(amountController.text).round();
                           if(amount<0) return;
                           String note = noteController.text;
                           List<String> names = new List<String>();

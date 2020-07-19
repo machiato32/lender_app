@@ -65,7 +65,7 @@ class _ChangePinState extends State<ChangePin> {
                 decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
                 child: Text('Mi legyen az új pined?', style: Theme.of(context).textTheme.button,)
             ),
-            TextField(
+            TextField(//TODO: add inputformatters
               controller: newPin,
               obscureText: true,
               keyboardType: TextInputType.number,

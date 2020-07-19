@@ -297,29 +297,45 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 10,),
-                    Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Tétel', style: Theme.of(context).textTheme.button,)
-                    ),
-                    TextField(
-                      controller: itemController,
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                      decoration: InputDecoration(hintText: 'Amit szeretnél'),
+//                    Container(
+//                        padding: EdgeInsets.all(5),
+//                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
+//                        child: Text('Tétel', style: Theme.of(context).textTheme.button,)
+//                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('Tétel', style: Theme.of(context).textTheme.body2,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            controller: itemController,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            decoration: InputDecoration(hintText: 'Büdös zokni'),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20,),
-                    Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                        child: Text('Darabszám', style: Theme.of(context).textTheme.button,)
-                    ),
-                    TextField(
-                      controller: quantityController,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                      decoration: InputDecoration(hintText: 'Amennyit szeretnél'),
+//                    Container(
+//                        padding: EdgeInsets.all(5),
+//                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
+//                        child: Text('', style: Theme.of(context).textTheme.button,)
+//                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('Mennyiség', style: Theme.of(context).textTheme.body2,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            controller: quantityController,
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            decoration: InputDecoration(hintText: '2 kiló'),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20,),
                     Center(
@@ -400,6 +416,27 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                             if(widget.data!=null){
                               _deleteShopping(widget.data.shoppingId);
                             }
+                          }else{
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.clear, color: Colors.white,),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Flexible(child: Text("Nem töltötted ki az egyik mezőt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            return;
                           }
                         },
                       ),
