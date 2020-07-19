@@ -178,7 +178,7 @@ class _HistoryRouteState extends State<HistoryRoute> {
                                                                     return Column(
                                                                       mainAxisSize: MainAxisSize.min,
                                                                       children: [
-                                                                        Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                        Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                                                         SizedBox(height: 15,),
                                                                         FlatButton.icon(
                                                                           icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
