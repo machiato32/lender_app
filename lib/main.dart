@@ -8,6 +8,7 @@ import 'balances.dart';
 import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
 import 'shopping.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,11 +48,11 @@ class _CsocsortAppState extends State<CsocsortApp>{
         return MaterialApp(
           title: 'Csocsort',
           theme: appState.theme,
-//          home: MainPage(
-//            title: 'Csocsort Main Page',
-//          ),
-          onGenerateRoute: Router.generateRoute,
-          initialRoute: '/',
+          home: MainPage(
+            title: 'Csocsort Main Page',
+          ),
+//          onGenerateRoute: Router.generateRoute,
+//          initialRoute: '/',
         );
 
       },
@@ -118,6 +119,17 @@ class _MainPageState extends State<MainPage> {
             ),
             ListTile(
               leading: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              title: Text(
+                'Szia '+currentUser+'!',
+                style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
                 Icons.settings,
                 color: Theme.of(context).textTheme.body2.color,
               ),
@@ -130,7 +142,6 @@ class _MainPageState extends State<MainPage> {
                     MaterialPageRoute(builder: (context) => Settings()));
               },
             ),
-            Divider(),
             ListTile(
               leading: Icon(
                 Icons.wb_sunny,
@@ -162,6 +173,36 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
       ),
+      floatingActionButton: SpeedDial(
+        child: Icon(Icons.add),
+        overlayColor: (Theme.of(context).brightness==Brightness.dark)?Colors.black:Colors.white,
+//        animatedIcon: AnimatedIcons.menu_close,
+        curve: Curves.bounceIn,
+
+        children: [
+          SpeedDialChild(
+            label: 'Bevásárlás',
+            child: Icon(Icons.shopping_basket),
+            onTap: (){
+              if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));
+            }
+          ),
+          SpeedDialChild(
+            label: 'Fizetés',
+            child: Icon(Icons.attach_money),
+            onTap: (){
+              if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));
+            }
+          ),
+          SpeedDialChild(
+            label: 'Bevásárlólista',
+            child: Icon(Icons.add_shopping_cart),
+            onTap: (){
+              if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));
+            }
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: (){
           return getPrefs().then((_money) {
@@ -174,48 +215,47 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           children: <Widget>[
 
-            Card(
-
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Align(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(Icons.account_circle, color: Theme.of(context).textTheme.body1.color,),
-                          SizedBox(width: 5,),
-                          Text('Szia $currentUser!'),
-                        ],
-                      ),
-                      alignment: Alignment.topRight),
-                    Text('Mi újság?', style: Theme.of(context).textTheme.title),
-                    SizedBox(height: 10,),
-                    RaisedButton.icon(
-                      color: Theme.of(context).colorScheme.secondary,
-                      icon: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
-                      label: Text('Vettem valamit', style: Theme.of(context).textTheme.button),
-
-                      onPressed: () {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
-                    ),
-                    RaisedButton.icon(
-                      color: Theme.of(context).colorScheme.secondary,
-                      icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.onSecondary),
-                      label: Text('Fizettem valakinek', style: Theme.of(context).textTheme.button),
-                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
-                    ),
-                    RaisedButton.icon(
-                      color: Theme.of(context).colorScheme.secondary,
-                      icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
-                      label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
-                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));},
-                    ),
-                  ],
-                ),
-              ),
-            ),
+//            Card(
+//              child: Padding(
+//                padding: const EdgeInsets.all(15),
+//                child: Column(
+//                  crossAxisAlignment: CrossAxisAlignment.center,
+//                  children: <Widget>[
+//                    Align(
+//                      child: Row(
+//                        mainAxisAlignment: MainAxisAlignment.end,
+//                        children: <Widget>[
+//                          Icon(Icons.account_circle, color: Theme.of(context).textTheme.body1.color,),
+//                          SizedBox(width: 5,),
+//                          Text('Szia $currentUser!'),
+//                        ],
+//                      ),
+//                      alignment: Alignment.topRight),
+//                    Text('Mi újság?', style: Theme.of(context).textTheme.title),
+//                    SizedBox(height: 10,),
+//                    RaisedButton.icon(
+//                      color: Theme.of(context).colorScheme.secondary,
+//                      icon: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
+//                      label: Text('Vettem valamit', style: Theme.of(context).textTheme.button),
+//
+//                      onPressed: () {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
+//                    ),
+//                    RaisedButton.icon(
+//                      color: Theme.of(context).colorScheme.secondary,
+//                      icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.onSecondary),
+//                      label: Text('Fizettem valakinek', style: Theme.of(context).textTheme.button),
+//                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
+//                    ),
+//                    RaisedButton.icon(
+//                      color: Theme.of(context).colorScheme.secondary,
+//                      icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
+//                      label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
+//                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));},
+//                    ),
+//                  ],
+//                ),
+//              ),
+//            ),
             Balances(),
             ShoppingList(),
             History()

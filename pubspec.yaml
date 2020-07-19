@@ -24,6 +24,7 @@ dependencies:
   intl: 0.16.1
   fluttertoast: ^6.0.1
   provider: 4.0.2
+  flutter_speed_dial: ^1.2.5
   flutter:
     sdk: flutter
 
