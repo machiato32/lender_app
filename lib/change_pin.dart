@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 class ChangePin extends StatefulWidget {
   @override
@@ -10,9 +11,9 @@ class ChangePin extends StatefulWidget {
 }
 
 class _ChangePinState extends State<ChangePin> {
-  TextEditingController oldPin = TextEditingController();
-  TextEditingController newPin = TextEditingController();
-  TextEditingController confirmPin = TextEditingController();
+  TextEditingController oldPinController = TextEditingController();
+  TextEditingController newPinController = TextEditingController();
+  TextEditingController confirmPinController = TextEditingController();
 
   Future<bool> success;
   bool waiting=false;
@@ -47,43 +48,98 @@ class _ChangePinState extends State<ChangePin> {
           children: <Widget>[
             Center(child: Text('Pin megváltoztatása', style: Theme.of(context).textTheme.title,)),
             SizedBox(height: 10,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Mi a mostani pined?', style: Theme.of(context).textTheme.button,)
-            ),
-            TextField(
-              controller: oldPin,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 20),
-              cursorColor: Theme.of(context).colorScheme.secondary,
+//            Container(
+//                padding: EdgeInsets.all(5),
+//                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
+//                child: Text('Mi a mostani pined?', style: Theme.of(context).textTheme.button,)
+//            ),
+            Row(
+              children: <Widget>[
+                Text('Jelenlegi PIN kód', style: Theme.of(context).textTheme.body2,),
+                SizedBox(width: 15,),
+                Flexible(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: '1234',
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                        //  when the TextFormField in unfocused
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+
+                    ),
+                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    controller: oldPinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Mi legyen az új pined?', style: Theme.of(context).textTheme.button,)
+            Row(
+              children: <Widget>[
+                Text('Új PIN kód', style: Theme.of(context).textTheme.body2,),
+                SizedBox(width: 15,),
+                Flexible(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: '5678',
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                        //  when the TextFormField in unfocused
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+
+                    ),
+                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    controller: newPinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
             ),
-            TextField(//TODO: add inputformatters
-              controller: newPin,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 20),
-              cursorColor: Theme.of(context).colorScheme.secondary,
-            ),
+//            Container(
+//                padding: EdgeInsets.all(5),
+//                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
+//                child: Text('Mi legyen az új pined?', style: Theme.of(context).textTheme.button,)
+//            ),
             SizedBox(height: 20,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Még egyszer', style: Theme.of(context).textTheme.button,)
-            ),
-            TextField(
-              controller: confirmPin,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 20),
-              cursorColor: Theme.of(context).colorScheme.secondary,
+            Row(
+              children: <Widget>[
+                Text('Új PIN kód megerősítése', style: Theme.of(context).textTheme.body2,),
+                SizedBox(width: 15,),
+                Flexible(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: '5678',
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                        //  when the TextFormField in unfocused
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+
+                    ),
+                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    controller: confirmPinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 30,),
             Center(
@@ -93,8 +149,8 @@ class _ChangePinState extends State<ChangePin> {
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                 onPressed: () async {
                   FocusScope.of(context).unfocus();
-                  if(confirmPin.text==newPin.text){
-                    Future<bool> success = postNewPin(int.parse(oldPin.text), int.parse(newPin.text));
+                  if(confirmPinController.text==newPinController.text){
+                    Future<bool> success = postNewPin(int.parse(oldPinController.text), int.parse(newPinController.text));
                     showDialog(
                         barrierDismissible: false,
                         context: context,

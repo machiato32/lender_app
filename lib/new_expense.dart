@@ -153,17 +153,12 @@ class _NewExpenseState extends State<NewExpense> {
                                   style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                                   cursorColor: Theme.of(context).colorScheme.secondary,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                  inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ -\\,]'))],
+                                  inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,=]'))],
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(height: 20,),
-//                    Container(
-//                      padding: EdgeInsets.all(5),
-//                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-//                      child: Text('Megjegyzés', style: Theme.of(context).textTheme.button,)
-//                    ),
                           Row(
                             children: <Widget>[
                               Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
@@ -174,7 +169,6 @@ class _NewExpenseState extends State<NewExpense> {
                                     hintText: 'Dolgok',
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                                      //  when the TextFormField in unfocused
                                     ) ,
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
@@ -209,24 +203,26 @@ class _NewExpenseState extends State<NewExpense> {
                             }else if(widget.type==ExpenseType.fromShopping){
                               checkboxBool[widget.shoppingData.user]=true;
                             }
-                            return ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: 310),
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: snapshot.data.map<CheckboxListTile>((String name)=>
-                                    CheckboxListTile(
-                                      activeColor: Theme.of(context).primaryColor,
-                                      title: Text(name, style: Theme.of(context).textTheme.body2,),
-                                      value: checkboxBool[name],
-                                      onChanged: (bool newValue){
-                                        FocusScope.of(context).unfocus();
-                                        setState(() {
-                                          checkboxBool[name]=newValue;
-                                        });
-                                      },
-                                    ),
-                                ).toList(),
-                              ),
+                            return Wrap(
+                              spacing: 10,
+                              children: snapshot.data.map<ChoiceChip>((String name)=>
+                                  ChoiceChip(
+                                    label: Text(name),
+                                    pressElevation: 30,
+                                    selected: checkboxBool[name],
+                                    onSelected: (bool newValue){
+                                      FocusScope.of(context).unfocus();
+                                      setState(() {
+                                        checkboxBool[name]=newValue;
+                                      });
+                                    },
+                                    labelStyle: checkboxBool[name]
+                                        ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
+                                        :Theme.of(context).textTheme.body2,
+                                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                                    selectedColor: Theme.of(context).colorScheme.secondary,
+                                  )
+                              ).toList(),
                             );
                           }
                           return CircularProgressIndicator();
@@ -237,28 +233,101 @@ class _NewExpenseState extends State<NewExpense> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        RaisedButton.icon(
-                          color: Theme.of(context).colorScheme.secondary,
-                          label: Text('Inverz kijelölés', style: Theme.of(context).textTheme.button),
-                          icon: Icon(Icons.check_box, color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: (){
-                            FocusScope.of(context).unfocus();
-                            for(String name in checkboxBool.keys){
-                              checkboxBool[name]=!checkboxBool[name];
-                            }
-                            setState(() {
+                        Material(
+                            type: MaterialType.transparency, //Makes it usable on any background color, thanks @IanSmith
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Theme.of(context).colorScheme.onSurface),
+                                shape: BoxShape.circle,
+                              ),
+                              child: InkWell(
+                                //This keeps the splash effect within the circle
+                                borderRadius: BorderRadius.circular(1000.0), //Something large to ensure a circle
+                                onTap: (){
+                                  FocusScope.of(context).unfocus();
+                                  for(String name in checkboxBool.keys){
+                                    checkboxBool[name]=!checkboxBool[name];
+                                  }
+                                  setState(() {
 
-                            });
-                          },
+                                  });
+                                },
+                                child: Padding(
+                                  padding:EdgeInsets.all(10.0),
+                                  child: Icon(
+                                      Icons.swap_horiz, color: Theme.of(context).colorScheme.secondary
+                                  ),
+                                ),
+                              ),
+                            )
                         ),
-                        Flexible(
-                          child: Text(
-                            amountController.text!='' && checkboxBool.values.where((element)=>element==true).toList().length>0?
-                            (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+' Ft/fő':
-                            '',
-                            style: Theme.of(context).textTheme.body1,
+//                            OutlineButton.icon(
+//                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+//                              shape: RoundedRectangleBorder(
+//                                borderRadius: BorderRadius.circular(30)
+//                              ),
+//                              label: Text('Inverz kijelölés', style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).colorScheme.secondary)),
+//                              icon: Icon(Icons.check_box, color: Theme.of(context).colorScheme.secondary),
+//                              onPressed: (){
+//                                FocusScope.of(context).unfocus();
+//                                for(String name in checkboxBool.keys){
+//                                  checkboxBool[name]=!checkboxBool[name];
+//                                }
+//                                setState(() {
+//
+//                                });
+//                              },
+//                            ),
 
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: (){
+                              setState(() {
+
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                amountController.text!='' && checkboxBool.values.where((element)=>element==true).toList().length>0?
+                                (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+' Ft/fő':
+                                '',
+                                style: Theme.of(context).textTheme.body1,
+
+                              ),
+                            ),
                           ),
+                        ),
+                        Material(
+                            type: MaterialType.transparency, //Makes it usable on any background color, thanks @IanSmith
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Theme.of(context).colorScheme.onSurface),
+                                shape: BoxShape.circle,
+                              ),
+                              child: InkWell(
+                                //This keeps the splash effect within the circle
+                                borderRadius: BorderRadius.circular(1000.0), //Something large to ensure a circle
+                                onTap: (){
+                                  FocusScope.of(context).unfocus();
+                                  for(String name in checkboxBool.keys){
+                                    checkboxBool[name]=false;
+                                  }
+                                  setState(() {
+
+                                  });
+                                },
+                                child: Padding(
+                                  padding:EdgeInsets.all(10.0),
+                                  child: Icon(
+                                      Icons.clear, color: Colors.red
+                                  ),
+                                ),
+                              ),
+                            )
                         ),
                       ],
                     ),
@@ -272,8 +341,76 @@ class _NewExpenseState extends State<NewExpense> {
                           //TODO: catch exceptions with
                           FocusScope.of(context).unfocus();
                           //TODO: round will not be needed
+
+                          if(amountController.text==''){
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.clear, color: Colors.white,),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            return;
+                          }
+                          if(!checkboxBool.containsValue(true)){
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.clear, color: Colors.white,),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            return;
+                          }
+
                           int amount = double.parse(amountController.text).round();
-                          if(amount<0) return;
+                          if(amount<0){
+
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.clear, color: Colors.white,),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                            return;
+                          }
                           String note = noteController.text;
                           List<String> names = new List<String>();
                           checkboxBool.forEach((String key, bool value) {

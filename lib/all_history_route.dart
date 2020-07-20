@@ -52,20 +52,24 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Előzmények'),),
-      body: Card(
-        child: FutureBuilder(
-          future: history,
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              return ListView(
-                controller: _scrollController,
-                shrinkWrap: true,
-                children: _generateHistory(snapshot.data)
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
+      body: ListView(
+        controller: _scrollController,
+        shrinkWrap: true,
+        children: <Widget>[
+          Card(
+            child: FutureBuilder(
+              future: history,
+              builder: (context, snapshot){
+                if(snapshot.hasData){
+                  return Column(
+                      children: _generateHistory(snapshot.data)
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+        ],
       ),
       //TODO:hide on top
       floatingActionButton: FloatingActionButton(

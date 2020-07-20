@@ -40,15 +40,19 @@ class _ShoppingListState extends State<ShoppingList> {
   Future<List<ShoppingData>> shoppingList;
 
   Future<List<ShoppingData>> _getShoppingList() async{
+    try{
+      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/list/');
 
-    http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/list/');
+      List<dynamic> decoded = jsonDecode(response.body);
 
-    List<dynamic> decoded = jsonDecode(response.body);
-
-    List<ShoppingData> shopping = new List<ShoppingData>();
-    decoded.forEach((element){shopping.add(ShoppingData.fromJson(element));});
-    shopping = shopping.reversed.toList();
-    return shopping;
+      List<ShoppingData> shopping = new List<ShoppingData>();
+      decoded.forEach((element){shopping.add(ShoppingData.fromJson(element));});
+      shopping = shopping.reversed.toList();
+      return shopping;
+    }catch(ex){
+      return [ShoppingData(date: DateTime.now(), fulfilled: false, fulfilledUser: 'asd', item: 'asd', quantity: 'asd', shoppingId: 12, user: 'asd')];
+    }
+    //TODO:lol
   }
 
   void callback(){

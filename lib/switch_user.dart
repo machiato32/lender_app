@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class SwitchUser extends StatefulWidget {
@@ -12,10 +13,8 @@ class SwitchUser extends StatefulWidget {
 
 class _SwitchUserState extends State<SwitchUser> {
   Future<List<String>> names;
-  Future<bool> success;
-  bool waiting=false;
 
-  String dropdownValue='';
+  String dropdownValue;
   TextEditingController pinController = TextEditingController();
 
   Future<List<String>> getNames() async {
@@ -24,13 +23,12 @@ class _SwitchUserState extends State<SwitchUser> {
 
     List<String> list = response2['names'].cast<String>();
     list.remove(currentUser);
-    dropdownValue=list[0];
+//    dropdownValue=list[0];
     return list;
 
   }
 
   Future<bool> postValidate(int pin, String name) async{
-    waiting=true;
     Map<String,dynamic> map = {
       'type':'validate',
       'name':name,
@@ -64,18 +62,13 @@ class _SwitchUserState extends State<SwitchUser> {
           children: <Widget>[
             Center(child: Text('Felhasználóváltás', style: Theme.of(context).textTheme.title,)),
             SizedBox(height: 10,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Mostantól ki szeretnél lenni?', style: Theme.of(context).textTheme.button,)
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+            Center(
               child: FutureBuilder(
                 future: names,
                 builder: (context, snapshot) {
                   if(snapshot.hasData){
                     return DropdownButton(
+                      hint: Text('Felhasználó', style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
                       value: dropdownValue,
                       onChanged: (String newValue) {
                         setState(() {
@@ -85,7 +78,7 @@ class _SwitchUserState extends State<SwitchUser> {
                       items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value, style: Theme.of(context).textTheme.body2),
+                          child: Text(value, style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
                         );
                       }).toList(),
 
@@ -98,17 +91,32 @@ class _SwitchUserState extends State<SwitchUser> {
               ),
             ),
             SizedBox(height: 20,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Mi a PIN kódod?', style: Theme.of(context).textTheme.button,)
-            ),
-            TextField(
-              controller: pinController,
-              keyboardType: TextInputType.number,
-              obscureText: true,
-              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-              cursorColor: Theme.of(context).colorScheme.secondary,
+            Row(
+              children: <Widget>[
+                Text('PIN kód', style: Theme.of(context).textTheme.body2,),
+                SizedBox(width: 15,),
+                Flexible(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: '1234',
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                        //  when the TextFormField in unfocused
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+
+                    ),
+                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    controller: pinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 30,),
              Center(
@@ -116,8 +124,30 @@ class _SwitchUserState extends State<SwitchUser> {
                 color: Theme.of(context).colorScheme.secondary,
                 label: Text('Küldés', style: Theme.of(context).textTheme.button),
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                onPressed: () async {
+                onPressed: () {
                   FocusScope.of(context).unfocus();
+                  if(pinController.text=='' || dropdownValue==null){
+                    Widget toast = Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        color: Colors.red,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.clear, color: Colors.white,),
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Flexible(child: Text("Nem töltötted ki a szükséges mezőket!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                        ],
+                      ),
+                    );
+                    FlutterToast ft = FlutterToast(context);
+                    ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                    return;
+                  }
                   int pin = int.parse(pinController.text);
                   Future<bool> success = postValidate(pin, dropdownValue);
                   showDialog(
@@ -181,31 +211,8 @@ class _SwitchUserState extends State<SwitchUser> {
                   );
 
                 },
-            ),
-             ),
-            Center(
-              child: FutureBuilder(
-                  future: success,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      waiting=false;
-                      if(snapshot.data){
-                        getPrefs().then((_prefs){
-                          currentUser=dropdownValue;
-                          _prefs.setString('name', dropdownValue);
-                        });
-                        return Icon(Icons.check, color: Colors.green, size: 30,);
-                      }else{
-                        return Icon(Icons.clear, color: Colors.red, size: 30,);
-                      }
-                    }
-                    if(waiting){
-                      return CircularProgressIndicator();
-                    }
-                    return SizedBox();
-                  }
               ),
-            )
+             ),
           ],
         ),
       ),

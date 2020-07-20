@@ -32,12 +32,6 @@ class _ColorPickerState extends State<ColorPicker> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(child: Text('Témaváltás', style: Theme.of(context).textTheme.title,)),
-            SizedBox(height: 10,),
-            Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-                child: Text('Milyen színű legyen?', style: Theme.of(context).textTheme.button,)
-            ),
             SizedBox(height: 10),
             Wrap(
               spacing: 10,
