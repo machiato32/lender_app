@@ -33,8 +33,9 @@ class _NewExpenseState extends State<NewExpense> {
   TextEditingController noteController = TextEditingController();
   Future<List<String>> names;
   Future<bool> success;
-  bool waiting=false;
   Map<String,bool> checkboxBool = Map<String,bool>();
+  FocusNode _focusNode = FocusNode();
+
 
   Future<List<String>> getNames() async {
     http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/names');
@@ -71,7 +72,6 @@ class _NewExpenseState extends State<NewExpense> {
 
   Future<bool> postNewExpense(List<String> names, int amount, String note) async{
     try{
-      waiting=true;
       Map<String, dynamic> map = {
         "type":"new_expense",
         "from_name":currentUser,
@@ -108,162 +108,18 @@ class _NewExpenseState extends State<NewExpense> {
       setInitialValues();
     }
     names = getNames();
+    
+    _focusNode.addListener((){
+      setState(() {
+
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Bevásárlás')),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.send),
-        onPressed: (){
-          FocusScope.of(context).unfocus();
-          //TODO: round will not be needed
 
-          if(amountController.text==''){
-            Widget toast = Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.red,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.clear, color: Colors.white,),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                ],
-              ),
-            );
-            FlutterToast ft = FlutterToast(context);
-            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-            return;
-          }
-          if(!checkboxBool.containsValue(true)){
-            Widget toast = Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.red,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.clear, color: Colors.white,),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                ],
-              ),
-            );
-            FlutterToast ft = FlutterToast(context);
-            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-            return;
-          }
-
-          int amount = double.parse(amountController.text).round();
-          if(amount<0){
-
-            Widget toast = Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.red,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.clear, color: Colors.white,),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                ],
-              ),
-            );
-            FlutterToast ft = FlutterToast(context);
-            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-            return;
-          }
-          String note = noteController.text;
-          List<String> names = new List<String>();
-          checkboxBool.forEach((String key, bool value) {
-            if(value) names.add(key);
-          });
-          Function f;
-          var param;
-          if(widget.type==ExpenseType.fromSavedExpense){
-            f=_deleteExpense;
-            param=widget.expense.iD;
-          }else if(widget.type==ExpenseType.fromShopping){
-            f=_fulfillShopping;
-            param=widget.shoppingData.shoppingId;
-          }else{
-            f=(par){return true;};
-            param=5;
-          }
-          f(param);
-          Future<bool> success = postNewExpense(names, amount, note);
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: Dialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                child: FutureBuilder(
-                  future: success,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      if(snapshot.data){
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                            SizedBox(height: 15,),
-                            FlatButton.icon(
-                              icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                              onPressed: (){
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                              color: Theme.of(context).colorScheme.secondary,
-                            )
-                          ],
-                        );
-                      }else{
-                        return Container(
-                          color: Colors.transparent ,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.clear, color: Colors.white,),
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
-                                color: Colors.red,
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    }else{
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
-              )
-          );
-        },
-      ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -287,6 +143,7 @@ class _NewExpenseState extends State<NewExpense> {
                             SizedBox(width: 20,),
                             Flexible(
                               child: TextField(
+                                focusNode: _focusNode,
                                 decoration: InputDecoration(
                                   hintText: 'Ft',
                                   enabledBorder: UnderlineInputBorder(
@@ -489,6 +346,172 @@ class _NewExpenseState extends State<NewExpense> {
 
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+      child: Icon(Icons.send),
+      onPressed: (){
+        FocusScope.of(context).unfocus();
+        //TODO: round will not be needed
+        //TODO:validator everywhere
+        if(amountController.text==''){
+          Widget toast = Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.red,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.clear, color: Colors.white,),
+                SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+              ],
+            ),
+          );
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          return;
+        }
+        if(!checkboxBool.containsValue(true)){
+          Widget toast = Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.red,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.clear, color: Colors.white,),
+                SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+              ],
+            ),
+          );
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          return;
+        }
+
+        int amount = double.parse(amountController.text).round();
+        if(amount<0){
+
+          Widget toast = Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.red,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.clear, color: Colors.white,),
+                SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+              ],
+            ),
+          );
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          return;
+        }
+        String note = noteController.text;
+        List<String> names = new List<String>();
+        checkboxBool.forEach((String key, bool value) {
+          if(value) names.add(key);
+        });
+        Function f;
+        var param;
+        if(widget.type==ExpenseType.fromSavedExpense){
+          f=_deleteExpense;
+          param=widget.expense.iD;
+        }else if(widget.type==ExpenseType.fromShopping){
+          f=_fulfillShopping;
+          param=widget.shoppingData.shoppingId;
+        }else{
+          f=(par){return true;};
+          param=5;
+        }
+        f(param);
+        Future<bool> success = postNewExpense(names, amount, note);
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            child: Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: FutureBuilder(
+                future: success,
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    if(snapshot.data){
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                          SizedBox(height: 15,),
+                          FlatButton.icon(
+                            icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                            onPressed: (){
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          FlatButton.icon(
+                            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                            onPressed: (){
+                              setState(() {
+                                amountController.text='';
+                                noteController.text='';
+                                for(String key in checkboxBool.keys){
+                                  checkboxBool[key]=false;
+                                }
+                              });
+                              Navigator.pop(context);
+                            },
+                            label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ],
+                      );
+                    }else{
+                      return Container(
+                        color: Colors.transparent ,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                            SizedBox(height: 15,),
+                            FlatButton.icon(
+                              icon: Icon(Icons.clear, color: Colors.white,),
+                              onPressed: (){
+                                Navigator.pop(context);
+                              },
+                              label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                              color: Colors.red,
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  }else{
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+            )
+        );
+      },
+    ),
     );
   }
 }

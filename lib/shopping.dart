@@ -53,7 +53,6 @@ class _ShoppingListState extends State<ShoppingList> {
     }catch(ex){
       throw 'Hiba a betöltés közben';
     }
-    //TODO:lol
   }
 
   void callback(){
@@ -313,6 +312,106 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Új listaelem felvétele')),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.send),
+        onPressed: (){
+          FocusScope.of(context).unfocus();
+          String quantity = quantityController.text;
+          String item = itemController.text;
+          if(quantity!='' && item!=''){
+            Future<bool> success = _postNewShopping(item, quantity);
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                child: Dialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  child: FutureBuilder(
+                    future: success,
+                    builder: (context, snapshot){
+                      if(snapshot.connectionState==ConnectionState.done){
+                        if(snapshot.hasData && snapshot.data){
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(child: Text("A tétel fel lett véve a bevásárlólistára!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              SizedBox(height: 15,),
+                              FlatButton.icon(
+                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              FlatButton.icon(
+                                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  quantityController.text='';
+                                  itemController.text='';
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ],
+                          );
+                        }else{
+                          return Container(
+                            color: Colors.transparent ,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                SizedBox(height: 15,),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.clear, color: Colors.white,),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                  color: Colors.red,
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      }else{
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                )
+            );
+            if(widget.data!=null){
+              _deleteShopping(widget.data.shoppingId);
+            }
+          }else{
+            Widget toast = Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25.0),
+                color: Colors.red,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.clear, color: Colors.white,),
+                  SizedBox(
+                    width: 12.0,
+                  ),
+                  Flexible(child: Text("Nem töltötted ki az egyik mezőt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                ],
+              ),
+            );
+            FlutterToast ft = FlutterToast(context);
+            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+            return;
+          }
+        },
+      ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -320,144 +419,47 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
         },
         child: ListView(
           children: <Widget>[
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 10,),
-                    Row(
-                      children: <Widget>[
-                        Text('Tétel', style: Theme.of(context).textTheme.body2,),
-                        SizedBox(width: 20,),
-                        Flexible(
-                          child: TextField(
-                            controller: itemController,
-                            keyboardType: TextInputType.text,
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                            decoration: InputDecoration(hintText: 'Büdös zokni'),
-                          ),
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: 10,),
+                  Row(
+                    children: <Widget>[
+                      Text('Tétel', style: Theme.of(context).textTheme.body2,),
+                      SizedBox(width: 20,),
+                      Flexible(
+                        child: TextField(
+                          controller: itemController,
+                          keyboardType: TextInputType.text,
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                          cursorColor: Theme.of(context).colorScheme.secondary,
+                          decoration: InputDecoration(hintText: 'Büdös zokni'),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20,),
-                    Row(
-                      children: <Widget>[
-                        Text('Mennyiség', style: Theme.of(context).textTheme.body2,),
-                        SizedBox(width: 20,),
-                        Flexible(
-                          child: TextField(
-                            controller: quantityController,
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                            decoration: InputDecoration(hintText: '2 kiló'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20,),
-                    Center(
-                      child: RaisedButton.icon(
-                        color: Theme.of(context).colorScheme.secondary,
-                        label: Text('Mehet', style: Theme.of(context).textTheme.button),
-                        icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                        onPressed: () async {
-
-                          FocusScope.of(context).unfocus();
-                          String quantity = quantityController.text;
-                          String item = itemController.text;
-                          if(quantity!='' && item!=''){
-                            Future<bool> success = _postNewShopping(item, quantity);
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: Dialog(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                child: FutureBuilder(
-                                  future: success,
-                                  builder: (context, snapshot){
-                                    if(snapshot.connectionState==ConnectionState.done){
-                                      if(snapshot.hasData && snapshot.data){
-                                        return Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(child: Text("A tétel fel lett véve a bevásárlólistára!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                            SizedBox(height: 15,),
-                                            FlatButton.icon(
-                                              icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                              onPressed: (){
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              },
-                                              label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                              color: Theme.of(context).colorScheme.secondary,
-                                            )
-                                          ],
-                                        );
-                                      }else{
-                                        return Container(
-                                          color: Colors.transparent ,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                              SizedBox(height: 15,),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.clear, color: Colors.white,),
-                                                onPressed: (){
-                                                  Navigator.pop(context);
-                                                },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
-                                                color: Colors.red,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    }else{
-                                      return Center(child: CircularProgressIndicator());
-                                    }
-                                  },
-                                ),
-                              )
-                            );
-                            if(widget.data!=null){
-                              _deleteShopping(widget.data.shoppingId);
-                            }
-                          }else{
-                            Widget toast = Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                color: Colors.red,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.clear, color: Colors.white,),
-                                  SizedBox(
-                                    width: 12.0,
-                                  ),
-                                  Flexible(child: Text("Nem töltötted ki az egyik mezőt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                ],
-                              ),
-                            );
-                            FlutterToast ft = FlutterToast(context);
-                            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-                            return;
-                          }
-                        },
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: <Widget>[
+                      Text('Mennyiség', style: Theme.of(context).textTheme.body2,),
+                      SizedBox(width: 20,),
+                      Flexible(
+                        child: TextField(
+                          controller: quantityController,
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                          cursorColor: Theme.of(context).colorScheme.secondary,
+                          decoration: InputDecoration(hintText: '2 kiló'),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                ],
+              )
             ),
-            ShoppingList(),
+//            ShoppingList(),
 
           ],
 

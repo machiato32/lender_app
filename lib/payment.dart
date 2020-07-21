@@ -30,7 +30,6 @@ class _PaymentState extends State<Payment> {
     }catch(_){
       throw "Valami baj van getNames";
     }
-    //TODO: Catch http everywhere
 
   }
 
@@ -67,6 +66,125 @@ class _PaymentState extends State<Payment> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Fizetés'),),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.send),
+        onPressed: (){
+          FocusScope.of(context).unfocus();
+          if(dropdownValue==null){
+            Widget toast = Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25.0),
+                color: Colors.red,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.clear, color: Colors.white,),
+                  SizedBox(
+                    width: 12.0,
+                  ),
+                  Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                ],
+              ),
+            );
+            FlutterToast ft = FlutterToast(context);
+            ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+            return;
+          }
+          int amount = int.parse(amountController.text);
+          String note = noteController.text;
+          Future<bool> success = postPayment(amount, note, dropdownValue);
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              child: Dialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: FutureBuilder(
+                  future: success,
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState==ConnectionState.done){
+                      if(snapshot.hasData){
+                        if(snapshot.data){
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              SizedBox(height: 15,),
+                              FlatButton.icon(
+                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              FlatButton.icon(
+                                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  amountController.text='';
+                                  noteController.text='';
+                                  dropdownValue=null;
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ],
+                          );
+                        }else{
+                          return Container(
+                            color: Colors.transparent ,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                SizedBox(height: 15,),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.clear, color: Colors.white,),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                  color: Colors.red,
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      }else{
+                        return Container(
+                          color: Colors.transparent ,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              SizedBox(height: 15,),
+                              FlatButton.icon(
+                                icon: Icon(Icons.clear, color: Colors.white,),
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                color: Colors.red,
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                    }else{
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+              )
+          );
+
+        },
+      ),
       body:
         GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -76,242 +194,115 @@ class _PaymentState extends State<Payment> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+                    Row(
+                      children: <Widget>[
+                        Text('Összeg', style: Theme.of(context).textTheme.body2,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            controller: amountController,
+                            decoration: InputDecoration(
+                              hintText: 'Ft',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                //  when the TextFormField in unfocused
+                              ) ,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                              ) ,
 
-                      Row(
-                        children: <Widget>[
-                          Text('Összeg', style: Theme.of(context).textTheme.body2,),
-                          SizedBox(width: 20,),
-                          Flexible(
-                            child: TextField(
-                              controller: amountController,
-                              decoration: InputDecoration(
-                                hintText: 'Ft',
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                                  //  when the TextFormField in unfocused
-                                ) ,
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                                ) ,
-
-                              ),
-                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                              cursorColor: Theme.of(context).colorScheme.secondary,
-                              keyboardType: TextInputType.numberWithOptions(decimal: true),
-                              inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,-]'))],
                             ),
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,-]'))],
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 20,),
-                      Row(
-                        children: <Widget>[
-                          Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
-                          SizedBox(width: 20,),
-                          Flexible(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Mamut',
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                                  //  when the TextFormField in unfocused
-                                ) ,
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                                ) ,
-
-                              ),
-                              controller: noteController,
-                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
-                              cursorColor: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20,),
-                      Divider(),
-                      Center(
-                        child: FutureBuilder(
-                          future: names,
-                          builder: (context, snapshot) {
-                            if(snapshot.connectionState==ConnectionState.done) {
-                              if (snapshot.hasData) {
-                                return DropdownButton(
-                                  hint: Text(
-                                    'Válaszd ki a személyt!', style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .body2,),
-                                  value: dropdownValue,
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      dropdownValue = newValue;
-                                    });
-                                  },
-                                  items: snapshot.data.map<
-                                      DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value, style: Theme.of(context).textTheme.body2),
-                                    );
-                                  }).toList(),
-
-                                );
-                              }
-                              else{
-
-                                return InkWell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(32.0),
-                                      child: Text(snapshot.error.toString()),
-                                    ),
-                                    onTap: (){
-                                      setState(() {
-                                      });
-                                    }
-                                );
-                              }
-                            }
-
-                            return Center(child: CircularProgressIndicator());
-
-                          },
                         ),
-                      ),
-                      SizedBox(height: 30,),
-                      Center(
-                        child: RaisedButton.icon(
-                          color: Theme.of(context).colorScheme.secondary,
-                          label: Text('Fizetés', style: Theme.of(context).textTheme.button),
-                          icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
-                            //TODO: catch exceptions
-                            if(dropdownValue==null){
-                              Widget toast = Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  color: Colors.red,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.clear, color: Colors.white,),
-                                    SizedBox(
-                                      width: 12.0,
-                                    ),
-                                    Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                  ],
-                                ),
+                      ],
+                    ),
+                    SizedBox(height: 20,),
+                    Row(
+                      children: <Widget>[
+                        Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Mamut',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                //  when the TextFormField in unfocused
+                              ) ,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                              ) ,
+
+                            ),
+                            controller: noteController,
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20,),
+                    Divider(),
+                    Center(
+                      child: FutureBuilder(
+                        future: names,
+                        builder: (context, snapshot) {
+                          if(snapshot.connectionState==ConnectionState.done) {
+                            if (snapshot.hasData) {
+                              return Wrap(
+                                spacing: 10,
+                                children: snapshot.data.map<ChoiceChip>((String name)=>
+                                    ChoiceChip(
+                                      label: Text(name),
+                                      pressElevation: 30,
+                                      selected: dropdownValue==name,
+                                      onSelected: (bool newValue){
+                                        FocusScope.of(context).unfocus();
+                                        setState(() {
+                                          dropdownValue=name;
+                                        });
+                                      },
+                                      labelStyle: dropdownValue==name
+                                          ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
+                                          :Theme.of(context).textTheme.body2,
+                                      backgroundColor: Theme.of(context).colorScheme.onSurface,
+                                      selectedColor: Theme.of(context).colorScheme.secondary,
+                                    )
+                                ).toList(),
                               );
-                              FlutterToast ft = FlutterToast(context);
-                              ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-                              return;
                             }
-                            int amount = int.parse(amountController.text);
-                            String note = noteController.text;
-                            Future<bool> success = postPayment(amount, note, dropdownValue);
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: Dialog(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                child: FutureBuilder(
-                                  future: success,
-                                  builder: (context, snapshot){
-                                    if(snapshot.connectionState==ConnectionState.done){
-                                      if(snapshot.hasData){
-                                        if(snapshot.data){
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                              SizedBox(height: 15,),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                                onPressed: (){
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                },
-                                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                                color: Theme.of(context).colorScheme.secondary,
-                                              ),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                                                onPressed: (){
-                                                  amountController.text='';
-                                                  noteController.text='';
-                                                  dropdownValue=null;
-                                                  Navigator.pop(context);//TODO: this button everywhere
-                                                },
-                                                label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
-                                                color: Theme.of(context).colorScheme.secondary,
-                                              ),
-                                            ],
-                                          );
-                                        }else{
-                                          return Container(
-                                            color: Colors.transparent ,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                                SizedBox(height: 15,),
-                                                FlatButton.icon(
-                                                  icon: Icon(Icons.clear, color: Colors.white,),
-                                                  onPressed: (){
-                                                    Navigator.pop(context);
-                                                  },
-                                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
-                                                  color: Colors.red,
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      }else{
-                                        return Container(
-                                          color: Colors.transparent ,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                              SizedBox(height: 15,),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.clear, color: Colors.white,),
-                                                onPressed: (){
-                                                  Navigator.pop(context);
-                                                },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
-                                                color: Colors.red,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    }else{
-                                      return Center(child: CircularProgressIndicator());
-                                    }
-                                  },
-                                ),
-                              )
-                            );
+                            else{
 
-                          },
-                        ),
+                              return InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(32.0),
+                                    child: Text(snapshot.error.toString()),
+                                  ),
+                                  onTap: (){
+                                    setState(() {
+                                    });
+                                  }
+                              );
+                            }
+                          }
+
+                          return Center(child: CircularProgressIndicator());
+
+                        },
                       ),
+                    ),
 
-                    ],
-                  ),
+                  ],
                 ),
               ),
 //              Balances()

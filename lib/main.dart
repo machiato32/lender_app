@@ -215,47 +215,7 @@ class _MainPageState extends State<MainPage> {
           shrinkWrap: true,
           children: <Widget>[
 
-//            Card(
-//              child: Padding(
-//                padding: const EdgeInsets.all(15),
-//                child: Column(
-//                  crossAxisAlignment: CrossAxisAlignment.center,
-//                  children: <Widget>[
-//                    Align(
-//                      child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.end,
-//                        children: <Widget>[
-//                          Icon(Icons.account_circle, color: Theme.of(context).textTheme.body1.color,),
-//                          SizedBox(width: 5,),
-//                          Text('Szia $currentUser!'),
-//                        ],
-//                      ),
-//                      alignment: Alignment.topRight),
-//                    Text('Mi újság?', style: Theme.of(context).textTheme.title),
-//                    SizedBox(height: 10,),
-//                    RaisedButton.icon(
-//                      color: Theme.of(context).colorScheme.secondary,
-//                      icon: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
-//                      label: Text('Vettem valamit', style: Theme.of(context).textTheme.button),
-//
-//                      onPressed: () {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));},
-//                    ),
-//                    RaisedButton.icon(
-//                      color: Theme.of(context).colorScheme.secondary,
-//                      icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.onSecondary),
-//                      label: Text('Fizettem valakinek', style: Theme.of(context).textTheme.button),
-//                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));},
-//                    ),
-//                    RaisedButton.icon(
-//                      color: Theme.of(context).colorScheme.secondary,
-//                      icon: Icon(Icons.add_shopping_cart, color: Theme.of(context).colorScheme.onSecondary),
-//                      label: Text('Szeretnék valamit a boltból', style: Theme.of(context).textTheme.button),
-//                      onPressed: ()  {if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));},
-//                    ),
-//                  ],
-//                ),
-//              ),
-//            ),
+
             Balances(),
             ShoppingList(),
             History()

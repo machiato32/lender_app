@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//TODO: I should use the material.io template...
+//TODO: material.io template should be used...
 
 class AppTheme{
   AppTheme._();
@@ -23,6 +23,7 @@ class AppTheme{
       onSurface: Colors.grey[300]
     ),
     cardTheme: CardTheme(
+      color: Colors.white,
       shape:RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(3),
       ),
@@ -135,6 +136,7 @@ class AppTheme{
 
     ),
     cardTheme: CardTheme(
+      color: Colors.white,
       shape:RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(3),
       ),
@@ -257,6 +259,7 @@ class AppTheme{
         onSurface: Colors.grey[300]
     ),
     cardTheme: CardTheme(
+      color: Colors.white,
       shape:RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(3),
       ),
@@ -350,6 +353,7 @@ class AppTheme{
         onSurface: Colors.grey[300]
     ),
     cardTheme: CardTheme(
+      color: Colors.white,
       shape:RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(3),
       ),

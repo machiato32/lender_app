@@ -52,17 +52,20 @@ class ShoppingAllInfo extends StatefulWidget {
 
 class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _deleteShopping(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "id":id
-    };
+    try{
+      Map<String, dynamic> map = {
+        "type":'delete',
+        "id":id
+      };
 
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
+      String encoded = json.encode(map);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
 
 
-    return response.statusCode==200;
-    //TODO: catch
+      return response.statusCode==200;
+    }catch(_){
+      throw 'Hiba';
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -185,8 +188,8 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                       child: FutureBuilder(
                                                         future: success,
                                                         builder: (context, snapshot){
-                                                          if(snapshot.hasData){
-                                                            if(snapshot.data){
+                                                          if(snapshot.connectionState==ConnectionState.done){
+                                                            if(snapshot.hasData && snapshot.data){
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
@@ -223,9 +226,9 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                                 ),
                                                               );
                                                             }
-                                                          }else{
-                                                            return Center(child: CircularProgressIndicator());
                                                           }
+                                                          return Center(child: CircularProgressIndicator());
+
                                                         },
                                                       ),
                                                     )
@@ -260,43 +263,101 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                   children: <Widget>[
                     FlatButton.icon(
                       onPressed: (){
+                        Future<bool> success = _deleteShopping(widget.data.shoppingId);
                         showDialog(
+                            barrierDismissible: false,
                             context: context,
                             child: Dialog(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                              backgroundColor: Theme.of(context).colorScheme.onBackground,
-                              child: Container(
-                                padding: EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('Megvetted a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
-                                    SizedBox(height: 15,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        RaisedButton(
-                                            color: Theme.of(context).colorScheme.secondary,
-                                            onPressed: (){
-                                              Navigator.pop(context);
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
-                                                type: ExpenseType.fromShopping, shoppingData: widget.data,
-                                              ))).then((val){
-                                                Navigator.pop(context, 'deleted');
-                                              });
-                                            },
-                                            child: Text('Igen', style: Theme.of(context).textTheme.button)
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              child: FutureBuilder(
+                                future: success,
+                                builder: (context, snapshot){
+                                  if(snapshot.connectionState==ConnectionState.done){
+                                    if(snapshot.hasData){
+                                      if(snapshot.data){
+                                        return Container(
+
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Theme.of(context).cardTheme.color,),
+                                          padding: EdgeInsets.all(8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text('Fel szeretnéd számolni?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
+                                              SizedBox(height: 15,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                children: <Widget>[
+                                                  RaisedButton(
+                                                      color: Theme.of(context).colorScheme.secondary,
+                                                      onPressed: (){
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context, 'deleted');
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+                                                          type: ExpenseType.fromShopping, shoppingData: widget.data,
+                                                        )));
+                                                      },
+                                                      child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                                  ),
+                                                  RaisedButton(
+                                                      color: Theme.of(context).colorScheme.secondary,
+                                                      onPressed: (){
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context, 'deleted');
+                                                      },
+                                                      child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }else{
+                                        return Container(
+                                          color: Colors.transparent ,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                              SizedBox(height: 15,),
+                                              FlatButton.icon(
+                                                icon: Icon(Icons.clear, color: Colors.white,),
+                                                onPressed: (){
+                                                  Navigator.pop(context);
+                                                },
+                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                color: Colors.red,
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    }else{
+                                      return Container(
+                                        color: Colors.transparent ,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                            SizedBox(height: 15,),
+                                            FlatButton.icon(
+                                              icon: Icon(Icons.clear, color: Colors.white,),
+                                              onPressed: (){
+                                                Navigator.pop(context);
+                                              },
+                                              label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                              color: Colors.red,
+                                            )
+                                          ],
                                         ),
-                                        RaisedButton(
-                                            color: Theme.of(context).colorScheme.secondary,
-                                            onPressed: (){ Navigator.pop(context); },
-                                            child: Text('Nem', style: Theme.of(context).textTheme.button)
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                      );
+                                    }
+                                  }else{
+                                    return Center(child: CircularProgressIndicator());
+                                  }
+                                },
                               ),
                             )
                         );

@@ -53,17 +53,20 @@ class HistoryAllInfo extends StatefulWidget {
 class _HistoryAllInfoState extends State<HistoryAllInfo> {
 
   Future<bool> _deleteElement(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "Transaction_Id":id
-    };
+    try{
+      Map<String, dynamic> map = {
+        "type":'delete',
+        "Transaction_Id":id
+      };
 
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-    int a=8;
+      String encoded = json.encode(map);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+      int a=8;
 
-    return response.statusCode==200;
-    //TODO: catch
+      return response.statusCode==200;
+    }catch(_){
+      throw 'Hiba';
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -209,8 +212,8 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                                                       child: FutureBuilder(
                                                         future: success,
                                                         builder: (context, snapshot){
-                                                          if(snapshot.hasData){
-                                                            if(snapshot.data){
+                                                          if(snapshot.connectionState==ConnectionState.done){
+                                                            if(snapshot.hasData && snapshot.data){
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
@@ -247,9 +250,9 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                                                                 ),
                                                               );
                                                             }
-                                                          }else{
-                                                            return Center(child: CircularProgressIndicator());
                                                           }
+                                                          return Center(child: CircularProgressIndicator());
+
                                                         },
                                                       ),
                                                     )

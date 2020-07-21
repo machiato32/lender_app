@@ -15,26 +15,27 @@ class _ChangePinState extends State<ChangePin> {
   TextEditingController newPinController = TextEditingController();
   TextEditingController confirmPinController = TextEditingController();
 
-  Future<bool> success;
-  bool waiting=false;
 
   Future<bool> postNewPin(int oldPin, int newPin) async{
-    waiting=true;
-    Map<String,dynamic> map ={
-      'type':'change',
-      'name':currentUser,
-      'pin':oldPin,
-      'new_pin':newPin
-    };
+    try{
 
-    String encoded = jsonEncode(map);
+      Map<String,dynamic> map ={
+        'type':'change',
+        'name':currentUser,
+        'pin':oldPin,
+        'new_pin':newPin
+      };
 
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/validate/', body: encoded);
+      String encoded = jsonEncode(map);
 
-    Map<String,dynamic> decoded = jsonDecode(response.body);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/validate/', body: encoded);
 
-    return (response.statusCode==200 && decoded['valid']);
+      Map<String,dynamic> decoded = jsonDecode(response.body);
 
+      return (response.statusCode==200 && decoded['valid']);
+    }catch(_){
+      throw 'Hiba';
+    }
   }
 
   @override
@@ -161,8 +162,8 @@ class _ChangePinState extends State<ChangePin> {
                           child: FutureBuilder(
                             future: success,
                             builder: (context, snapshot){
-                              if(snapshot.hasData){
-                                if(snapshot.data){
+                              if(snapshot.connectionState==ConnectionState.done){
+                                if(snapshot.hasData && snapshot.data){
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -199,9 +200,9 @@ class _ChangePinState extends State<ChangePin> {
                                     ),
                                   );
                                 }
-                              }else{
-                                return Center(child: CircularProgressIndicator());
                               }
+                              return Center(child: CircularProgressIndicator());
+
                             },
                           ),
                         )

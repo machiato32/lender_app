@@ -59,7 +59,6 @@ class _HistoryState extends State<History> {
     }catch(ex){
       throw 'Hiba a betöltés közben!';
     }
-    //TODO:lol
   }
 
   void callback() {
