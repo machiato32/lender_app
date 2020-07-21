@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'main.dart';
 import 'history_route.dart';
 import 'all_history_route.dart';
+import 'bottom_sheet_custom.dart';
 
 class HistoryData {
   DateTime date;
@@ -39,20 +40,26 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   Future<List<HistoryData>> history;
-  
+
   Future<List<HistoryData>> getHistory() async{
-    Map<String,dynamic> map ={
-      'name':currentUser
-    };
-    String encoded = jsonEncode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/history/', body: encoded);
+    try{
 
-    List<dynamic> decoded = jsonDecode(response.body)['history'];
+      Map<String,dynamic> map ={
+        'name':currentUser
+      };
+      String encoded = jsonEncode(map);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/history/', body: encoded);
 
-    List<HistoryData> history = new List<HistoryData>();
-    decoded.forEach((element){history.add(HistoryData.fromJson(element));});
-    history = history.reversed.toList();
-    return history;
+      List<dynamic> decoded = jsonDecode(response.body)['history'];
+
+      List<HistoryData> history = new List<HistoryData>();
+      decoded.forEach((element){history.add(HistoryData.fromJson(element));});
+      history = history.reversed.toList();
+      return history;
+    }catch(ex){
+      throw 'Hiba a betöltés közben!';
+    }
+    //TODO:lol
   }
 
   void callback() {
@@ -90,25 +97,43 @@ class _HistoryState extends State<History> {
                 FutureBuilder(
                   future: history,
                   builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      return Column(
-                        children: <Widget>[
-                          Column(
-                              children: generateHistory(snapshot.data)
-                          ),
-                          Visibility(
-                            visible: (snapshot.data as List).length>0,
-                            child: FlatButton.icon(
-                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
-                                icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
-                                label: Text('Több', style: Theme.of(context).textTheme.button,),
-                                color: Theme.of(context).colorScheme.secondary
+                    if(snapshot.connectionState==ConnectionState.done){
+                      if(snapshot.hasData){
+
+                        return Column(
+                          children: <Widget>[
+                            Column(
+                                children: generateHistory(snapshot.data)
                             ),
-                          )
-                        ],
+                            Visibility(
+                              visible: (snapshot.data as List).length>5,
+                              child: FlatButton.icon(
+                                  onPressed: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));
+                                  },
+                                  icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
+                                  label: Text('Több', style: Theme.of(context).textTheme.button,),
+                                  color: Theme.of(context).colorScheme.secondary
+                              ),
+                            )
+                          ],
 //                        children: generateHistory(snapshot.data)
 //                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                      );
+                        );
+                      }else{
+                        return InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Text(snapshot.error.toString()),
+                            ),
+                            onTap: (){
+                              setState(() {
+                                history=null;
+                                history=getHistory();
+                              });
+                            }
+                        );
+                      }
                     }
                     return CircularProgressIndicator();
                   },
@@ -206,9 +231,20 @@ class _HistoryEntryState extends State<HistoryEntry> {
 
         child: InkWell(
           onTap: () async {
-            await Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryRoute(data: widget.data,))).then((val){
-              widget.callback();
+//            await Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryRoute(data: widget.data,))).then((val){
+//              widget.callback();
+//            });
+            showModalBottomSheetCustom(
+                context: context,
+                backgroundColor: Theme.of(context).cardTheme.color,
+                builder: (context)=>SingleChildScrollView(
+                    child: HistoryAllInfo(widget.data)
+                )
+            ).then((val){
+              if(val=='deleted')
+                widget.callback();
             });
+
 
           },
           borderRadius: BorderRadius.circular(4.0),

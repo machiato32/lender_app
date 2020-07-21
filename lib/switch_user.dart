@@ -18,13 +18,17 @@ class _SwitchUserState extends State<SwitchUser> {
   TextEditingController pinController = TextEditingController();
 
   Future<List<String>> getNames() async {
-    http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/names');
-    Map<String, dynamic> response2 = jsonDecode(response.body);
+    try{
 
-    List<String> list = response2['names'].cast<String>();
-    list.remove(currentUser);
-//    dropdownValue=list[0];
-    return list;
+      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/names');
+      Map<String, dynamic> response2 = jsonDecode(response.body);
+
+      List<String> list = response2['names'].cast<String>();
+      list.remove(currentUser);
+      return list;
+    }catch(_){
+      throw 'Hiba';
+    }
 
   }
 
@@ -66,23 +70,38 @@ class _SwitchUserState extends State<SwitchUser> {
               child: FutureBuilder(
                 future: names,
                 builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    return DropdownButton(
-                      hint: Text('Felhasználó', style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
-                      value: dropdownValue,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          dropdownValue=newValue;
-                        });
-                      },
-                      items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value, style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
-                        );
-                      }).toList(),
+                  if(snapshot.connectionState==ConnectionState.done){
+                    if(snapshot.hasData){
+                      return DropdownButton(
+                        hint: Text('Felhasználó', style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
+                        value: dropdownValue,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue=newValue;
+                          });
+                        },
+                        items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
+                          );
+                        }).toList(),
 
-                    );
+                      );
+                    }else{
+                      return InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(snapshot.error.toString()),
+                          ),
+                          onTap: (){
+                            setState(() {
+                              names=null;
+                              names=getNames();
+                            });
+                          }
+                      );
+                    }
                   }
 
                   return CircularProgressIndicator();

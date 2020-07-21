@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'all_shopping_route.dart';
+import 'bottom_sheet_custom.dart';
 
 class ShoppingData {
   DateTime date;
@@ -50,7 +51,7 @@ class _ShoppingListState extends State<ShoppingList> {
       shopping = shopping.reversed.toList();
       return shopping;
     }catch(ex){
-      return [ShoppingData(date: DateTime.now(), fulfilled: false, fulfilledUser: 'asd', item: 'asd', quantity: 'asd', shoppingId: 12, user: 'asd')];
+      throw 'Hiba a betöltés közben';
     }
     //TODO:lol
   }
@@ -88,25 +89,41 @@ class _ShoppingListState extends State<ShoppingList> {
               child: FutureBuilder(
                 future: shoppingList,
                 builder: (context, snapshot){
-                  if(snapshot.hasData){
-                    return Column(
-                      children: <Widget>[
-                        Column(
-                            children: _generateShoppingList(snapshot.data)
-                        ),
-                        Visibility(
-                          visible: (snapshot.data as List).where((element) => element.fulfilled==false).toList().length>0,
-                          child: FlatButton.icon(
-                              onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
-                              icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
-                              label: Text('Több', style: Theme.of(context).textTheme.button,),
-                              color: Theme.of(context).colorScheme.secondary
+                  if(snapshot.connectionState==ConnectionState.done){
+                    if(snapshot.hasData){
+
+                      return Column(
+                        children: <Widget>[
+                          Column(
+                              children: _generateShoppingList(snapshot.data)
                           ),
-                        )
-                      ],
+                          Visibility(
+                            visible: (snapshot.data as List).where((element) => element.fulfilled==false).toList().length>3,
+                            child: FlatButton.icon(
+                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
+                                icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
+                                label: Text('Több', style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary
+                            ),
+                          )
+                        ],
 //                        children: generateHistory(snapshot.data)
 //                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                    );
+                      );
+                    }else{
+                      return InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(snapshot.error.toString()),
+                          ),
+                          onTap: (){
+                            setState(() {
+                              shoppingList=null;
+                              shoppingList=_getShoppingList();
+                            });
+                          }
+                      );
+                    }
                   }
                   return CircularProgressIndicator();
                 },
@@ -177,8 +194,15 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: () async {
-            await Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingRoute(data: widget.data,))).then((val){
-              widget.callback();
+            showModalBottomSheetCustom(
+              context: context,
+              backgroundColor: Theme.of(context).cardTheme.color,
+              builder: (context)=>SingleChildScrollView(
+                child: ShoppingAllInfo(widget.data)
+              )
+            ).then((val){
+              if(val=='deleted')
+                widget.callback();
             });
           },
           borderRadius: BorderRadius.circular(4.0),
@@ -209,8 +233,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                           Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
                         ],
                       ),
-
-
                       SizedBox(height: 4,)
                     ],
                   ),
@@ -238,36 +260,40 @@ class AddShoppingRoute extends StatefulWidget {
 class _AddShoppingRouteState extends State<AddShoppingRoute> {
   TextEditingController itemController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  Future<bool> success;
-  bool waiting=false;
 
   Future<bool> _postNewShopping(String item, String quantity) async{
-    waiting=true;
-    Map<String, dynamic> map = {
-      "type":"request",
-      "user":currentUser,
-      "name":item,
-      "quantity":quantity
-    };
+    try{
+      Map<String, dynamic> map = {
+        "type":"request",
+        "user":currentUser,
+        "name":item,
+        "quantity":quantity
+      };
+      String encoded = json.encode(map);
 
-    String encoded = json.encode(map);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
 
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
-
-    return response.statusCode==200;
-
+      return response.statusCode==200;
+    }catch(ex){
+      throw 'Hiba történt';
+    }
   }
 
   Future<bool> _deleteShopping(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "id":id.toString()
-    };
+    try{
+      Map<String, dynamic> map = {
+        "type":'delete',
+        "id":id.toString()
+      };
 
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+      String encoded = json.encode(map);
+      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
 
-    return response.statusCode==200;
+      return response.statusCode==200;
+    }catch(ex){
+      throw 'Hiba történt';
+    }
+
   }
 
   void setInitialValues(){
@@ -301,11 +327,6 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 10,),
-//                    Container(
-//                        padding: EdgeInsets.all(5),
-//                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-//                        child: Text('Tétel', style: Theme.of(context).textTheme.button,)
-//                    ),
                     Row(
                       children: <Widget>[
                         Text('Tétel', style: Theme.of(context).textTheme.body2,),
@@ -322,11 +343,6 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                       ],
                     ),
                     SizedBox(height: 20,),
-//                    Container(
-//                        padding: EdgeInsets.all(5),
-//                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-//                        child: Text('', style: Theme.of(context).textTheme.button,)
-//                    ),
                     Row(
                       children: <Widget>[
                         Text('Mennyiség', style: Theme.of(context).textTheme.body2,),
@@ -350,7 +366,6 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                         onPressed: () async {
 
                           FocusScope.of(context).unfocus();
-                          success=null;
                           String quantity = quantityController.text;
                           String item = itemController.text;
                           if(quantity!='' && item!=''){
@@ -365,8 +380,8 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                                 child: FutureBuilder(
                                   future: success,
                                   builder: (context, snapshot){
-                                    if(snapshot.hasData){
-                                      if(snapshot.data){
+                                    if(snapshot.connectionState==ConnectionState.done){
+                                      if(snapshot.hasData && snapshot.data){
                                         return Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -383,9 +398,6 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                                             )
                                           ],
                                         );
-//                                          FlutterToast ft = FlutterToast(context);
-//                                          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                          return Center();
                                       }else{
                                         return Container(
                                           color: Colors.transparent ,
@@ -405,10 +417,6 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                                             ],
                                           ),
                                         );
-//                                          FlutterToast ft = FlutterToast(context);
-//                                          ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                          Navigator.pop(context);
-//                                          return Center();
                                       }
                                     }else{
                                       return Center(child: CircularProgressIndicator());

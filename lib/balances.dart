@@ -13,24 +13,31 @@ class _BalancesState extends State<Balances> {
   Future<List<Person>> money;
 
   Future<List<Person>> getMoney() async {
-    http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/');
-    List<dynamic> list = jsonDecode(response.body);
-    List<Person> people = List<Person>();
-    for(var element in list){
-      people.add(Person.fromJson(element));
+    try{
+      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/');
+      List<dynamic> list = jsonDecode(response.body);
+      List<Person> people = List<Person>();
+      for(var element in list){
+        people.add(Person.fromJson(element));
+      }
+      return people;
+    }catch(ex){
+      throw 'Hiba a betöltés közben';
     }
-    return people;
+
   }
 
   @override
   void initState() {
     super.initState();
+    money=null;
     money=getMoney();
   }
   @override
   void didUpdateWidget(Balances oldWidget) {
-    money=getMoney();
     super.didUpdateWidget(oldWidget);
+    money=null;
+    money=getMoney();
   }
 
   @override
@@ -50,56 +57,25 @@ class _BalancesState extends State<Balances> {
               child: FutureBuilder(
                 future: money,
                 builder: (context, snapshot){
-                  if(snapshot.hasData){
-                    return Column(
-                      children: _fromFuture(context, snapshot)
-                    );
-//                    return ConstrainedBox(
-//                      constraints: BoxConstraints(maxHeight: 500),
-//                      child: ListView.builder(
-//                        shrinkWrap: true,
-//                        itemCount: snapshot.data.length,
-//                        itemBuilder: (BuildContext context, int index){
-//                          if(snapshot.data[index].name==name){
-//                            return Column(
-//                              children: <Widget>[
-//                                Container(
-//                                    padding: EdgeInsets.all(4),
-//                                    decoration: BoxDecoration(
-//                                      color: Theme.of(context).colorScheme.secondary,
-//                                      borderRadius: BorderRadius.circular(2),
-//                                    ),
-//                                    child: Row(
-//                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                      children: <Widget>[
-//                                        Text(snapshot.data[index].name, style: Theme.of(context).textTheme.button,),
-//                                        Text(snapshot.data[index].amount.toString(), style: Theme.of(context).textTheme.button,)
-//                                      ],
-//                                    )
-//                                ),
-//                                SizedBox(height: 3,)
-//                              ],
-//                            );
-//                          }
-//                          return Column(
-//                            children: <Widget>[
-//                              Container(
-//                                padding: EdgeInsets.all(4),
-//
-//                                child: Row(
-//                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                  children: <Widget>[
-//                                    Text(snapshot.data[index].name, style: Theme.of(context).textTheme.body2,),
-//                                    Text(snapshot.data[index].amount.toString(), style: Theme.of(context).textTheme.body2,)
-//                                  ],
-//                                )
-//                              ),
-//                              SizedBox(height: 3,)
-//                            ],
-//                          );
-//                        },
-//                      ),
-//                    );
+                  if(snapshot.connectionState==ConnectionState.done){
+                    if(snapshot.hasData){
+                      return Column(
+                          children: _fromFuture(context, snapshot)
+                      );
+                    }else{
+                      return InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(snapshot.error.toString()),
+                          ),
+                          onTap: (){
+                            setState(() {
+                              money=null;
+                              money=getMoney();
+                            });
+                          }
+                      );
+                    }
                   }
                   return CircularProgressIndicator();
                 },
