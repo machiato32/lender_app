@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
-import 'balances.dart';
 import 'shopping.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'dart:math';
+
+List<String> placeholder = ["Mamut", "Sarki kisbolt", "Fapuma", "Eltört kiskanál", "Irtó büdös szúnyogirtó", "Borravaló a pizzásnak", "Buszjegy", "COO HD Piros Multivit 100% 1L",
+"Egy tökéletes kakaóscsiga", "Sajt sajttal", "Gyíkhúsos melegszendvics", "56 alma", "Csigaszerű játékizé", "10 batka", "Egész napos kirándulás", "Paradicsomos kenyér",
+"Kőrözöttes-szardíniás szendvics", "Menő napszemcsi", "Sokadik halálcsillag", "Draco Raphus Cuculatus", "Üres doboz", "Büdös zokni", "Nyikorgó szekér", "Emelt díjas SMS",
+"Teve, sok teve", "Helytartó", "Balatoni jacht", "Kacsajelmez", "Légycsapó", "Pisztáciás fagylalt", "Csocsó", "Egy működő app", "Lekváros couscous", "Nagy bevásárlás"];
+Random random = Random();
 
 class SavedExpense{
   String name, note;
@@ -172,7 +178,7 @@ class _NewExpenseState extends State<NewExpense> {
                             Flexible(
                               child: TextField(
                                 decoration: InputDecoration(
-                                  hintText: 'Dolgok',
+                                  hintText: placeholder[random.nextInt(placeholder.length)],
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
                                   ) ,

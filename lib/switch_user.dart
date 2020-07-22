@@ -45,6 +45,7 @@ class _SwitchUserState extends State<SwitchUser> {
     Map<String,dynamic> decoded = jsonDecode(response.body);
 
     return (response.statusCode==200 && decoded['valid']);
+    //TODO: catch
   }
 
   Future<SharedPreferences> getPrefs() async{
