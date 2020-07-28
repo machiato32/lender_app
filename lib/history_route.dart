@@ -8,7 +8,7 @@ import 'new_expense.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class HistoryRoute extends StatefulWidget {
-  final HistoryData data;
+  final TransactionData data;
   HistoryRoute({@required this.data});
   @override
   _HistoryRouteState createState() => _HistoryRouteState();
@@ -19,10 +19,10 @@ class _HistoryRouteState extends State<HistoryRoute> {
   @override
   Widget build(BuildContext context) {
     String title='';
-    if(widget.data.note==''){
+    if(widget.data.name==''){
       title='Nincs megjegyzés';
     }else{
-      title=widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
+      title=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
     }
     return Scaffold(
       appBar: AppBar(title: Text(title),),
@@ -44,7 +44,7 @@ class _HistoryRouteState extends State<HistoryRoute> {
 
 class HistoryAllInfo extends StatefulWidget {
 
-  final HistoryData data;
+  final TransactionData data;
   HistoryAllInfo(this.data);
   @override
   _HistoryAllInfoState createState() => _HistoryAllInfoState();
@@ -71,10 +71,10 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
   @override
   Widget build(BuildContext context) {
     String note='';
-    if(widget.data.note==''){
+    if(widget.data.name==''){
       note='Nincs megjegyzés';
     }else{
-      note=widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
+      note=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
     }
     return Card(
         child: Padding(
@@ -94,7 +94,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.fromUser, style: Theme.of(context).textTheme.body2,)),
+                  Flexible(child: Text(widget.data.buyerId, style: Theme.of(context).textTheme.body2,)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -103,7 +103,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.toUser.join(', '), style: Theme.of(context).textTheme.body2, )),
+                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.body2, )),
                 ],
               ),
               SizedBox(height: 5,),
@@ -111,7 +111,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.amount.toString(), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.body2)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -119,7 +119,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.date_range, color: Theme.of(context).colorScheme.primary,),
                   Text(' - '),
-                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt), style: Theme.of(context).textTheme.body2)),
                 ],
               ),
               SizedBox(height: 10,),
@@ -201,7 +201,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: () async {
                                                 Navigator.pop(context);
-                                                Future<bool> success = _deleteElement(widget.data.transactionID);
+                                                Future<bool> success = _deleteElement(widget.data.transactionId);
                                                 showDialog(
                                                     barrierDismissible: false,
                                                     context: context,

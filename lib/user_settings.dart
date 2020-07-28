@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'switch_user.dart';
 import 'change_pin.dart';
-import 'main.dart';
+import 'config.dart';
 import 'color_picker.dart';
 
 class Settings extends StatefulWidget {

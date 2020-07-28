@@ -9,6 +9,13 @@ import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
 import 'shopping.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'login_route.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'config.dart';
+import 'person.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +27,17 @@ void main() async {
   }else{
     themeName=preferences.getString('theme');
   }
+  if(preferences.containsKey('current_user')){
+    currentUser=preferences.getString('current_user');
+    apiToken=preferences.getString('api_token');
+  }
+  if(preferences.containsKey('current_group_name')){
+    currentGroupName=preferences.getString('current_group_name');
+    currentGroupId=preferences.getInt('current_group_id');
+  }
   runApp(ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(), child: CsocsortApp(themeName: themeName,)));
 }
-  String currentUser='';
 
 
 class CsocsortApp extends StatefulWidget {
@@ -48,7 +62,7 @@ class _CsocsortAppState extends State<CsocsortApp>{
         return MaterialApp(
           title: 'Csocsort',
           theme: appState.theme,
-          home: MainPage(
+          home: currentUser==null?LoginRoute():MainPage(
             title: 'Csocsort Main Page',
           ),
 //          onGenerateRoute: Router.generateRoute,
@@ -72,23 +86,58 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   SharedPreferences prefs;
+  Future<List<Group>> groups;
 
   Future<SharedPreferences> getPrefs() async{
     return await SharedPreferences.getInstance();
   }
 
+  Future<List<Group>> _getGroups() async{
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
+      http.Response response = await http.get(APPURL+'/groups', headers: header);
+      Map<String, dynamic> response2 = jsonDecode(response.body);
+      if(response.statusCode==200){
+        List<Group> groups=[];
+        for(var group in response2['data']){
+          groups.add(Group(groupName: group['group_name'], groupId: group['group_id']));
+        }
+        return groups;
+      }else{
+        throw 'Hiba';
+      }
+    }catch(_){
+      throw 'Hiba';
+    }
+  }
+
+  List<Widget> _generateListTiles(List<Group> groups){
+    return groups.map((group){
+      return ListTile(
+        title: Text(group.groupName),
+        onTap: (){
+          SharedPreferences.getInstance().then((_prefs){
+            _prefs.setString('current_group_name', group.groupName);
+            _prefs.setInt('current_group_id', group.groupId);
+          });
+          setState(() {
+            currentGroupName=group.groupName;
+            currentGroupId=group.groupId;
+          });
+        },
+      );
+    }).toList();
+  }
+
   @override
   void initState() {
     super.initState();
-    getPrefs().then((_prefs){
-      if(!_prefs.containsKey('name')){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
-      }else{
-        setState(() {
-          currentUser=_prefs.get('name');
-        });
-      }
-    });
+    groups=null;
+    groups=_getGroups();
   }
   @override
   Widget build(BuildContext context) {
@@ -97,7 +146,7 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Csocsort számla',
+          currentGroupName??'asd',
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
         ),
 
@@ -152,11 +201,40 @@ class _MainPageState extends State<MainPage> {
                 style: Theme.of(context).textTheme.body2,
               ),
               onTap: () {
-//                Navigator.push(context,
-//                    MaterialPageRoute(builder: (context) => Print()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute())).then((val){
+                  groups=null;
+                  groups=_getGroups();
+                });
               },
             ),
-
+            FutureBuilder(
+              future: groups,
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return ExpansionTile(
+                      title: Text('Csoportok'),
+                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
+                      children: _generateListTiles(snapshot.data),
+                    );
+                  }else{
+                    return InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(snapshot.error.toString()),
+                        ),
+                        onTap: (){
+                          setState(() {
+                            groups=null;
+                            groups=_getGroups();
+                          });
+                        }
+                    );
+                  }
+                }
+                return LinearProgressIndicator();
+              },
+            ),
             Divider(),
             ListTile(
               leading: Icon(

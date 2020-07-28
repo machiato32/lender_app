@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'config.dart';
 import 'shopping_route.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

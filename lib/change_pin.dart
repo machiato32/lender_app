@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'main.dart';
+import 'config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 
@@ -49,11 +49,6 @@ class _ChangePinState extends State<ChangePin> {
           children: <Widget>[
             Center(child: Text('Pin megváltoztatása', style: Theme.of(context).textTheme.title,)),
             SizedBox(height: 10,),
-//            Container(
-//                padding: EdgeInsets.all(5),
-//                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-//                child: Text('Mi a mostani pined?', style: Theme.of(context).textTheme.button,)
-//            ),
             Row(
               children: <Widget>[
                 Text('Jelenlegi PIN kód', style: Theme.of(context).textTheme.body2,),
@@ -109,11 +104,6 @@ class _ChangePinState extends State<ChangePin> {
                 ),
               ],
             ),
-//            Container(
-//                padding: EdgeInsets.all(5),
-//                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(2)),
-//                child: Text('Mi legyen az új pined?', style: Theme.of(context).textTheme.button,)
-//            ),
             SizedBox(height: 20,),
             Row(
               children: <Widget>[

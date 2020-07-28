@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'history.dart';
-import 'main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,21 +9,21 @@ class AllHistoryRoute extends StatefulWidget {
 }
 
 class _AllHistoryRouteState extends State<AllHistoryRoute> {
-  Future<List<HistoryData>> history;
+  Future<List<TransactionData>> history;
   ScrollController _scrollController = ScrollController();
 
 
-  Future<List<HistoryData>> _getHistory() async{
+  Future<List<TransactionData>> _getHistory() async{
     Map<String,dynamic> map ={
-      'name':currentUser
+      'name':'Samu'
     };
     String encoded = jsonEncode(map);
     http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/history/', body: encoded);
 
     List<dynamic> decoded = jsonDecode(response.body)['history'];
 
-    List<HistoryData> history = new List<HistoryData>();
-    decoded.forEach((element){history.add(HistoryData.fromJson(element));});
+    List<TransactionData> history = new List<TransactionData>();
+    decoded.forEach((element){history.add(TransactionData.fromJson(element));});
     history = history.reversed.toList();
     return history;
   }
@@ -44,9 +43,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> {
 
   }
 
-  List<Widget> _generateHistory(List<HistoryData> data){
+  List<Widget> _generateHistory(List<TransactionData> data){
     Function callback=this.callback;
-    return data.map((element){return HistoryEntry(data: element, callback: callback,);}).toList();
+    return data.map((element){return TransactionEntry(data: element, callback: callback,);}).toList();
   }
   @override
   Widget build(BuildContext context) {

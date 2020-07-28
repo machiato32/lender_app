@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'person.dart';
-import 'main.dart';
+import 'config.dart';
 
 class Balances extends StatefulWidget {
   @override
@@ -10,19 +10,28 @@ class Balances extends StatefulWidget {
 }
 
 class _BalancesState extends State<Balances> {
-  Future<List<Person>> money;
+  Future<List<Member>> money;
 
-  Future<List<Person>> getMoney() async {
+  Future<List<Member>> _getMoney() async {
     try{
-      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/');
-      List<dynamic> list = jsonDecode(response.body);
-      List<Person> people = List<Person>();
-      for(var element in list){
-        people.add(Person.fromJson(element));
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
+      http.Response response = await http.get(APPURL+'/groups/'+currentGroupId.toString(), headers: header);
+      Map<String, dynamic> response2 = jsonDecode(response.body);
+      if(response.statusCode==200){
+        List<Member> members=[];
+        for(var member in response2['data']['members']){
+          members.add(Member(nickname: member['nickname'], balance: member['balance']*1.0, userId: member['user_id']));
+        }
+        return members;
+      }else{
+        throw 'ASD';
       }
-      return people;
-    }catch(ex){
-      throw 'Hiba a betöltés közben';
+    }catch(_){
+      throw 'Hiba';
     }
 
   }
@@ -31,13 +40,13 @@ class _BalancesState extends State<Balances> {
   void initState() {
     super.initState();
     money=null;
-    money=getMoney();
+    money=_getMoney();
   }
   @override
   void didUpdateWidget(Balances oldWidget) {
     super.didUpdateWidget(oldWidget);
     money=null;
-    money=getMoney();
+    money=_getMoney();
   }
 
   @override
@@ -60,7 +69,7 @@ class _BalancesState extends State<Balances> {
                   if(snapshot.connectionState==ConnectionState.done){
                     if(snapshot.hasData){
                       return Column(
-                          children: _fromFuture(context, snapshot)
+                          children: _generateBalances(snapshot.data)
                       );
                     }else{
                       return InkWell(
@@ -71,7 +80,7 @@ class _BalancesState extends State<Balances> {
                           onTap: (){
                             setState(() {
                               money=null;
-                              money=getMoney();
+                              money=_getMoney();
                             });
                           }
                       );
@@ -87,10 +96,10 @@ class _BalancesState extends State<Balances> {
     );
   }
 
-  List<Widget> _fromFuture(context, snapshot){
+  List<Widget> _generateBalances(List<Member> members){
 
-    return snapshot.data.map<Widget>((Person person){
-      if(person.name==currentUser){
+    return members.map<Widget>((Member member){
+      if(member.userId==currentUser){
         return Column(
           children: <Widget>[
             Container(
@@ -102,8 +111,8 @@ class _BalancesState extends State<Balances> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(person.name, style: Theme.of(context).textTheme.button,),
-                    Text(person.amount.toString(), style: Theme.of(context).textTheme.button,)
+                    Text(member.nickname, style: Theme.of(context).textTheme.button,),
+                    Text(member.balance.toString(), style: Theme.of(context).textTheme.button,)
                   ],
                 )
             ),
@@ -119,8 +128,8 @@ class _BalancesState extends State<Balances> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(person.name, style: Theme.of(context).textTheme.body2,),
-                  Text(person.amount.toString(), style: Theme.of(context).textTheme.body2,)
+                  Text(member.nickname, style: Theme.of(context).textTheme.body2,),
+                  Text(member.balance.toString(), style: Theme.of(context).textTheme.body2,)
                 ],
               )
           ),

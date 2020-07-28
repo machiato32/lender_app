@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'shopping.dart';
-import 'main.dart';
+import 'config.dart';
 import 'new_expense.dart';
 
 class ShoppingRoute extends StatefulWidget {
