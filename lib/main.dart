@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'config.dart';
 import 'person.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 void main() async {
@@ -108,7 +109,13 @@ class _MainPageState extends State<MainPage> {
         }
         return groups;
       }else{
-        throw 'Hiba';
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        }
+        throw error['error'];
       }
     }catch(_){
       throw 'Hiba';
@@ -201,7 +208,7 @@ class _MainPageState extends State<MainPage> {
                 style: Theme.of(context).textTheme.body2,
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute())).then((val){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginRoute())).then((val){
                   groups=null;
                   groups=_getGroups();
                 });
@@ -260,13 +267,17 @@ class _MainPageState extends State<MainPage> {
         children: [
           SpeedDialChild(
             label: 'Bevásárlás',
-            child: Icon(Icons.shopping_basket),
+            labelBackgroundColor: Theme.of(context).colorScheme.secondary,
+            labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
+            child: Icon(Icons.shopping_cart),
             onTap: (){
               if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.newExpense,)));
             }
           ),
           SpeedDialChild(
             label: 'Fizetés',
+            labelBackgroundColor: Theme.of(context).colorScheme.secondary,
+            labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
             child: Icon(Icons.attach_money),
             onTap: (){
               if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => Payment()));
@@ -274,6 +285,8 @@ class _MainPageState extends State<MainPage> {
           ),
           SpeedDialChild(
             label: 'Bevásárlólista',
+            labelBackgroundColor: Theme.of(context).colorScheme.secondary,
+            labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
             child: Icon(Icons.add_shopping_cart),
             onTap: (){
               if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));
@@ -295,7 +308,6 @@ class _MainPageState extends State<MainPage> {
 
 
             Balances(),
-            ShoppingList(),
             History()
           ],
         ),

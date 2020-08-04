@@ -1,56 +1,19 @@
 import 'package:flutter/material.dart';
-import 'history.dart';
-import 'balances.dart';
+import 'config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'new_expense.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'payment_entry.dart';
 
-class HistoryRoute extends StatefulWidget {
-  final TransactionData data;
-  HistoryRoute({@required this.data});
+class PaymentAllInfo extends StatefulWidget {
+
+  final PaymentData data;
+  PaymentAllInfo(this.data);
   @override
-  _HistoryRouteState createState() => _HistoryRouteState();
+  _PaymentAllInfoState createState() => _PaymentAllInfoState();
 }
 
-class _HistoryRouteState extends State<HistoryRoute> {
-
-  @override
-  Widget build(BuildContext context) {
-    String title='';
-    if(widget.data.name==''){
-      title='Nincs megjegyzés';
-    }else{
-      title=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
-    }
-    return Scaffold(
-      appBar: AppBar(title: Text(title),),
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: (){
-          FocusScope.of(context).unfocus();
-        },
-        child: ListView(
-          children: <Widget>[
-            HistoryAllInfo(widget.data),
-            Balances()
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class HistoryAllInfo extends StatefulWidget {
-
-  final TransactionData data;
-  HistoryAllInfo(this.data);
-  @override
-  _HistoryAllInfoState createState() => _HistoryAllInfoState();
-}
-
-class _HistoryAllInfoState extends State<HistoryAllInfo> {
+class _PaymentAllInfoState extends State<PaymentAllInfo> {
 
   Future<bool> _deleteElement(int id) async {
     try{
@@ -61,8 +24,6 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
 
       String encoded = json.encode(map);
       http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-      int a=8;
-
       return response.statusCode==200;
     }catch(_){
       throw 'Hiba';
@@ -71,10 +32,10 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
   @override
   Widget build(BuildContext context) {
     String note='';
-    if(widget.data.name==''){
+    if(widget.data.note=='' || widget.data.note==null){
       note='Nincs megjegyzés';
     }else{
-      note=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
+      note=widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     }
     return Card(
         child: Padding(
@@ -94,16 +55,16 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.buyerId, style: Theme.of(context).textTheme.body2,)),
+                  Flexible(child: Text(widget.data.payerNickname, style: Theme.of(context).textTheme.body2,)),
                 ],
               ),
               SizedBox(height: 5,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.account_box, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.body2, )),
+                  Flexible(child: Text(widget.data.takerNickname, style: Theme.of(context).textTheme.body2, )),
                 ],
               ),
               SizedBox(height: 5,),
@@ -111,7 +72,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                 children: <Widget>[
                   Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(widget.data.amount.toString(), style: Theme.of(context).textTheme.body2)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -124,7 +85,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
               ),
               SizedBox(height: 10,),
               Visibility(
-                visible: widget.data.type=="payment" || widget.data.type=="add_expense",
+                visible: widget.data.payerId==currentUser,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -201,7 +162,7 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: () async {
                                                 Navigator.pop(context);
-                                                Future<bool> success = _deleteElement(widget.data.transactionId);
+                                                Future<bool> success = _deleteElement(widget.data.paymentId);
                                                 showDialog(
                                                     barrierDismissible: false,
                                                     context: context,
@@ -329,4 +290,3 @@ class _HistoryAllInfoState extends State<HistoryAllInfo> {
     );
   }
 }
-

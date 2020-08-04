@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'history.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'transaction_entry.dart';
 
 class AllHistoryRoute extends StatefulWidget {
   @override

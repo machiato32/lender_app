@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'person.dart';
 import 'config.dart';
+import 'login_route.dart';
 
 class Balances extends StatefulWidget {
   @override
@@ -20,15 +21,20 @@ class _BalancesState extends State<Balances> {
       };
 
       http.Response response = await http.get(APPURL+'/groups/'+currentGroupId.toString(), headers: header);
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+
       if(response.statusCode==200){
+        Map<String, dynamic> response2 = jsonDecode(response.body);
         List<Member> members=[];
         for(var member in response2['data']['members']){
           members.add(Member(nickname: member['nickname'], balance: member['balance']*1.0, userId: member['user_id']));
         }
         return members;
       }else{
-        throw 'ASD';
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        }
+        throw error['error'];
       }
     }catch(_){
       throw 'Hiba';
@@ -100,19 +106,21 @@ class _BalancesState extends State<Balances> {
 
     return members.map<Widget>((Member member){
       if(member.userId==currentUser){
+        TextStyle style = (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).textTheme.body2:Theme.of(context).textTheme.button;
         return Column(
           children: <Widget>[
             Container(
-                padding: EdgeInsets.all(4),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(2),
+                  color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
+                  border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(member.nickname, style: Theme.of(context).textTheme.button,),
-                    Text(member.balance.toString(), style: Theme.of(context).textTheme.button,)
+                    Text(member.nickname, style: style,),
+                    Text(member.balance.toString(), style: style,)
                   ],
                 )
             ),
@@ -123,7 +131,7 @@ class _BalancesState extends State<Balances> {
       return Column(
         children: <Widget>[
           Container(
-              padding: EdgeInsets.all(4),
+              padding: EdgeInsets.all(8),
 
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'config.dart';
 import 'bottom_sheet_custom.dart';
+import 'payment_all_info.dart';
 
 class PaymentData{
   int paymentId;
   double amount;
   DateTime updatedAt;
-  String payerId, payerNickname, takerId, takerNickname;
+  String payerId, payerNickname, takerId, takerNickname, note;
 
   PaymentData({this.paymentId, this.amount, this.updatedAt, this.payerId,
-    this.payerNickname, this.takerId, this.takerNickname});
+    this.payerNickname, this.takerId, this.takerNickname, this.note});
 
   factory PaymentData.fromJson(Map<String, dynamic> json){
     return PaymentData(
@@ -20,7 +21,8 @@ class PaymentData{
         updatedAt: json['updated_at']==null?DateTime.now():DateTime.parse(json['updated_at']),
         payerNickname: json['payer_nickname'],
         takerId: json['taker_id'],
-        takerNickname: json['taker_nickname']
+        takerNickname: json['taker_nickname'],
+        note: json['note']
     );
   }
 
@@ -49,11 +51,19 @@ class _PaymentEntryState extends State<PaymentEntry> {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
 //    note = (widget.data.note=='')?'(Nincs megjegyzés)':widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     if(widget.data.payerId==currentUser){
-      icon=Icon(Icons.call_made, color: Theme.of(context).textTheme.button.color);
-      style=Theme.of(context).textTheme.button;
-      dateColor=Theme.of(context).textTheme.button.color;
+      icon=Icon(Icons.call_made,
+          color: (Theme.of(context).brightness==Brightness.dark)?
+          Theme.of(context).textTheme.body2.color:
+          Theme.of(context).textTheme.button.color);
+      style=(Theme.of(context).brightness==Brightness.dark)?
+        Theme.of(context).textTheme.body2:
+        Theme.of(context).textTheme.button;
+      dateColor=(Theme.of(context).brightness==Brightness.dark)?
+        Theme.of(context).colorScheme.surface:
+        Theme.of(context).textTheme.button.color;
       boxDecoration=BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
+        border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
         borderRadius: BorderRadius.circular(4),
       );
       takerName = widget.data.takerNickname;
@@ -67,6 +77,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
+      height: 75,
+      width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4),
       child: Material(
@@ -78,59 +90,55 @@ class _PaymentEntryState extends State<PaymentEntry> {
                 context: context,
                 backgroundColor: Theme.of(context).cardTheme.color,
                 builder: (context)=>SingleChildScrollView(
-                  //TODO:PaymentAllInfo
-//                    child: HistoryAllInfo(widget.data)
+                    child: PaymentAllInfo(widget.data)
                 )
             ).then((val){
               if(val=='deleted')
                 widget.callback();
             });
-
-
           },
           borderRadius: BorderRadius.circular(4.0),
 
           child: Padding(
 
-            padding: EdgeInsets.all(4),
+            padding: EdgeInsets.all(15),
             child: Flex(
               direction: Axis.horizontal,
               children: <Widget>[
                 Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          icon,
-                          Flexible(child: Text('  '+takerName, style: style,overflow: TextOverflow.ellipsis,),),
-                          Text(': '+amount, style: style,)
-                        ],
-                      ),
+                    child:Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Row(
+                                  children: <Widget>[
+                                    icon,
+                                    Flexible(child: SizedBox(width: 20,),),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Flexible(child: Text(takerName, style: style, overflow: TextOverflow.ellipsis,)),
+                                          Flexible(child: Text(note, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,))
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
 
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-
-                        children: <Widget>[
-                          SizedBox(width: 33,),
-                          Flexible(
-                            child: Text(note, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,),
-                            flex: 1,
+                              Text(amount, style: style,),
+                            ],
                           ),
-
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 33,),
-                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                        ],
-                      ),
-                      SizedBox(height: 4,)
-                    ],
-                  ),
+                        ),
+                      ],
+                    )
                 ),
-
               ],
             ),
           ),

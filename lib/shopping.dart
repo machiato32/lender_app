@@ -419,6 +419,18 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
         },
         child: ListView(
           children: <Widget>[
+//            DefaultTabController(
+//              length: 2,
+//              child: TabBar(
+//                tabs: <Widget>[
+//                  Tab(
+//                    icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.secondary,),
+////                  child: Text('Kaptam', style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),),
+//                  ),
+//                  Tab(icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary,)),
+//                ],
+//              ),
+//            ),
             Padding(
               padding: EdgeInsets.all(15),
               child: Column(
