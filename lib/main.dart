@@ -18,7 +18,7 @@ import 'person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
-
+import 'package:csocsort_szamla/groups/group_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,9 +82,11 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   SharedPreferences prefs;
   Future<List<Group>> groups;
+
+  TabController _tabController;
 
   Future<SharedPreferences> getPrefs() async{
     return await SharedPreferences.getInstance();
@@ -154,6 +156,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     groups=null;
     groups=_getGroups();
   }
@@ -164,157 +167,163 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            currentGroupName??'asd',
-            style: TextStyle(letterSpacing: 0.25, fontSize: 24),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          currentGroupName??'asd',
+          style: TextStyle(letterSpacing: 0.25, fontSize: 24),
         ),
-        drawer: Drawer(
-          elevation: 16,
-          child: ListView(
+      ),
+      bottomNavigationBar: TabBar(
+          controller: _tabController,
+          tabs:[
+            Tab(icon: Icon(Icons.group)),
+            Tab(icon: Icon(Icons.settings)),
+          ]
+      ),
+      drawer: Drawer(
+        elevation: 16,
+        child: ListView(
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              DrawerHeader(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'LENDER',
-                      style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
-                    ),
-                    SizedBox(height: 5,),
-                    Text(
-                      currentUser,
-                      style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),
-                    ),
+          children: <Widget>[
+            DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'LENDER',
+                    style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
+                  ),
+                  SizedBox(height: 5,),
+                  Text(
+                    currentUser,
+                    style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  ),
 //                  SizedBox(height: 20,)
-                  ],
-                ),
+                ],
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.settings,
-                  color: Theme.of(context).textTheme.body2.color,
-                ),
-                title: Text(
-                  'Beállítások',
-                  style: Theme.of(context).textTheme.body2,
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Settings()));
-                },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.body2.color,
               ),
-              Divider(),
+              title: Text(
+                'Beállítások',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
+            ),
+            Divider(),
 
-              ListTile(
-                leading: Icon(
-                  Icons.arrow_forward,
-                  color: Theme.of(context).textTheme.body2.color,
-                ),
-                title: Text(
-                  'Csatlakozás csoporthoz',
-                  style: Theme.of(context).textTheme.body2,
-                ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
-                },
+            ListTile(
+              leading: Icon(
+                Icons.arrow_forward,
+                color: Theme.of(context).textTheme.body2.color,
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.create,
-                  color: Theme.of(context).textTheme.body2.color,
-                ),
-                title: Text(
-                  'Csoport létrehozása',
-                  style: Theme.of(context).textTheme.body2,
-                ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup()));
-                },
+              title: Text(
+                'Csatlakozás csoporthoz',
+                style: Theme.of(context).textTheme.body2,
               ),
-              Divider(),
-              FutureBuilder(
-                future: groups,
-                builder: (context, snapshot){
-                  if(snapshot.connectionState==ConnectionState.done){
-                    if(snapshot.hasData){
-                      return ExpansionTile(
-                        title: Text('Csoportok'),
-                        leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
-                        children: _generateListTiles(snapshot.data),
-                      );
-                    }else{
-                      return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(snapshot.error.toString()),
-                          ),
-                          onTap: (){
-                            setState(() {
-                              groups=null;
-                              groups=_getGroups();
-                            });
-                          }
-                      );
-                    }
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.create,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Csoport létrehozása',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup()));
+              },
+            ),
+            Divider(),
+            FutureBuilder(
+              future: groups,
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return ExpansionTile(
+                      title: Text('Csoportok'),
+                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
+                      children: _generateListTiles(snapshot.data),
+                    );
+                  }else{
+                    return InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(snapshot.error.toString()),
+                        ),
+                        onTap: (){
+                          setState(() {
+                            groups=null;
+                            groups=_getGroups();
+                          });
+                        }
+                    );
                   }
-                  return LinearProgressIndicator();
-                },
+                }
+                return LinearProgressIndicator();
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).textTheme.body2.color,
               ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.account_circle,
-                  color: Theme.of(context).textTheme.body2.color,
-                ),
-                title: Text(
-                  'Kijelentkezés',
-                  style: Theme.of(context).textTheme.body2,
-                ),
-                onTap: () {
-                  _logout();
-                  currentUser=null;
-                  currentGroupId=null;
-                  currentGroupName=null;
-                  apiToken=null;
-                  SharedPreferences.getInstance().then((_prefs) {
-                    _prefs.remove('current_group_name');
-                    _prefs.remove('current_group_id');
-                    _prefs.remove('current_user');
-                    _prefs.remove('api_token');
-                  });
+              title: Text(
+                'Kijelentkezés',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                _logout();
+                currentUser=null;
+                currentGroupId=null;
+                currentGroupName=null;
+                apiToken=null;
+                SharedPreferences.getInstance().then((_prefs) {
+                  _prefs.remove('current_group_name');
+                  _prefs.remove('current_group_id');
+                  _prefs.remove('current_user');
+                  _prefs.remove('api_token');
+                });
 
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()));
-                },
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
               ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.bug_report,
-                  color: Colors.red,
-                ),
-                title: Text(
-                  'Probléma jelentése',
-                  style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {},
-                enabled: false,
+              title: Text(
+                'Probléma jelentése',
+                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
               ),
+              onTap: () {},
+              enabled: false,
+            ),
 
-            ],
-          ),
+          ],
         ),
-        floatingActionButton: SpeedDial(
+      ),
+      floatingActionButton: Visibility(//TODO: fix
+        visible: _tabController.index==0,
+        child: SpeedDial(
           child: Icon(Icons.add),
           overlayColor: (Theme.of(context).brightness==Brightness.dark)?Colors.black:Colors.white,
 //        animatedIcon: AnimatedIcons.menu_close,
@@ -354,41 +363,31 @@ class _MainPageState extends State<MainPage> {
 //          ),
           ],
         ),
-        body: RefreshIndicator(
-          onRefresh: (){
-            return getPrefs().then((_money) {
-              setState(() {
-
-              });
-            });
-          },
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-
-
-              Balances(),
-              History(callback: callback,)
-            ],
-          ),
-        ),
-
       ),
-    );
-  }
-}
+      body: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: <Widget>[
+          RefreshIndicator(
+            onRefresh: (){
+              return getPrefs().then((_money) {
+                setState(() {
 
-class Router {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case '/':
-        return MaterialPageRoute(builder: (_) => MainPage());
-      default:
-        return MaterialPageRoute(
-            builder: (_) => Scaffold(
-              body: Center(
-                  child: Text('No route defined for ${settings.name}')),
-            ));
-    }
+                });
+              });
+            },
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Balances(),
+                History(callback: callback,)
+              ],
+            ),
+          ),
+          GroupSettings(),
+        ]
+      ),
+
+    );
   }
 }

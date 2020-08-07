@@ -21,11 +21,11 @@ class _SettingsState extends State<Settings> {
         },
         child: ListView(
           children: <Widget>[
-            SwitchUser(),
-            Visibility(
-              visible: (currentUser!=''),
-              child: ChangePin()
-            ),
+//            SwitchUser(),
+//            Visibility(
+//              visible: (currentUser!=''),
+//              child: ChangePin()
+//            ),
             ColorPicker(),
           ],
         ),
