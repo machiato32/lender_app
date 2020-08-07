@@ -16,6 +16,12 @@ class Member{
     return nickname;
   }
 
+  Map toJson(){
+    return {
+      'user_id':userId
+    };
+  }
+
 }
 class Group{
   String groupName;

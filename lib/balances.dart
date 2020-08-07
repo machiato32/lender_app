@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'person.dart';
 import 'config.dart';
-import 'login_route.dart';
+import 'package:csocsort_szamla/auth/login_route.dart';
 
 class Balances extends StatefulWidget {
   @override

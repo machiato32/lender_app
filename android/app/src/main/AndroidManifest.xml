@@ -10,8 +10,8 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Csocsort"
-        android:icon="@mipmap/soccer_table_icon">
+        android:label="Lender"
+        android:icon="@mipmap/dodo_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

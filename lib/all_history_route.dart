@@ -14,7 +14,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> {
   ScrollController _scrollController = ScrollController();
 
 
-  Future<List<TransactionData>> _getHistory() async{
+  Future<List<TransactionData>> _getHistory() async{//TODO: migrate
     Map<String,dynamic> map ={
       'name':'Samu'
     };

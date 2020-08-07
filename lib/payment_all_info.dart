@@ -17,16 +17,15 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
 
   Future<bool> _deleteElement(int id) async {
     try{
-      Map<String, dynamic> map = {
-        "type":'delete',
-        "Transaction_Id":id
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
       };
 
-      String encoded = json.encode(map);
-      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-      return response.statusCode==200;
+      http.Response response = await http.delete(APPURL+'/payments/'+id.toString(), headers: header);
+      return response.statusCode==204;
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
   @override

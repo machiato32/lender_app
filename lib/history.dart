@@ -5,10 +5,12 @@ import 'all_history_route.dart';
 import 'config.dart';
 import 'payment_entry.dart';
 import 'transaction_entry.dart';
-import 'login_route.dart';
+import 'package:csocsort_szamla/auth/login_route.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class History extends StatefulWidget {
+  Function callback;
+  History({this.callback});
   @override
   _HistoryState createState() => _HistoryState();
 
@@ -28,8 +30,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
       };
 
       http.Response response = await http.get(APPURL+'/transactions?group='+currentGroupId.toString(), headers: header);
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+
       if(response.statusCode==200){
+        List<dynamic> response2 = jsonDecode(response.body)['data'];
         List<TransactionData> transactionData=[];
         for(var data in response2){
           transactionData.add(TransactionData.fromJson(data));
@@ -77,13 +80,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
   }
 
   void callback() {
-
-    setState(() {
-      payments = null;
-      payments=_getPayments();
-      transactions=null;
-      transactions=_getTransactions();
-    });
+    widget.callback();
+    payments = null;
+    payments=_getPayments();
+    transactions=null;
+    transactions=_getTransactions();
   }
 
   @override
@@ -125,7 +126,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
               ],
             ),
             Container(
-              height: 400,
+              height: 500,
               child: TabBarView(
                 controller: _controller,
                 children: <Widget>[

@@ -110,7 +110,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
-      height: 75,
+      height: 80,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4, left: 4, right: 4),
@@ -152,13 +152,13 @@ class _TransactionEntryState extends State<TransactionEntry> {
                                 child: Row(
                                   children: <Widget>[
                                     icon,
-                                    Flexible(child: SizedBox(width: 20,),),
+                                    SizedBox(width: 20,),
                                     Flexible(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Flexible(child: Text(note, style: style, overflow: TextOverflow.ellipsis,)),
+                                          Flexible(child: Text(note, style: style.copyWith(fontSize: 22), overflow: TextOverflow.ellipsis,)),
                                           Flexible(child: Text(names, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,))
                                         ],
                                       ),
@@ -168,6 +168,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
                               ),
 
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(amount, style: style,),
                                   Visibility(

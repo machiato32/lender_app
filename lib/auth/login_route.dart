@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'config.dart';
+import 'package:csocsort_szamla/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'main.dart';
-import 'person.dart';
+import 'package:csocsort_szamla/main.dart';
+import 'package:csocsort_szamla/person.dart';
+import 'package:csocsort_szamla/groups/join_group.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -96,8 +97,7 @@ class _LoginRouteState extends State<LoginRoute> {
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                 onPressed: (){
-                                  Navigator.pop(context);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
                                 },
                                 label: Text('Rendben', style: Theme.of(context).textTheme.button,),
                                 color: Theme.of(context).colorScheme.secondary,
@@ -110,15 +110,15 @@ class _LoginRouteState extends State<LoginRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("Hiba a bejelentkezéskor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
-                                  icon: Icon(Icons.clear, color: Colors.white,),
+                                  icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                   onPressed: (){
-                                    Navigator.pop(context);
+                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup()), (r)=>false);
                                   },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
-                                  color: Colors.red,
+                                  label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                  color: Theme.of(context).colorScheme.secondary,
                                 )
                               ],
                             ),
@@ -174,6 +174,10 @@ class _LoginRouteState extends State<LoginRoute> {
         if(groups.length>0){
           currentGroupName=groups[0].groupName;
           currentGroupId=groups[0].groupId;
+          SharedPreferences.getInstance().then((_prefs){
+            _prefs.setString('current_group_name', currentGroupName);
+            _prefs.setInt('current_group_id', currentGroupId);
+          });
           return true;
         }
         return false;
@@ -198,8 +202,8 @@ class _LoginRouteState extends State<LoginRoute> {
 
       String bodyEncoded = jsonEncode(body);
       http.Response response = await http.post(APPURL+'/login', headers: header, body: bodyEncoded);
-      Map<String, dynamic> response2 = jsonDecode(response.body);
       if(response.statusCode==200){
+        Map<String, dynamic> response2 = jsonDecode(response.body);
         apiToken=response2['data']['api_token'];
 
         currentUser=response2['data']['id'];
@@ -208,8 +212,14 @@ class _LoginRouteState extends State<LoginRoute> {
           _prefs.setString('current_user', currentUser);
           _prefs.setString('api_token', apiToken);
         });
+        return await _selectGroup();
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        }
+        throw error['error'];
       }
-      return await _selectGroup();
     }catch(_){
       throw _;
     }

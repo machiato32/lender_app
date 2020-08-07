@@ -42,14 +42,14 @@ class _PaymentEntryState extends State<PaymentEntry> {
   TextStyle style;
   BoxDecoration boxDecoration;
   String date;
-  String note='(Nincs megjegyzés)';
+  String note;
   String takerName;
   String amount;
 
   @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-//    note = (widget.data.note=='')?'(Nincs megjegyzés)':widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
+    note = (widget.data.note=='' || widget.data.note==null)?'Nincs megjegyzés':widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     if(widget.data.payerId==currentUser){
       icon=Icon(Icons.call_made,
           color: (Theme.of(context).brightness==Brightness.dark)?
@@ -77,7 +77,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
-      height: 75,
+      height: 80,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4),
@@ -117,13 +117,13 @@ class _PaymentEntryState extends State<PaymentEntry> {
                                 child: Row(
                                   children: <Widget>[
                                     icon,
-                                    Flexible(child: SizedBox(width: 20,),),
+                                    SizedBox(width: 20,),
                                     Flexible(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Flexible(child: Text(takerName, style: style, overflow: TextOverflow.ellipsis,)),
+                                          Flexible(child: Text(takerName, style: style.copyWith(fontSize: 22), overflow: TextOverflow.ellipsis,)),
                                           Flexible(child: Text(note, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,))
                                         ],
                                       ),

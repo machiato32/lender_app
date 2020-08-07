@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'shopping.dart';
 import 'config.dart';
-import 'new_expense.dart';
+import 'add_transaction_route.dart';
 
 class ShoppingRoute extends StatefulWidget {
   final ShoppingData data;
@@ -295,7 +295,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                       onPressed: (){
                                                         Navigator.pop(context);
                                                         Navigator.pop(context, 'deleted');
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransactionRoute(
                                                           type: ExpenseType.fromShopping, shoppingData: widget.data,
                                                         )));
                                                       },
