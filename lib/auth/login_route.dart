@@ -157,7 +157,7 @@ class _LoginRouteState extends State<LoginRoute> {
     );
   }
 
-  Future<bool> _selectGroup() async {
+  Future<bool> _selectGroup(int lastActiveGroup) async {
     try{
       Map<String, String> header = {
         "Content-Type": "application/json",
@@ -165,13 +165,22 @@ class _LoginRouteState extends State<LoginRoute> {
       };
 
       http.Response response = await http.get(APPURL+'/groups', headers: header);
-      Map<String, dynamic> response2 = jsonDecode(response.body);
       if(response.statusCode==200){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
         List<Group> groups=[];
-        for(var group in response2['data']){
+        for(var group in decoded['data']){
           groups.add(Group(groupName: group['group_name'], groupId: group['group_id']));
         }
         if(groups.length>0){
+          if(groups.where((group) => group.groupId==lastActiveGroup).toList().length!=0){
+            currentGroupName=groups.firstWhere((group) => group.groupId==lastActiveGroup).groupName;
+            currentGroupId=lastActiveGroup;
+            SharedPreferences.getInstance().then((_prefs){
+              _prefs.setString('current_group_name', currentGroupName);
+              _prefs.setInt('current_group_id', currentGroupId);
+            });
+            return true;
+          }
           currentGroupName=groups[0].groupName;
           currentGroupId=groups[0].groupId;
           SharedPreferences.getInstance().then((_prefs){
@@ -182,10 +191,11 @@ class _LoginRouteState extends State<LoginRoute> {
         }
         return false;
       }else{
-        throw 'Hiba';
+        Map<String, dynamic> error = jsonDecode(response.body);
+        throw error['error'];
       }
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -203,21 +213,18 @@ class _LoginRouteState extends State<LoginRoute> {
       String bodyEncoded = jsonEncode(body);
       http.Response response = await http.post(APPURL+'/login', headers: header, body: bodyEncoded);
       if(response.statusCode==200){
-        Map<String, dynamic> response2 = jsonDecode(response.body);
-        apiToken=response2['data']['api_token'];
-
-        currentUser=response2['data']['id'];
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        apiToken=decoded['data']['api_token'];
+        currentUser=decoded['data']['id'];
 
         SharedPreferences.getInstance().then((_prefs){
           _prefs.setString('current_user', currentUser);
           _prefs.setString('api_token', apiToken);
         });
-        return await _selectGroup();
+
+        return await _selectGroup(decoded['data']['last_active_group']);
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
-        if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
-        }
         throw error['error'];
       }
     }catch(_){

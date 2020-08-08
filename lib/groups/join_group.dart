@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:csocsort_szamla/auth/login_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
+import 'create_group.dart';
+import 'package:csocsort_szamla/user_settings.dart';
+import 'package:csocsort_szamla/auth/login_or_register.dart';
 
 class JoinGroup extends StatefulWidget {
   @override
@@ -15,6 +18,20 @@ class JoinGroup extends StatefulWidget {
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0]);
+
+  Future _logout() async{
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
+      http.Response response = await http.get(APPURL+'/logout', headers: header);
+
+    }catch(_){
+      throw _;
+    }
+  }
 
   Future<bool> _joinGroup(String token, String nickname) async {
     try{
@@ -48,7 +65,7 @@ class _JoinGroupState extends State<JoinGroup> {
       }
       return response.statusCode==200;
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -59,6 +76,86 @@ class _JoinGroupState extends State<JoinGroup> {
         title: Text(
           'Csatlakozás',
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+        ),
+      ),
+      drawer: Drawer(
+        elevation: 16,
+        child: ListView(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'LENDER',
+                    style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
+                  ),
+                  SizedBox(height: 5,),
+                  Text(
+                    currentUser,
+                    style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  ),
+//                  SizedBox(height: 20,)
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Beállítások',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
+            ),
+            Divider(),
+
+            ListTile(
+              leading: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Kijelentkezés',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                _logout();
+                currentUser=null;
+                currentGroupId=null;
+                currentGroupName=null;
+                apiToken=null;
+                SharedPreferences.getInstance().then((_prefs) {
+                  _prefs.remove('current_group_name');
+                  _prefs.remove('current_group_id');
+                  _prefs.remove('current_user');
+                  _prefs.remove('api_token');
+                });
+
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Probléma jelentése',
+                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {},
+              enabled: false,
+            ),
+
+          ],
         ),
       ),
       body: GestureDetector(
@@ -117,6 +214,22 @@ class _JoinGroupState extends State<JoinGroup> {
                     ],
                   ),
                 ),
+              ],
+            ),
+            SizedBox(height: 40,),
+            Divider(),
+            SizedBox(height: 40,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text('Nincs még csoportod?', style: Theme.of(context).textTheme.body2.copyWith(fontSize: 22),),
+//                SizedBox(width: 0,),
+                Flexible(
+                    child: GestureDetector(
+                      child: Text('Csoport létrehozása', style: Theme.of(context).textTheme.body1.copyWith(decoration: TextDecoration.underline, fontSize: 22),),
+                      onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
+                    )
+                )
               ],
             ),
           ],

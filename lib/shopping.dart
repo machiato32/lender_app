@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
 import 'config.dart';
-import 'shopping_route.dart';
+import 'shopping_all_info.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'all_shopping_route.dart';
 import 'bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/auth/login_route.dart';
 
-class ShoppingData {
-  DateTime date;
-  String user, fulfilledUser;
-  String item, quantity;
-  int shoppingId;
-  bool fulfilled;
+class ShoppingRequestData {
+  int requestId;
+  String name;
+  String requesterId, requesterNickname;
+  DateTime updatedAt;
 
-  ShoppingData({this.date, this.user, this.fulfilledUser, this.item, this.quantity, this.shoppingId, this.fulfilled});
+  ShoppingRequestData({this.updatedAt, this.requesterId, this.name, this.requestId, this.requesterNickname});
 
-  factory ShoppingData.fromJson(Map<String,dynamic> json){
-    return ShoppingData(
-        shoppingId: json['Id'],
-        user: json['User'],
-        item: json['Name'],
-        date: DateTime.parse(json['Date']),
-        quantity: json['Quantity'],
-        fulfilled: json['Fulfilled']==1,
-        fulfilledUser: json['Fulfilled_by']
+  factory ShoppingRequestData.fromJson(Map<String,dynamic> json){
+    return ShoppingRequestData(
+        requestId: json['request_id'],
+        requesterId: json['requester_id'],
+        requesterNickname: json['requester_nickname'],
+        name: json['name'],
+        updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 
@@ -38,115 +36,253 @@ class ShoppingList extends StatefulWidget {
 
 class _ShoppingListState extends State<ShoppingList> {
 
-  Future<List<ShoppingData>> shoppingList;
+  Future<List<ShoppingRequestData>> _shoppingList;
 
-  Future<List<ShoppingData>> _getShoppingList() async{
+  TextEditingController _addRequestController = TextEditingController();
+
+  Future<List<ShoppingRequestData>> _getShoppingList() async{
     try{
-      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/list/');
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+      http.Response response = await http.get(APPURL+'/requests?group='+currentGroupId.toString(), headers: header);
+      if(response.statusCode==200){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
 
-      List<dynamic> decoded = jsonDecode(response.body);
+        List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
+        decoded['data']['active'].forEach((element){shopping.add(ShoppingRequestData.fromJson(element));});
+        shopping = shopping.reversed.toList();
+        return shopping;
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+        }
+        throw error['error'];
+      }
 
-      List<ShoppingData> shopping = new List<ShoppingData>();
-      decoded.forEach((element){shopping.add(ShoppingData.fromJson(element));});
-      shopping = shopping.reversed.toList();
-      return shopping;
-    }catch(ex){
-      throw 'Hiba a betöltés közben';
+
+    }catch(_){
+      throw _;
+    }
+  }
+
+  Future<bool> _postShoppingRequest(String name) async{
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+      Map<String, dynamic> body ={
+        'group':currentGroupId,
+        'name':name
+      };
+      String encodedBody = jsonEncode(body);
+      http.Response response = await http.post(APPURL+'/requests', headers: header, body: encodedBody);
+      if(response.statusCode==201){
+        return true;
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+        }
+        throw error['error'];
+      }
+    }catch(_){
+      throw _;
     }
   }
 
   void callback(){
     setState(() {
-      shoppingList=null;
-      shoppingList=_getShoppingList();
+      _shoppingList=null;
+      _shoppingList=_getShoppingList();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    shoppingList=null;
-    shoppingList = _getShoppingList();
+    _shoppingList=null;
+    _shoppingList = _getShoppingList();
   }
   @override
   void didUpdateWidget(ShoppingList oldWidget) {
-    shoppingList=null;
-    shoppingList = _getShoppingList();
+    _shoppingList=null;
+    _shoppingList = _getShoppingList();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: <Widget>[
-            Text('Bevásárlólista', style: Theme.of(context).textTheme.title,),
-            SizedBox(height: 40,),
-            Center(
-              child: FutureBuilder(
-                future: shoppingList,
-                builder: (context, snapshot){
-                  if(snapshot.connectionState==ConnectionState.done){
-                    if(snapshot.hasData){
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: (){
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: ListView(
+        padding: EdgeInsets.all(15),
+        children: <Widget>[
+          Center(child: Text('Bevásárlólista', style: Theme.of(context).textTheme.title,)),
+          SizedBox(height: 20,),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: TextField(
 
-                      return Column(
-                        children: <Widget>[
-                          Column(
-                              children: _generateShoppingList(snapshot.data)
-                          ),
-                          Visibility(
-                            visible: (snapshot.data as List).where((element) => element.fulfilled==false).toList().length>3,
-                            child: FlatButton.icon(
-                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));},
-                                icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
-                                label: Text('Több', style: Theme.of(context).textTheme.button,),
-                                color: Theme.of(context).colorScheme.secondary
-                            ),
-                          )
-                        ],
-//                        children: generateHistory(snapshot.data)
-//                          HistoryElement(data: snapshot.data[index], callback: this.callback,);
-                      );
-                    }else{
-                      return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(snapshot.error.toString()),
-                          ),
-                          onTap: (){
-                            setState(() {
-                              shoppingList=null;
-                              shoppingList=_getShoppingList();
-                            });
-                          }
-                      );
-                    }
-                  }
-                  return CircularProgressIndicator();
+                  decoration: InputDecoration(
+                    hintText: 'Kívánságom',
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                    ) ,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                    ) ,
+
+                  ),
+                  controller: _addRequestController,
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              SizedBox(width: 20,),
+              RaisedButton(
+                color: Theme.of(context).colorScheme.secondary,
+                child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  String _name = _addRequestController.text;
+                  _addRequestController.text='';
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      child: Dialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        child: FutureBuilder(
+                          future: _postShoppingRequest(_name),
+                          builder: (context, snapshot){
+                            if(snapshot.connectionState==ConnectionState.done){
+                              if(snapshot.hasData){
+                                if(snapshot.data){
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(child: Text("A hozzáadás sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      SizedBox(height: 15,),
+                                      FlatButton.icon(
+                                        icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _shoppingList=null;
+                                            _shoppingList=_getShoppingList();
+                                          });
+                                        },
+                                        label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      )
+                                    ],
+                                  );
+                                }else{
+                                  return Container(
+                                    color: Colors.transparent ,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(child: Text("Hiba a csatlakozáskor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                        SizedBox(height: 15,),
+                                        FlatButton.icon(
+                                          icon: Icon(Icons.clear, color: Colors.white,),
+                                          onPressed: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+
+                                            });
+                                          },
+                                          label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                          color: Colors.red,
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                              }else{
+                                return Container(
+                                  color: Colors.transparent ,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      SizedBox(height: 15,),
+                                      FlatButton.icon(
+                                        icon: Icon(Icons.clear, color: Colors.white,),
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        },
+                                        label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                        color: Colors.red,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                            }
+                            return Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      )
+                  );
                 },
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          SizedBox(height: 40,),
+          FutureBuilder(
+            future: _shoppingList,
+            builder: (context, snapshot){
+              if(snapshot.connectionState==ConnectionState.done){
+                if(snapshot.hasData){
+                  return Column(
+                    children: _generateShoppingList(snapshot.data)
+                  );
+                }else{
+                  return InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Text(snapshot.error.toString()),
+                      ),
+                      onTap: (){
+                        setState(() {
+                          _shoppingList=null;
+                          _shoppingList=_getShoppingList();
+                        });
+                      }
+                  );
+                }
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+        ],
       ),
     );
   }
-  List<Widget> _generateShoppingList(List<ShoppingData> data){
-    data=data.where((element) => element.fulfilled==false).toList();
-    if(data.length>3){
-      data=data.take(3).toList();
-    }
-    Function callback=this.callback;
+  List<Widget> _generateShoppingList(List<ShoppingRequestData> data){
     return data.map((element){
-      return ShoppingListEntry(data: element, callback: callback,);
+      return ShoppingListEntry(data: element, callback: this.callback,);
     }).toList();
   }
 }
 
 class ShoppingListEntry extends StatefulWidget {
-  final ShoppingData data;
+  final ShoppingRequestData data;
   final Function callback;
   const ShoppingListEntry({this.data, this.callback});
   @override
@@ -160,96 +296,103 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   BoxDecoration boxDecoration;
 
   String date;
-  String item;
-  String quantity;
+  String name;
   String user;
 
 
 
   @override
   Widget build(BuildContext context) {
-    item = widget.data.item;
-    user = widget.data.user;
-    quantity = widget.data.quantity[0].toUpperCase()+widget.data.quantity.substring(1);
-    date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.date);
-    if(widget.data.user==currentUser){
-      style=Theme.of(context).textTheme.button;
-      dateColor=Theme.of(context).textTheme.button.color;
-      icon=Icon(Icons.check_box, color: dateColor);
+    name = widget.data.name;
+    user = widget.data.requesterId;
+    date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
+    if(widget.data.requesterId==currentUser){
+      style=(Theme.of(context).brightness==Brightness.dark)?
+      Theme.of(context).textTheme.body2:
+      Theme.of(context).textTheme.button;
+      dateColor=(Theme.of(context).brightness==Brightness.dark)?
+      Theme.of(context).colorScheme.surface:
+      Theme.of(context).textTheme.button.color;
+      icon=Icon(Icons.receipt, color: style.color);
       boxDecoration=BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
+        border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
         borderRadius: BorderRadius.circular(4),
       );
     }else{
       style=Theme.of(context).textTheme.body2;
       dateColor=Theme.of(context).colorScheme.surface;
-      icon=Icon(Icons.check, color: style.color,);
+      icon=Icon(Icons.receipt, color: style.color,);
       boxDecoration=BoxDecoration();
     }
     return Container(
+      height: 80,
+      width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
-      margin: EdgeInsets.only(bottom: 4),
+      margin: EdgeInsets.only(bottom: 4, left: 4, right: 4),
       child: Material(
         type: MaterialType.transparency,
+
         child: InkWell(
           onTap: () async {
             showModalBottomSheetCustom(
-              context: context,
-              backgroundColor: Theme.of(context).cardTheme.color,
-              builder: (context)=>SingleChildScrollView(
-                child: ShoppingAllInfo(widget.data)
-              )
+                context: context,
+                backgroundColor: Theme.of(context).cardTheme.color,
+                builder: (context)=>SingleChildScrollView(
+                    child: ShoppingAllInfo(widget.data)
+                )
             ).then((val){
               if(val=='deleted')
                 widget.callback();
             });
+
+
           },
           borderRadius: BorderRadius.circular(4.0),
+
           child: Padding(
-            padding: EdgeInsets.all(4),
+
+            padding: EdgeInsets.all(15),
             child: Flex(
               direction: Axis.horizontal,
               children: <Widget>[
                 Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          icon,
-                          Flexible(child: Text('  '+quantity+' '+item, style: style, overflow: TextOverflow.ellipsis)),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 33,),
-                          Flexible(child: Text(user, style: style.copyWith(fontSize: 15), overflow: TextOverflow.ellipsis)),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 33,),
-                          Text(date, style: TextStyle(color: dateColor, fontSize: 15),)
-                        ],
-                      ),
-                      SizedBox(height: 4,)
-                    ],
-                  ),
+                    child:Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Row(
+                            children: <Widget>[
+                              icon,
+                              SizedBox(width: 20,),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Flexible(child: Text(name, style: style.copyWith(fontSize: 22), overflow: TextOverflow.ellipsis,)),
+                                    Flexible(child: Text(widget.data.requesterNickname, style: TextStyle(color: dateColor, fontSize: 15), overflow: TextOverflow.ellipsis,))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
                 ),
               ],
-
             ),
           ),
         ),
       ),
-
     );
   }
 }
 
 
 class AddShoppingRoute extends StatefulWidget {
-  final ShoppingData data;
+  final ShoppingRequestData data;
   AddShoppingRoute({this.data});
 
   @override
@@ -273,8 +416,8 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
       http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
 
       return response.statusCode==200;
-    }catch(ex){
-      throw 'Hiba történt';
+    }catch(_){
+      throw _;
     }
   }
 
@@ -296,8 +439,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
   }
 
   void setInitialValues(){
-    itemController.text=widget.data.item;
-    quantityController.text=widget.data.quantity;
+    itemController.text=widget.data.name;
   }
 
   @override
@@ -386,7 +528,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                 )
             );
             if(widget.data!=null){
-              _deleteShopping(widget.data.shoppingId);
+              _deleteShopping(widget.data.requestId);
             }
           }else{
             Widget toast = Container(

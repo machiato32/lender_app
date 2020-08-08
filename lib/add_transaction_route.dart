@@ -30,7 +30,7 @@ enum ExpenseType{
 class AddTransactionRoute extends StatefulWidget {
   final ExpenseType type;
   final SavedExpense expense;
-  final ShoppingData shoppingData;
+  final ShoppingRequestData shoppingData;
   AddTransactionRoute({@required this.type, this.expense, this.shoppingData});
   @override
   _AddTransactionRouteState createState() => _AddTransactionRouteState();
@@ -39,7 +39,7 @@ class AddTransactionRoute extends StatefulWidget {
 class _AddTransactionRouteState extends State<AddTransactionRoute> {
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-  Future<List<Member>> names;
+  Future<List<Member>> _names;
   Future<bool> success;
   Map<Member,bool> checkboxBool = Map<Member,bool>();
   FocusNode _focusNode = FocusNode();
@@ -69,7 +69,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         throw error['error'];
       }
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
 
   }
@@ -116,8 +116,16 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       String encoded = json.encode(map);
 
       http.Response response = await http.post(APPURL+'/transactions', body: encoded, headers: header);
-      //TODO: excepitons
-      return response.statusCode==201;
+      if(response.statusCode==201){
+        return true;
+      }
+      else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        }
+        throw error['error'];
+      }
     }catch(_){
       throw _;
     }
@@ -130,7 +138,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       noteController.text = widget.expense.note;
       amountController.text=widget.expense.amount.toString();
     }else{
-      noteController.text=widget.shoppingData.quantity+' '+widget.shoppingData.item;
+      noteController.text=widget.shoppingData.name;
     }
   }
 
@@ -140,7 +148,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     if(widget.type==ExpenseType.fromSavedExpense || widget.type==ExpenseType.fromShopping){
       setInitialValues();
     }
-    names = _getNames();
+    _names = _getNames();
 
     _focusNode.addListener((){
       setState(() {
@@ -227,42 +235,58 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(height: 20,),
                   Divider(),
                   Center(
-                    child: FutureBuilder(//TODO: connectionState
-                      future: names,
+                    child: FutureBuilder(
+                      future: _names,
                       builder: (context, snapshot){
-                        if(snapshot.hasData){
-                          for(Member member in snapshot.data){
-                            checkboxBool.putIfAbsent(member, () => false);
-                          }
+                        if(snapshot.connectionState==ConnectionState.done){
+                          if(snapshot.hasData){
+                            for(Member member in snapshot.data){
+                              checkboxBool.putIfAbsent(member, () => false);
+                            }
 //                          if(widget.type==ExpenseType.fromSavedExpense && widget.expense.names!=null){
 //                            for(String name in widget.expense.names){
 //                              checkboxBool[name]=true;
 //                            }
 //                            widget.expense.names=null;
-//                          }else if(widget.type==ExpenseType.fromShopping){
-//                            checkboxBool[widget.shoppingData.user]=true;
-//                          }
-                          return Wrap(
-                            spacing: 10,
-                            children: snapshot.data.map<ChoiceChip>((Member member)=>
-                                ChoiceChip(
-                                  label: Text(member.nickname),
-                                  pressElevation: 30,
-                                  selected: checkboxBool[member],
-                                  onSelected: (bool newValue){
-                                    FocusScope.of(context).unfocus();
-                                    setState(() {
-                                      checkboxBool[member]=newValue;
-                                    });
-                                  },
-                                  labelStyle: checkboxBool[member]
-                                      ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
-                                      :Theme.of(context).textTheme.body2,
-                                  backgroundColor: Theme.of(context).colorScheme.onSurface,
-                                  selectedColor: Theme.of(context).colorScheme.secondary,
-                                )
-                            ).toList(),
-                          );
+//                          }else
+                            if(widget.type==ExpenseType.fromShopping){
+                              checkboxBool[(snapshot.data as List<Member>).firstWhere((member) => member.userId==widget.shoppingData.requesterId)]=true;
+                            }
+                            return Wrap(
+                              spacing: 10,
+                              children: snapshot.data.map<ChoiceChip>((Member member)=>
+                                  ChoiceChip(
+                                    label: Text(member.nickname),
+                                    pressElevation: 30,
+                                    selected: checkboxBool[member],
+                                    onSelected: (bool newValue){
+                                      FocusScope.of(context).unfocus();
+                                      setState(() {
+                                        checkboxBool[member]=newValue;
+                                      });
+                                    },
+                                    labelStyle: checkboxBool[member]
+                                        ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
+                                        :Theme.of(context).textTheme.body2,
+                                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                                    selectedColor: Theme.of(context).colorScheme.secondary,
+                                  )
+                              ).toList(),
+                            );
+                          }else{
+                            return InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(32.0),
+                                  child: Text(snapshot.error.toString()),
+                                ),
+                                onTap: (){
+                                  setState(() {
+                                    _names=null;
+                                    _names=_getNames();
+                                  });
+                                }
+                            );
+                          }
                         }
                         return CircularProgressIndicator();
                       },
@@ -445,9 +469,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
           if(widget.type==ExpenseType.fromSavedExpense){
             f=_deleteExpense;
             param=widget.expense.iD;
-          }else if(widget.type==ExpenseType.fromShopping){
-            f=_fulfillShopping;
-            param=widget.shoppingData.shoppingId;
           }else{
             f=(par){return true;};
             param=5;

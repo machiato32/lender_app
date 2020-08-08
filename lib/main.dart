@@ -19,6 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
+import 'shopping.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,11 @@ class _LenderAppState extends State<LenderApp>{
         return MaterialApp(
           title: 'Lender',
           theme: appState.theme,
-          home: currentUser==null?LoginOrRegisterRoute():MainPage(), //TODO: where to navigate
+          home: currentUser==null?
+            LoginOrRegisterRoute():
+            (currentGroupId==null)?
+              JoinGroup():
+              MainPage(),
         );
 
       },
@@ -87,6 +92,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   Future<List<Group>> groups;
 
   TabController _tabController;
+  int _selectedIndex=0;
 
   Future<SharedPreferences> getPrefs() async{
     return await SharedPreferences.getInstance();
@@ -100,10 +106,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       };
 
       http.Response response = await http.get(APPURL+'/groups', headers: header);
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+
       if(response.statusCode==200){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
         List<Group> groups=[];
-        for(var group in response2['data']){
+        for(var group in decoded['data']){
           groups.add(Group(groupName: group['group_name'], groupId: group['group_id']));
         }
         return groups;
@@ -112,12 +119,42 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginRoute()));//TODO: push until
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
         }
         throw error['error'];
       }
     }catch(_){
-      throw 'Hiba';
+      throw _;
+    }
+  }
+
+  Future<String> _getCurrentGroup() async {
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
+      http.Response response = await http.get(APPURL+'/groups/'+currentGroupId.toString(), headers: header);
+
+      if(response.statusCode==200){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        currentGroupName=decoded['data']['group_name'];
+        SharedPreferences.getInstance().then((_prefs){
+          _prefs.setString('current_group_name', currentGroupName);
+        });
+        return currentGroupName;
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+        }
+        throw error['error'];
+      }
+    }catch(_){
+      throw _;
     }
   }
 
@@ -131,7 +168,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       http.Response response = await http.get(APPURL+'/logout', headers: header);
 
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -140,13 +177,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       return ListTile(
         title: Text(group.groupName),
         onTap: (){
+          currentGroupName=group.groupName;
+          currentGroupId=group.groupId;
           SharedPreferences.getInstance().then((_prefs){
             _prefs.setString('current_group_name', group.groupName);
             _prefs.setInt('current_group_id', group.groupId);
           });
           setState(() {
-            currentGroupName=group.groupName;
-            currentGroupId=group.groupId;
+            _selectedIndex=0;
+            _tabController.animateTo(_selectedIndex);
           });
         },
       );
@@ -156,7 +195,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     groups=null;
     groups=_getGroups();
   }
@@ -173,17 +212,48 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          currentGroupName??'asd',
-          style: TextStyle(letterSpacing: 0.25, fontSize: 24),
-        ),
+        title:
+        FutureBuilder(
+          future: _getCurrentGroup(),
+          builder: (context, snapshot){
+            if(snapshot.connectionState==ConnectionState.done){
+              if(snapshot.hasData){
+                return Text(
+                  snapshot.data,
+                  style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+                );
+              }
+            }
+            return Text(
+              currentGroupName??'asd',
+              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+            );
+          },
+        )
+
       ),
-      bottomNavigationBar: TabBar(
-          controller: _tabController,
-          tabs:[
-            Tab(icon: Icon(Icons.group)),
-            Tab(icon: Icon(Icons.settings)),
-          ]
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (_index){
+          setState(() {
+            _selectedIndex=_index;
+            _tabController.animateTo(_index);
+          });
+        },
+        currentIndex: _selectedIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Főoldal')
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_shopping_cart),
+            title: Text('Bevásárlólista')
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            title: Text('Csoport beállítások')
+          )
+        ],
       ),
       drawer: Drawer(
         elevation: 16,
@@ -301,7 +371,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                   _prefs.remove('api_token');
                 });
 
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()));
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
               },
             ),
             Divider(),
@@ -321,8 +391,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
           ],
         ),
       ),
-      floatingActionButton: Visibility(//TODO: fix
-        visible: _tabController.index==0,
+      floatingActionButton: Visibility(
+        visible: _selectedIndex==0,
         child: SpeedDial(
           child: Icon(Icons.add),
           overlayColor: (Theme.of(context).brightness==Brightness.dark)?Colors.black:Colors.white,
@@ -365,9 +435,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         ),
       ),
       body: TabBarView(
-        controller: _tabController,
         physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
+        controller: _tabController,
+        children: [
           RefreshIndicator(
             onRefresh: (){
               return getPrefs().then((_money) {
@@ -384,6 +454,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               ],
             ),
           ),
+          ShoppingList(),
           GroupSettings(),
         ]
       ),

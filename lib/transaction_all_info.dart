@@ -145,14 +145,15 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                               context: context,
                               child: Dialog(
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                backgroundColor: Theme.of(context).colorScheme.onBackground,
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
                                 child: Container(
                                   padding: EdgeInsets.all(8),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.body2,),
+                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -11,16 +11,16 @@ class AllHistoryRoute extends StatefulWidget {
 
 class _AllHistoryRouteState extends State<AllHistoryRoute> {
   ScrollController _scrollController = ScrollController();
-  Future<List<ShoppingData>> shoppingList;
+  Future<List<ShoppingRequestData>> shoppingList;
 
-  Future<List<ShoppingData>> _getShoppingList() async{
+  Future<List<ShoppingRequestData>> _getShoppingList() async{
 
     http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/list/');
 
     List<dynamic> decoded = jsonDecode(response.body);
 
-    List<ShoppingData> shopping = new List<ShoppingData>();
-    decoded.forEach((element){shopping.add(ShoppingData.fromJson(element));});
+    List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
+    decoded.forEach((element){shopping.add(ShoppingRequestData.fromJson(element));});
     shopping = shopping.reversed.toList();
     return shopping;
   }
@@ -39,8 +39,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> {
     shoppingList = _getShoppingList();
   }
 
-  List<Widget> _generateShoppingList(List<ShoppingData> data){
-    data=data.where((element) => element.fulfilled==false).toList();
+  List<Widget> _generateShoppingList(List<ShoppingRequestData> data){
+    data=data.toList();
     Function callback=this.callback;
     return data.map((element){
       return ShoppingListEntry(data: element, callback: callback,);

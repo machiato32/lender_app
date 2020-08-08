@@ -17,8 +17,8 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
-  Future<List<PaymentData>> payments;
-  Future<List<TransactionData>> transactions;
+  Future<List<PaymentData>> _payments;
+  Future<List<TransactionData>> _transactions;
   TabController _controller;
 
 
@@ -46,7 +46,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
         throw error['error'];
       }
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -81,28 +81,28 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
 
   void callback() {
     widget.callback();
-    payments = null;
-    payments=_getPayments();
-    transactions=null;
-    transactions=_getTransactions();
+    _payments = null;
+    _payments=_getPayments();
+    _transactions=null;
+    _transactions=_getTransactions();
   }
 
   @override
   void initState() {
     _controller=TabController(length: 2, vsync: this);
-    payments=null;
-    payments = _getPayments();
-    transactions=null;
-    transactions=_getTransactions();
+    _payments=null;
+    _payments = _getPayments();
+    _transactions=null;
+    _transactions=_getTransactions();
     super.initState();
 
   }
   @override
   void didUpdateWidget(History oldWidget) {
-    payments=null;
-    payments = _getPayments();
-    transactions=null;
-    transactions=_getTransactions();
+    _payments=null;
+    _payments = _getPayments();
+    _transactions=null;
+    _transactions=_getTransactions();
     super.didUpdateWidget(oldWidget);
   }
   @override
@@ -131,7 +131,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                 controller: _controller,
                 children: <Widget>[
                   FutureBuilder(
-                    future: transactions,
+                    future: _transactions,
                     builder: (context, snapshot){
                       if(snapshot.connectionState==ConnectionState.done){
                         if(snapshot.hasData){
@@ -163,8 +163,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                               ),
                               onTap: (){
                                 setState(() {
-                                  payments=null;
-                                  payments=_getPayments();
+                                  _payments=null;
+                                  _payments=_getPayments();
                                 });
                               }
                           );
@@ -174,7 +174,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                     },
                   ),
                   FutureBuilder(
-                    future: payments,
+                    future: _payments,
                     builder: (context, snapshot){
                       if(snapshot.connectionState==ConnectionState.done){
                         if(snapshot.hasData){
@@ -183,7 +183,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                             children: <Widget>[
                               SizedBox(height: 10,),
                               Column(
-                                  children: _generatePayment(snapshot.data)
+                                  children: _generatePayments(snapshot.data)
                               ),
                               Visibility(
                                 visible: (snapshot.data as List).length>5,
@@ -206,8 +206,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                               ),
                               onTap: (){
                                 setState(() {
-                                  payments=null;
-                                  payments=_getPayments();
+                                  _payments=null;
+                                  _payments=_getPayments();
                                 });
                               }
                           );
@@ -227,7 +227,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
       ),
     );
   }
-  List<Widget> _generatePayment(List<PaymentData> data){
+  List<Widget> _generatePayments(List<PaymentData> data){
     if(data.length>5){
       data=data.take(5).toList();
     }

@@ -6,7 +6,8 @@ import 'dart:convert';
 import 'package:csocsort_szamla/auth/login_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
-
+import 'package:csocsort_szamla/user_settings.dart';
+import 'package:csocsort_szamla/auth/login_or_register.dart';
 
 class CreateGroup extends StatefulWidget {
   @override
@@ -16,6 +17,20 @@ class CreateGroup extends StatefulWidget {
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0]);
+
+  Future _logout() async{
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
+      http.Response response = await http.get(APPURL+'/logout', headers: header);
+
+    }catch(_){
+      throw _;
+    }
+  }
 
   Future<bool> _joinGroup(String groupName, String nickname) async {
     try{
@@ -50,7 +65,7 @@ class _CreateGroupState extends State<CreateGroup> {
       }
       return response.statusCode==201;
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -61,6 +76,86 @@ class _CreateGroupState extends State<CreateGroup> {
         title: Text(
           'Létrehozás',
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+        ),
+      ),
+      drawer: Drawer(
+        elevation: 16,
+        child: ListView(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'LENDER',
+                    style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
+                  ),
+                  SizedBox(height: 5,),
+                  Text(
+                    currentUser,
+                    style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  ),
+//                  SizedBox(height: 20,)
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Beállítások',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
+            ),
+            Divider(),
+
+            ListTile(
+              leading: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Kijelentkezés',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                _logout();
+                currentUser=null;
+                currentGroupId=null;
+                currentGroupName=null;
+                apiToken=null;
+                SharedPreferences.getInstance().then((_prefs) {
+                  _prefs.remove('current_group_name');
+                  _prefs.remove('current_group_id');
+                  _prefs.remove('current_user');
+                  _prefs.remove('api_token');
+                });
+
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Probléma jelentése',
+                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {},
+              enabled: false,
+            ),
+
+          ],
         ),
       ),
       body: GestureDetector(
@@ -90,7 +185,6 @@ class _CreateGroupState extends State<CreateGroup> {
                     controller: _groupName,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(20),
                     ],

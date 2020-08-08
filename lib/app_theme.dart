@@ -95,6 +95,7 @@ class AppTheme{
           color: Colors.black,
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData amberLightTheme = ThemeData(
 //    appBarTheme: AppBarTheme(
@@ -194,6 +195,7 @@ class AppTheme{
           color: Color.fromARGB(255, 25, 25, 25)
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData pinkDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -242,6 +244,7 @@ class AppTheme{
         color: Colors.white
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData pinkLightTheme = ThemeData(
     brightness: Brightness.light,
@@ -335,6 +338,7 @@ class AppTheme{
           color: Colors.black,
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData seaBlueLightTheme = ThemeData(
 

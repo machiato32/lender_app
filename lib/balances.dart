@@ -37,7 +37,7 @@ class _BalancesState extends State<Balances> {
         throw error['error'];
       }
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
 
   }

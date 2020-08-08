@@ -2,12 +2,14 @@ class Member{
   double balance;
   String nickname;
   String userId;
-  Member({this.userId, this.nickname, this.balance});
+  bool isAdmin;
+  Member({this.userId, this.nickname, this.balance, this.isAdmin});
   factory Member.fromJson(Map<String, dynamic> json){
     return Member(
       userId: json['user_id'],
       nickname: json['nickname'],
-      balance: json['amount']*1.0
+      balance: json['balance']*1.0,
+      isAdmin: json['is_admin']==1
     );
   }
 
