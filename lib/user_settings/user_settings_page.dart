@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'switch_user.dart';
-import 'change_pin.dart';
-import 'main.dart';
-import 'color_picker.dart';
+import 'package:csocsort_szamla/user_settings/change_password.dart';
+import 'package:csocsort_szamla/user_settings/color_picker.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -21,11 +19,7 @@ class _SettingsState extends State<Settings> {
         },
         child: ListView(
           children: <Widget>[
-            SwitchUser(),
-            Visibility(
-              visible: (currentUser!=''),
-              child: ChangePin()
-            ),
+            ChangePin(),
             ColorPicker(),
           ],
         ),

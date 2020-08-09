@@ -4,8 +4,17 @@ import 'package:flutter/material.dart';
 
 class AppTheme{
   AppTheme._();
-  static final Map<String, ThemeData> lightThemes = {'amberLightTheme':amberLightTheme, 'greenLightTheme':greenLightTheme, 'pinkLightTheme':pinkLightTheme, 'seaBlueLightTheme':seaBlueLightTheme};
-  static final Map<String, ThemeData> darkThemes = {'amberDarkTheme':amberDarkTheme, 'greenDarkTheme':greenDarkTheme, 'pinkDarkTheme':pinkDarkTheme, 'seaBlueDarkTheme':seaBlueDarkTheme};
+  static final Map<String, ThemeData> themes =
+  {
+    'amberLightTheme':amberLightTheme,
+    'amberDarkTheme':amberDarkTheme,
+    'greenLightTheme':greenLightTheme,
+    'greenDarkTheme':greenDarkTheme,
+    'pinkLightTheme':pinkLightTheme,
+    'pinkDarkTheme':pinkDarkTheme,
+    'seaBlueLightTheme':seaBlueLightTheme,
+    'seaBlueDarkTheme':seaBlueDarkTheme
+  };
 
   static final ThemeData greenLightTheme = ThemeData(
     brightness: Brightness.light,
@@ -56,14 +65,14 @@ class AppTheme{
     ),
     brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
-    primaryColor: Colors.green[700],
-    accentColor: Colors.green[700],
+    primaryColor: Colors.green[400],
+    accentColor: Colors.green[300],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
-      primary: Colors.green[700],
-      secondary: Colors.green[700],
+      primary: Colors.green[400],
+      secondary: Colors.green[300],
       onPrimary: Colors.black, //history icon
-      onSecondary: Colors.white,
+      onSecondary: Colors.black,
       onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
       onSurface: Colors.grey[700],
@@ -92,9 +101,10 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.white,
+          color: Colors.black,
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData amberLightTheme = ThemeData(
 //    appBarTheme: AppBarTheme(
@@ -153,11 +163,11 @@ class AppTheme{
     brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
     primaryColor: Colors.amber[400],
-    accentColor: Colors.amber[400],
+    accentColor: Colors.amber[300],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
         primary: Colors.amber[400],
-        secondary: Colors.amber[400],
+        secondary: Colors.amber[300],
         background: Colors.grey[500],
         onPrimary: Colors.black, //history icon
         onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
@@ -194,6 +204,7 @@ class AppTheme{
           color: Color.fromARGB(255, 25, 25, 25)
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData pinkDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -202,11 +213,11 @@ class AppTheme{
     brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
     primaryColor: Colors.pink[300],
-    accentColor: Colors.pink[300],
+    accentColor: Colors.pink[200],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
       primary: Colors.pink[300],
-      secondary: Colors.pink[300],
+      secondary: Colors.pink[200],
       background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
       onSecondary: Colors.white,
@@ -242,6 +253,7 @@ class AppTheme{
         color: Colors.white
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData pinkLightTheme = ThemeData(
     brightness: Brightness.light,
@@ -293,15 +305,15 @@ class AppTheme{
     ),
     brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
-    primaryColor: Colors.blue[800],
-    accentColor: Colors.blue[800],
+    primaryColor: Colors.blue[400],
+    accentColor: Colors.blue[300],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
-      primary: Colors.blue[800],
-      secondary: Colors.blue[800],
+      primary: Colors.blue[400],
+      secondary: Colors.blue[300],
       background: Colors.grey[500],
       onPrimary: Colors.black, //history icon
-      onSecondary: Colors.white,
+      onSecondary: Colors.black,
       onBackground: Color.fromARGB(255, 25, 25, 25), //box decoration
       surface: Colors.grey[400], //history date
       onSurface: Colors.grey[700],
@@ -332,9 +344,10 @@ class AppTheme{
       ),
       button: TextStyle(
           fontSize: 20,
-          color: Colors.white,
+          color: Colors.black,
       ),
     ),
+    dividerColor: Colors.grey[600]
   );
   static final ThemeData seaBlueLightTheme = ThemeData(
 

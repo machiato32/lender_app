@@ -1,54 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'main.dart';
-import 'balances.dart';
+import 'config.dart';
+import 'person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 
-class Payment extends StatefulWidget {
+class AddPaymentRoute extends StatefulWidget {
   @override
-  _PaymentState createState() => _PaymentState();
+  _AddPaymentRouteState createState() => _AddPaymentRouteState();
 }
 
-class _PaymentState extends State<Payment> {
+class _AddPaymentRouteState extends State<AddPaymentRoute> {
   String dropdownValue;
+  Member selectedMember;
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-  Future<List<String>> names;
+  Future<List<Member>> names;
 
-  Future<List<String>> getNames() async {
+
+  Future<List<Member>> _getNames() async {
     try{
-      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/names');
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
 
-      List<String> list = response2['names'].cast<String>();
-      list.remove(currentUser);
-//    list.insert(0, 'Válaszd ki a személyt!');
-//    dropdownValue=list[0];
-      return list;
+      http.Response response = await http.get(APPURL+'/groups/'+currentGroupId.toString(), headers: header);
+
+      if(response.statusCode==200){
+        Map<String, dynamic> response2 = jsonDecode(response.body);
+        List<Member> members=[];
+        for(var member in response2['data']['members']){
+          members.add(Member(nickname: member['nickname'], balance: member['balance']*1.0, userId: member['user_id']));
+        }
+        return members;
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if(error['error']=='Unauthenticated.'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        }
+        throw error['error'];
+      }
     }catch(_){
-      throw "Valami baj van getNames";
+      throw 'Hiba';
     }
 
   }
 
-  Future<bool> postPayment(int amount, String note, String toName) async {
+  Future<bool> _postPayment(int amount, String note, Member toMember) async {
     try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
+
       Map<String,dynamic> map = {
-        'type':'payment',
-        'from_name':currentUser,
-        'to_name':toName,
+        'group':currentGroupId,
         'amount':amount,
-        'note':note
+        'note':note,
+        'taker_id':toMember.userId
       };
       String encoded = json.encode(map);
 
-      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
+      http.Response response = await http.post(APPURL+'/payments', body: encoded, headers: header);
 
       return response.statusCode==200;
     }catch(_){
-      throw "Valami baj van postPayment";
+      throw _;
     }
 
 
@@ -57,7 +77,7 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     super.initState();
-    names=getNames();
+    names=_getNames();
 
   }
 
@@ -94,7 +114,7 @@ class _PaymentState extends State<Payment> {
           }
           int amount = int.parse(amountController.text);
           String note = noteController.text;
-          Future<bool> success = postPayment(amount, note, dropdownValue);
+          Future<bool> success = _postPayment(amount, note, selectedMember);
           showDialog(
               barrierDismissible: false,
               context: context,
@@ -261,18 +281,19 @@ class _PaymentState extends State<Payment> {
                             if (snapshot.hasData) {
                               return Wrap(
                                 spacing: 10,
-                                children: snapshot.data.map<ChoiceChip>((String name)=>
+                                children: snapshot.data.map<ChoiceChip>((Member member)=>
                                     ChoiceChip(
-                                      label: Text(name),
+                                      label: Text(member.nickname),
                                       pressElevation: 30,
-                                      selected: dropdownValue==name,
+                                      selected: dropdownValue==member.nickname,
                                       onSelected: (bool newValue){
                                         FocusScope.of(context).unfocus();
                                         setState(() {
-                                          dropdownValue=name;
+                                          dropdownValue=member.nickname;
+                                          selectedMember=member;
                                         });
                                       },
-                                      labelStyle: dropdownValue==name
+                                      labelStyle: dropdownValue==member.nickname
                                           ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
                                           :Theme.of(context).textTheme.body2,
                                       backgroundColor: Theme.of(context).colorScheme.onSurface,
