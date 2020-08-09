@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'add_payment_route.dart';
+import 'add_payment_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'add_transaction_route.dart';
-import 'user_settings.dart';
+import 'add_transaction_page.dart';
+import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'history.dart';
 import 'balances.dart';
 import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
-import 'package:csocsort_szamla/auth/login_or_register.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -175,7 +175,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   List<Widget> _generateListTiles(List<Group> groups){
     return groups.map((group){
       return ListTile(
-        title: Text(group.groupName),
+        title: Text(group.groupName, style: (group.groupName==currentGroupName)?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary):Theme.of(context).textTheme.body2,),
         onTap: (){
           currentGroupName=group.groupName;
           currentGroupId=group.groupId;
@@ -277,22 +277,36 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 ],
               ),
             ),
-            ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.body2.color,
-              ),
-              title: Text(
-                'Beállítások',
-                style: Theme.of(context).textTheme.body2,
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Settings()));
+
+            FutureBuilder(
+              future: groups,
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return ExpansionTile(
+                      title: Text('Csoportok', style: Theme.of(context).textTheme.body2),
+                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
+                      children: _generateListTiles(snapshot.data),
+                    );
+                  }else{
+                    return InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(snapshot.error.toString()),
+                        ),
+                        onTap: (){
+                          setState(() {
+                            groups=null;
+                            groups=_getGroups();
+                          });
+                        }
+                    );
+                  }
+                }
+                return LinearProgressIndicator();
               },
             ),
             Divider(),
-
             ListTile(
               leading: Icon(
                 Icons.arrow_forward,
@@ -320,35 +334,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               },
             ),
             Divider(),
-            FutureBuilder(
-              future: groups,
-              builder: (context, snapshot){
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    return ExpansionTile(
-                      title: Text('Csoportok'),
-                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
-                      children: _generateListTiles(snapshot.data),
-                    );
-                  }else{
-                    return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Text(snapshot.error.toString()),
-                        ),
-                        onTap: (){
-                          setState(() {
-                            groups=null;
-                            groups=_getGroups();
-                          });
-                        }
-                    );
-                  }
-                }
-                return LinearProgressIndicator();
+            ListTile(
+              leading: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.body2.color,
+              ),
+              title: Text(
+                'Beállítások',
+                style: Theme.of(context).textTheme.body2,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
               },
             ),
-            Divider(),
             ListTile(
               leading: Icon(
                 Icons.account_circle,
@@ -374,19 +373,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
               },
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.bug_report,
-                color: Colors.red,
-              ),
-              title: Text(
-                'Probléma jelentése',
-                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              onTap: () {},
-              enabled: false,
-            ),
+//            Divider(),
+//            ListTile(
+//              leading: Icon(
+//                Icons.bug_report,
+//                color: Colors.red,
+//              ),
+//              title: Text(
+//                'Probléma jelentése',
+//                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+//              ),
+//              onTap: () {},
+//              enabled: false,
+//            ),
 
           ],
         ),

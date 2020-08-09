@@ -5,7 +5,7 @@ import 'config.dart';
 import 'person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 
 class AddPaymentRoute extends StatefulWidget {
   @override

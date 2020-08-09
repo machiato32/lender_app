@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'config.dart';
+import 'package:csocsort_szamla/config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:csocsort_szamla/main.dart';
 
 class ChangePin extends StatefulWidget {
   @override
@@ -11,30 +12,35 @@ class ChangePin extends StatefulWidget {
 }
 
 class _ChangePinState extends State<ChangePin> {
-  TextEditingController oldPinController = TextEditingController();
-  TextEditingController newPinController = TextEditingController();
-  TextEditingController confirmPinController = TextEditingController();
+  TextEditingController _oldPasswordController = TextEditingController();
+  TextEditingController _newPasswordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
 
-  Future<bool> postNewPin(int oldPin, int newPin) async{
+  Future<bool> _updatePassword(String oldPassword, String newPassword) async{
     try{
-
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
       Map<String,dynamic> map ={
-        'type':'change',
-        'name':currentUser,
-        'pin':oldPin,
-        'new_pin':newPin
+        'old_password':oldPassword,
+        'new_password':newPassword,
+        'new_password_confirmation':newPassword
       };
 
       String encoded = jsonEncode(map);
 
-      http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/validate/', body: encoded);
+      http.Response response = await http.post(APPURL+'/change_password', headers: header, body: encoded);
+      if(response.statusCode==204){
+        return true;
+      }else{
+        Map<String,dynamic> error = jsonDecode(response.body);
 
-      Map<String,dynamic> decoded = jsonDecode(response.body);
-
-      return (response.statusCode==200 && decoded['valid']);
+        throw error['error'];
+      }
     }catch(_){
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -47,11 +53,11 @@ class _ChangePinState extends State<ChangePin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Pin megváltoztatása', style: Theme.of(context).textTheme.title,)),
+            Center(child: Text('Jelszó megváltoztatása', style: Theme.of(context).textTheme.title,)),
             SizedBox(height: 10,),
             Row(
               children: <Widget>[
-                Text('Jelenlegi PIN kód', style: Theme.of(context).textTheme.body2,),
+                Text('Jelenlegi jelszó', style: Theme.of(context).textTheme.body2,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -67,7 +73,7 @@ class _ChangePinState extends State<ChangePin> {
 
                     ),
                     inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
-                    controller: oldPinController,
+                    controller: _oldPasswordController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
@@ -79,7 +85,7 @@ class _ChangePinState extends State<ChangePin> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('Új PIN kód', style: Theme.of(context).textTheme.body2,),
+                Text('Új jelszó', style: Theme.of(context).textTheme.body2,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -95,7 +101,7 @@ class _ChangePinState extends State<ChangePin> {
 
                     ),
                     inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
-                    controller: newPinController,
+                    controller: _newPasswordController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
@@ -107,7 +113,7 @@ class _ChangePinState extends State<ChangePin> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('Új PIN kód megerősítése', style: Theme.of(context).textTheme.body2,),
+                Text('Új jelszó megerősítése', style: Theme.of(context).textTheme.body2,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -123,7 +129,7 @@ class _ChangePinState extends State<ChangePin> {
 
                     ),
                     inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
-                    controller: confirmPinController,
+                    controller: _confirmPasswordController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
@@ -140,8 +146,8 @@ class _ChangePinState extends State<ChangePin> {
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                 onPressed: () async {
                   FocusScope.of(context).unfocus();
-                  if(confirmPinController.text==newPinController.text){
-                    Future<bool> success = postNewPin(int.parse(oldPinController.text), int.parse(newPinController.text));
+                  if(_confirmPasswordController.text==_newPasswordController.text){
+                    Future<bool> success = _updatePassword(_oldPasswordController.text, _newPasswordController.text);
                     showDialog(
                         barrierDismissible: false,
                         context: context,
@@ -153,30 +159,50 @@ class _ChangePinState extends State<ChangePin> {
                             future: success,
                             builder: (context, snapshot){
                               if(snapshot.connectionState==ConnectionState.done){
-                                if(snapshot.hasData && snapshot.data){
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text("A pin megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
-                                      FlatButton.icon(
-                                        icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        },
-                                        label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      )
-                                    ],
-                                  );
+                                if(snapshot.hasData){
+                                  if(snapshot.data){
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(child: Text("A jelszó megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                        SizedBox(height: 15,),
+                                        FlatButton.icon(
+                                          icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                          onPressed: (){
+                                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
+                                          },
+                                          label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                          color: Theme.of(context).colorScheme.secondary,
+                                        )
+                                      ],
+                                    );
+                                  }else{
+                                    return Container(
+                                      color: Colors.transparent ,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                          SizedBox(height: 15,),
+                                          FlatButton.icon(
+                                            icon: Icon(Icons.clear, color: Colors.white,),
+                                            onPressed: (){
+                                              Navigator.pop(context);
+                                            },
+                                            label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
                                 }else{
                                   return Container(
                                     color: Colors.transparent ,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                        Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                                         SizedBox(height: 15,),
                                         FlatButton.icon(
                                           icon: Icon(Icons.clear, color: Colors.white,),
@@ -211,7 +237,7 @@ class _ChangePinState extends State<ChangePin> {
                           SizedBox(
                             width: 12.0,
                           ),
-                          Flexible(child: Text("A két megadott pin nem egyezik!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                          Flexible(child: Text("A megadott két jelszó nem egyezik!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
                         ],
                       ),
                     );

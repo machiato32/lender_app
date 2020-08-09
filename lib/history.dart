@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'all_history_route.dart';
+import 'all_history_page.dart';
 import 'config.dart';
 import 'payment_entry.dart';
 import 'transaction_entry.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class History extends StatefulWidget {

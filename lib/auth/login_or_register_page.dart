@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'login_route.dart';
-import 'register_route.dart';
+import 'login_page.dart';
+import 'register_page.dart';
 
 class LoginOrRegisterRoute extends StatefulWidget {
   @override

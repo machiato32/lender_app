@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/user_settings.dart';
-import 'package:csocsort_szamla/auth/login_or_register.dart';
+import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class CreateGroup extends StatefulWidget {
   @override
@@ -141,19 +141,19 @@ class _CreateGroupState extends State<CreateGroup> {
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
               },
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.bug_report,
-                color: Colors.red,
-              ),
-              title: Text(
-                'Probléma jelentése',
-                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              onTap: () {},
-              enabled: false,
-            ),
+//            Divider(),
+//            ListTile(
+//              leading: Icon(
+//                Icons.bug_report,
+//                color: Colors.red,
+//              ),
+//              title: Text(
+//                'Probléma jelentése',
+//                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+//              ),
+//              onTap: () {},
+//              enabled: false,
+//            ),
 
           ],
         ),

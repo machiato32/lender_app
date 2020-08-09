@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'shopping.dart';
 import 'config.dart';
-import 'add_transaction_route.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'add_transaction_page.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 
 class ShoppingAllInfo extends StatefulWidget {
   final ShoppingRequestData data;

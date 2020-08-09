@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:csocsort_szamla/person.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 
 List<String> placeholder = ["Mamut", "Sarki kisbolt", "Fapuma", "Eltört kiskanál", "Irtó büdös szúnyogirtó", "Borravaló a pizzásnak", "Buszjegy", "COO HD Piros Multivit 100% 1L",
   "Egy tökéletes kakaóscsiga", "Sajt sajttal", "Gyíkhúsos melegszendvics", "56 alma", "Csigaszerű játékizé", "10 batka", "Egész napos kirándulás", "Paradicsomos kenyér",
@@ -43,7 +43,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   Future<bool> success;
   Map<Member,bool> checkboxBool = Map<Member,bool>();
   FocusNode _focusNode = FocusNode();
-
+  int _randomInt;
 
   Future<List<Member>> _getNames() async {
     try{
@@ -82,18 +82,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
     String encoded = json.encode(map);
     http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-
-    return response.statusCode==200;
-  }
-  Future<bool> _fulfillShopping(int id) async {
-    Map<String, dynamic> map = {
-      "type":'fulfill',
-      "fulfilled_by":currentUser,
-      "id":id
-    };
-
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/list/', body: encoded);
 
     return response.statusCode==200;
   }
@@ -145,6 +133,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   @override
   void initState() {
     super.initState();
+    _randomInt=random.nextInt(placeholder.length);
     if(widget.type==ExpenseType.fromSavedExpense || widget.type==ExpenseType.fromShopping){
       setInitialValues();
     }
@@ -213,7 +202,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                             Flexible(
                               child: TextField(
                                 decoration: InputDecoration(
-                                  hintText: placeholder[random.nextInt(placeholder.length)],
+                                  hintText: placeholder[_randomInt],
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
                                   ) ,

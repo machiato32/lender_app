@@ -4,8 +4,17 @@ import 'package:flutter/material.dart';
 
 class AppTheme{
   AppTheme._();
-  static final Map<String, ThemeData> lightThemes = {'amberLightTheme':amberLightTheme, 'greenLightTheme':greenLightTheme, 'pinkLightTheme':pinkLightTheme, 'seaBlueLightTheme':seaBlueLightTheme};
-  static final Map<String, ThemeData> darkThemes = {'amberDarkTheme':amberDarkTheme, 'greenDarkTheme':greenDarkTheme, 'pinkDarkTheme':pinkDarkTheme, 'seaBlueDarkTheme':seaBlueDarkTheme};
+  static final Map<String, ThemeData> themes =
+  {
+    'amberLightTheme':amberLightTheme,
+    'amberDarkTheme':amberDarkTheme,
+    'greenLightTheme':greenLightTheme,
+    'greenDarkTheme':greenDarkTheme,
+    'pinkLightTheme':pinkLightTheme,
+    'pinkDarkTheme':pinkDarkTheme,
+    'seaBlueLightTheme':seaBlueLightTheme,
+    'seaBlueDarkTheme':seaBlueDarkTheme
+  };
 
   static final ThemeData greenLightTheme = ThemeData(
     brightness: Brightness.light,

@@ -4,7 +4,7 @@ import 'payment_entry.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'config.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AllHistoryRoute extends StatefulWidget {

@@ -5,9 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'all_shopping_route.dart';
 import 'bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -134,7 +133,6 @@ class _ShoppingListState extends State<ShoppingList> {
             children: <Widget>[
               Flexible(
                 child: TextField(
-
                   decoration: InputDecoration(
                     hintText: 'Kívánságom',
                     enabledBorder: UnderlineInputBorder(
@@ -143,7 +141,6 @@ class _ShoppingListState extends State<ShoppingList> {
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                     ) ,
-
                   ),
                   controller: _addRequestController,
                   style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),

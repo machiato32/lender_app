@@ -3,7 +3,7 @@ import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:csocsort_szamla/auth/login_route.dart';
+import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 
 class GroupMembers extends StatefulWidget {

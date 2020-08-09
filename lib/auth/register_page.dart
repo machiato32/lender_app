@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
+import 'dart:math';
 
 class RegisterRoute extends StatefulWidget {
   @override
@@ -12,12 +13,22 @@ class RegisterRoute extends StatefulWidget {
 }
 
 class _RegisterRouteState extends State<RegisterRoute> {
+  Random _random = Random();
 
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _userNumController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   TextEditingController _passwordReminderController = TextEditingController();
+
+  String _randomNum;
+
+  @override
+  void initState() {
+    _randomNum=_random.nextInt(10000).toString().padLeft(4, '0');
+    _userNumController.text=_randomNum;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +40,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
           shrinkWrap: true,
           children: <Widget>[
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(width: 20,),
                 Flexible(
@@ -36,16 +48,18 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     controller: _usernameController,
                     decoration: InputDecoration(
                       hintText: 'sanyika',
-                      labelText: 'Felhasználónév',
+                      labelText: 'Név',
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                        //  when the TextFormField in unfocused
                       ) ,
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                       ) ,
-
                     ),
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[a-z0-9]')),
+                      LengthLimitingTextInputFormatter(15),
+                    ],
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
@@ -58,9 +72,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     controller: _userNumController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: '1234',
-                      labelText: 'Felhasználószám',
-
+                      labelText: 'Azonosító',
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                         //  when the TextFormField in unfocused
@@ -70,7 +82,10 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       ) ,
 
                     ),
-                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]'))],
+                    inputFormatters: [
+                      BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]')),
+                      LengthLimitingTextInputFormatter(4),
+                    ],
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
