@@ -106,7 +106,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       style=Theme.of(context).textTheme.body2;
       dateColor=Theme.of(context).colorScheme.surface;
       names = widget.data.buyerNickname;
-      amount = (-widget.data.totalAmount).toString();
+      amount = (-widget.data.receivers.firstWhere((element) => element.userId==currentUser).balance).toString();
       boxDecoration=BoxDecoration();
     }
     return Container(
@@ -169,6 +169,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
 
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(amount, style: style,),
                                   Visibility(
