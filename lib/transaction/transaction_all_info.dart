@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'config.dart';
+import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'payment_entry.dart';
+import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 
-class PaymentAllInfo extends StatefulWidget {
+class TransactionAllInfo extends StatefulWidget {
 
-  final PaymentData data;
-  PaymentAllInfo(this.data);
+  final TransactionData data;
+  TransactionAllInfo(this.data);
   @override
-  _PaymentAllInfoState createState() => _PaymentAllInfoState();
+  _TransactionAllInfoState createState() => _TransactionAllInfoState();
 }
 
-class _PaymentAllInfoState extends State<PaymentAllInfo> {
+class _TransactionAllInfoState extends State<TransactionAllInfo> {
 
   Future<bool> _deleteElement(int id) async {
     try{
       Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
-      };
+      "Content-Type": "application/json",
+      "Authorization": "Bearer "+apiToken
+    };
 
-      http.Response response = await http.delete(APPURL+'/payments/'+id.toString(), headers: header);
+      http.Response response = await http.delete(APPURL+'/transactions/'+id.toString(), headers: header);
       return response.statusCode==204;
     }catch(_){
       throw _;
@@ -30,10 +30,10 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
   @override
   Widget build(BuildContext context) {
     String note='';
-    if(widget.data.note=='' || widget.data.note==null){
+    if(widget.data.name==''){
       note='Nincs megjegyzés';
     }else{
-      note=widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
+      note=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
     }
     return Card(
         child: Padding(
@@ -53,16 +53,16 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.payerNickname, style: Theme.of(context).textTheme.bodyText1,)),
+                  Flexible(child: Text(widget.data.buyerNickname, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.account_box, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.takerNickname, style: Theme.of(context).textTheme.bodyText1, )),
+                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.bodyText1, )),
                 ],
               ),
               SizedBox(height: 5,),
@@ -70,7 +70,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                 children: <Widget>[
                   Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.amount.toString(), style: Theme.of(context).textTheme.bodyText1)),
+                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -83,7 +83,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
               ),
               SizedBox(height: 10,),
               Visibility(
-                visible: widget.data.payerId==currentUser,
+                visible: widget.data.buyerId==currentUser,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -151,7 +151,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[//TODO: edit here and transaction
+                                    children: <Widget>[
                                       Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
@@ -161,7 +161,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: () async {
                                                 Navigator.pop(context);
-                                                Future<bool> success = _deleteElement(widget.data.paymentId);
+                                                Future<bool> success = _deleteElement(widget.data.transactionId);
                                                 showDialog(
                                                     barrierDismissible: false,
                                                     context: context,
@@ -217,6 +217,49 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                                       ),
                                                     )
                                                 );
+//                                                      if(await _deleteElement(widget.data.transactionID)){
+//                                                        Widget toast = Container(
+//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+//                                                          decoration: BoxDecoration(
+//                                                            borderRadius: BorderRadius.circular(25.0),
+//                                                            color: Colors.green,
+//                                                          ),
+//                                                          child: Row(
+//                                                            mainAxisSize: MainAxisSize.min,
+//                                                            children: [
+//                                                              Icon(Icons.check, color: Colors.white,),
+//                                                              SizedBox(
+//                                                                width: 12.0,
+//                                                              ),
+//                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+//                                                            ],
+//                                                          ),
+//                                                        );
+//                                                        FlutterToast ft = FlutterToast(context);
+//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+//                                                      }else{
+//                                                        Widget toast = Container(
+//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+//                                                          decoration: BoxDecoration(
+//                                                            borderRadius: BorderRadius.circular(25.0),
+//                                                            color: Colors.red,
+//                                                          ),
+//                                                          child: Row(
+//                                                            mainAxisSize: MainAxisSize.min,
+//                                                            children: [
+//                                                              Icon(Icons.clear, color: Colors.white,),
+//                                                              SizedBox(
+//                                                                width: 12.0,
+//                                                              ),
+//                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+//                                                            ],
+//                                                          ),
+//                                                        );
+//                                                        FlutterToast ft = FlutterToast(context);
+//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+//                                                      }
+//                                                      Navigator.pop(context);
+//                                                      Navigator.pop(context);
                                               },
                                               child: Text('Igen', style: Theme.of(context).textTheme.button)
                                           ),

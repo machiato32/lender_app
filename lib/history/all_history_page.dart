@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'transaction_entry.dart';
-import 'payment_entry.dart';
+import 'package:csocsort_szamla/transaction/transaction_entry.dart';
+import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'config.dart';
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

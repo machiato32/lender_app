@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'transaction_entry.dart';
+import 'package:csocsort_szamla/payment/payment_entry.dart';
 
-class TransactionAllInfo extends StatefulWidget {
+class PaymentAllInfo extends StatefulWidget {
 
-  final TransactionData data;
-  TransactionAllInfo(this.data);
+  final PaymentData data;
+  PaymentAllInfo(this.data);
   @override
-  _TransactionAllInfoState createState() => _TransactionAllInfoState();
+  _PaymentAllInfoState createState() => _PaymentAllInfoState();
 }
 
-class _TransactionAllInfoState extends State<TransactionAllInfo> {
+class _PaymentAllInfoState extends State<PaymentAllInfo> {
 
   Future<bool> _deleteElement(int id) async {
     try{
       Map<String, String> header = {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer "+apiToken
-    };
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+apiToken
+      };
 
-      http.Response response = await http.delete(APPURL+'/transactions/'+id.toString(), headers: header);
+      http.Response response = await http.delete(APPURL+'/payments/'+id.toString(), headers: header);
       return response.statusCode==204;
     }catch(_){
       throw _;
@@ -30,10 +30,10 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
   @override
   Widget build(BuildContext context) {
     String note='';
-    if(widget.data.name==''){
+    if(widget.data.note=='' || widget.data.note==null){
       note='Nincs megjegyzés';
     }else{
-      note=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
+      note=widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     }
     return Card(
         child: Padding(
@@ -53,16 +53,16 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.buyerNickname, style: Theme.of(context).textTheme.bodyText1,)),
+                  Flexible(child: Text(widget.data.payerNickname, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.account_box, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.bodyText1, )),
+                  Flexible(child: Text(widget.data.takerNickname, style: Theme.of(context).textTheme.bodyText1, )),
                 ],
               ),
               SizedBox(height: 5,),
@@ -70,7 +70,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.bodyText1)),
+                  Flexible(child: Text(widget.data.amount.toString(), style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -83,7 +83,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
               ),
               SizedBox(height: 10,),
               Visibility(
-                visible: widget.data.buyerId==currentUser,
+                visible: widget.data.payerId==currentUser,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -151,7 +151,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
+                                    children: <Widget>[//TODO: edit here and transaction
                                       Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
@@ -161,7 +161,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: () async {
                                                 Navigator.pop(context);
-                                                Future<bool> success = _deleteElement(widget.data.transactionId);
+                                                Future<bool> success = _deleteElement(widget.data.paymentId);
                                                 showDialog(
                                                     barrierDismissible: false,
                                                     context: context,
@@ -217,49 +217,6 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                       ),
                                                     )
                                                 );
-//                                                      if(await _deleteElement(widget.data.transactionID)){
-//                                                        Widget toast = Container(
-//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-//                                                          decoration: BoxDecoration(
-//                                                            borderRadius: BorderRadius.circular(25.0),
-//                                                            color: Colors.green,
-//                                                          ),
-//                                                          child: Row(
-//                                                            mainAxisSize: MainAxisSize.min,
-//                                                            children: [
-//                                                              Icon(Icons.check, color: Colors.white,),
-//                                                              SizedBox(
-//                                                                width: 12.0,
-//                                                              ),
-//                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-//                                                            ],
-//                                                          ),
-//                                                        );
-//                                                        FlutterToast ft = FlutterToast(context);
-//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                                      }else{
-//                                                        Widget toast = Container(
-//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-//                                                          decoration: BoxDecoration(
-//                                                            borderRadius: BorderRadius.circular(25.0),
-//                                                            color: Colors.red,
-//                                                          ),
-//                                                          child: Row(
-//                                                            mainAxisSize: MainAxisSize.min,
-//                                                            children: [
-//                                                              Icon(Icons.clear, color: Colors.white,),
-//                                                              SizedBox(
-//                                                                width: 12.0,
-//                                                              ),
-//                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-//                                                            ],
-//                                                          ),
-//                                                        );
-//                                                        FlutterToast ft = FlutterToast(context);
-//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                                      }
-//                                                      Navigator.pop(context);
-//                                                      Navigator.pop(context);
                                               },
                                               child: Text('Igen', style: Theme.of(context).textTheme.button)
                                           ),

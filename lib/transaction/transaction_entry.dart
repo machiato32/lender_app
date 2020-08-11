@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'person.dart';
-import 'bottom_sheet_custom.dart';
-import 'transaction_all_info.dart';
-import 'config.dart';
+import 'package:csocsort_szamla/person.dart';
+import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
+import 'package:csocsort_szamla/config.dart';
 
 class TransactionData {
   String type;

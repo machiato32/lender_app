@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'shopping.dart';
-import 'config.dart';
-import 'add_transaction_page.dart';
+import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class ShoppingAllInfo extends StatefulWidget {

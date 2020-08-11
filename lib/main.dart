@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'add_payment_page.dart';
+import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'add_transaction_page.dart';
+import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
-import 'history.dart';
+import 'package:csocsort_szamla/history/history.dart';
 import 'balances.dart';
 import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
@@ -18,7 +18,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
-import 'shopping.dart';
+import 'package:csocsort_szamla/shopping/shopping_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

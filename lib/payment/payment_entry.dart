@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'config.dart';
-import 'bottom_sheet_custom.dart';
-import 'payment_all_info.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/payment/payment_all_info.dart';
 
 class PaymentData{
   int paymentId;

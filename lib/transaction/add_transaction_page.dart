@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/shopping.dart';
+import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
