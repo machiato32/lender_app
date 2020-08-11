@@ -64,7 +64,7 @@ class _SwitchUserState extends State<SwitchUser> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Felhasználóváltás', style: Theme.of(context).textTheme.title,)),
+            Center(child: Text('Felhasználóváltás', style: Theme.of(context).textTheme.headline6,)),
             SizedBox(height: 10,),
             Center(
               child: FutureBuilder(
@@ -73,7 +73,7 @@ class _SwitchUserState extends State<SwitchUser> {
                   if(snapshot.connectionState==ConnectionState.done){
                     if(snapshot.hasData){
                       return DropdownButton(
-                        hint: Text('Felhasználó', style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
+                        hint: Text('Felhasználó', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
                         value: dropdownValue,
                         onChanged: (String newValue) {
                           setState(() {
@@ -83,7 +83,7 @@ class _SwitchUserState extends State<SwitchUser> {
                         items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value, style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25)),
+                            child: Text(value, style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
                           );
                         }).toList(),
 
@@ -112,7 +112,7 @@ class _SwitchUserState extends State<SwitchUser> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('PIN kód', style: Theme.of(context).textTheme.body2,),
+                Text('PIN kód', style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -131,7 +131,7 @@ class _SwitchUserState extends State<SwitchUser> {
                     controller: pinController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
@@ -159,7 +159,7 @@ class _SwitchUserState extends State<SwitchUser> {
                           SizedBox(
                             width: 12.0,
                           ),
-                          Flexible(child: Text("Nem töltötted ki a szükséges mezőket!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                          Flexible(child: Text("Nem töltötted ki a szükséges mezőket!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                         ],
                       ),
                     );
@@ -188,7 +188,7 @@ class _SwitchUserState extends State<SwitchUser> {
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                    Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                     SizedBox(height: 15,),
                                     FlatButton.icon(
                                       icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -207,14 +207,14 @@ class _SwitchUserState extends State<SwitchUser> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.clear, color: Colors.white,),
                                         onPressed: (){
                                           Navigator.pop(context);
                                         },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                         color: Colors.red,
                                       )
                                     ],

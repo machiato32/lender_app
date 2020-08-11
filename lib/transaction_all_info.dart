@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'transaction_entry.dart';
 
@@ -46,7 +45,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.note, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(note, style: Theme.of(context).textTheme.body2,)),
+                  Flexible(child: Text(note, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -54,7 +53,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.buyerNickname, style: Theme.of(context).textTheme.body2,)),
+                  Flexible(child: Text(widget.data.buyerNickname, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -63,7 +62,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.body2, )),
+                  Flexible(child: Text(widget.data.receivers.join(', '), style: Theme.of(context).textTheme.bodyText1, )),
                 ],
               ),
               SizedBox(height: 5,),
@@ -71,7 +70,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(widget.data.totalAmount.toString(), style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -79,7 +78,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 children: <Widget>[
                   Icon(Icons.date_range, color: Theme.of(context).colorScheme.primary,),
                   Text(' - '),
-                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt), style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 10,),
@@ -102,7 +101,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
 //                                        crossAxisAlignment: CrossAxisAlignment.center,
 //                                        mainAxisSize: MainAxisSize.min,
 //                                        children: <Widget>[
-//                                          Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.title, textAlign: TextAlign.center,),
+//                                          Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
 //                                          SizedBox(height: 15,),
 //                                          Row(
 //                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -153,7 +152,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -178,7 +177,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
-                                                                  Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                  Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                   SizedBox(height: 15,),
                                                                   FlatButton.icon(
                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -197,7 +196,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                                 child: Column(
                                                                   mainAxisSize: MainAxisSize.min,
                                                                   children: [
-                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                     SizedBox(height: 15,),
                                                                     FlatButton.icon(
                                                                       icon: Icon(Icons.clear, color: Colors.white,),
@@ -232,7 +231,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
 //                                                              SizedBox(
 //                                                                width: 12.0,
 //                                                              ),
-//                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+//                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
 //                                                            ],
 //                                                          ),
 //                                                        );
@@ -252,7 +251,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
 //                                                              SizedBox(
 //                                                                width: 12.0,
 //                                                              ),
-//                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+//                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
 //                                                            ],
 //                                                          ),
 //                                                        );

@@ -39,16 +39,16 @@ class AppTheme{
       elevation: 1,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.green
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.grey[700],
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.green[700],
@@ -85,16 +85,16 @@ class AppTheme{
       elevation: 5,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.grey[200]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.white,
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.green[700],
@@ -125,16 +125,16 @@ class AppTheme{
         onSurface: Colors.grey[300]
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.amber[700]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.grey[700],
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.amber[500],
@@ -185,16 +185,16 @@ class AppTheme{
       elevation: 5,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.grey[200]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.white,
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.amber[400],
@@ -233,16 +233,16 @@ class AppTheme{
       elevation: 1,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.grey[200]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.white,
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.pink[300],
@@ -279,16 +279,16 @@ class AppTheme{
       elevation: 1,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.purple[300]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.grey[700],
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.pink[300],
@@ -328,16 +328,16 @@ class AppTheme{
       elevation: 5,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.grey[200]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.white,
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.blue[800],
@@ -374,16 +374,16 @@ class AppTheme{
       elevation: 1,
     ),
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 30,
           color: Colors.blue[700]
       ),
-      body2: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20,
         color: Colors.grey[700],
       ),
-      body1: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.blue[900],

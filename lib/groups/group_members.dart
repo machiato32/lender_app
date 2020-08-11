@@ -63,7 +63,7 @@ class _GroupMembersState extends State<GroupMembers> {
         padding: EdgeInsets.all(15),
         child: Column(
           children: <Widget>[
-            Text('Tagok', style: Theme.of(context).textTheme.title,),
+            Text('Tagok', style: Theme.of(context).textTheme.headline6,),
             SizedBox(height: 40,),
             FutureBuilder(
               future: _members,
@@ -154,7 +154,7 @@ class _MemberEntryState extends State<MemberEntry> {
 
     if(widget.member.userId==currentUser){
       style=(Theme.of(context).brightness==Brightness.dark)?
-      Theme.of(context).textTheme.body2:
+      Theme.of(context).textTheme.bodyText1:
       Theme.of(context).textTheme.button;
       nicknameColor=(Theme.of(context).brightness==Brightness.dark)?
       Theme.of(context).colorScheme.surface:
@@ -166,8 +166,8 @@ class _MemberEntryState extends State<MemberEntry> {
         borderRadius: BorderRadius.circular(4),
       );
     }else{
-      iconColor=Theme.of(context).textTheme.body2.color;
-      style=Theme.of(context).textTheme.body2;
+      iconColor=Theme.of(context).textTheme.bodyText1.color;
+      style=Theme.of(context).textTheme.bodyText1;
       nicknameColor=Theme.of(context).colorScheme.surface;
       boxDecoration=BoxDecoration();
     }
@@ -195,7 +195,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                 children: <Widget>[
                                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                                   Text(' - '),
-                                  Flexible(child: Text(widget.member.userId, style: Theme.of(context).textTheme.body2,)),
+                                  Flexible(child: Text(widget.member.userId, style: Theme.of(context).textTheme.bodyText1,)),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -203,13 +203,13 @@ class _MemberEntryState extends State<MemberEntry> {
                                 children: <Widget>[
                                   Icon(Icons.account_box, color: Theme.of(context).colorScheme.primary),
                                   Text(' - '),
-                                  Flexible(child: Text(widget.member.nickname, style: Theme.of(context).textTheme.body2,)),
+                                  Flexible(child: Text(widget.member.nickname, style: Theme.of(context).textTheme.bodyText1,)),
                                 ],
                               ),
                               SizedBox(height: 5,),
                               Visibility(
                                 visible: widget.member.isAdmin,
-                                child: Text('Admin', style: Theme.of(context).textTheme.body2, )
+                                child: Text('Admin', style: Theme.of(context).textTheme.bodyText1, )
                               ),
 
                               SizedBox(height: 10,),
@@ -232,7 +232,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
-                                                      Text('Szeretnéd adminná tenni?', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                      Text('Szeretnéd adminná tenni?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                       SizedBox(height: 15,),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -257,7 +257,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                               return Column(
                                                                                 mainAxisSize: MainAxisSize.min,
                                                                                 children: [
-                                                                                  Flexible(child: Text("A felhasználó admin lett!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                                  Flexible(child: Text("A felhasználó admin lett!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                                   SizedBox(height: 15,),
                                                                                   FlatButton.icon(
                                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -276,7 +276,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                                 child: Column(
                                                                                   mainAxisSize: MainAxisSize.min,
                                                                                   children: [
-                                                                                    Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                                    Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                                     SizedBox(height: 15,),
                                                                                     FlatButton.icon(
                                                                                       icon: Icon(Icons.clear, color: Colors.white,),

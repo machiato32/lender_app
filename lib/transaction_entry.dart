@@ -59,10 +59,10 @@ class _TransactionEntryState extends State<TransactionEntry> {
     if(widget.data.type=='buyed'){
       icon=Icon(Icons.call_made,
           color: (Theme.of(context).brightness==Brightness.dark)?
-          Theme.of(context).textTheme.body2.color:
+          Theme.of(context).textTheme.bodyText1.color:
           Theme.of(context).textTheme.button.color);
       style=(Theme.of(context).brightness==Brightness.dark)?
-      Theme.of(context).textTheme.body2:
+      Theme.of(context).textTheme.bodyText1:
       Theme.of(context).textTheme.button;
       dateColor=(Theme.of(context).brightness==Brightness.dark)?
       Theme.of(context).colorScheme.surface:
@@ -81,10 +81,10 @@ class _TransactionEntryState extends State<TransactionEntry> {
     }else if(widget.data.type=='buyed_received'){
       icon=Icon(Icons.swap_horiz,
           color: (Theme.of(context).brightness==Brightness.dark)?
-          Theme.of(context).textTheme.body2.color:
+          Theme.of(context).textTheme.bodyText1.color:
           Theme.of(context).textTheme.button.color);
       style=(Theme.of(context).brightness==Brightness.dark)?
-      Theme.of(context).textTheme.body2:
+      Theme.of(context).textTheme.bodyText1:
       Theme.of(context).textTheme.button;
       dateColor=(Theme.of(context).brightness==Brightness.dark)?
       Theme.of(context).colorScheme.surface:
@@ -102,8 +102,8 @@ class _TransactionEntryState extends State<TransactionEntry> {
       amount = widget.data.totalAmount.toString();
       selfAmount = (-widget.data.receivers.firstWhere((member) => member.userId==currentUser).balance).toString();
     }else if(widget.data.type=='received'){
-      icon=Icon(Icons.call_received, color: Theme.of(context).textTheme.body2.color);
-      style=Theme.of(context).textTheme.body2;
+      icon=Icon(Icons.call_received, color: Theme.of(context).textTheme.bodyText1.color);
+      style=Theme.of(context).textTheme.bodyText1;
       dateColor=Theme.of(context).colorScheme.surface;
       names = widget.data.buyerNickname;
       amount = (-widget.data.receivers.firstWhere((element) => element.userId==currentUser).balance).toString();

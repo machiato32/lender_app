@@ -8,7 +8,6 @@ import 'balances.dart';
 import 'package:provider/provider.dart';
 import 'app_state_notifier.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -165,7 +164,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         "Authorization": "Bearer "+apiToken
       };
 
-      http.Response response = await http.get(APPURL+'/logout', headers: header);
+      await http.get(APPURL+'/logout', headers: header);
 
     }catch(_){
       throw _;
@@ -175,7 +174,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   List<Widget> _generateListTiles(List<Group> groups){
     return groups.map((group){
       return ListTile(
-        title: Text(group.groupName, style: (group.groupName==currentGroupName)?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary):Theme.of(context).textTheme.body2,),
+        title: Text(group.groupName, style: (group.groupName==currentGroupName)?Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary):Theme.of(context).textTheme.bodyText1,),
         onTap: (){
           currentGroupName=group.groupName;
           currentGroupId=group.groupId;
@@ -266,12 +265,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 children: <Widget>[
                   Text(
                     'LENDER',
-                    style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
+                    style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
                   ),
                   SizedBox(height: 5,),
                   Text(
                     currentUser,
-                    style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
                   ),
 //                  SizedBox(height: 20,)
                 ],
@@ -284,8 +283,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return ExpansionTile(
-                      title: Text('Csoportok', style: Theme.of(context).textTheme.body2),
-                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.body2.color),
+                      title: Text('Csoportok', style: Theme.of(context).textTheme.bodyText1),
+                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.bodyText1.color),
                       children: _generateListTiles(snapshot.data),
                     );
                   }else{
@@ -310,11 +309,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             ListTile(
               leading: Icon(
                 Icons.arrow_forward,
-                color: Theme.of(context).textTheme.body2.color,
+                color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
                 'Csatlakozás csoporthoz',
-                style: Theme.of(context).textTheme.body2,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
@@ -323,11 +322,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             ListTile(
               leading: Icon(
                 Icons.create,
-                color: Theme.of(context).textTheme.body2.color,
+                color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
                 'Csoport létrehozása',
-                style: Theme.of(context).textTheme.body2,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup()));
@@ -337,11 +336,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             ListTile(
               leading: Icon(
                 Icons.settings,
-                color: Theme.of(context).textTheme.body2.color,
+                color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
                 'Beállítások',
-                style: Theme.of(context).textTheme.body2,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.push(context,
@@ -351,11 +350,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             ListTile(
               leading: Icon(
                 Icons.account_circle,
-                color: Theme.of(context).textTheme.body2.color,
+                color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
                 'Kijelentkezés',
-                style: Theme.of(context).textTheme.body2,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 _logout();
@@ -381,7 +380,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 //              ),
 //              title: Text(
 //                'Probléma jelentése',
-//                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+//                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
 //              ),
 //              onTap: () {},
 //              enabled: false,
@@ -402,7 +401,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             SpeedDialChild(
               label: 'Bevásárlás',
               labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-              labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
+              labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
               child: Icon(Icons.shopping_cart),
               onTap: (){
                 if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransactionRoute(type: ExpenseType.newExpense,))).then((value){ setState(() {
@@ -413,18 +412,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
             SpeedDialChild(
               label: 'Fizetés',
               labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-              labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
+              labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
               child: Icon(Icons.attach_money),
               onTap: (){
                 if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddPaymentRoute())).then((value){ setState(() {
 
-                });});;
+                });
+                });
               }
             ),
 //          SpeedDialChild(
 //            label: 'Bevásárlólista',
 //            labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-//            labelStyle: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.button.color),
+//            labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
 //            child: Icon(Icons.add_shopping_cart),
 //            onTap: (){
 //              if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));

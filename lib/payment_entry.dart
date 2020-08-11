@@ -53,10 +53,10 @@ class _PaymentEntryState extends State<PaymentEntry> {
     if(widget.data.payerId==currentUser){
       icon=Icon(Icons.call_made,
           color: (Theme.of(context).brightness==Brightness.dark)?
-          Theme.of(context).textTheme.body2.color:
+          Theme.of(context).textTheme.bodyText1.color:
           Theme.of(context).textTheme.button.color);
       style=(Theme.of(context).brightness==Brightness.dark)?
-        Theme.of(context).textTheme.body2:
+        Theme.of(context).textTheme.bodyText1:
         Theme.of(context).textTheme.button;
       dateColor=(Theme.of(context).brightness==Brightness.dark)?
         Theme.of(context).colorScheme.surface:
@@ -69,8 +69,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
       takerName = widget.data.takerNickname;
       amount = widget.data.amount.toString();
     }else{
-      icon=Icon(Icons.call_received, color: Theme.of(context).textTheme.body2.color);
-      style=Theme.of(context).textTheme.body2;
+      icon=Icon(Icons.call_received, color: Theme.of(context).textTheme.bodyText1.color);
+      style=Theme.of(context).textTheme.bodyText1;
       dateColor=Theme.of(context).colorScheme.surface;
       takerName = widget.data.payerNickname;
       amount = (-widget.data.amount).toString();

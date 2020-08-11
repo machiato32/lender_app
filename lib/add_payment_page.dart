@@ -104,7 +104,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                  Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -131,7 +131,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -161,14 +161,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
                                   icon: Icon(Icons.clear, color: Colors.white,),
                                   onPressed: (){
                                     Navigator.pop(context);
                                   },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                   color: Colors.red,
                                 )
                               ],
@@ -181,14 +181,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.clear, color: Colors.white,),
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],
@@ -222,7 +222,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                     SizedBox(height: 10,),
                     Row(
                       children: <Widget>[
-                        Text('Összeg', style: Theme.of(context).textTheme.body2,),
+                        Text('Összeg', style: Theme.of(context).textTheme.bodyText1,),
                         SizedBox(width: 20,),
                         Flexible(
                           child: TextField(
@@ -238,7 +238,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               ) ,
 
                             ),
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             keyboardType: TextInputType.numberWithOptions(decimal: true),
                             inputFormatters: [
@@ -252,7 +252,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                     SizedBox(height: 20,),
                     Row(
                       children: <Widget>[
-                        Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
+                        Text('Megjegyzés', style: Theme.of(context).textTheme.bodyText1,),
                         SizedBox(width: 20,),
                         Flexible(
                           child: TextField(
@@ -268,7 +268,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
                             ),
                             controller: noteController,
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                             cursorColor: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
@@ -297,8 +297,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                         });
                                       },
                                       labelStyle: dropdownValue==member.nickname
-                                          ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
-                                          :Theme.of(context).textTheme.body2,
+                                          ?Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.onSecondary)
+                                          :Theme.of(context).textTheme.bodyText1,
                                       backgroundColor: Theme.of(context).colorScheme.onSurface,
                                       selectedColor: Theme.of(context).colorScheme.secondary,
                                     )

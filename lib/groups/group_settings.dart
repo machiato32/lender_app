@@ -146,7 +146,7 @@ class _GroupSettingState extends State<GroupSettings> {
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: <Widget>[
-                  Text('Új becenév', style: Theme.of(context).textTheme.title,),
+                  Text('Új becenév', style: Theme.of(context).textTheme.headline6,),
                   SizedBox(height: 40,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,7 +169,7 @@ class _GroupSettingState extends State<GroupSettings> {
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(15),
                           ],
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                           cursorColor: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
@@ -195,7 +195,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                           return Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                              Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                               SizedBox(height: 15,),
                                               FlatButton.icon(
                                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -213,7 +213,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                 SizedBox(height: 15,),
                                                 FlatButton.icon(
                                                   icon: Icon(Icons.clear, color: Colors.white,),
@@ -223,7 +223,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
                                                     });
                                                   },
-                                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                   color: Colors.red,
                                                 )
                                               ],
@@ -236,14 +236,14 @@ class _GroupSettingState extends State<GroupSettings> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                               SizedBox(height: 15,),
                                               FlatButton.icon(
                                                 icon: Icon(Icons.clear, color: Colors.white,),
                                                 onPressed: (){
                                                   Navigator.pop(context);
                                                 },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                 color: Colors.red,
                                               )
                                             ],
@@ -282,7 +282,7 @@ class _GroupSettingState extends State<GroupSettings> {
                             padding: const EdgeInsets.all(15),
                             child: Column(
                               children: <Widget>[
-                                Text('Csoport átnevezése', style: Theme.of(context).textTheme.title,),
+                                Text('Csoport átnevezése', style: Theme.of(context).textTheme.headline6,),
                                 SizedBox(height: 40,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -304,7 +304,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                         inputFormatters: [
                                           LengthLimitingTextInputFormatter(20),
                                         ],
-                                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                                         cursorColor: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
@@ -330,7 +330,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                         return Column(
                                                           mainAxisSize: MainAxisSize.min,
                                                           children: [
-                                                            Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                            Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                             SizedBox(height: 15,),
                                                             FlatButton.icon(
                                                               icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -348,7 +348,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                           child: Column(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: [
-                                                              Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                              Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                               SizedBox(height: 15,),
                                                               FlatButton.icon(
                                                                 icon: Icon(Icons.clear, color: Colors.white,),
@@ -358,7 +358,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
                                                                   });
                                                                 },
-                                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                                 color: Colors.red,
                                                               )
                                                             ],
@@ -371,14 +371,14 @@ class _GroupSettingState extends State<GroupSettings> {
                                                         child: Column(
                                                           mainAxisSize: MainAxisSize.min,
                                                           children: [
-                                                            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                             SizedBox(height: 15,),
                                                             FlatButton.icon(
                                                               icon: Icon(Icons.clear, color: Colors.white,),
                                                               onPressed: (){
                                                                 Navigator.pop(context);
                                                               },
-                                                              label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                              label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                               color: Colors.red,
                                                             )
                                                           ],
@@ -409,7 +409,7 @@ class _GroupSettingState extends State<GroupSettings> {
                           padding: const EdgeInsets.all(15),
                           child: Column(
                             children: <Widget>[
-                              Text('Meghívó', style: Theme.of(context).textTheme.title,),
+                              Text('Meghívó', style: Theme.of(context).textTheme.headline6,),
                               SizedBox(height: 40,),
                               FutureBuilder(
                                 future: _invitation,
@@ -427,10 +427,10 @@ class _GroupSettingState extends State<GroupSettings> {
                                                 ft.showToast(child: Container(
                                                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
                                                     padding: EdgeInsets.all(10),
-                                                    child: Text('Másolva', style: Theme.of(context).textTheme.body2,)
+                                                    child: Text('Másolva', style: Theme.of(context).textTheme.bodyText1,)
                                                 ), gravity: ToastGravity.BOTTOM);
                                               },
-                                              child: Text(snapshot.data, style: Theme.of(context).textTheme.body2,),
+                                              child: Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,),
                                             ),
                                           ),
                                           RaisedButton(
@@ -440,7 +440,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                               ft.showToast(child: Container(
                                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
                                                   padding: EdgeInsets.all(10),
-                                                  child: Text('Másolva', style: Theme.of(context).textTheme.body2,)
+                                                  child: Text('Másolva', style: Theme.of(context).textTheme.bodyText1,)
                                               ), gravity: ToastGravity.BOTTOM);
                                             },
                                             child: Icon(Icons.content_copy, color: Theme.of(context).colorScheme.onSecondary,),

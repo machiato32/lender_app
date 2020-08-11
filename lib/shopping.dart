@@ -128,7 +128,7 @@ class _ShoppingListState extends State<ShoppingList> {
       child: ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
-          Center(child: Text('Bevásárlólista', style: Theme.of(context).textTheme.title,)),
+          Center(child: Text('Bevásárlólista', style: Theme.of(context).textTheme.headline6,)),
           SizedBox(height: 20,),
           Row(
             children: <Widget>[
@@ -144,7 +144,7 @@ class _ShoppingListState extends State<ShoppingList> {
                     ) ,
                   ),
                   controller: _addRequestController,
-                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                   cursorColor: Theme.of(context).colorScheme.secondary,
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(20)
@@ -175,7 +175,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text("A hozzáadás sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      Flexible(child: Text("A hozzáadás sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -197,7 +197,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(child: Text("Hiba a csatlakozáskor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                        Flexible(child: Text("Hiba a csatlakozáskor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                         SizedBox(height: 15,),
                                         FlatButton.icon(
                                           icon: Icon(Icons.clear, color: Colors.white,),
@@ -207,7 +207,7 @@ class _ShoppingListState extends State<ShoppingList> {
 
                                             });
                                           },
-                                          label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                          label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                           color: Colors.red,
                                         )
                                       ],
@@ -220,14 +220,14 @@ class _ShoppingListState extends State<ShoppingList> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.clear, color: Colors.white,),
                                         onPressed: (){
                                           Navigator.pop(context);
                                         },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                         color: Colors.red,
                                       )
                                     ],
@@ -309,7 +309,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
     if(widget.data.requesterId==currentUser){
       style=(Theme.of(context).brightness==Brightness.dark)?
-      Theme.of(context).textTheme.body2:
+      Theme.of(context).textTheme.bodyText1:
       Theme.of(context).textTheme.button;
       dateColor=(Theme.of(context).brightness==Brightness.dark)?
       Theme.of(context).colorScheme.surface:
@@ -321,7 +321,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         borderRadius: BorderRadius.circular(4),
       );
     }else{
-      style=Theme.of(context).textTheme.body2;
+      style=Theme.of(context).textTheme.bodyText1;
       dateColor=Theme.of(context).colorScheme.surface;
       icon=Icon(Icons.receipt, color: style.color,);
       boxDecoration=BoxDecoration();
@@ -478,7 +478,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("A tétel fel lett véve a bevásárlólistára!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text("A tétel fel lett véve a bevásárlólistára!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -507,14 +507,14 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
                                   icon: Icon(Icons.clear, color: Colors.white,),
                                   onPressed: (){
                                     Navigator.pop(context);
                                   },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                   color: Colors.red,
                                 )
                               ],
@@ -545,7 +545,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem töltötted ki az egyik mezőt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                  Flexible(child: Text("Nem töltötted ki az egyik mezőt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -568,7 +568,7 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
 //                tabs: <Widget>[
 //                  Tab(
 //                    icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.secondary,),
-////                  child: Text('Kaptam', style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),),
+////                  child: Text('Kaptam', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),),
 //                  ),
 //                  Tab(icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary,)),
 //                ],
@@ -582,13 +582,13 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                   SizedBox(height: 10,),
                   Row(
                     children: <Widget>[
-                      Text('Tétel', style: Theme.of(context).textTheme.body2,),
+                      Text('Tétel', style: Theme.of(context).textTheme.bodyText1,),
                       SizedBox(width: 20,),
                       Flexible(
                         child: TextField(
                           controller: itemController,
                           keyboardType: TextInputType.text,
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                           cursorColor: Theme.of(context).colorScheme.secondary,
                           decoration: InputDecoration(hintText: 'Büdös zokni'),
                         ),
@@ -598,12 +598,12 @@ class _AddShoppingRouteState extends State<AddShoppingRoute> {
                   SizedBox(height: 20,),
                   Row(
                     children: <Widget>[
-                      Text('Mennyiség', style: Theme.of(context).textTheme.body2,),
+                      Text('Mennyiség', style: Theme.of(context).textTheme.bodyText1,),
                       SizedBox(width: 20,),
                       Flexible(
                         child: TextField(
                           controller: quantityController,
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                           cursorColor: Theme.of(context).colorScheme.secondary,
                           decoration: InputDecoration(hintText: '2 kiló'),
                         ),

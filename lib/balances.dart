@@ -65,7 +65,7 @@ class _BalancesState extends State<Balances> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-              child: Text('Egyenlegek', style: Theme.of(context).textTheme.title,),
+              child: Text('Egyenlegek', style: Theme.of(context).textTheme.headline6,),
             ),
             SizedBox(height: 40),
             Center(
@@ -106,7 +106,7 @@ class _BalancesState extends State<Balances> {
 
     return members.map<Widget>((Member member){
       if(member.userId==currentUser){
-        TextStyle style = (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).textTheme.body2:Theme.of(context).textTheme.button;
+        TextStyle style = (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).textTheme.bodyText1:Theme.of(context).textTheme.button;
         return Column(
           children: <Widget>[
             Container(
@@ -136,8 +136,8 @@ class _BalancesState extends State<Balances> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(member.nickname, style: Theme.of(context).textTheme.body2,),
-                  Text(member.balance.toString(), style: Theme.of(context).textTheme.body2,)
+                  Text(member.nickname, style: Theme.of(context).textTheme.bodyText1,),
+                  Text(member.balance.toString(), style: Theme.of(context).textTheme.bodyText1,)
                 ],
               )
           ),

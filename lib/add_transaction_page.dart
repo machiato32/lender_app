@@ -169,7 +169,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Text('Végösszeg', style: Theme.of(context).textTheme.body2,),
+                            Text('Végösszeg', style: Theme.of(context).textTheme.bodyText1,),
                             SizedBox(width: 20,),
                             Flexible(
                               child: TextField(
@@ -186,7 +186,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
                                 ),
                                 controller: amountController,
-                                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                                 cursorColor: Theme.of(context).colorScheme.secondary,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 inputFormatters: [
@@ -200,7 +200,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         SizedBox(height: 20,),
                         Row(
                           children: <Widget>[
-                            Text('Megjegyzés', style: Theme.of(context).textTheme.body2,),
+                            Text('Megjegyzés', style: Theme.of(context).textTheme.bodyText1,),
                             SizedBox(width: 15,),
                             Flexible(
                               child: TextField(
@@ -215,7 +215,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
                                 ),
                                 controller: noteController,
-                                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                                 cursorColor: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
@@ -258,8 +258,8 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                       });
                                     },
                                     labelStyle: checkboxBool[member]
-                                        ?Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.onSecondary)
-                                        :Theme.of(context).textTheme.body2,
+                                        ?Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.onSecondary)
+                                        :Theme.of(context).textTheme.bodyText1,
                                     backgroundColor: Theme.of(context).colorScheme.onSurface,
                                     selectedColor: Theme.of(context).colorScheme.secondary,
                                   )
@@ -332,7 +332,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                               amountController.text!='' && checkboxBool.values.where((element)=>element==true).toList().length>0?
                               (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+' Ft/fő':
                               '',
-                              style: Theme.of(context).textTheme.body1,
+                              style: Theme.of(context).textTheme.bodyText2,
 
                             ),
                           ),
@@ -396,7 +396,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                  Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -418,7 +418,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                  Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -443,7 +443,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                  Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -482,7 +482,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                            Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                             SizedBox(height: 15,),
                             FlatButton.icon(
                               icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -516,14 +516,14 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.clear, color: Colors.white,),
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],

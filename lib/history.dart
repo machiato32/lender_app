@@ -9,7 +9,7 @@ import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class History extends StatefulWidget {
-  Function callback;
+  final Function callback;
   History({this.callback});
   @override
   _HistoryState createState() => _HistoryState();
@@ -113,14 +113,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
         child:Column(
 //          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Előzmények', style: Theme.of(context).textTheme.title,),
+            Text('Előzmények', style: Theme.of(context).textTheme.headline6,),
             SizedBox(height: 40,),
             TabBar(
               controller: _controller,
               tabs: <Widget>[
                 Tab(
                   icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.secondary,),
-//                  child: Text('Kaptam', style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).colorScheme.secondary),),
+//                  child: Text('Kaptam', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),),
                 ),
                 Tab(icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary,)),
               ],

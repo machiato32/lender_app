@@ -25,7 +25,7 @@ class _ColorPickerState extends State<ColorPicker> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Témaváltás', style: Theme.of(context).textTheme.title,)),
+            Center(child: Text('Témaváltás', style: Theme.of(context).textTheme.headline6,)),
             SizedBox(height: 10),
             Container(
               height: 80,

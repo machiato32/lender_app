@@ -27,7 +27,7 @@ class _LoginOrRegisterRouteState extends State<LoginOrRegisterRoute> {
                   'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
                   'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
                   'U.I.: Ez később nem ilyen bénán fog megjelenni.',
-                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
               ),
 
             ),
@@ -57,10 +57,10 @@ class _LoginOrRegisterRouteState extends State<LoginOrRegisterRoute> {
             ),
             Text(
               'LENDER',
-              style: Theme.of(context).textTheme.title.copyWith(letterSpacing: 2.5),
+              style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
             ),
             SizedBox(height: 10,),
-            Text('Money and debt management app designed for groups'.toUpperCase(), style: Theme.of(context).textTheme.body1.copyWith(fontSize: 12 ),),
+            Text('Money and debt management app designed for groups'.toUpperCase(), style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12 ),),
             SizedBox(height: 100,),
             RaisedButton(
               onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));},

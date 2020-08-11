@@ -61,7 +61,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       WhitelistingTextInputFormatter(RegExp('[a-z0-9]')),
                       LengthLimitingTextInputFormatter(15),
                     ],
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
@@ -88,7 +88,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]')),
                       LengthLimitingTextInputFormatter(4),
                     ],
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
@@ -115,7 +115,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]'))],
                 keyboardType: TextInputType.number,
                 obscureText: true,
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
@@ -138,7 +138,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]'))],
                 keyboardType: TextInputType.number,
                 obscureText: true,
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
@@ -158,7 +158,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
 //                  ) ,
 //
 //                ),
-//                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+//                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
 //                cursorColor: Theme.of(context).colorScheme.secondary,
 //              ),
 //            ),
@@ -186,7 +186,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text("A regisztráció sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      Flexible(child: Text("A regisztráció sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -205,14 +205,14 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(child: Text("Hiba a regisztrációkor!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                        Flexible(child: Text("Hiba a regisztrációkor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                         SizedBox(height: 15,),
                                         FlatButton.icon(
                                           icon: Icon(Icons.clear, color: Colors.white,),
                                           onPressed: (){
                                             Navigator.pop(context);
                                           },
-                                          label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                          label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                           color: Colors.red,
                                         )
                                       ],
@@ -225,14 +225,14 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.clear, color: Colors.white,),
                                         onPressed: (){
                                           Navigator.pop(context);
                                         },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                         color: Colors.red,
                                       )
                                     ],

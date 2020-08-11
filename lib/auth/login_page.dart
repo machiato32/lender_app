@@ -42,7 +42,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   ) ,
 
                 ),
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
@@ -64,7 +64,7 @@ class _LoginRouteState extends State<LoginRoute> {
                 ),
                 keyboardType: TextInputType.number,
                 obscureText: true,
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
@@ -92,7 +92,7 @@ class _LoginRouteState extends State<LoginRoute> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -110,7 +110,7 @@ class _LoginRouteState extends State<LoginRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
                                   icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -130,14 +130,14 @@ class _LoginRouteState extends State<LoginRoute> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.clear, color: Colors.white,),
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],

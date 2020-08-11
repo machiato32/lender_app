@@ -76,7 +76,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.requesterId, style: Theme.of(context).textTheme.body2,)),
+                  Flexible(child: Text(widget.data.requesterId, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -84,7 +84,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 children: <Widget>[
                   Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.name, style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(widget.data.name, style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -92,7 +92,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 children: <Widget>[
                   Icon(Icons.date_range, color: Theme.of(context).colorScheme.primary,),
                   Text(' - '),
-                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt), style: Theme.of(context).textTheme.body2)),
+                  Flexible(child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt), style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
               SizedBox(height: 10,),
@@ -115,7 +115,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -140,7 +140,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
-                                                                  Flexible(child: Text("A tételt sikeresen töröltük!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                  Flexible(child: Text("A tételt sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                   SizedBox(height: 15,),
                                                                   FlatButton.icon(
                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -159,14 +159,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                                 child: Column(
                                                                   mainAxisSize: MainAxisSize.min,
                                                                   children: [
-                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                     SizedBox(height: 15,),
                                                                     FlatButton.icon(
                                                                       icon: Icon(Icons.clear, color: Colors.white,),
                                                                       onPressed: (){
                                                                         Navigator.pop(context);
                                                                       },
-                                                                      label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                                      label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                                       color: Colors.red,
                                                                     )
                                                                   ],
@@ -230,7 +230,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              Text('Fel szeretnéd számolni?', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white), textAlign: TextAlign.center,),
+                                              Text('Fel szeretnéd számolni?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
                                               SizedBox(height: 15,),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -265,14 +265,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                               SizedBox(height: 15,),
                                               FlatButton.icon(
                                                 icon: Icon(Icons.clear, color: Colors.white,),
                                                 onPressed: (){
                                                   Navigator.pop(context);
                                                 },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                 color: Colors.red,
                                               )
                                             ],
@@ -285,14 +285,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white))),
+                                            Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                             SizedBox(height: 15,),
                                             FlatButton.icon(
                                               icon: Icon(Icons.clear, color: Colors.white,),
                                               onPressed: (){
                                                 Navigator.pop(context);
                                               },
-                                              label: Text('Vissza', style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),),
+                                              label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                               color: Colors.red,
                                             )
                                           ],
