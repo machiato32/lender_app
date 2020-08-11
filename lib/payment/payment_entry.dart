@@ -18,7 +18,7 @@ class PaymentData{
         paymentId: json['payment_id'],
         amount: json['amount']*1.0,
         payerId: json['payer_id'],
-        updatedAt: json['updated_at']==null?DateTime.now():DateTime.parse(json['updated_at']),
+        updatedAt: json['updated_at']==null?DateTime.now():DateTime.parse(json['updated_at']).toLocal(),
         payerNickname: json['payer_nickname'],
         takerId: json['taker_id'],
         takerNickname: json['taker_nickname'],

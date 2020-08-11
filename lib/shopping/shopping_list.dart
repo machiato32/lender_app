@@ -23,7 +23,7 @@ class ShoppingRequestData {
         requesterId: json['requester_id'],
         requesterNickname: json['requester_nickname'],
         name: json['name'],
-        updatedAt: DateTime.parse(json['updated_at']),
+        updatedAt: DateTime.parse(json['updated_at']).toLocal(),
     );
   }
 

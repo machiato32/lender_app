@@ -23,7 +23,7 @@ class TransactionData {
         type: json['type'],
         transactionId: json['data']['transaction_id'],
         name: json['data']['name'],
-        updatedAt: json['data']['updated_at']==null?DateTime.now():DateTime.parse(json['data']['updated_at']),
+        updatedAt: json['data']['updated_at']==null?DateTime.now():DateTime.parse(json['data']['updated_at']).toLocal(),
         buyerId: json['data']['buyer_id'],
         buyerNickname: json['data']['buyer_nickname'],
         totalAmount: json['data']['total_amount']*1.0,
