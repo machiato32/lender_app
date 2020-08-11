@@ -47,6 +47,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   child: TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
+                      helperText: 'Nem megváltoztatható',
                       hintText: 'sanyika',
                       labelText: 'Név',
                       enabledBorder: UnderlineInputBorder(
@@ -73,6 +74,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Azonosító',
+                      helperText: 'Nem megváltoztatható',
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                         //  when the TextFormField in unfocused

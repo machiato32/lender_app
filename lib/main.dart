@@ -66,7 +66,7 @@ class _LenderAppState extends State<LenderApp>{
         return MaterialApp(
           title: 'Lender',
           theme: appState.theme,
-          home: currentUser==null?
+          home: currentUser==null?//TODO: if group does not exist
             LoginOrRegisterRoute():
             (currentGroupId==null)?
               JoinGroup():

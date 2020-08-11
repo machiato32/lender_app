@@ -3,6 +3,7 @@ import 'config.dart';
 import 'shopping_all_info.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'bottom_sheet_custom.dart';
@@ -145,6 +146,9 @@ class _ShoppingListState extends State<ShoppingList> {
                   controller: _addRequestController,
                   style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.body2.color),
                   cursorColor: Theme.of(context).colorScheme.secondary,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(20)
+                  ],
                 ),
               ),
               SizedBox(width: 20,),

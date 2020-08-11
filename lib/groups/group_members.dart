@@ -51,7 +51,8 @@ class _GroupMembersState extends State<GroupMembers> {
 
   void callback(){
     setState(() {
-
+      _members=null;
+      _members=_getMembers();
     });
   }
 

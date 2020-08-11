@@ -8,6 +8,42 @@ class LoginOrRegisterRoute extends StatefulWidget {
 }
 
 class _LoginOrRegisterRouteState extends State<LoginOrRegisterRoute> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await showDialog(
+          context: context,
+          child: AlertDialog(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            title: Text('Légyszi olvasd el!'),
+            content: SingleChildScrollView(
+              child:
+              Text('Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
+                  'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
+                  'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
+                  'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
+                  'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
+                  'U.I.: Ez később nem ilyen bénán fog megjelenni.',
+                style: Theme.of(context).textTheme.body2.copyWith(color: Colors.white),
+              ),
+
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('Tényleg elolvastam', style: Theme.of(context).textTheme.button,), color: Theme.of(context).colorScheme.secondary,)
+            ],
+          )
+      );
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
