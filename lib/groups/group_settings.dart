@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'group_members.dart';
@@ -34,7 +34,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -60,7 +60,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -89,7 +89,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -112,7 +112,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

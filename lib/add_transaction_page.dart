@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:csocsort_szamla/person.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 List<String> placeholder = ["Mamut", "Sarki kisbolt", "Fapuma", "Eltört kiskanál", "Irtó büdös szúnyogirtó", "Borravaló a pizzásnak", "Buszjegy", "COO HD Piros Multivit 100% 1L",
   "Egy tökéletes kakaóscsiga", "Sajt sajttal", "Gyíkhúsos melegszendvics", "56 alma", "Csigaszerű játékizé", "10 batka", "Egész napos kirándulás", "Paradicsomos kenyér",
@@ -64,7 +64,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -110,7 +110,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:csocsort_szamla/auth/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'create_group.dart';
@@ -59,7 +58,7 @@ class _JoinGroupState extends State<JoinGroup> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

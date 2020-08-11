@@ -5,7 +5,7 @@ import 'config.dart';
 import 'person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class AddPaymentRoute extends StatefulWidget {
   @override
@@ -39,7 +39,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

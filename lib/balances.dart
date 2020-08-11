@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'person.dart';
 import 'config.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class Balances extends StatefulWidget {
   @override
@@ -32,7 +32,7 @@ class _BalancesState extends State<Balances> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

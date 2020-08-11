@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'shopping.dart';
 import 'config.dart';
 import 'add_transaction_page.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class ShoppingAllInfo extends StatefulWidget {
   final ShoppingRequestData data;
@@ -31,7 +31,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -55,7 +55,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }

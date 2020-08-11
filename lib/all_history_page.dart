@@ -4,7 +4,7 @@ import 'payment_entry.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'config.dart';
-import 'package:csocsort_szamla/auth/login_page.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AllHistoryRoute extends StatefulWidget {
@@ -41,7 +41,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
@@ -70,7 +70,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginRoute()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
       }
