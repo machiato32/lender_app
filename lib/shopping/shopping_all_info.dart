@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
@@ -30,7 +32,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -54,7 +56,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -115,7 +117,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                      Text('want_delete'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -140,7 +142,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
-                                                                  Flexible(child: Text("A tételt sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                                  Flexible(child: Text("delete_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                   SizedBox(height: 15,),
                                                                   FlatButton.icon(
                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -148,7 +150,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                                       Navigator.pop(context);
                                                                       Navigator.pop(context, 'deleted');
                                                                     },
-                                                                    label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                                                    label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                                                     color: Theme.of(context).colorScheme.secondary,
                                                                   )
                                                                 ],
@@ -159,14 +161,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                                 child: Column(
                                                                   mainAxisSize: MainAxisSize.min,
                                                                   children: [
-                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                                    Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                     SizedBox(height: 15,),
                                                                     FlatButton.icon(
                                                                       icon: Icon(Icons.clear, color: Colors.white,),
                                                                       onPressed: (){
                                                                         Navigator.pop(context);
                                                                       },
-                                                                      label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                                      label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                                       color: Colors.red,
                                                                     )
                                                                   ],
@@ -181,12 +183,12 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                     )
                                                 );
                                               },
-                                              child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                              child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                           ),
                                           RaisedButton(
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: (){ Navigator.pop(context);},
-                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                              child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
                                           )
                                         ],
                                       )
@@ -197,7 +199,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                           );
                         },
                         color: Theme.of(context).colorScheme.secondary,
-                        label: Text('Törlés', style: Theme.of(context).textTheme.button,),
+                        label: Text('delete'.tr(), style: Theme.of(context).textTheme.button,),
                         icon: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
                     ),
                   ],
@@ -230,7 +232,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              Text('Fel szeretnéd számolni?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
+                                              Text('want_expense'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
                                               SizedBox(height: 15,),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -244,7 +246,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                           type: ExpenseType.fromShopping, shoppingData: widget.data,
                                                         )));
                                                       },
-                                                      child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                                      child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                                   ),
                                                   RaisedButton(
                                                       color: Theme.of(context).colorScheme.secondary,
@@ -252,7 +254,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                                         Navigator.pop(context);
                                                         Navigator.pop(context, 'deleted');
                                                       },
-                                                      child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                                      child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
                                                   )
                                                 ],
                                               )
@@ -265,14 +267,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                              Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                               SizedBox(height: 15,),
                                               FlatButton.icon(
                                                 icon: Icon(Icons.clear, color: Colors.white,),
                                                 onPressed: (){
                                                   Navigator.pop(context);
                                                 },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                 color: Colors.red,
                                               )
                                             ],
@@ -285,14 +287,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                             SizedBox(height: 15,),
                                             FlatButton.icon(
                                               icon: Icon(Icons.clear, color: Colors.white,),
                                               onPressed: (){
                                                 Navigator.pop(context);
                                               },
-                                              label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                               color: Colors.red,
                                             )
                                           ],
@@ -308,7 +310,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         );
                       },
                       color: Theme.of(context).colorScheme.secondary,
-                      label: Text('Megvettem', style: Theme.of(context).textTheme.button),
+                      label: Text('bought'.tr(), style: Theme.of(context).textTheme.button),
                       icon: Icon(Icons.check, color: Theme.of(context).textTheme.button.color),
                     ),
                   ],

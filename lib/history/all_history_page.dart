@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AllHistoryRoute extends StatefulWidget {
   @override
@@ -69,7 +70,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -108,7 +109,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Előzmények'),
+        title: Text('history'.tr()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (_index){
@@ -121,12 +122,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              title: Text('Tranzakciók')
+              title: Text('transactions'.tr())
           ),
 
           BottomNavigationBarItem(
               icon: Icon(Icons.attach_money),
-              title: Text('Fizetések')
+              title: Text('payments'.tr())
           )
         ],
       ),

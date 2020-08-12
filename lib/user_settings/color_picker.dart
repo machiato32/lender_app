@@ -3,6 +3,7 @@ import 'package:csocsort_szamla/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:csocsort_szamla/app_state_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ColorPicker extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _ColorPickerState extends State<ColorPicker> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Témaváltás', style: Theme.of(context).textTheme.headline6,)),
+            Center(child: Text('change_theme'.tr(), style: Theme.of(context).textTheme.headline6,)),
             SizedBox(height: 10),
             Container(
               height: 80,
@@ -82,7 +83,7 @@ class _ColorElementState extends State<ColorElement> {
             decoration: BoxDecoration(
               color: (widget.themeName==Provider.of<AppStateNotifier>(context, listen: false).themeName)?Colors.grey:Colors.transparent,
               shape: BoxShape.circle
-          ),
+            ),
 
             child: Container(
               padding: EdgeInsets.all(4),

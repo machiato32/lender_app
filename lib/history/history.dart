@@ -7,6 +7,7 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class History extends StatefulWidget {
   final Function callback;
@@ -69,7 +70,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -113,7 +114,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
         child:Column(
 //          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Előzmények', style: Theme.of(context).textTheme.headline6,),
+            Text('history'.tr(), style: Theme.of(context).textTheme.headline6,),
             SizedBox(height: 40,),
             TabBar(
               controller: _controller,
@@ -149,7 +150,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));
                                     },
                                     icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
-                                    label: Text('Több', style: Theme.of(context).textTheme.button,),
+                                    label: Text('more'.tr(), style: Theme.of(context).textTheme.button,),
                                     color: Theme.of(context).colorScheme.secondary
                                 ),
                               )
@@ -192,7 +193,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => AllHistoryRoute()));
                                     },
                                     icon: Icon(Icons.more_horiz, color: Theme.of(context).textTheme.button.color,),
-                                    label: Text('Több', style: Theme.of(context).textTheme.button,),
+                                    label: Text('more'.tr(), style: Theme.of(context).textTheme.button,),
                                     color: Theme.of(context).colorScheme.secondary
                                 ),
                               )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -146,7 +147,7 @@ class _GroupSettingState extends State<GroupSettings> {
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: <Widget>[
-                  Text('Új becenév', style: Theme.of(context).textTheme.headline6,),
+                  Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
                   SizedBox(height: 40,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,7 +157,7 @@ class _GroupSettingState extends State<GroupSettings> {
                           controller: _nicknameController,
                           decoration: InputDecoration(
                             hintText: currentUser.split('#')[0],
-                            labelText: 'Becenév',
+                            labelText: 'nickname'.tr(),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                               //  when the TextFormField in unfocused
@@ -195,14 +196,14 @@ class _GroupSettingState extends State<GroupSettings> {
                                           return Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                              Flexible(child: Text("nickname_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                               SizedBox(height: 15,),
                                               FlatButton.icon(
                                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                                 onPressed: (){
                                                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
                                                 },
-                                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                                 color: Theme.of(context).colorScheme.secondary,
                                               )
                                             ],
@@ -213,7 +214,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                 SizedBox(height: 15,),
                                                 FlatButton.icon(
                                                   icon: Icon(Icons.clear, color: Colors.white,),
@@ -223,7 +224,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
                                                     });
                                                   },
-                                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                  label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                   color: Colors.red,
                                                 )
                                               ],
@@ -243,7 +244,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                 onPressed: (){
                                                   Navigator.pop(context);
                                                 },
-                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                label: Text('error'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                 color: Colors.red,
                                               )
                                             ],
@@ -282,7 +283,7 @@ class _GroupSettingState extends State<GroupSettings> {
                             padding: const EdgeInsets.all(15),
                             child: Column(
                               children: <Widget>[
-                                Text('Csoport átnevezése', style: Theme.of(context).textTheme.headline6,),
+                                Text('rename_group'.tr(), style: Theme.of(context).textTheme.headline6,),
                                 SizedBox(height: 40,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,10 +292,9 @@ class _GroupSettingState extends State<GroupSettings> {
                                       child: TextField(
                                         controller: _groupNameController,
                                         decoration: InputDecoration(
-                                          labelText: 'Új név',
+                                          labelText: 'new_name'.tr(),
                                           enabledBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                                            //  when the TextFormField in unfocused
                                           ) ,
                                           focusedBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
@@ -330,14 +330,14 @@ class _GroupSettingState extends State<GroupSettings> {
                                                         return Column(
                                                           mainAxisSize: MainAxisSize.min,
                                                           children: [
-                                                            Flexible(child: Text("A név megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                            Flexible(child: Text("nickname_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                             SizedBox(height: 15,),
                                                             FlatButton.icon(
                                                               icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                                               onPressed: (){
                                                                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
                                                               },
-                                                              label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                                              label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                                               color: Theme.of(context).colorScheme.secondary,
                                                             )
                                                           ],
@@ -348,7 +348,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                           child: Column(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: [
-                                                              Flexible(child: Text("Hiba a név megváltoztatásakor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                              Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                               SizedBox(height: 15,),
                                                               FlatButton.icon(
                                                                 icon: Icon(Icons.clear, color: Colors.white,),
@@ -358,7 +358,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
                                                                   });
                                                                 },
-                                                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                                 color: Colors.red,
                                                               )
                                                             ],
@@ -378,7 +378,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                               onPressed: (){
                                                                 Navigator.pop(context);
                                                               },
-                                                              label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                               color: Colors.red,
                                                             )
                                                           ],
@@ -409,7 +409,7 @@ class _GroupSettingState extends State<GroupSettings> {
                           padding: const EdgeInsets.all(15),
                           child: Column(
                             children: <Widget>[
-                              Text('Meghívó', style: Theme.of(context).textTheme.headline6,),
+                              Text('invitation'.tr(), style: Theme.of(context).textTheme.headline6,),
                               SizedBox(height: 40,),
                               FutureBuilder(
                                 future: _invitation,
@@ -427,7 +427,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                 ft.showToast(child: Container(
                                                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
                                                     padding: EdgeInsets.all(10),
-                                                    child: Text('Másolva', style: Theme.of(context).textTheme.bodyText1,)
+                                                    child: Text('copied'.tr(), style: Theme.of(context).textTheme.bodyText1,)
                                                 ), gravity: ToastGravity.BOTTOM);
                                               },
                                               child: Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,),
@@ -440,7 +440,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                               ft.showToast(child: Container(
                                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
                                                   padding: EdgeInsets.all(10),
-                                                  child: Text('Másolva', style: Theme.of(context).textTheme.bodyText1,)
+                                                  child: Text('copied'.tr(), style: Theme.of(context).textTheme.bodyText1,)
                                               ), gravity: ToastGravity.BOTTOM);
                                             },
                                             child: Icon(Icons.content_copy, color: Theme.of(context).colorScheme.onSecondary,),

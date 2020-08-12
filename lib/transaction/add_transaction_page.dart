@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/shopping/shopping_list.dart';
 
 List<String> placeholder = ["Mamut", "Sarki kisbolt", "Fapuma", "Eltört kiskanál", "Irtó büdös szúnyogirtó", "Borravaló a pizzásnak", "Buszjegy", "COO HD Piros Multivit 100% 1L",
   "Egy tökéletes kakaóscsiga", "Sajt sajttal", "Gyíkhúsos melegszendvics", "56 alma", "Csigaszerű játékizé", "10 batka", "Egész napos kirándulás", "Paradicsomos kenyér",
@@ -74,18 +76,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
   }
 
-  Future<bool> _deleteExpense(int id) async {
-    Map<String, dynamic> map = {
-      "type":'delete',
-      "Transaction_Id":id
-    };
-
-    String encoded = json.encode(map);
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/', body: encoded);
-
-    return response.statusCode==200;
-  }
-
   Future<bool> _postNewExpense(List<Member> members, double amount, String name) async{
     try{
 
@@ -148,7 +138,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Bevásárlás')),
+      appBar: AppBar(title: Text('expense'.tr())),
 
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -169,7 +159,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Text('Végösszeg', style: Theme.of(context).textTheme.bodyText1,),
+                            Text('full_amount'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                             SizedBox(width: 20,),
                             Flexible(
                               child: TextField(
@@ -190,7 +180,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                 cursorColor: Theme.of(context).colorScheme.secondary,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 inputFormatters: [
-                                  BlacklistingTextInputFormatter(new RegExp('[ \\,=-]')),
                                   WhitelistingTextInputFormatter(RegExp('[0-9\\.]'))
                                 ],
                               ),
@@ -200,7 +189,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         SizedBox(height: 20,),
                         Row(
                           children: <Widget>[
-                            Text('Megjegyzés', style: Theme.of(context).textTheme.bodyText1,),
+                            Text('note'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                             SizedBox(width: 15,),
                             Flexible(
                               child: TextField(
@@ -289,15 +278,14 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Material(
-                          type: MaterialType.transparency, //Makes it usable on any background color, thanks @IanSmith
+                          type: MaterialType.transparency,
                           child: Ink(
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).colorScheme.onSurface),
                               shape: BoxShape.circle,
                             ),
                             child: InkWell(
-                              //This keeps the splash effect within the circle
-                              borderRadius: BorderRadius.circular(1000.0), //Something large to ensure a circle
+                              borderRadius: BorderRadius.circular(1000.0),
                               onTap: (){
                                 FocusScope.of(context).unfocus();
                                 for(Member member in checkboxBool.keys){
@@ -330,7 +318,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                             ),
                             child: Text(
                               amountController.text!='' && checkboxBool.values.where((element)=>element==true).toList().length>0?
-                              (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+' Ft/fő':
+                              (double.parse(amountController.text)/checkboxBool.values.where((element)=>element==true).toList().length).toStringAsFixed(2)+'per_person'.tr():
                               '',
                               style: Theme.of(context).textTheme.bodyText2,
 
@@ -339,15 +327,14 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         ),
                       ),
                       Material(
-                          type: MaterialType.transparency, //Makes it usable on any background color, thanks @IanSmith
+                          type: MaterialType.transparency,
                           child: Ink(
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).colorScheme.onSurface),
                               shape: BoxShape.circle,
                             ),
                             child: InkWell(
-                              //This keeps the splash effect within the circle
-                              borderRadius: BorderRadius.circular(1000.0), //Something large to ensure a circle
+                              borderRadius: BorderRadius.circular(1000.0),
                               onTap: (){
                                 FocusScope.of(context).unfocus();
                                 for(Member member in checkboxBool.keys){
@@ -396,7 +383,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem adtál meg összeget", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                  Flexible(child: Text("no_amount".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -418,7 +405,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem választottál ki senkit!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                  Flexible(child: Text("person_not_chosen".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -443,7 +430,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("A végösszeg nem lehet negatív!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                  Flexible(child: Text("amount_not_negative".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -458,13 +445,13 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
           });
           Function f;
           var param;
-          if(widget.type==ExpenseType.fromSavedExpense){
-            f=_deleteExpense;
-            param=widget.expense.iD;
-          }else{
+//          if(widget.type==ExpenseType.fromSavedExpense){
+//            f=_deleteExpense;
+//            param=widget.expense.iD;
+//          }else{
             f=(par){return true;};
             param=5;
-          }
+//          }
           f(param);
           Future<bool> success = _postNewExpense(members, amount, note);
           showDialog(
@@ -477,62 +464,82 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                 child: FutureBuilder(
                   future: success,
                   builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      if(snapshot.data){
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                            SizedBox(height: 15,),
-                            FlatButton.icon(
-                              icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                              onPressed: (){
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                              color: Theme.of(context).colorScheme.secondary,
+                    if(snapshot.connectionState==ConnectionState.done){
+                      if(snapshot.hasData){
+                        if(snapshot.data){
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(child: Text("transaction_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                              SizedBox(height: 15,),
+                              FlatButton.icon(
+                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              FlatButton.icon(
+                                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: (){
+                                  setState(() {
+                                    amountController.text='';
+                                    noteController.text='';
+                                    for(Member key in checkboxBool.keys){
+                                      checkboxBool[key]=false;
+                                    }
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                label: Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ],
+                          );
+                        }else{
+                          return Container(
+                            color: Colors.transparent ,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                SizedBox(height: 15,),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.clear, color: Colors.white,),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                  label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                  color: Colors.red,
+                                )
+                              ],
                             ),
-                            FlatButton.icon(
-                              icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                              onPressed: (){
-                                setState(() {
-                                  amountController.text='';
-                                  noteController.text='';
-                                  for(Member key in checkboxBool.keys){
-                                    checkboxBool[key]=false;
-                                  }
-                                });
-                                Navigator.pop(context);
-                              },
-                              label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ],
-                        );
+                          );
+                        }
                       }else{
                         return Container(
                           color: Colors.transparent ,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.clear, color: Colors.white,),
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],
                           ),
                         );
                       }
-                    }else{
-                      return Center(child: CircularProgressIndicator());
                     }
+                    return Center(child: CircularProgressIndicator());
                   },
                 ),
               )

@@ -1,0 +1,102 @@
+{
+    "title":"Lender",
+    "subtitle":"Un'applicazione per gruppi da gestire soldi e debiti",
+
+    "login":"Accedi",
+    "register":"Crea un account",
+    "username":"Nome utente",
+    "password":"Password",
+
+    "name":"Nome",
+    "id":"Codice di identificazione",
+    "confirm_password":"Conferma la password",
+
+    "balances":"Saldi",
+    "history":"Cronologia",
+    "home":"Casa",
+    "shopping_list":"Lista della spesa",
+    "group":"Gruppo",
+    "expense":"Spesa",
+    "payment":"Pagamento",
+
+    "wish":"Desiderio",
+
+    "nickname":"Soprannome",
+    "new_nickname":"Soprannome nuovo",
+    "rename_group":"Rinomina il gruppo",
+    "invitation":"Invito",
+    "copied":"Copiato",
+    "members":"Membri",
+
+    "groups":"Gruppi",
+    "join_group":"Iscriviti ad un gruppo",
+    "create_group":"Crea un gruppo",
+    "settings":"Impostazoni",
+    "logout":"Esci",
+
+    "join":"Iscriviti",
+    "nickname_in_group":"Soprannome nel gruppo",
+    "no_group_yet":"Non hai ancora dei gruppi?",
+    
+    "group_name":"IL nome del gruppo",
+    "create":"Crea",
+
+    "change_password":"Modifica la password",
+    "old_password":"Password attuale",
+    "new_password":"Password nouva",
+    "new_password_confirm":"La password nuova è confermata",
+    "send":"Manda",
+    "change_theme":"Cambia il tema",
+
+    "full_amount":"Somma totale",
+    "note":"Nota",
+
+    "amount":"Somma",
+
+    "change_language": "Cambia la lingua",
+    "change_password_scf": "Il cambiamento è stato di successo!",
+    "okay": "Affermativo!",
+    "error": "Un'errore è accaduto!",
+
+    "login_scf": "Il login è stato di successo!",
+    "example_name": "peppino",
+    "not_alterable": "Non alterabile!",
+    "registration_scf": "La registrazione è stata di successo!",
+    "example_nickname": "Peppino",
+   
+    "want_make_admin": "Vorresti farlo/la admin?",
+    "admin_scf": "L'utente è diventato/a admin!",
+    "yes": "Sì",
+    "no": "No",
+    "make_admin": "Sia admin!",
+
+    "nickname_scf": "Il cambiamento del nome è stato di successo!",
+    
+    "join_scf": "L'iscrizione è stata di successo!",
+
+    "login_required": "Purtroppo devi accedere di nuovo!",
+    "transactions": "Transazioni",
+    "payments": "Pagamenti",
+
+    "more": "Più",
+
+    "person_not_chosen": "Non hai scelto nessuno!",
+    "payment_scf": "Il pagamento è stato registrato con successo!",
+    "add_new": "Aggiungi un altro",
+    "payment_hint": "Mammut",
+
+    "no_note": "Non c'è nota",
+    "want_delete": "Vorresti cancellare l'articolo?",
+    "delete_scf":"La cancellazione è stata di successo!",
+    "delete": "Cancella",
+
+    "want_expense": "Vorresti addebitare?",
+    "bought": "Ho comprato",
+
+    "add_scf":"L'aggiunta è stata di successo!",
+
+    "per_person": " Ft/persona",
+    "no_amount": "Non hai aggiunto la somma!",
+    "amount_not_negative": "La sommma totale non può essere negativa!",
+    "transaction_scf": "La transazione è stata registrata con successo!"
+}

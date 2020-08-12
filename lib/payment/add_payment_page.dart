@@ -6,6 +6,7 @@ import 'package:csocsort_szamla/person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddPaymentRoute extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   Future<List<Member>> _getNames() async {
     try{
-      Map<String, String> header = {
+      Map<String, String> header = {//TODO: localization
         "Content-Type": "application/json",
         "Authorization": "Bearer "+apiToken
       };
@@ -85,7 +86,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: Text('Fizetés'),),
+      appBar: AppBar(title: Text('payment'.tr()),),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.send),
         onPressed: (){
@@ -104,7 +105,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   SizedBox(
                     width: 12.0,
                   ),
-                  Flexible(child: Text("Nem választottál személyt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                  Flexible(child: Text("person_not_chosen".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                 ],
               ),
             );
@@ -131,7 +132,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("A tranzakciót sikeresen könyveltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                              Flexible(child: Text("payment_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -139,7 +140,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 },
-                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                               FlatButton.icon(
@@ -150,7 +151,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   dropdownValue=null;
                                   Navigator.pop(context);
                                 },
-                                label: Text('Új hozzáadása', style: Theme.of(context).textTheme.button,),
+                                label: Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                             ],
@@ -161,14 +162,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
                                   icon: Icon(Icons.clear, color: Colors.white,),
                                   onPressed: (){
                                     Navigator.pop(context);
                                   },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                  label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                   color: Colors.red,
                                 )
                               ],
@@ -181,14 +182,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.clear, color: Colors.white,),
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],
@@ -222,7 +223,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                     SizedBox(height: 10,),
                     Row(
                       children: <Widget>[
-                        Text('Összeg', style: Theme.of(context).textTheme.bodyText1,),
+                        Text('amount'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                         SizedBox(width: 20,),
                         Flexible(
                           child: TextField(
@@ -242,7 +243,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             keyboardType: TextInputType.numberWithOptions(decimal: true),
                             inputFormatters: [
-                              BlacklistingTextInputFormatter(new RegExp('[ \\,-]')),
                               WhitelistingTextInputFormatter(RegExp('[0-9\\.]'))
                             ],
                           ),
@@ -252,12 +252,12 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                     SizedBox(height: 20,),
                     Row(
                       children: <Widget>[
-                        Text('Megjegyzés', style: Theme.of(context).textTheme.bodyText1,),
+                        Text('note'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                         SizedBox(width: 20,),
                         Flexible(
                           child: TextField(
                             decoration: InputDecoration(
-                              hintText: 'Mamut',
+                              hintText: 'payment_hint'.tr(),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
                                 //  when the TextFormField in unfocused

@@ -6,10 +6,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'create_group.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 
 class JoinGroup extends StatefulWidget {
+  final bool fromAuth;
+  JoinGroup({this.fromAuth=false});
   @override
   _JoinGroupState createState() => _JoinGroupState();
 }
@@ -73,11 +76,11 @@ class _JoinGroupState extends State<JoinGroup> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Csatlakozás',
+          'join'.tr(),
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
         ),
       ),
-      drawer: Drawer(
+      drawer: !widget.fromAuth?null:Drawer(
         elevation: 16,
         child: ListView(
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,7 +108,7 @@ class _JoinGroupState extends State<JoinGroup> {
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Beállítások',
+                'settings'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -121,7 +124,7 @@ class _JoinGroupState extends State<JoinGroup> {
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Kijelentkezés',
+                'logout'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -163,159 +166,170 @@ class _JoinGroupState extends State<JoinGroup> {
           FocusScope.of(context).unfocus();
         },
         child: ListView(
-          padding: const EdgeInsets.all(15),
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text('Meghívó', style: Theme.of(context).textTheme.bodyText1,),
-                SizedBox(width: 20,),
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        //  when the TextFormField in unfocused
-                      ) ,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                      ) ,
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text('invitation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                      SizedBox(width: 20,),
+                      Flexible(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                              //  when the TextFormField in unfocused
+                            ) ,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                            ) ,
 
-                    ),
-                    controller: _tokenController,
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20,),
-            Row(
-              children: <Widget>[
-                Text('Becenév a csoportban', style: Theme.of(context).textTheme.bodyText1,),
-                SizedBox(width: 20,),
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Sanyi',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        //  when the TextFormField in unfocused
-                      ) ,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                      ) ,
-                    ),
-                    controller: _nicknameController,
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(15),
+                          ),
+                          controller: _tokenController,
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                          cursorColor: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: 20,),
+                  Row(
+                    children: <Widget>[
+                      Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                      SizedBox(width: 20,),
+                      Flexible(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'example_nickname'.tr(),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                              //  when the TextFormField in unfocused
+                            ) ,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                            ) ,
+                          ),
+                          controller: _nicknameController,
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                          cursorColor: Theme.of(context).colorScheme.secondary,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(15),
+                          ],
+                        ),
+                      ),
+
+                    ],
+                  ),
+                  SizedBox(height: 10,),
+                  RaisedButton(
+                    child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
+                    onPressed: (){
+                      String token = _tokenController.text;
+                      String nickname = _nicknameController.text;
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          child: Dialog(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                            child: FutureBuilder(
+                              future: _joinGroup(token, nickname),
+                              builder: (context, snapshot){
+                                if(snapshot.connectionState==ConnectionState.done){
+                                  if(snapshot.hasData){
+                                    if(snapshot.data){
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(child: Text("join_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                          SizedBox(height: 15,),
+                                          FlatButton.icon(
+                                            icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                            onPressed: (){
+                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                            },
+                                            label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          )
+                                        ],
+                                      );
+                                    }else{
+                                      return Container(
+                                        color: Colors.transparent ,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                            SizedBox(height: 15,),
+                                            FlatButton.icon(
+                                              icon: Icon(Icons.clear, color: Colors.white,),
+                                              onPressed: (){
+                                                Navigator.pop(context);
+                                              },
+                                              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                              color: Colors.red,
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  }else{
+                                    return Container(
+                                      color: Colors.transparent ,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                          SizedBox(height: 15,),
+                                          FlatButton.icon(
+                                            icon: Icon(Icons.clear, color: Colors.white,),
+                                            onPressed: (){
+                                              Navigator.pop(context);
+                                            },
+                                            label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }
+                                return Center(child: CircularProgressIndicator());
+
+                              },
+                            ),
+                          )
+                      );
+                    },
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ],
+              ),
             ),
+
             SizedBox(height: 40,),
             Divider(),
             SizedBox(height: 40,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: <Widget>[
-                Text('Nincs még csoportod?', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 22),),
-//                SizedBox(width: 0,),
-                Flexible(
-                    child: GestureDetector(
-                      child: Text('Csoport létrehozása', style: Theme.of(context).textTheme.bodyText2.copyWith(decoration: TextDecoration.underline, fontSize: 22),),
-                      onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
-                    )
-                )
+                Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),)),
+                SizedBox(height: 10,),
+                RaisedButton(
+                  child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15)),
+                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ],
             ),
+
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          String token = _tokenController.text;
-          String nickname = _nicknameController.text;
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: Dialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                child: FutureBuilder(
-                  future: _joinGroup(token, nickname),
-                  builder: (context, snapshot){
-                    if(snapshot.connectionState==ConnectionState.done){
-                      if(snapshot.hasData){
-                        if(snapshot.data){
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text("A csatlakozás sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                onPressed: (){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                },
-                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                color: Theme.of(context).colorScheme.secondary,
-                              )
-                            ],
-                          );
-                        }else{
-                          return Container(
-                            color: Colors.transparent ,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(child: Text("Hiba a csatlakozáskor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                SizedBox(height: 15,),
-                                FlatButton.icon(
-                                  icon: Icon(Icons.clear, color: Colors.white,),
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                  },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                  color: Colors.red,
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      }else{
-                        return Container(
-                          color: Colors.transparent ,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.clear, color: Colors.white,),
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                color: Colors.red,
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                    return Center(child: CircularProgressIndicator());
 
-                  },
-                ),
-              )
-          );
-        },
-        child: Icon(Icons.send),
-      ),
     );
   }
 }

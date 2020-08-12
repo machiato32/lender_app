@@ -6,6 +6,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 
 class RegisterRoute extends StatefulWidget {
   @override
@@ -34,7 +35,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(title: Text('Regisztráció')),
+      appBar: AppBar(title: Text('register'.tr())),
       body: Center(
         child: ListView(
           shrinkWrap: true,
@@ -47,9 +48,9 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   child: TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      helperText: 'Nem megváltoztatható',
-                      hintText: 'sanyika',
-                      labelText: 'Név',
+                      helperText: 'not_alterable'.tr(),
+                      hintText: 'example_name'.tr(),
+                      labelText: 'name'.tr(),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                       ) ,
@@ -66,15 +67,15 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ),
                 ),
                 SizedBox(width: 5,),
-                Text('#'),
+                Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
                 SizedBox(width: 5,),
                 Flexible(
                   child: TextField(
                     controller: _userNumController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Azonosító',
-                      helperText: 'Nem megváltoztatható',
+                      labelText: 'id'.tr(),
+                      helperText: 'not_alterable'.tr(),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                         //  when the TextFormField in unfocused
@@ -102,17 +103,18 @@ class _RegisterRouteState extends State<RegisterRoute> {
               child: TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Jelszó',
+                  labelText: 'password'.tr(),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                     //  when the TextFormField in unfocused
-                  ) ,
+                  ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                  ) ,
-
+                  ),
                 ),
-                inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]'))],
+                inputFormatters: [
+                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                ],
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
@@ -125,7 +127,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
               child: TextField(
                 controller: _passwordConfirmController,
                 decoration: InputDecoration(
-                  labelText: 'Jelszó újra',
+                  labelText: 'confirm_password'.tr(),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                     //  when the TextFormField in unfocused
@@ -135,7 +137,9 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ) ,
 
                 ),
-                inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\. \\,-]'))],
+                inputFormatters: [
+                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                ],
                 keyboardType: TextInputType.number,
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
@@ -162,97 +166,97 @@ class _RegisterRouteState extends State<RegisterRoute> {
 //                cursorColor: Theme.of(context).colorScheme.secondary,
 //              ),
 //            ),
-            RaisedButton(
-              onPressed: (){
-                //TODO: validate
-                String username = _usernameController.text;
-                String userNum = _userNumController.text;
-                if(_passwordController.text==_passwordConfirmController.text){
-                  String password = _passwordConfirmController.text;
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      child: Dialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        child: FutureBuilder(
-                          future: _register(username, userNum, password, ''),
-                          builder: (context, snapshot){
-                            if(snapshot.connectionState==ConnectionState.done){
-                              if(snapshot.hasData){
-                                if(snapshot.data){
 
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text("A regisztráció sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
-                                      FlatButton.icon(
-                                        icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup()), (r)=>false);
-                                        },
-                                        label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      )
-                                    ],
-                                  );
-                                }else{
-                                  return Container(
-                                    color: Colors.transparent ,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(child: Text("Hiba a regisztrációkor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                        SizedBox(height: 15,),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.clear, color: Colors.white,),
-                                          onPressed: (){
-                                            Navigator.pop(context);
-                                          },
-                                          label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                          color: Colors.red,
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }
-                              }else{
-                                return Container(
-                                  color: Colors.transparent ,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
-                                      FlatButton.icon(
-                                        icon: Icon(Icons.clear, color: Colors.white,),
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                        },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            }
-                            return Center(child: CircularProgressIndicator());
-
-                          },
-                        ),
-                      )
-                  );
-                }
-              },
-              child: Text('Regisztráció', style: Theme.of(context).textTheme.button),
-              color: Theme.of(context).colorScheme.secondary,
-            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          //TODO: validate
+          String username = _usernameController.text;
+          String userNum = _userNumController.text;
+          if(_passwordController.text==_passwordConfirmController.text){
+            String password = _passwordConfirmController.text;
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                child: Dialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  child: FutureBuilder(
+                    future: _register(username, userNum, password, ''),
+                    builder: (context, snapshot){
+                      if(snapshot.connectionState==ConnectionState.done){
+                        if(snapshot.hasData){
+                          if(snapshot.data){
+
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(child: Text("registration_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                SizedBox(height: 15,),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
+                                  },
+                                  label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                  color: Theme.of(context).colorScheme.secondary,
+                                )
+                              ],
+                            );
+                          }else{
+                            return Container(
+                              color: Colors.transparent ,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                  SizedBox(height: 15,),
+                                  FlatButton.icon(
+                                    icon: Icon(Icons.clear, color: Colors.white,),
+                                    onPressed: (){
+                                      Navigator.pop(context);
+                                    },
+                                    label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                    color: Colors.red,
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                        }else{
+                          return Container(
+                            color: Colors.transparent ,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                SizedBox(height: 15,),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.clear, color: Colors.white,),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                  label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                  color: Colors.red,
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      return Center(child: CircularProgressIndicator());
+
+                    },
+                  ),
+                )
+            );
+          }
+        },
+        child: Icon(Icons.send),
       ),
     );
   }
@@ -282,8 +286,11 @@ class _RegisterRouteState extends State<RegisterRoute> {
           _prefs.setString('current_user', currentUser);
           _prefs.setString('api_token', apiToken);
         });
+        return true;
+      }else{
+        Map<String, dynamic> error = jsonDecode(response.body);
+        throw error['error'];
       }
-      return response.statusCode==201;
     }catch(_){
       throw _;
     }

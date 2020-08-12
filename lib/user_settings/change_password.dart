@@ -5,6 +5,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:csocsort_szamla/main.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChangePin extends StatefulWidget {
   @override
@@ -53,11 +54,11 @@ class _ChangePinState extends State<ChangePin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Jelszó megváltoztatása', style: Theme.of(context).textTheme.headline6,)),
+            Center(child: Text('change_password'.tr(), style: Theme.of(context).textTheme.headline6,)),
             SizedBox(height: 10,),
             Row(
               children: <Widget>[
-                Text('Jelenlegi jelszó', style: Theme.of(context).textTheme.bodyText1,),
+                Text('old_password'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -85,7 +86,7 @@ class _ChangePinState extends State<ChangePin> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('Új jelszó', style: Theme.of(context).textTheme.bodyText1,),
+                Text('new_password'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -113,7 +114,7 @@ class _ChangePinState extends State<ChangePin> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('Új jelszó megerősítése', style: Theme.of(context).textTheme.bodyText1,),
+                Text('new_password_confirm'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 15,),
                 Flexible(
                   child: TextField(
@@ -142,7 +143,7 @@ class _ChangePinState extends State<ChangePin> {
             Center(
               child: RaisedButton.icon(
                 color: Theme.of(context).colorScheme.secondary,
-                label: Text('Küldés', style: Theme.of(context).textTheme.button),
+                label: Text('send'.tr(), style: Theme.of(context).textTheme.button),
                 icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                 onPressed: () async {
                   FocusScope.of(context).unfocus();
@@ -164,14 +165,14 @@ class _ChangePinState extends State<ChangePin> {
                                     return Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(child: Text("A jelszó megváltoztatása sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                        Flexible(child: Text("change_password_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                         SizedBox(height: 15,),
                                         FlatButton.icon(
                                           icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                           onPressed: (){
                                             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
                                           },
-                                          label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                          label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                           color: Theme.of(context).colorScheme.secondary,
                                         )
                                       ],
@@ -182,14 +183,14 @@ class _ChangePinState extends State<ChangePin> {
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                          Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                           SizedBox(height: 15,),
                                           FlatButton.icon(
                                             icon: Icon(Icons.clear, color: Colors.white,),
                                             onPressed: (){
                                               Navigator.pop(context);
                                             },
-                                            label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                            label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                             color: Colors.red,
                                           )
                                         ],
@@ -209,7 +210,7 @@ class _ChangePinState extends State<ChangePin> {
                                           onPressed: (){
                                             Navigator.pop(context);
                                           },
-                                          label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                          label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                           color: Colors.red,
                                         )
                                       ],
@@ -237,7 +238,7 @@ class _ChangePinState extends State<ChangePin> {
                           SizedBox(
                             width: 12.0,
                           ),
-                          Flexible(child: Text("A megadott két jelszó nem egyezik!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                          Flexible(child: Text("passwords_not_match".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                         ],
                       ),
                     );

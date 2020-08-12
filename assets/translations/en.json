@@ -1,0 +1,107 @@
+{
+    "title":"Lender",
+    "subtitle":"Money and debtmanagement app designed for groups.",
+
+    "login":"Log in",
+    "register":"Register",
+    "username":"Username",
+    "password":"Password",
+
+    "name":"Name",
+    "id":"ID",
+    "confirm_password":"Confirm password",
+
+    "balances":"Balances",
+    "history":"History",
+    "home":"Home",
+    "shopping_list":"Shoppinglist",
+    "group":"Group",
+    "expense":"Expense",
+    "payment":"Payment",
+
+    "wish":"My wish",
+
+    "nickname":"Nickname",
+    "new_nickname":"New nickname",
+    "rename_group":"Rename group",
+    "new_name":"New name",
+    "invitation":"Invitation",
+    "copied":"Copied",
+    "members":"Members",
+
+    "groups":"Groups",
+    "join_group":"Join group",
+    "create_group":"Create group",
+    "settings":"Settings",
+    "logout":"Log out",
+
+    "join":"Join",
+    "nickname_in_group":"Nickname in the group",
+    "no_group_yet":"Don't have a group?",
+    
+    "group_name":"Name of group",
+    "create":"Create",
+
+    "change_password":"Change group",
+    "old_password":"Old password",
+    "new_password":"New password",
+    "new_password_confirm":"Confirm new password",
+    "send":"Send",
+    "change_theme":"Change theme",
+    "change_language": "Change language",
+
+    "full_amount":"Full amount",
+    "note":"Note",
+
+    "amount":"Amount",
+
+    "change_password_scf": "The change was successful!",
+    "passwords_not_match": "Them two passwords don't match!",
+    "okay": "Affirmative!",
+    "error": "An error occurred!",
+    "back": "Back",
+    "login_scf": "The login was successful!",
+
+    "example_name": "jack",
+    "not_alterable": "Not alterable later!",
+    "registration_scf": "The registration was successful!",
+
+    "example_nickname": "Jack",
+    "creation_scf": "The creation was successful!",
+
+    "want_make_admin": "Do you want to make them an admin?",
+    "admin_scf": "The user is now an admin!",
+    "yes": "Yes",
+    "no": "No",
+    "make_admin": "Make them admin",
+
+    "nickname_scf": "The change was successful!",
+
+    "join_scf": "Successfully joined the group!",
+
+    "login_required": "You need to log in again!",
+    "transactions": "Transactions",
+    "payments": "Payments",
+
+    "more": "More",
+
+    "person_not_chosen": "No person chosen!",
+    "payment_scf": "The payment was saved successfully!",
+    "add_new": "Add new",
+    "payment_hint": "Elephant",
+
+    "no_note": "No additional note",
+    "want_delete": "Do you want to delete the item?",
+    "delete_scf":"The item was deleted successfully!",
+    "delete": "Delete",
+
+    "want_expense": "Do you want them to pay for it?",
+    "bought": "Bought it",
+
+    "add_scf":"Successfully added!",
+
+    "per_person": " Ft/person",
+    "no_amount": "No amount given!",
+    "amount_not_negative": "The amount cannot be negative!",
+    "transaction_scf": "The transaction was saved successfully!"
+}

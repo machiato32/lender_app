@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -58,7 +60,7 @@ class _ShoppingListState extends State<ShoppingList> {
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -88,7 +90,7 @@ class _ShoppingListState extends State<ShoppingList> {
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -128,14 +130,14 @@ class _ShoppingListState extends State<ShoppingList> {
       child: ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
-          Center(child: Text('Bevásárlólista', style: Theme.of(context).textTheme.headline6,)),
+          Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
           SizedBox(height: 20,),
           Row(
             children: <Widget>[
               Flexible(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Kívánságom',
+                    hintText: 'wish'.tr(),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
                     ) ,
@@ -175,7 +177,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text("A hozzáadás sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                      Flexible(child: Text("add_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                       SizedBox(height: 15,),
                                       FlatButton.icon(
                                         icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -186,7 +188,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                             _shoppingList=_getShoppingList();
                                           });
                                         },
-                                        label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                        label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                         color: Theme.of(context).colorScheme.secondary,
                                       )
                                     ],
@@ -197,7 +199,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(child: Text("Hiba a csatlakozáskor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                        Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                         SizedBox(height: 15,),
                                         FlatButton.icon(
                                           icon: Icon(Icons.clear, color: Colors.white,),
@@ -207,7 +209,7 @@ class _ShoppingListState extends State<ShoppingList> {
 
                                             });
                                           },
-                                          label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                          label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                           color: Colors.red,
                                         )
                                       ],
@@ -227,7 +229,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                         onPressed: (){
                                           Navigator.pop(context);
                                         },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                        label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                         color: Colors.red,
                                       )
                                     ],

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'person.dart';
 import 'config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Balances extends StatefulWidget {
   @override
@@ -65,7 +66,7 @@ class _BalancesState extends State<Balances> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-              child: Text('Egyenlegek', style: Theme.of(context).textTheme.headline6,),
+              child: Text('balances'.tr(), style: Theme.of(context).textTheme.headline6,),
             ),
             SizedBox(height: 40),
             Center(

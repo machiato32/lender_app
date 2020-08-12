@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+
+import 'balances.dart';
+import 'config.dart';
+import 'person.dart';
+import 'app_state_notifier.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
-import 'balances.dart';
-import 'package:provider/provider.dart';
-import 'app_state_notifier.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'config.dart';
-import 'person.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
@@ -38,8 +40,20 @@ void main() async {
     currentGroupName=preferences.getString('current_group_name');
     currentGroupId=preferences.getInt('current_group_id');
   }
-  runApp(ChangeNotifierProvider<AppStateNotifier>(
-      create: (context) => AppStateNotifier(), child: LenderApp(themeName: themeName,)));
+  runApp(
+      
+      EasyLocalization(
+        child: ChangeNotifierProvider<AppStateNotifier>(
+          create: (context) => AppStateNotifier(), child: LenderApp(themeName: themeName,)
+        ),
+        supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en'),
+        useOnlyLangCode: true,
+        saveLocale: true,
+      )
+  
+  );
 }
 
 
@@ -65,8 +79,11 @@ class _LenderAppState extends State<LenderApp>{
         return MaterialApp(
           title: 'Lender',
           theme: appState.theme,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
           home: currentUser==null?//TODO: if group does not exist
-            LoginOrRegisterRoute():
+            LoginOrRegisterRoute(showDialog: true,):
             (currentGroupId==null)?
               JoinGroup():
               MainPage(),
@@ -117,7 +134,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -147,7 +164,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
-          ft.showToast(child: Text('Sajnos újra be kell jelentkezned!'), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+          ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
         }
         throw error['error'];
@@ -242,15 +259,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Főoldal')
+            title: Text('home'.tr())
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_shopping_cart),
-            title: Text('Bevásárlólista')
+            title: Text('shopping_list'.tr())
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            title: Text('Csoport beállítások')
+            title: Text('group'.tr())
           )
         ],
       ),
@@ -263,6 +280,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Expanded(
+                    child: Image(
+                      image: AssetImage('assets/dodo_color.png'),
+                    ),
+                  ),
                   Text(
                     'LENDER',
                     style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
@@ -283,7 +305,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return ExpansionTile(
-                      title: Text('Csoportok', style: Theme.of(context).textTheme.bodyText1),
+                      title: Text('groups'.tr(), style: Theme.of(context).textTheme.bodyText1),
                       leading: Icon(Icons.group, color: Theme.of(context).textTheme.bodyText1.color),
                       children: _generateListTiles(snapshot.data),
                     );
@@ -312,7 +334,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Csatlakozás csoporthoz',
+                'join_group'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -325,7 +347,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Csoport létrehozása',
+                'create_group'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -339,7 +361,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Beállítások',
+                'settings'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -353,7 +375,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
-                'Kijelentkezés',
+                'logout'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
@@ -382,8 +404,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 //                'Probléma jelentése',
 //                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
 //              ),
-//              onTap: () {},
-//              enabled: false,
+//              onTap: () {
+//                setState(() {
+//                  context.locale=Locale('hu');
+//                });
+//              },
 //            ),
 
           ],
@@ -399,7 +424,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 
           children: [
             SpeedDialChild(
-              label: 'Bevásárlás',
+              label: 'expense'.tr(),
               labelBackgroundColor: Theme.of(context).colorScheme.secondary,
               labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
               child: Icon(Icons.shopping_cart),
@@ -410,7 +435,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               }
             ),
             SpeedDialChild(
-              label: 'Fizetés',
+              label: 'payment'.tr(),
               labelBackgroundColor: Theme.of(context).colorScheme.secondary,
               labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
               child: Icon(Icons.attach_money),

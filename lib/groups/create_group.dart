@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CreateGroup extends StatefulWidget {
   @override
@@ -73,90 +74,76 @@ class _CreateGroupState extends State<CreateGroup> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Létrehozás',
+          'create'.tr(),
           style: TextStyle(letterSpacing: 0.25, fontSize: 24),
         ),
       ),
-      drawer: Drawer(
-        elevation: 16,
-        child: ListView(
-//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'LENDER',
-                    style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
-                  ),
-                  SizedBox(height: 5,),
-                  Text(
-                    currentUser,
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
-                  ),
-//                  SizedBox(height: 20,)
-                ],
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              title: Text(
-                'Beállítások',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Settings()));
-              },
-            ),
-            Divider(),
-
-            ListTile(
-              leading: Icon(
-                Icons.account_circle,
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              title: Text(
-                'Kijelentkezés',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                _logout();
-                currentUser=null;
-                currentGroupId=null;
-                currentGroupName=null;
-                apiToken=null;
-                SharedPreferences.getInstance().then((_prefs) {
-                  _prefs.remove('current_group_name');
-                  _prefs.remove('current_group_id');
-                  _prefs.remove('current_user');
-                  _prefs.remove('api_token');
-                });
-
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
-              },
-            ),
-//            Divider(),
+//      drawer: Drawer(
+//        elevation: 16,
+//        child: ListView(
+////          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget>[
+//            DrawerHeader(
+//              child: Column(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  Text(
+//                    'LENDER',
+//                    style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+//                  ),
+//                  SizedBox(height: 5,),
+//                  Text(
+//                    currentUser,
+//                    style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+//                  ),
+////                  SizedBox(height: 20,)
+//                ],
+//              ),
+//            ),
 //            ListTile(
 //              leading: Icon(
-//                Icons.bug_report,
-//                color: Colors.red,
+//                Icons.settings,
+//                color: Theme.of(context).textTheme.bodyText1.color,
 //              ),
 //              title: Text(
-//                'Probléma jelentése',
-//                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+//                'settings'.tr(),
+//                style: Theme.of(context).textTheme.bodyText1,
 //              ),
-//              onTap: () {},
-//              enabled: false,
+//              onTap: () {
+//                Navigator.push(context,
+//                    MaterialPageRoute(builder: (context) => Settings()));
+//              },
 //            ),
-
-          ],
-        ),
-      ),
+//            Divider(),
+//
+//            ListTile(
+//              leading: Icon(
+//                Icons.account_circle,
+//                color: Theme.of(context).textTheme.bodyText1.color,
+//              ),
+//              title: Text(
+//                'logout'.tr(),
+//                style: Theme.of(context).textTheme.bodyText1,
+//              ),
+//              onTap: () {
+//                _logout();
+//                currentUser=null;
+//                currentGroupId=null;
+//                currentGroupName=null;
+//                apiToken=null;
+//                SharedPreferences.getInstance().then((_prefs) {
+//                  _prefs.remove('current_group_name');
+//                  _prefs.remove('current_group_id');
+//                  _prefs.remove('current_user');
+//                  _prefs.remove('api_token');
+//                });
+//
+//                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+//              },
+//            ),
+//          ],
+//        ),
+//      ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -167,14 +154,13 @@ class _CreateGroupState extends State<CreateGroup> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Text('Csoport neve', style: Theme.of(context).textTheme.bodyText1,),
+                Text('group_name'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 20,),
                 Flexible(
                   child: TextField(
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        //  when the TextFormField in unfocused
                       ) ,
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
@@ -194,15 +180,14 @@ class _CreateGroupState extends State<CreateGroup> {
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
-                Text('Beceneved a csoportban', style: Theme.of(context).textTheme.bodyText1,),
+                Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
                 SizedBox(width: 20,),
                 Flexible(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Sanyi',
+                      hintText: 'example_nickname'.tr(),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        //  when the TextFormField in unfocused
                       ) ,
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
@@ -218,90 +203,95 @@ class _CreateGroupState extends State<CreateGroup> {
                 ),
               ],
             ),
+            Column(
+              children: <Widget>[
+                RaisedButton(
+                  child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button),
+                  onPressed: (){
+                    String token = _groupName.text;
+                    String nickname = _nicknameController.text;
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        child: Dialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          child: FutureBuilder(
+                            future: _joinGroup(token, nickname),
+                            builder: (context, snapshot){
+                              if(snapshot.connectionState==ConnectionState.done){
+                                if(snapshot.hasData){
+                                  if(snapshot.data){
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(child: Text("creation_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                        SizedBox(height: 15,),
+                                        FlatButton.icon(
+                                          icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                          onPressed: (){
+                                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                          },
+                                          label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                          color: Theme.of(context).colorScheme.secondary,
+                                        )
+                                      ],
+                                    );
+                                  }else{
+                                    return Container(
+                                      color: Colors.transparent ,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                          SizedBox(height: 15,),
+                                          FlatButton.icon(
+                                            icon: Icon(Icons.clear, color: Colors.white,),
+                                            onPressed: (){
+                                              Navigator.pop(context);
+                                            },
+                                            label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }else{
+                                  return Container(
+                                    color: Colors.transparent ,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                        SizedBox(height: 15,),
+                                        FlatButton.icon(
+                                          icon: Icon(Icons.clear, color: Colors.white,),
+                                          onPressed: (){
+                                            Navigator.pop(context);
+                                          },
+                                          label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                          color: Colors.red,
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                              }
+                              return Center(child: CircularProgressIndicator());
+
+                            },
+                          ),
+                        )
+                    );
+                  },
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ],
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          String token = _groupName.text;
-          String nickname = _nicknameController.text;
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: Dialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                child: FutureBuilder(
-                  future: _joinGroup(token, nickname),
-                  builder: (context, snapshot){
-                    if(snapshot.connectionState==ConnectionState.done){
-                      if(snapshot.hasData){
-                        if(snapshot.data){
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text("A léterhozás sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                onPressed: (){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                },
-                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                color: Theme.of(context).colorScheme.secondary,
-                              )
-                            ],
-                          );
-                        }else{
-                          return Container(
-                            color: Colors.transparent ,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(child: Text("Hiba a létrehozáskor!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                SizedBox(height: 15,),
-                                FlatButton.icon(
-                                  icon: Icon(Icons.clear, color: Colors.white,),
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                  },
-                                  label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                  color: Colors.red,
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      }else{
-                        return Container(
-                          color: Colors.transparent ,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.clear, color: Colors.white,),
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                color: Colors.red,
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                    return Center(child: CircularProgressIndicator());
-
-                  },
-                ),
-              )
-          );
-        },
-        child: Icon(Icons.send),
       ),
     );
   }

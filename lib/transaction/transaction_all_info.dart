@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
+import 'package:csocsort_szamla/config.dart';
 
 class TransactionAllInfo extends StatefulWidget {
 
@@ -31,7 +33,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
   Widget build(BuildContext context) {
     String note='';
     if(widget.data.name==''){
-      note='Nincs megjegyzés';
+      note='no_note'.tr();
     }else{
       note=widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
     }
@@ -152,7 +154,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Text('Törölni szeretnéd a tételt?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                      Text('want_delete'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                       SizedBox(height: 15,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -177,7 +179,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                               return Column(
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
-                                                                  Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                                  Flexible(child: Text("delete_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                   SizedBox(height: 15,),
                                                                   FlatButton.icon(
                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -185,7 +187,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                                       Navigator.pop(context);
                                                                       Navigator.pop(context, 'deleted');
                                                                     },
-                                                                    label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                                                    label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                                                     color: Theme.of(context).colorScheme.secondary,
                                                                   )
                                                                 ],
@@ -196,14 +198,14 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                                 child: Column(
                                                                   mainAxisSize: MainAxisSize.min,
                                                                   children: [
-                                                                    Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                                    Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                     SizedBox(height: 15,),
                                                                     FlatButton.icon(
                                                                       icon: Icon(Icons.clear, color: Colors.white,),
                                                                       onPressed: (){
                                                                         Navigator.pop(context);
                                                                       },
-                                                                      label: Text('Vissza', style: Theme.of(context).textTheme.button.copyWith(color: Colors.white)),
+                                                                      label: Text('back'.tr(), style: Theme.of(context).textTheme.button.copyWith(color: Colors.white)),
                                                                       color: Colors.red,
                                                                     )
                                                                   ],
@@ -261,12 +263,12 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
 //                                                      Navigator.pop(context);
 //                                                      Navigator.pop(context);
                                               },
-                                              child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                              child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                           ),
                                           RaisedButton(
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: (){ Navigator.pop(context);},
-                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                              child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
                                           )
                                         ],
                                       )
@@ -277,7 +279,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                           );
                         },
                         color: Theme.of(context).colorScheme.secondary,
-                        label: Text('Törlés', style: Theme.of(context).textTheme.button,),
+                        label: Text('delete'.tr(), style: Theme.of(context).textTheme.button,),
                         icon: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
                     ),
                   ],

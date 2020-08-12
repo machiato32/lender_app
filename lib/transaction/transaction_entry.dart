@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
@@ -53,9 +55,14 @@ class _TransactionEntryState extends State<TransactionEntry> {
   String selfAmount='';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-    note = (widget.data.name=='')?'(Nincs megjegyzés)':widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
+    note = (widget.data.name=='')?'no_note'.tr():widget.data.name[0].toUpperCase()+widget.data.name.substring(1);
     if(widget.data.type=='buyed'){
       icon=Icon(Icons.call_made,
           color: (Theme.of(context).brightness==Brightness.dark)?

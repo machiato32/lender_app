@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/user_settings/change_password.dart';
 import 'package:csocsort_szamla/user_settings/color_picker.dart';
+import 'change_language.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Beállítások'),),
+      appBar: AppBar(title: Text('settings'.tr()),),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
@@ -21,6 +23,7 @@ class _SettingsState extends State<Settings> {
           children: <Widget>[
             ChangePin(),
             ColorPicker(),
+            LanguagePicker()
           ],
         ),
       ),

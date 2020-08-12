@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class GroupMembers extends StatefulWidget {
   @override
@@ -63,7 +64,7 @@ class _GroupMembersState extends State<GroupMembers> {
         padding: EdgeInsets.all(15),
         child: Column(
           children: <Widget>[
-            Text('Tagok', style: Theme.of(context).textTheme.headline6,),
+            Text('members'.tr(), style: Theme.of(context).textTheme.headline6,),
             SizedBox(height: 40,),
             FutureBuilder(
               future: _members,
@@ -232,7 +233,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
-                                                      Text('Szeretnéd adminná tenni?', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                                      Text('want_make_admin'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                                       SizedBox(height: 15,),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -257,7 +258,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                               return Column(
                                                                                 mainAxisSize: MainAxisSize.min,
                                                                                 children: [
-                                                                                  Flexible(child: Text("A felhasználó admin lett!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                                                                  Flexible(child: Text("admin_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                                                                   SizedBox(height: 15,),
                                                                                   FlatButton.icon(
                                                                                     icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -265,7 +266,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                                       Navigator.pop(context);
                                                                                       Navigator.pop(context, 'madeAdmin');
                                                                                     },
-                                                                                    label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                                                                    label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                                                                     color: Theme.of(context).colorScheme.secondary,
                                                                                   )
                                                                                 ],
@@ -283,7 +284,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                                       onPressed: (){
                                                                                         Navigator.pop(context);
                                                                                       },
-                                                                                      label: Text('Vissza', style: Theme.of(context).textTheme.button.copyWith(color: Colors.white)),
+                                                                                      label: Text('back'.tr(), style: Theme.of(context).textTheme.button.copyWith(color: Colors.white)),
                                                                                       color: Colors.red,
                                                                                     )
                                                                                   ],
@@ -298,12 +299,12 @@ class _MemberEntryState extends State<MemberEntry> {
                                                                     )
                                                                 );
                                                               },
-                                                              child: Text('Igen', style: Theme.of(context).textTheme.button)
+                                                              child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                                           ),
                                                           RaisedButton(
                                                               color: Theme.of(context).colorScheme.secondary,
                                                               onPressed: (){ Navigator.pop(context);},
-                                                              child: Text('Nem', style: Theme.of(context).textTheme.button)
+                                                              child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
                                                           )
                                                         ],
                                                       )
@@ -314,7 +315,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                           );
                                         },
                                         color: Theme.of(context).colorScheme.secondary,
-                                        child: Text('Legyen admin', style: Theme.of(context).textTheme.button,)
+                                        child: Text('make_admin'.tr(), style: Theme.of(context).textTheme.button,)
                                     ),
                                   ],
                                 ),

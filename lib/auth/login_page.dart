@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -16,35 +17,76 @@ class LoginRoute extends StatefulWidget {
 class _LoginRouteState extends State<LoginRoute> {
 
   TextEditingController _usernameController = TextEditingController();
+  TextEditingController _userNumController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(title: Text('Bejelentkezés')),
+      appBar: AppBar(title: Text('login'.tr())),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 20, left: 20),
-              child: TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  hintText: 'sanyika#1234',
-                  labelText: 'Felhasználónév',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    //  when the TextFormField in unfocused
-                  ) ,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                  ) ,
-
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(width: 20,),
+                Flexible(
+                  child: TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      hintText: 'example_name'.tr(),
+                      labelText: 'name'.tr(),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+                    ),
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[a-z0-9]')),
+                      LengthLimitingTextInputFormatter(15),
+                    ],
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-              ),
+                SizedBox(width: 5,),
+                Column(
+                  children: <Widget>[
+                    SizedBox(height: 15,),
+                    Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
+                  ],
+                ),
+                SizedBox(width: 5,),
+                Flexible(
+                  child: TextField(
+                    controller: _userNumController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'id'.tr(),
+                      hintText: '1234',
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                        //  when the TextFormField in unfocused
+                      ) ,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      ) ,
+
+                    ),
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                      LengthLimitingTextInputFormatter(4),
+                    ],
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                SizedBox(width: 20,),
+              ],
             ),
             SizedBox(height: 30,),
             Padding(
@@ -52,12 +94,11 @@ class _LoginRouteState extends State<LoginRoute> {
               child: TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Jelszó',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    //  when the TextFormField in unfocused
+                  labelText: 'password'.tr(),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                   ) ,
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                   ) ,
 
@@ -66,6 +107,9 @@ class _LoginRouteState extends State<LoginRoute> {
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
+                inputFormatters: [
+                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                ],
               ),
             ),
             SizedBox(height: 40,)
@@ -74,7 +118,7 @@ class _LoginRouteState extends State<LoginRoute> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          String username = _usernameController.text.toLowerCase();
+          String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
           String password = _passwordController.text.toLowerCase();
           showDialog(
               barrierDismissible: false,
@@ -92,14 +136,14 @@ class _LoginRouteState extends State<LoginRoute> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                              Flexible(child: Text("login_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                               SizedBox(height: 15,),
                               FlatButton.icon(
                                 icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                 onPressed: (){
                                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
                                 },
-                                label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                 color: Theme.of(context).colorScheme.secondary,
                               )
                             ],
@@ -110,14 +154,14 @@ class _LoginRouteState extends State<LoginRoute> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                                Flexible(child: Text("login_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
                                 SizedBox(height: 15,),
                                 FlatButton.icon(
                                   icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                                   onPressed: (){
-                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup()), (r)=>false);
+                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
                                   },
-                                  label: Text('Rendben', style: Theme.of(context).textTheme.button,),
+                                  label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
                                   color: Theme.of(context).colorScheme.secondary,
                                 )
                               ],
@@ -137,7 +181,7 @@ class _LoginRouteState extends State<LoginRoute> {
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 color: Colors.red,
                               )
                             ],

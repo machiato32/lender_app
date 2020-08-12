@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
@@ -49,7 +51,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
   @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-    note = (widget.data.note=='' || widget.data.note==null)?'Nincs megjegyzés':widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
+    note = (widget.data.note=='' || widget.data.note==null)?'no_note'.tr():widget.data.note[0].toUpperCase()+widget.data.note.substring(1);
     if(widget.data.payerId==currentUser){
       icon=Icon(Icons.call_made,
           color: (Theme.of(context).brightness==Brightness.dark)?

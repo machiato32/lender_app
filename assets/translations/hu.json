@@ -1,0 +1,107 @@
+{
+    "title":"Lender",
+    "subtitle":"Pénz- és adósságkezelő alkalmazás csoportoknak",
+
+    "login":"Bejelentkezés",
+    "register":"Regisztráció",
+    "username":"Felhasználónév",
+    "password":"Jelszó",
+
+    "name":"Név",
+    "id":"Azonosító",
+    "confirm_password":"Jelszó megerősítése",
+
+    "balances":"Egyenlegek",
+    "history":"Előzmények",
+    "home":"Főoldal",
+    "shopping_list":"Bevásárlólista",
+    "group":"Csoport",
+    "expense":"Bevásárlás",
+    "payment":"Fizetés",
+
+    "wish":"Kívánságom",
+
+    "nickname":"Becenév",
+    "new_nickname":"Új becenév",
+    "rename_group":"Csoport átnevezése",
+    "new_name":"Új név",
+    "invitation":"Meghívó",
+    "copied":"Másolva",
+    "members":"Tagok",
+
+    "groups":"Csoportok",
+    "join_group":"Csatlakozás csoporthoz",
+    "create_group":"Csoport létrehozása",
+    "settings":"Beállítások",
+    "logout":"Kijelentkezés",
+
+    "join":"Csatlakozás",
+    "nickname_in_group":"Becenév a csoportban",
+    "no_group_yet":"Nincs még csoportod?",
+
+    "group_name":"Csoport neve",
+    "create":"Létrehozás",
+
+    "change_password":"Jelszó megváltoztatása",
+    "old_password":"Jelenlegi jelszó",
+    "new_password":"Új jelszó",
+    "new_password_confirm":"Új jelszó megerősítve",
+    "send":"Küldés",
+    "change_theme":"Témaváltás",
+    "change_language": "Nyelv választása",
+
+    "full_amount":"Végösszeg",
+    "note":"Megjegyzés",
+
+    "amount":"Összeg",
+
+    "change_password_scf": "A jelszó megváltoztatása sikeres volt!",
+    "passwords_not_match": "A megadott két jelszó nem egyezik!",
+    "okay": "Rendben",
+    "error": "Hiba történt!",
+    "back": "Vissza",
+    "login_scf": "A bejelentkezés sikeres volt!",
+
+    "example_name": "sanyika",
+    "not_alterable": "Nem változtatható!",
+    "registration_scf": "A regisztráció sikeres volt!",
+
+    "example_nickname": "Sanyi",
+    "creation_scf": "A létrehozás sikeres volt!",
+
+    "want_make_admin": "Adminná szeretnéd tenni?",
+    "admin_scf": "A felhasználó admin lett!",
+    "yes": "Igen",
+    "no": "Nem",
+    "make_admin": "Legyen admin",
+
+    "nickname_scf": "A név megváltoztatása sikeres volt!",
+
+    "join_scf": "A csatlakozás sikeres volt!",
+
+    "login_required": "Sajnos újra be kell jelentkezned!",
+    "transactions": "Tranzakciók",
+    "payments": "Fizetések",
+
+    "more": "Több",
+
+    "person_not_chosen": "Nem választottál ki személyt!",
+    "payment_scf": "A fizetést sikeresen könyveltük!",
+    "add_new": "Új hozzáadása",
+    "payment_hint": "Mamut",
+
+    "no_note": "Nincs megjegyzés",
+    "want_delete": "Törölni szeretnéd a tételt?",
+    "delete_scf":"A törlés sikeres volt!",
+    "delete": "Törlés",
+
+    "want_expense": "Fel szeretnéd számolni?",
+    "bought": "Megvettem",
+
+    "add_scf":"A hozzáadás sikeres volt!",
+
+    "per_person": " Ft/fő",
+    "no_amount": "Nem adtál meg összeget!",
+    "amount_not_negative": "A végösszeg nem lehet negatív!",
+    "transaction_scf": "A tranzakciót sikeresen könyveltük!"
+}

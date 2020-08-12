@@ -1,0 +1,108 @@
+{
+    "title":"Lender",
+    "subtitle":"Geld- und Schuldenmanagement app für Gruppen",
+
+    "login":"Anmelden",
+    "register":"Registrieren",
+    "username":"Benutzername",
+    "password":"Passwort",
+
+    "name":"Name",
+    "id":"ID",
+    "confirm_password":"Passwort bestätigen",
+
+    "balances":"Kontostand",
+    "history":"Verlauf",
+    "home":"Start",
+    "shopping_list":"Einkaufszettel",
+    "group":"Gruppe",
+    "expense":"Ausgabe",
+    "payment":"Zahlung",
+
+    "wish":"Mein Wunsch",
+
+    "nickname":"Spitzname",
+    "new_nickname":"Neuer Spitzname",
+    "rename_group":"Gruppe umbenennen",
+    "new_name":"Neuer Name",
+    "invitation":"Einladung",
+    "copied":"Kopiert",
+    "members":"Mitglieder",
+
+    "groups":"Gruppen",
+    "join_group":"Gruppe beitreten",
+    "create_group":"Gruppe erstellen",
+    "settings":"Einstellungen",
+    "logout":"Abmelden",
+
+    "join":"Beitreten",
+    "nickname_in_group":"Spitzname in der Gruppe",
+    "no_group_yet":"Noch keine Gruppe?",
+    
+    "group_name":"Name der Gruppe",
+    "create":"Erstellen",
+
+    "change_password":"Passwort ändern",
+    "old_password":"Dein Password",
+    "new_password":"Neues Passwort",
+    "new_password_confirm":"Neues Passwort bestätigen",
+    "send":"Senden",
+    "change_password_scf": "Der Wechsel war erfolgreich!",
+    "change_theme":"Farbe ändern",
+    "change_language": "Sprache ändern",
+
+    "full_amount":"Summe",
+    "note":"Notiz",
+
+    "amount":"Betrag",
+
+    "passwords_not_match": "Die zwei Passwörter sind nicht gleich!",
+    "okay": "Okay",
+    "error": "Es ist ein Fehler aufgetreten!",
+    "back": "Zurück",
+    "login_scf": "Das anmelden war erfolgreich!",
+
+    "example_name": "daniel",
+    "not_alterable": "Später nicht änderbar!",
+    "registration_scf": "Das registrieren  war erfolgreich!",
+
+    "example_nickname": "Daniel",
+    "creation_scf": "Das erstellen war erfolgreich!",
+
+    "want_make_admin": "Möchtest du, dass er/sie Admin wird?",
+    "admin_scf": "Zum Admin gemacht!",
+    "yes": "Ja",
+    "no": "Nein",
+    "make_admin": "Mache ihn/sie zum Admin",
+
+    "nickname_scf": "Der Namenswechsel war erfolgreich!",
+
+    "join_scf": "Das beitreten war erfolgreich!",
+
+    "login_required": "Leider must du dich neu anmelden!",
+    "transactions": "Ausgaben",
+    "payments": "Zahlungen",
+
+    "more": "Mehr",
+
+    "person_not_chosen": "Du hast niemanden ausgewählt!",
+    "payment_scf": "Die Zahlung wurde gebucht!",
+    "add_new": "Neues hinzufügen",
+    "payment_hint": "Mammut",
+
+    "no_note": "Keine notiz",
+    "want_delete": "Möchtest du den Artikel löschen?",
+    "delete_scf":"Das löschen war erfolgreich!",
+    "delete": "Löschen",
+
+    "want_expense": "Möchtest du es aufrechnen?",
+    "bought": "Gekauft",
+
+    "add_scf":"Das hinzufügen war erfolgreich!",
+
+    "per_person": " Ft/Person",
+    "no_amount": "Du hast keine Summe angegeben!",
+    "amount_not_negative": "A Summe darf nicht negativ sein!",
+    "transaction_scf": "Die Transaktion wurde gebucht!"
+
+}
