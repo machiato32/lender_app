@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:csocsort_szamla/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'create_group.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/custom_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
   final bool fromAuth;
@@ -232,76 +234,13 @@ class _JoinGroupState extends State<JoinGroup> {
                       showDialog(
                           barrierDismissible: false,
                           context: context,
-                          child: Dialog(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            child: FutureBuilder(
-                              future: _joinGroup(token, nickname),
-                              builder: (context, snapshot){
-                                if(snapshot.connectionState==ConnectionState.done){
-                                  if(snapshot.hasData){
-                                    if(snapshot.data){
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Flexible(child: Text("join_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                          SizedBox(height: 15,),
-                                          FlatButton.icon(
-                                            icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                            onPressed: (){
-                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                            },
-                                            label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          )
-                                        ],
-                                      );
-                                    }else{
-                                      return Container(
-                                        color: Colors.transparent ,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                            SizedBox(height: 15,),
-                                            FlatButton.icon(
-                                              icon: Icon(Icons.clear, color: Colors.white,),
-                                              onPressed: (){
-                                                Navigator.pop(context);
-                                              },
-                                              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                              color: Colors.red,
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }else{
-                                    return Container(
-                                      color: Colors.transparent ,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                          SizedBox(height: 15,),
-                                          FlatButton.icon(
-                                            icon: Icon(Icons.clear, color: Colors.white,),
-                                            onPressed: (){
-                                              Navigator.pop(context);
-                                            },
-                                            label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                            color: Colors.red,
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                }
-                                return Center(child: CircularProgressIndicator());
-
-                              },
-                            ),
+                          child:
+                          FutureSuccessDialog(
+                            future: _joinGroup(token, nickname),
+                            dataTrueText: 'join_scf',
+                            onDataTrue: (){
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                            },
                           )
                       );
                     },

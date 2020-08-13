@@ -47,7 +47,7 @@
     "new_password":"Neues Passwort",
     "new_password_confirm":"Neues Passwort bestätigen",
     "send":"Senden",
-    "change_password_scf": "Der Wechsel war erfolgreich!",
+    "change_password_scf": "Dein Passwort wurde erfolgreich geändert!",
     "change_theme":"Farbe ändern",
     "change_language": "Sprache ändern",
 
@@ -58,7 +58,7 @@
 
     "passwords_not_match": "Die zwei Passwörter sind nicht gleich!",
     "okay": "Okay",
-    "error": "Es ist ein Fehler aufgetreten!",
+    "error": "Ein Fehler ist aufgetreten!",
     "back": "Zurück",
     "login_scf": "Das anmelden war erfolgreich!",
 

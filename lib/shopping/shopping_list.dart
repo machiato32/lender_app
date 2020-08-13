@@ -10,6 +10,7 @@ import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
+import 'package:csocsort_szamla/custom_dialog.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -159,87 +160,29 @@ class _ShoppingListState extends State<ShoppingList> {
                 child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  String _name = _addRequestController.text;
-                  _addRequestController.text='';
+                  String name = _addRequestController.text;
                   showDialog(
                       barrierDismissible: false,
                       context: context,
-                      child: Dialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        child: FutureBuilder(
-                          future: _postShoppingRequest(_name),
-                          builder: (context, snapshot){
-                            if(snapshot.connectionState==ConnectionState.done){
-                              if(snapshot.hasData){
-                                if(snapshot.data){
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text("add_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
-                                      FlatButton.icon(
-                                        icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                          setState(() {
-                                            _shoppingList=null;
-                                            _shoppingList=_getShoppingList();
-                                          });
-                                        },
-                                        label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      )
-                                    ],
-                                  );
-                                }else{
-                                  return Container(
-                                    color: Colors.transparent ,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                        SizedBox(height: 15,),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.clear, color: Colors.white,),
-                                          onPressed: (){
-                                            Navigator.pop(context);
-                                            setState(() {
+                      child:
+                      FutureSuccessDialog(
+                        future: _postShoppingRequest(name),
+                        dataTrueText: 'add_scf',
+                        onDataTrue: (){
+                          Navigator.pop(context);
+                          setState(() {
+                            _shoppingList=null;
+                            _shoppingList=_getShoppingList();
+                            _addRequestController.text='';
+                          });
+                        },
+                        onDataFalse: (){
+                          Navigator.pop(context);
+                          setState(() {
 
-                                            });
-                                          },
-                                          label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                          color: Colors.red,
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }
-                              }else{
-                                return Container(
-                                  color: Colors.transparent ,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
-                                      FlatButton.icon(
-                                        icon: Icon(Icons.clear, color: Colors.white,),
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                        },
-                                        label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            }
-                            return Center(child: CircularProgressIndicator());
-                          },
-                        ),
+                          });
+                        },
+
                       )
                   );
                 },

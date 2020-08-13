@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/custom_dialog.dart';
 
 class TransactionAllInfo extends StatefulWidget {
 
@@ -163,105 +164,18 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                               color: Theme.of(context).colorScheme.secondary,
                                               onPressed: () async {
                                                 Navigator.pop(context);
-                                                Future<bool> success = _deleteElement(widget.data.transactionId);
                                                 showDialog(
                                                     barrierDismissible: false,
                                                     context: context,
-                                                    child: Dialog(
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                      backgroundColor: Colors.transparent,
-                                                      elevation: 0,
-                                                      child: FutureBuilder(
-                                                        future: success,
-                                                        builder: (context, snapshot){
-                                                          if(snapshot.connectionState==ConnectionState.done){
-                                                            if(snapshot.hasData && snapshot.data){
-                                                              return Column(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  Flexible(child: Text("delete_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                                                  SizedBox(height: 15,),
-                                                                  FlatButton.icon(
-                                                                    icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                                                    onPressed: (){
-                                                                      Navigator.pop(context);
-                                                                      Navigator.pop(context, 'deleted');
-                                                                    },
-                                                                    label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                                                    color: Theme.of(context).colorScheme.secondary,
-                                                                  )
-                                                                ],
-                                                              );
-                                                            }else{
-                                                              return Container(
-                                                                color: Colors.transparent ,
-                                                                child: Column(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  children: [
-                                                                    Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                                                    SizedBox(height: 15,),
-                                                                    FlatButton.icon(
-                                                                      icon: Icon(Icons.clear, color: Colors.white,),
-                                                                      onPressed: (){
-                                                                        Navigator.pop(context);
-                                                                      },
-                                                                      label: Text('back'.tr(), style: Theme.of(context).textTheme.button.copyWith(color: Colors.white)),
-                                                                      color: Colors.red,
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                          return Center(child: CircularProgressIndicator());
-
-                                                        },
-                                                      ),
+                                                    child: FutureSuccessDialog(
+                                                      future: _deleteElement(widget.data.transactionId),
+                                                      dataTrueText: 'delete_scf',
+                                                      onDataTrue: (){
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context, 'deleted');
+                                                      },
                                                     )
                                                 );
-//                                                      if(await _deleteElement(widget.data.transactionID)){
-//                                                        Widget toast = Container(
-//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-//                                                          decoration: BoxDecoration(
-//                                                            borderRadius: BorderRadius.circular(25.0),
-//                                                            color: Colors.green,
-//                                                          ),
-//                                                          child: Row(
-//                                                            mainAxisSize: MainAxisSize.min,
-//                                                            children: [
-//                                                              Icon(Icons.check, color: Colors.white,),
-//                                                              SizedBox(
-//                                                                width: 12.0,
-//                                                              ),
-//                                                              Flexible(child: Text("A tranzakciót sikeresen töröltük!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-//                                                            ],
-//                                                          ),
-//                                                        );
-//                                                        FlutterToast ft = FlutterToast(context);
-//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                                      }else{
-//                                                        Widget toast = Container(
-//                                                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-//                                                          decoration: BoxDecoration(
-//                                                            borderRadius: BorderRadius.circular(25.0),
-//                                                            color: Colors.red,
-//                                                          ),
-//                                                          child: Row(
-//                                                            mainAxisSize: MainAxisSize.min,
-//                                                            children: [
-//                                                              Icon(Icons.clear, color: Colors.white,),
-//                                                              SizedBox(
-//                                                                width: 12.0,
-//                                                              ),
-//                                                              Flexible(child: Text("A tranzakció törlése sikertelen volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-//                                                            ],
-//                                                          ),
-//                                                        );
-//                                                        FlutterToast ft = FlutterToast(context);
-//                                                        ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-//                                                      }
-//                                                      Navigator.pop(context);
-//                                                      Navigator.pop(context);
                                               },
                                               child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                           ),

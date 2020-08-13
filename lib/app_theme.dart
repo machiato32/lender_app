@@ -162,12 +162,12 @@ class AppTheme{
     ),
     brightness: Brightness.dark,
     canvasColor: Colors.grey[800],
-    primaryColor: Colors.amber[400],
-    accentColor: Colors.amber[300],
+    primaryColor: Colors.amber[600],
+    accentColor: Colors.amber[500],
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
-        primary: Colors.amber[400],
-        secondary: Colors.amber[300],
+        primary: Colors.amber[600],
+        secondary: Colors.amber[500],
         background: Colors.grey[500],
         onPrimary: Colors.black, //history icon
         onSecondary: Color.fromARGB(255, 25, 25, 25), //icons in button
@@ -197,7 +197,7 @@ class AppTheme{
       bodyText2: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.amber[400],
+        color: Colors.amber[500],
       ),
       button: TextStyle(
           fontSize: 20,

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:csocsort_szamla/config.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:csocsort_szamla/custom_dialog.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -123,76 +125,16 @@ class _LoginRouteState extends State<LoginRoute> {
           showDialog(
               barrierDismissible: false,
               context: context,
-              child: Dialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                child: FutureBuilder(
-                  future: _login(username, password),
-                  builder: (context, snapshot){
-                    if(snapshot.connectionState==ConnectionState.done){
-                      if(snapshot.hasData){
-                        if(snapshot.data){
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text("login_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                onPressed: (){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                },
-                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                color: Theme.of(context).colorScheme.secondary,
-                              )
-                            ],
-                          );
-                        }else{
-                          return Container(
-                            color: Colors.transparent ,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(child: Text("login_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                SizedBox(height: 15,),
-                                FlatButton.icon(
-                                  icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                  onPressed: (){
-                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
-                                  },
-                                  label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                  color: Theme.of(context).colorScheme.secondary,
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      }else{
-                        return Container(
-                          color: Colors.transparent ,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                              SizedBox(height: 15,),
-                              FlatButton.icon(
-                                icon: Icon(Icons.clear, color: Colors.white,),
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                                label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                color: Colors.red,
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                    return Center(child: CircularProgressIndicator());
-
-                  },
-                ),
+              child: FutureSuccessDialog(
+                dataTrueText: 'login_scf'.tr(),
+                dataFalseText: 'login_scf'.tr(),
+                future: _login(username, password),
+                onDataTrue: (){
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                },
+                onDataFalse: (){
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
+                },
               )
           );
         },
