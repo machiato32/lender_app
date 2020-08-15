@@ -14,14 +14,15 @@ import 'package:csocsort_szamla/custom_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
   final bool fromAuth;
-  JoinGroup({this.fromAuth=false});
+  final String inviteURL;
+  JoinGroup({this.fromAuth=false, this.inviteURL=''});
   @override
   _JoinGroupState createState() => _JoinGroupState();
 }
 
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0]);
+  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
 
   Future _logout() async{
     try{
@@ -75,76 +76,90 @@ class _JoinGroupState extends State<JoinGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'join'.tr(),
-          style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+    _tokenController.text=widget.inviteURL!=''?widget.inviteURL.split('/').removeLast():'';
+    return WillPopScope(
+      onWillPop: (){
+        if(currentGroupName!=null){
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+          return Future.value(false);
+        }
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'join'.tr(),
+            style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+          ),
+          leading: (currentGroupName!=null)?
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false),
+          ):null,
         ),
-      ),
-      drawer: !widget.fromAuth?null:Drawer(
-        elevation: 16,
-        child: ListView(
+        drawer: !widget.fromAuth?null:Drawer(
+          elevation: 16,
+          child: ListView(
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'LENDER',
-                    style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
-                  ),
-                  SizedBox(height: 5,),
-                  Text(
-                    currentUser,
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
-                  ),
+            children: <Widget>[
+              DrawerHeader(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'LENDER',
+                      style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+                    ),
+                    SizedBox(height: 5,),
+                    Text(
+                      currentUser,
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+                    ),
 //                  SizedBox(height: 20,)
-                ],
+                  ],
+                ),
               ),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1.color,
+              ListTile(
+                leading: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
+                title: Text(
+                  'settings'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Settings()));
+                },
               ),
-              title: Text(
-                'settings'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Settings()));
-              },
-            ),
-            Divider(),
+              Divider(),
 
-            ListTile(
-              leading: Icon(
-                Icons.account_circle,
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              title: Text(
-                'logout'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                _logout();
-                currentUser=null;
-                currentGroupId=null;
-                currentGroupName=null;
-                apiToken=null;
-                SharedPreferences.getInstance().then((_prefs) {
-                  _prefs.remove('current_group_name');
-                  _prefs.remove('current_group_id');
-                  _prefs.remove('current_user');
-                  _prefs.remove('api_token');
-                });
+              ListTile(
+                leading: Icon(
+                  Icons.account_circle,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
+                title: Text(
+                  'logout'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                onTap: () {
+                  _logout();
+                  currentUser=null;
+                  currentGroupId=null;
+                  currentGroupName=null;
+                  apiToken=null;
+                  SharedPreferences.getInstance().then((_prefs) {
+                    _prefs.remove('current_group_name');
+                    _prefs.remove('current_group_id');
+                    _prefs.remove('current_user');
+                    _prefs.remove('api_token');
+                  });
 
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
-              },
-            ),
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+                },
+              ),
 //            Divider(),
 //            ListTile(
 //              leading: Icon(
@@ -159,116 +174,117 @@ class _JoinGroupState extends State<JoinGroup> {
 //              enabled: false,
 //            ),
 
-          ],
+            ],
+          ),
         ),
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: (){
-          FocusScope.of(context).unfocus();
-        },
-        child: ListView(
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: (){
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text('invitation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                //  when the TextFormField in unfocused
+                              ) ,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                              ) ,
+
+                            ),
+                            controller: _tokenController,
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20,),
+                    Row(
+                      children: <Widget>[
+                        Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                        SizedBox(width: 20,),
+                        Flexible(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'example_nickname'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                //  when the TextFormField in unfocused
+                              ) ,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                              ) ,
+                            ),
+                            controller: _nicknameController,
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    RaisedButton(
+                      child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
+                      onPressed: (){
+                        String token = _tokenController.text;
+                        String nickname = _nicknameController.text;
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child:
+                            FutureSuccessDialog(
+                              future: _joinGroup(token, nickname),
+                              dataTrueText: 'join_scf',
+                              onDataTrue: (){
+                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                              },
+                            )
+                        );
+                      },
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 40,),
+              Divider(),
+              SizedBox(height: 40,),
+              Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text('invitation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                      SizedBox(width: 20,),
-                      Flexible(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                              //  when the TextFormField in unfocused
-                            ) ,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                            ) ,
-
-                          ),
-                          controller: _tokenController,
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  Row(
-                    children: <Widget>[
-                      Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                      SizedBox(width: 20,),
-                      Flexible(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'example_nickname'.tr(),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                              //  when the TextFormField in unfocused
-                            ) ,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                            ) ,
-                          ),
-                          controller: _nicknameController,
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(15),
-                          ],
-                        ),
-                      ),
-
-                    ],
-                  ),
+                  Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),)),
                   SizedBox(height: 10,),
                   RaisedButton(
-                    child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
-                    onPressed: (){
-                      String token = _tokenController.text;
-                      String nickname = _nicknameController.text;
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child:
-                          FutureSuccessDialog(
-                            future: _joinGroup(token, nickname),
-                            dataTrueText: 'join_scf',
-                            onDataTrue: (){
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                            },
-                          )
-                      );
-                    },
+                    child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15)),
+                    onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                 ],
               ),
-            ),
 
-            SizedBox(height: 40,),
-            Divider(),
-            SizedBox(height: 40,),
-            Column(
-              children: <Widget>[
-                Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),)),
-                SizedBox(height: 10,),
-                RaisedButton(
-                  child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15)),
-                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ],
-            ),
-
-          ],
+            ],
+          ),
         ),
-      ),
 
+      ),
     );
   }
 }

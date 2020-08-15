@@ -16,21 +16,7 @@ class CreateGroup extends StatefulWidget {
 
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0]);
-
-  Future _logout() async{
-    try{
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
-      };
-
-      await http.get(APPURL+'/logout', headers: header);
-
-    }catch(_){
-      throw _;
-    }
-  }
+  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
 
   Future<bool> _joinGroup(String groupName, String nickname) async {
     try{

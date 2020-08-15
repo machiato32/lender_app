@@ -79,7 +79,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.data.requesterId, style: Theme.of(context).textTheme.bodyText1,)),
+                  Flexible(child: Text(widget.data.requesterNickname, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),

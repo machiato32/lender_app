@@ -75,9 +75,10 @@ class _ChangePinState extends State<ChangePin> {
                       ) ,
 
                     ),
-                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
+                    ],
                     controller: _oldPasswordController,
-                    keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
@@ -103,9 +104,10 @@ class _ChangePinState extends State<ChangePin> {
                       ) ,
 
                     ),
-                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
+                    ],
                     controller: _newPasswordController,
-                    keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
@@ -131,9 +133,10 @@ class _ChangePinState extends State<ChangePin> {
                       ) ,
 
                     ),
-                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
+                    ],
                     controller: _confirmPasswordController,
-                    keyboardType: TextInputType.number,
                     obscureText: true,
                     style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,

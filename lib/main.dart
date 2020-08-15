@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
+import 'package:uni_links/uni_links.dart';
+import 'dart:async';
+import 'dart:developer';
 
 import 'balances.dart';
 import 'config.dart';
@@ -40,11 +43,17 @@ void main() async {
     currentGroupName=preferences.getString('current_group_name');
     currentGroupId=preferences.getInt('current_group_id');
   }
+  String initURL;
+  try{
+    initURL=await getInitialLink();
+  }catch(_){
+
+  }
   runApp(
       
       EasyLocalization(
         child: ChangeNotifierProvider<AppStateNotifier>(
-          create: (context) => AppStateNotifier(), child: LenderApp(themeName: themeName,)
+          create: (context) => AppStateNotifier(), child: LenderApp(themeName: themeName, initURL: initURL,)
         ),
         supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
         path: 'assets/translations',
@@ -59,22 +68,56 @@ void main() async {
 
 class LenderApp extends StatefulWidget {
   final String themeName;
-
-  const LenderApp({@required this.themeName});
+  final String initURL;
+  const LenderApp({@required this.themeName, this.initURL});
 
   @override
   State<StatefulWidget> createState() => _LenderAppState();
 }
 
 class _LenderAppState extends State<LenderApp>{
-  bool first=true;
+  bool _first=true;
+
+  StreamSubscription _sub;
+  String _link;
+
+  Future<Null> initUniLinks() async {
+    _sub = getLinksStream().listen((String link) {
+      setState(() {
+        _link=link;
+      });
+    }, onError: (err) {
+      log('asd');
+    });
+
+  }
+
+
+
+  initPlatformState() async{
+    await initUniLinks();
+  }
+  @override
+  void initState() {
+    initPlatformState();
+    _link=widget.initURL;
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    if (_sub != null) _sub.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    log(_link??'null');
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child){
-        if(first) {
+        if(_first) {
           appState.updateThemeNoNotify(widget.themeName);
-          first=false;
+          _first=false;
         }
         return MaterialApp(
           title: 'Lender',
@@ -82,10 +125,13 @@ class _LenderAppState extends State<LenderApp>{
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: currentUser==null?//TODO: if group does not exist
+
+          home: currentUser==null?
             LoginOrRegisterRoute(showDialog: true,):
+            (_link!=null)?
+            JoinGroup(inviteURL: _link, fromAuth: (currentGroupId==null)?true:false,):
             (currentGroupId==null)?
-              JoinGroup():
+              JoinGroup(fromAuth: true,):
               MainPage(),
         );
 
@@ -109,6 +155,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 
   TabController _tabController;
   int _selectedIndex=0;
+
+
+
 
   Future<SharedPreferences> getPrefs() async{
     return await SharedPreferences.getInstance();

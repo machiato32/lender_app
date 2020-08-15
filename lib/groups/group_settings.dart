@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
@@ -364,28 +365,16 @@ class _GroupSettingState extends State<GroupSettings> {
                                           Flexible(
                                             child: GestureDetector(
                                               onTap: (){
-                                                Clipboard.setData(ClipboardData(text: snapshot.data));
-                                                FlutterToast ft = FlutterToast(context);
-                                                ft.showToast(child: Container(
-                                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Text('copied'.tr(), style: Theme.of(context).textTheme.bodyText1,)
-                                                ), gravity: ToastGravity.BOTTOM);
+                                                Share.share('http://www.lenderapp.net/join/'+snapshot.data, subject: 'invitation_to_lender'.tr());
                                               },
                                               child: Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,),
                                             ),
                                           ),
                                           RaisedButton(
                                             onPressed: (){
-                                              Clipboard.setData(ClipboardData(text: snapshot.data));
-                                              FlutterToast ft = FlutterToast(context);
-                                              ft.showToast(child: Container(
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.grey[600].withOpacity(0.9),),
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Text('copied'.tr(), style: Theme.of(context).textTheme.bodyText1,)
-                                              ), gravity: ToastGravity.BOTTOM);
+                                              Share.share('http://www.lenderapp.net/join/'+snapshot.data, subject: 'invitation_to_lender'.tr());
                                             },
-                                            child: Icon(Icons.content_copy, color: Theme.of(context).colorScheme.onSecondary,),
+                                            child: Icon(Icons.share, color: Theme.of(context).colorScheme.onSecondary,),
                                             color: Theme.of(context).colorScheme.secondary,
                                           )
                                         ],
@@ -405,7 +394,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                       );
                                     }
                                   }
-                                  return CircularProgressIndicator();
+                                  return Center(child: CircularProgressIndicator());
                                 },
                               ),
                             ],

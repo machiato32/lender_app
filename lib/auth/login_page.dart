@@ -45,7 +45,10 @@ class _LoginRouteState extends State<LoginRoute> {
                       ) ,
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                      ) ,
+                      ),
+                      errorBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                      ),
                     ),
                     inputFormatters: [
                       WhitelistingTextInputFormatter(RegExp('[a-z0-9]')),
@@ -105,12 +108,11 @@ class _LoginRouteState extends State<LoginRoute> {
                   ) ,
 
                 ),
-                keyboardType: TextInputType.number,
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 inputFormatters: [
-                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                  WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
                 ],
               ),
             ),

@@ -30,6 +30,23 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="lenderapp.net"
+                    android:pathPrefix="/join"/>
+                <data
+                    android:scheme="http"
+                    android:host="www.lenderapp.net"
+                    android:pathPrefix="/join"/>
+                <data
+                    android:scheme="lenderapp"
+                    android:host="lenderapp"
+                    android:pathPrefix="/join"/>
+            </intent-filter>
         </activity>
     </application>
 </manifest>

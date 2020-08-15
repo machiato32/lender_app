@@ -115,9 +115,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ),
                 ),
                 inputFormatters: [
-                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                  WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
                 ],
-                keyboardType: TextInputType.number,
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
@@ -140,9 +139,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
 
                 ),
                 inputFormatters: [
-                  WhitelistingTextInputFormatter(RegExp('[0-9]')),
+                  WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
                 ],
-                keyboardType: TextInputType.number,
                 obscureText: true,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                 cursorColor: Theme.of(context).colorScheme.secondary,
