@@ -18,8 +18,8 @@ class LoginRoute extends StatefulWidget {
 
 class _LoginRouteState extends State<LoginRoute> {
 
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _userNumController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController(text: currentUser!=null?currentUser.split('#')[0]:'');
+  TextEditingController _userNumController = TextEditingController(text: currentUser!=null?currentUser.split('#')[1]:'');
   TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -123,7 +123,7 @@ class _LoginRouteState extends State<LoginRoute> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
-          String password = _passwordController.text.toLowerCase();
+          String password = _passwordController.text;
           showDialog(
               barrierDismissible: false,
               context: context,

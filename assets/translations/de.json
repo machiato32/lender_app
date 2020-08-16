@@ -45,7 +45,7 @@
     "change_password":"Passwort ändern",
     "old_password":"Dein Password",
     "new_password":"Neues Passwort",
-    "new_password_confirm":"Neues Passwort bestätigen",
+    "new_password_confirm":"Passwort bestätigen",
     "send":"Senden",
     "change_password_scf": "Dein Passwort wurde erfolgreich geändert!",
     "change_theme":"Farbe ändern",

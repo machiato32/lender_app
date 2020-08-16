@@ -45,7 +45,7 @@
     "change_password":"Jelszó megváltoztatása",
     "old_password":"Jelenlegi jelszó",
     "new_password":"Új jelszó",
-    "new_password_confirm":"Új jelszó megerősítve",
+    "new_password_confirm":"Jelszó megerősítése",
     "send":"Küldés",
     "change_theme":"Témaváltás",
     "change_language": "Nyelv választása",
@@ -103,5 +103,7 @@
     "per_person": " Ft/fő",
     "no_amount": "Nem adtál meg összeget!",
     "amount_not_negative": "A végösszeg nem lehet negatív!",
-    "transaction_scf": "A tranzakciót sikeresen könyveltük!"
+    "transaction_scf": "A tranzakciót sikeresen könyveltük!",
+
+    "invitation_to_lender": "Meghívó Lender csoportba"
 }

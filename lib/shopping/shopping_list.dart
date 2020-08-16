@@ -128,93 +128,105 @@ class _ShoppingListState extends State<ShoppingList> {
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: ListView(
-        padding: EdgeInsets.all(15),
+      child: Column(
         children: <Widget>[
-          Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
-          SizedBox(height: 20,),
-          Row(
-            children: <Widget>[
-              Flexible(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'wish'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                    ) ,
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                    ) ,
-                  ),
-                  controller: _addRequestController,
-                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(20)
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: <Widget>[
+                Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
+                SizedBox(height: 20,),
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'wish'.tr(),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                          ) ,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                          ) ,
+                        ),
+                        controller: _addRequestController,
+                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                        cursorColor: Theme.of(context).colorScheme.secondary,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(20)
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    RaisedButton(
+                      color: Theme.of(context).colorScheme.secondary,
+                      child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        String name = _addRequestController.text;
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child:
+                            FutureSuccessDialog(
+                              future: _postShoppingRequest(name),
+                              dataTrueText: 'add_scf',
+                              onDataTrue: (){
+                                Navigator.pop(context);
+                                setState(() {
+                                  _shoppingList=null;
+                                  _shoppingList=_getShoppingList();
+                                  _addRequestController.text='';
+                                });
+                              },
+                              onDataFalse: (){
+                                Navigator.pop(context);
+                                setState(() {
+
+                                });
+                              },
+
+                            )
+                        );
+                      },
+                    ),
+
                   ],
                 ),
-              ),
-              SizedBox(width: 20,),
-              RaisedButton(
-                color: Theme.of(context).colorScheme.secondary,
-                child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  String name = _addRequestController.text;
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      child:
-                      FutureSuccessDialog(
-                        future: _postShoppingRequest(name),
-                        dataTrueText: 'add_scf',
-                        onDataTrue: (){
-                          Navigator.pop(context);
+
+                SizedBox(height: 20,),
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: FutureBuilder(
+              future: _shoppingList,
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return ListView(
+                      padding: EdgeInsets.all(15),
+                      children: _generateShoppingList(snapshot.data)
+                    );
+                  }else{
+                    return InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(snapshot.error.toString()),
+                        ),
+                        onTap: (){
                           setState(() {
                             _shoppingList=null;
                             _shoppingList=_getShoppingList();
-                            _addRequestController.text='';
                           });
-                        },
-                        onDataFalse: (){
-                          Navigator.pop(context);
-                          setState(() {
-
-                          });
-                        },
-
-                      )
-                  );
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 40,),
-          FutureBuilder(
-            future: _shoppingList,
-            builder: (context, snapshot){
-              if(snapshot.connectionState==ConnectionState.done){
-                if(snapshot.hasData){
-                  return Column(
-                    children: _generateShoppingList(snapshot.data)
-                  );
-                }else{
-                  return InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(snapshot.error.toString()),
-                      ),
-                      onTap: (){
-                        setState(() {
-                          _shoppingList=null;
-                          _shoppingList=_getShoppingList();
-                        });
-                      }
-                  );
+                        }
+                    );
+                  }
                 }
-              }
-              return Center(child: CircularProgressIndicator());
-            },
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
         ],
       ),
@@ -272,10 +284,10 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
-      height: 80,
+      height: 60,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
-      margin: EdgeInsets.only(bottom: 4, left: 4, right: 4),
+      margin: EdgeInsets.only(bottom: 4,),
       child: Material(
         type: MaterialType.transparency,
 
@@ -298,7 +310,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
           child: Padding(
 
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(8),
             child: Flex(
               direction: Axis.horizontal,
               children: <Widget>[

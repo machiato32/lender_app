@@ -85,7 +85,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
               SizedBox(height: 5,),
               Row(
                 children: <Widget>[
-                  Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.receipt, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
                   Flexible(child: Text(widget.data.name, style: Theme.of(context).textTheme.bodyText1)),
                 ],

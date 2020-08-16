@@ -60,7 +60,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(child: Text(widget.dataTrueText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+          Flexible(child: Text(widget.dataTrueText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
           SizedBox(height: 15,),
           FlatButton.icon(
             icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
@@ -83,7 +83,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(child: Text(widget.dataFalseText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+            Flexible(child: Text(widget.dataFalseText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
             SizedBox(height: 15,),
             FlatButton.icon(
               icon: Icon(Icons.clear, color: Colors.white,),
@@ -107,7 +107,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
             SizedBox(height: 15,),
             FlatButton.icon(
               icon: Icon(Icons.clear, color: Colors.white,),

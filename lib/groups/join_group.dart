@@ -182,12 +182,12 @@ class _JoinGroupState extends State<JoinGroup> {
           onTap: (){
             FocusScope.of(context).unfocus();
           },
-          child: ListView(
-//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(15),
                   children: <Widget>[
                     Row(
                       children: <Widget>[
@@ -241,43 +241,52 @@ class _JoinGroupState extends State<JoinGroup> {
                       ],
                     ),
                     SizedBox(height: 10,),
-                    RaisedButton(
-                      child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
-                      onPressed: (){
-                        String token = _tokenController.text;
-                        String nickname = _nicknameController.text;
-                        showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child:
-                            FutureSuccessDialog(
-                              future: _joinGroup(token, nickname),
-                              dataTrueText: 'join_scf',
-                              onDataTrue: (){
-                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                              },
-                            )
-                        );
-                      },
-                      color: Theme.of(context).colorScheme.secondary,
+                    Center(
+                      child: RaisedButton(
+                        child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
+                        onPressed: (){
+                          String token = _tokenController.text;
+                          String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              child:
+                              FutureSuccessDialog(
+                                future: _joinGroup(token, nickname),
+                                dataTrueText: 'join_scf',
+                                onDataTrue: (){
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                },
+                              )
+                          );
+                        },
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
                   ],
                 ),
               ),
 
-              SizedBox(height: 40,),
-              Divider(),
-              SizedBox(height: 40,),
-              Column(
-                children: <Widget>[
-                  Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),)),
-                  SizedBox(height: 10,),
-                  RaisedButton(
-                    child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15)),
-                    onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
-                    color: Theme.of(context).colorScheme.secondary,
+//              SizedBox(height: 40,),
+//              Divider(),
+//              SizedBox(height: 40,),
+              Visibility(
+                visible: MediaQuery.of(context).viewInsets.bottom==0,
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 12),)),
+                      SizedBox(height: 10,),
+                      RaisedButton(
+                        child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 12)),
+                        onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
 
             ],

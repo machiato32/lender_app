@@ -67,7 +67,7 @@ class _LoginOrRegisterRouteState extends State<LoginOrRegisterRoute> {
               ),
             ),
             SizedBox(height: 10,),
-            Flexible(child: Text('subtitle'.tr().toUpperCase(), style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12 ),)),
+            Flexible(child: Text('subtitle'.tr().toUpperCase(), style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12 ),textAlign: TextAlign.center,)),
             SizedBox(height: 100,),
             RaisedButton(
               onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRoute()));},
