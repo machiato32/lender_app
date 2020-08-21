@@ -40,8 +40,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.green
       ),
       bodyText1: TextStyle(
@@ -86,8 +85,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.grey[200]
       ),
       bodyText1: TextStyle(
@@ -126,8 +124,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.amber[700]
       ),
       bodyText1: TextStyle(
@@ -186,8 +183,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.grey[200]
       ),
       bodyText1: TextStyle(
@@ -234,8 +230,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.grey[200]
       ),
       bodyText1: TextStyle(
@@ -280,8 +275,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.purple[300]
       ),
       bodyText1: TextStyle(
@@ -329,7 +323,6 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
           fontSize: 25,
           color: Colors.grey[200]
       ),
@@ -375,8 +368,7 @@ class AppTheme{
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.blue[700]
       ),
       bodyText1: TextStyle(

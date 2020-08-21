@@ -55,7 +55,7 @@
     "example_nickname": "Sanyi",
     "creation_scf": "A létrehozás sikeres volt!",
     "want_make_admin": "Adminná szeretnéd tenni?",
-    "admin_scf": "A felhasználó admin lett!",
+    "admin_scf": "A változtatás sikeres volt!",
     "yes": "Igen",
     "no": "Nem",
     "make_admin": "Legyen admin",
@@ -85,6 +85,7 @@
     "field_empty": "A mező nem lehet üres!",
     "num_length": "4 számjegy szükséges!",
     "not_valid_num": "Nem számot adtál meg!",
-    "minimal_length": "Legalább {} karakter szükséges!"
+    "minimal_length": "Legalább {} karakter szükséges!",
+    "edit_nickname": "Új becenév"
 
 }

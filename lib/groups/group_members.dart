@@ -7,7 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'member_all_info.dart';
 
 class GroupMembers extends StatefulWidget {
   @override
@@ -124,33 +124,7 @@ class _MemberEntryState extends State<MemberEntry> {
   BoxDecoration boxDecoration;
   Color nicknameColor, iconColor;
 
-  Future<bool> _makeAdmin(String memberId) async {
-    try{
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
-      };
-      Map<String, dynamic> body = {
-        "member_id": memberId,
-        "admin": true
-      };
 
-      String bodyEncoded = jsonEncode(body);
-
-      http.Response response = await http.put(APPURL+'/groups/'+currentGroupId.toString()+'/admins', headers: header, body: bodyEncoded);
-      if(response.statusCode==204){
-        return true;
-      }else{
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
-        }
-        throw error['error'];
-      }
-    }catch(_){
-      throw _;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +149,7 @@ class _MemberEntryState extends State<MemberEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
-      height: 80,
+      height: 70,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4),
@@ -188,101 +162,7 @@ class _MemberEntryState extends State<MemberEntry> {
                 context: context,
                 backgroundColor: Theme.of(context).cardTheme.color,
                 builder: (context)=>SingleChildScrollView(
-                    child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
-                                  Text(' - '),
-                                  Flexible(child: Text(widget.member.userId, style: Theme.of(context).textTheme.bodyText1,)),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                children: <Widget>[
-                                  Icon(Icons.account_box, color: Theme.of(context).colorScheme.primary),
-                                  Text(' - '),
-                                  Flexible(child: Text(widget.member.nickname, style: Theme.of(context).textTheme.bodyText1,)),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Visibility(
-                                visible: widget.member.isAdmin,
-                                child: Text('Admin', style: Theme.of(context).textTheme.bodyText1, )
-                              ),
-
-                              SizedBox(height: 10,),
-                              Visibility(
-                                visible: widget.isCurrentUserAdmin && !widget.member.isAdmin,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    FlatButton(
-                                        onPressed: (){
-                                          showDialog(
-                                              context: context,
-                                              child: Dialog(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                backgroundColor: Colors.transparent,
-                                                elevation: 0,
-                                                child: Container(
-                                                  padding: EdgeInsets.all(8),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      Text('want_make_admin'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                                      SizedBox(height: 15,),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                        children: <Widget>[
-                                                          RaisedButton(
-                                                              color: Theme.of(context).colorScheme.secondary,
-                                                              onPressed: () async {
-                                                                Navigator.pop(context);
-                                                                showDialog(
-                                                                    barrierDismissible: false,
-                                                                    context: context,
-                                                                    child:
-                                                                    FutureSuccessDialog(
-                                                                      future: _makeAdmin(widget.member.userId),
-                                                                      dataTrueText: 'admin_scf',
-                                                                      onDataTrue: (){
-                                                                        Navigator.pop(context);
-                                                                        Navigator.pop(context, 'madeAdmin');
-                                                                      },
-                                                                    )
-                                                                );
-                                                              },
-                                                              child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
-                                                          ),
-                                                          RaisedButton(
-                                                              color: Theme.of(context).colorScheme.secondary,
-                                                              onPressed: (){ Navigator.pop(context);},
-                                                              child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
-                                                          )
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                          );
-                                        },
-                                        color: Theme.of(context).colorScheme.secondary,
-                                        child: Text('make_admin'.tr(), style: Theme.of(context).textTheme.button,)
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                    )
+                    child: MemberAllInfo(member: widget.member, isCurrentUserAdmin: widget.isCurrentUserAdmin,),
                 )
             ).then((val){
               if(val=='madeAdmin')
@@ -293,7 +173,7 @@ class _MemberEntryState extends State<MemberEntry> {
 
           child: Padding(
 
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(8),
             child: Flex(
               direction: Axis.horizontal,
               children: <Widget>[
@@ -324,9 +204,11 @@ class _MemberEntryState extends State<MemberEntry> {
                                 ),
                               ),
 
-                              Visibility(
-                                visible: widget.member.isAdmin,
-                                child: Text('Admin', style: style,)
+                              Center(
+                                child: Visibility(
+                                  visible: widget.member.isAdmin,
+                                  child: Text('Admin', style: style,)
+                                ),
                               ),
                             ],
                           ),

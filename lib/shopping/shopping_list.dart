@@ -301,7 +301,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       boxDecoration=BoxDecoration();
     }
     return Container(
-      height: 60,
+      height: 65,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4,),

@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 
 import 'package:csocsort_szamla/config.dart';
@@ -361,7 +360,21 @@ class _GroupSettingState extends State<GroupSettings> {
                           ),
                         ),
                       ),
+                      GroupMembers(),
                     ],
+                  );
+                }else{
+                  return InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Text(snapshot.error.toString()),
+                      ),
+                      onTap: (){
+                        setState(() {
+                          _isUserAdmin=null;
+                          _isUserAdmin=_getIsUserAdmin();
+                        });
+                      }
                   );
                 }
               }
@@ -369,7 +382,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
             }
           ),
-          GroupMembers(),
+
         ],
       ),
     );
