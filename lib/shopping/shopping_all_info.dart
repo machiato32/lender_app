@@ -9,7 +9,7 @@ import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class ShoppingAllInfo extends StatefulWidget {
   final ShoppingRequestData data;
@@ -34,7 +34,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -58,7 +58,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }

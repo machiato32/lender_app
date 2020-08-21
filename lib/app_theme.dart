@@ -13,7 +13,7 @@ class AppTheme{
     'pinkLightTheme':pinkLightTheme,
     'pinkDarkTheme':pinkDarkTheme,
     'seaBlueLightTheme':seaBlueLightTheme,
-    'seaBlueDarkTheme':seaBlueDarkTheme
+    'seaBlueDarkTheme':blueDarkTheme
   };
 
   static final ThemeData greenLightTheme = ThemeData(
@@ -299,7 +299,7 @@ class AppTheme{
       ),
     ),
   );
-  static final ThemeData seaBlueDarkTheme = ThemeData(
+  static final ThemeData blueDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
         brightness: Brightness.dark
     ),
@@ -330,7 +330,7 @@ class AppTheme{
     textTheme: TextTheme(
       headline6: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 30,
+          fontSize: 25,
           color: Colors.grey[200]
       ),
       bodyText1: TextStyle(

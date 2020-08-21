@@ -56,7 +56,7 @@
     "amount":"Amount",
 
     "change_password_scf": "The change was successful!",
-    "passwords_not_match": "Them two passwords don't match!",
+    "passwords_not_match": "The two passwords don't match!",
     "okay": "Affirmative!",
     "error": "An error occurred!",
     "back": "Back",

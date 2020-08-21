@@ -10,7 +10,7 @@ import 'package:csocsort_szamla/main.dart';
 import 'create_group.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
   final bool fromAuth;
@@ -23,6 +23,8 @@ class JoinGroup extends StatefulWidget {
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
+
+  var _formKey = GlobalKey<FormState>();
 
   Future _logout() async{
     try{
@@ -64,7 +66,7 @@ class _JoinGroupState extends State<JoinGroup> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -85,81 +87,83 @@ class _JoinGroupState extends State<JoinGroup> {
         }
         return Future.value(true);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'join'.tr(),
-            style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'join'.tr(),
+              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+            ),
+            leading: (currentGroupName!=null)?
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false),
+            ):null,
           ),
-          leading: (currentGroupName!=null)?
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false),
-          ):null,
-        ),
-        drawer: !widget.fromAuth?null:Drawer(
-          elevation: 16,
-          child: ListView(
+          drawer: !widget.fromAuth?null:Drawer(
+            elevation: 16,
+            child: ListView(
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              DrawerHeader(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'LENDER',
-                      style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
-                    ),
-                    SizedBox(height: 5,),
-                    Text(
-                      currentUser,
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
-                    ),
+              children: <Widget>[
+                DrawerHeader(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'LENDER',
+                        style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+                      ),
+                      SizedBox(height: 5,),
+                      Text(
+                        currentUser,
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+                      ),
 //                  SizedBox(height: 20,)
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.settings,
-                  color: Theme.of(context).textTheme.bodyText1.color,
+                ListTile(
+                  leading: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'settings'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Settings()));
+                  },
                 ),
-                title: Text(
-                  'settings'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Settings()));
-                },
-              ),
-              Divider(),
+                Divider(),
 
-              ListTile(
-                leading: Icon(
-                  Icons.account_circle,
-                  color: Theme.of(context).textTheme.bodyText1.color,
-                ),
-                title: Text(
-                  'logout'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                onTap: () {
-                  _logout();
-                  currentUser=null;
-                  currentGroupId=null;
-                  currentGroupName=null;
-                  apiToken=null;
-                  SharedPreferences.getInstance().then((_prefs) {
-                    _prefs.remove('current_group_name');
-                    _prefs.remove('current_group_id');
-                    _prefs.remove('current_user');
-                    _prefs.remove('api_token');
-                  });
+                ListTile(
+                  leading: Icon(
+                    Icons.account_circle,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'logout'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    _logout();
+                    currentUser=null;
+                    currentGroupId=null;
+                    currentGroupName=null;
+                    apiToken=null;
+                    SharedPreferences.getInstance().then((_prefs) {
+                      _prefs.remove('current_group_name');
+                      _prefs.remove('current_group_id');
+                      _prefs.remove('current_user');
+                      _prefs.remove('api_token');
+                    });
 
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
-                },
-              ),
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
+                  },
+                ),
 //            Divider(),
 //            ListTile(
 //              leading: Icon(
@@ -174,125 +178,143 @@ class _JoinGroupState extends State<JoinGroup> {
 //              enabled: false,
 //            ),
 
-            ],
+              ],
+            ),
           ),
-        ),
-        body: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: (){
-            FocusScope.of(context).unfocus();
-          },
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.all(15),
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text('invitation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                        SizedBox(width: 20,),
-                        Flexible(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                                //  when the TextFormField in unfocused
-                              ) ,
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                              ) ,
-
-                            ),
-                            controller: _tokenController,
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20,),
-                    Row(
-                      children: <Widget>[
-                        Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                        SizedBox(width: 20,),
-                        Flexible(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'example_nickname'.tr(),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                                //  when the TextFormField in unfocused
-                              ) ,
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                              ) ,
-                            ),
-                            controller: _nicknameController,
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(15),
-                            ],
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    SizedBox(height: 10,),
-                    Center(
-                      child: RaisedButton(
-                        child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
-                        onPressed: (){
-                          String token = _tokenController.text;
-                          String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child:
-                              FutureSuccessDialog(
-                                future: _joinGroup(token, nickname),
-                                dataTrueText: 'join_scf',
-                                onDataTrue: (){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                },
-                              )
-                          );
-                        },
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-//              SizedBox(height: 40,),
-//              Divider(),
-//              SizedBox(height: 40,),
-              Visibility(
-                visible: MediaQuery.of(context).viewInsets.bottom==0,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          body: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: (){
+              FocusScope.of(context).unfocus();
+            },
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.all(15),
                     children: <Widget>[
-                      Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 12),)),
+                      Row(
+                        children: <Widget>[
+                          Text('invitation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                          SizedBox(width: 20,),
+                          Flexible(
+                            child: TextFormField(
+                              validator: (value){
+                                if(value.isEmpty){
+                                  return 'field_empty'.tr();
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                  //  when the TextFormField in unfocused
+                                ) ,
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                ) ,
+
+                              ),
+                              controller: _tokenController,
+                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20,),
+                      Row(
+                        children: <Widget>[
+                          Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                          SizedBox(width: 20,),
+                          Flexible(
+                            child: TextFormField(
+                              validator: (value){
+                                if(value.isEmpty){
+                                  return 'field_empty'.tr();
+                                }
+                                if(value.length<1){
+                                  return 'minimal_length'.tr(args: ['1']);
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'example_nickname'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                                  //  when the TextFormField in unfocused
+                                ) ,
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                ) ,
+                              ),
+                              controller: _nicknameController,
+                              style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(15),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      ),
                       SizedBox(height: 10,),
-                      RaisedButton(
-                        child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 12)),
-                        onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
-                        color: Theme.of(context).colorScheme.secondary,
+                      Center(
+                        child: RaisedButton(
+                          child: Text('join_group'.tr(), style: Theme.of(context).textTheme.button),
+                          onPressed: (){
+                            if(_formKey.currentState.validate()){
+                              String token = _tokenController.text;
+                              String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child:
+                                  FutureSuccessDialog(
+                                    future: _joinGroup(token, nickname),
+                                    dataTrueText: 'join_scf',
+                                    onDataTrue: (){
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                    },
+                                  )
+                              );
+                            }
+                          },
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
 
-            ],
+//              SizedBox(height: 40,),
+//              Divider(),
+//              SizedBox(height: 40,),
+                Visibility(
+                  visible: MediaQuery.of(context).viewInsets.bottom==0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Center(child: Text('no_group_yet'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 12),)),
+                        SizedBox(height: 10,),
+                        RaisedButton(
+                          child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 12)),
+                          onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup ())); },
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
           ),
-        ),
 
+        ),
       ),
     );
   }

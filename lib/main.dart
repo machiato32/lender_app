@@ -127,7 +127,7 @@ class _LenderAppState extends State<LenderApp>{
           locale: context.locale,
 
           home: currentUser==null?
-            LoginOrRegisterRoute(showDialog: true,):
+            LoginOrRegisterPage(showDialog: true,):
             (_link!=null)?
             JoinGroup(inviteURL: _link, fromAuth: (currentGroupId==null)?true:false,):
             (currentGroupId==null)?
@@ -184,7 +184,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -214,7 +214,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -440,7 +440,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                   _prefs.remove('api_token');
                 });
 
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
               },
             ),
 //            Divider(),

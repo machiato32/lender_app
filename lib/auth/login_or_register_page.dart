@@ -3,14 +3,14 @@ import 'login_page.dart';
 import 'register_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class LoginOrRegisterRoute extends StatefulWidget {
+class LoginOrRegisterPage extends StatefulWidget {
   final bool showDialog;
-  LoginOrRegisterRoute({this.showDialog=false});
+  LoginOrRegisterPage({this.showDialog=false});
   @override
-  _LoginOrRegisterRouteState createState() => _LoginOrRegisterRouteState();
+  _LoginOrRegisterPageState createState() => _LoginOrRegisterPageState();
 }
 
-class _LoginOrRegisterRouteState extends State<LoginOrRegisterRoute> {
+class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
 
   @override
   void initState() {

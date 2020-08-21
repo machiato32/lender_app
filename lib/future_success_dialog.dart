@@ -19,7 +19,7 @@ class FutureSuccessDialog extends StatefulWidget {
     this.dataTrue,
     this.dataFalse,
     this.noData,
-    this.future,
+    @required this.future,
     this.onDataFalse,
     this.onDataTrue,
     this.onNoData,

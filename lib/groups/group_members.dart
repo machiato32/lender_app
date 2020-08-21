@@ -7,7 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class GroupMembers extends StatefulWidget {
   @override
@@ -36,7 +36,7 @@ class _GroupMembersState extends State<GroupMembers> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -143,7 +143,7 @@ class _MemberEntryState extends State<MemberEntry> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }

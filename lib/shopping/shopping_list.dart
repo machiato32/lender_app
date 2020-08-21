@@ -10,7 +10,7 @@ import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -43,6 +43,8 @@ class _ShoppingListState extends State<ShoppingList> {
 
   TextEditingController _addRequestController = TextEditingController();
 
+  var _formKey = GlobalKey<FormState>();
+
   Future<List<ShoppingRequestData>> _getShoppingList() async{
     try{
       Map<String, String> header = {
@@ -62,7 +64,7 @@ class _ShoppingListState extends State<ShoppingList> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -92,7 +94,7 @@ class _ShoppingListState extends State<ShoppingList> {
         if(error['error']=='Unauthenticated.'){
           FlutterToast ft = FlutterToast(context);
           ft.showToast(child: Text('login_required'.tr()), toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -128,107 +130,122 @@ class _ShoppingListState extends State<ShoppingList> {
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(15),
-            child: Column(
-              children: <Widget>[
-                Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
-                SizedBox(height: 20,),
-                Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'wish'.tr(),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                          ) ,
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                          ) ,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                children: <Widget>[
+                  Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          validator: (value){
+                            if(value.isEmpty){
+                              return 'field_empty'.tr();
+                            }
+                            if(value.length<3){
+                              return 'minimal_length'.tr(args: ['3']);
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'wish'.tr(),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                            ) ,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                            ) ,
+                          ),
+                          controller: _addRequestController,
+                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                          cursorColor: Theme.of(context).colorScheme.secondary,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(20)
+                          ],
                         ),
-                        controller: _addRequestController,
-                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(20)
-                        ],
                       ),
-                    ),
-                    SizedBox(width: 20,),
-                    RaisedButton(
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        String name = _addRequestController.text;
-                        showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child:
-                            FutureSuccessDialog(
-                              future: _postShoppingRequest(name),
-                              dataTrueText: 'add_scf',
-                              onDataTrue: (){
-                                Navigator.pop(context);
-                                setState(() {
-                                  _shoppingList=null;
-                                  _shoppingList=_getShoppingList();
-                                  _addRequestController.text='';
-                                });
-                              },
-                              onDataFalse: (){
-                                Navigator.pop(context);
-                                setState(() {
+                      SizedBox(width: 20,),
+                      RaisedButton(
+                        color: Theme.of(context).colorScheme.secondary,
+                        child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if(_formKey.currentState.validate()){
+                            String name = _addRequestController.text;
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child:
+                                FutureSuccessDialog(
+                                  future: _postShoppingRequest(name),
+                                  dataTrueText: 'add_scf',
+                                  onDataTrue: (){
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      _shoppingList=null;
+                                      _shoppingList=_getShoppingList();
+                                      _addRequestController.text='';
+                                    });
+                                  },
+                                  onDataFalse: (){
+                                    Navigator.pop(context);
+                                    setState(() {
 
-                                });
-                              },
+                                    });
+                                  },
 
-                            )
-                        );
-                      },
-                    ),
+                                )
+                            );
+                          }
 
-                  ],
-                ),
+                        },
+                      ),
 
-                SizedBox(height: 20,),
-              ],
+                    ],
+                  ),
+
+                  SizedBox(height: 20,),
+                ],
+              ),
             ),
-          ),
 
-          Expanded(
-            child: FutureBuilder(
-              future: _shoppingList,
-              builder: (context, snapshot){
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    return ListView(
-                      padding: EdgeInsets.all(15),
-                      children: _generateShoppingList(snapshot.data)
-                    );
-                  }else{
-                    return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Text(snapshot.error.toString()),
-                        ),
-                        onTap: (){
-                          setState(() {
-                            _shoppingList=null;
-                            _shoppingList=_getShoppingList();
-                          });
-                        }
-                    );
+            Expanded(
+              child: FutureBuilder(
+                future: _shoppingList,
+                builder: (context, snapshot){
+                  if(snapshot.connectionState==ConnectionState.done){
+                    if(snapshot.hasData){
+                      return ListView(
+                        padding: EdgeInsets.all(15),
+                        children: _generateShoppingList(snapshot.data)
+                      );
+                    }else{
+                      return InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(snapshot.error.toString()),
+                          ),
+                          onTap: (){
+                            setState(() {
+                              _shoppingList=null;
+                              _shoppingList=_getShoppingList();
+                            });
+                          }
+                      );
+                    }
                   }
-                }
-                return Center(child: CircularProgressIndicator());
-              },
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

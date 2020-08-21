@@ -10,7 +10,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'group_members.dart';
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class GroupSettings extends StatefulWidget {
   @override
@@ -23,6 +23,9 @@ class _GroupSettingState extends State<GroupSettings> {
 
   TextEditingController _nicknameController = TextEditingController();
   TextEditingController _groupNameController = TextEditingController();
+
+  var _nicknameFormKey = GlobalKey<FormState>();
+  var _groupNameFormKey = GlobalKey<FormState>();
 
   Future<String> _getInvitation() async {
     try{
@@ -38,7 +41,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -64,7 +67,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -93,7 +96,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -116,7 +119,7 @@ class _GroupSettingState extends State<GroupSettings> {
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
         if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterRoute()), (r)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
         }
         throw error['error'];
       }
@@ -145,130 +148,79 @@ class _GroupSettingState extends State<GroupSettings> {
       child: ListView(
 //      padding: EdgeInsets.all(15),
         children: <Widget>[
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: <Widget>[
-                  Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
-                  SizedBox(height: 40,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Flexible(
-                        child: TextField(
-                          controller: _nicknameController,
-                          decoration: InputDecoration(
-                            hintText: currentUser.split('#')[0],
-                            labelText: 'nickname'.tr(),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                              //  when the TextFormField in unfocused
-                            ) ,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+          Form(
+            key: _nicknameFormKey,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  children: <Widget>[
+                    Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
+                    SizedBox(height: 40,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: TextFormField(
+                            validator: (value){
+                              if(value.isEmpty){
+                                return 'field_empty'.tr();
+                              }
+                              if(value.length<1){
+                                return 'minimal_length'.tr(args: ['1']);
+                              }
+                              return null;
+                            },
+                            controller: _nicknameController,
+                            decoration: InputDecoration(
+                              hintText: currentUser.split('#')[0],
+                              labelText: 'nickname'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                                //  when the TextFormField in unfocused
+                              ) ,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                              ),
+
                             ),
-
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
                           ),
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(15),
-                          ],
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
                         ),
-                      ),
-                      SizedBox(width: 10,),
-                      RaisedButton(
-                        onPressed: (){//TODO: validate
-                          FocusScope.of(context).unfocus();
-                          String _nickname = _nicknameController.text;
-                          _nicknameController.text='';
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: Dialog(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                child: FutureBuilder(
-                                  future: _updateNickname(_nickname),
-                                  builder: (context, snapshot){
-                                    if(snapshot.connectionState==ConnectionState.done){
-                                      if(snapshot.hasData){
-                                        if(snapshot.data){
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(child: Text("nickname_scf".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                              SizedBox(height: 15,),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                                onPressed: (){
-                                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                                },
-                                                label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                                color: Theme.of(context).colorScheme.secondary,
-                                              )
-                                            ],
-                                          );
-                                        }else{
-                                          return Container(
-                                            color: Colors.transparent ,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Flexible(child: Text("error".tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                                SizedBox(height: 15,),
-                                                FlatButton.icon(
-                                                  icon: Icon(Icons.clear, color: Colors.white,),
-                                                  onPressed: (){
-                                                    Navigator.pop(context);
-                                                    setState(() {
+                        SizedBox(width: 10,),
+                        RaisedButton(
+                          onPressed: (){
+                            if(_nicknameFormKey.currentState.validate()){
+                              FocusScope.of(context).unfocus();
+                              String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child:
+                                  FutureSuccessDialog(
+                                    future: _updateNickname(nickname),
+                                    onDataTrue: (){
+                                      _nicknameController.text='';
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                    },
+                                    dataTrueText: 'nickname_scf',
+                                  )
+                              );
+                            }
 
-                                                    });
-                                                  },
-                                                  label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                                  color: Colors.red,
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      }else{
-                                        return Container(
-                                          color: Colors.transparent ,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                              SizedBox(height: 15,),
-                                              FlatButton.icon(
-                                                icon: Icon(Icons.clear, color: Colors.white,),
-                                                onPressed: (){
-                                                  Navigator.pop(context);
-                                                },
-                                                label: Text('error'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
-                                                color: Colors.red,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    }
-                                    return Center(child: CircularProgressIndicator());
+                          },
+                          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+                          color: Theme.of(context).colorScheme.secondary,
+                        )
+                      ],
+                    ),
 
-                                  },
-                                ),
-                              )
-                          );
-                        },
-                        child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                        color: Theme.of(context).colorScheme.secondary,
-                      )
-                    ],
-                  ),
-
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -281,68 +233,76 @@ class _GroupSettingState extends State<GroupSettings> {
                     children: <Widget>[
                       Visibility(
                         visible: snapshot.data,
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Column(
-                              children: <Widget>[
-                                Text('rename_group'.tr(), style: Theme.of(context).textTheme.headline6,),
-                                SizedBox(height: 40,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextField(
-                                        controller: _groupNameController,
-                                        decoration: InputDecoration(
-                                          labelText: 'new_name'.tr(),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                                          ) ,
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                        child: Form(
+                          key: _groupNameFormKey,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Column(
+                                children: <Widget>[
+                                  Text('rename_group'.tr(), style: Theme.of(context).textTheme.headline6,),
+                                  SizedBox(height: 40,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: TextFormField(
+                                          validator: (value){
+                                            if(value.isEmpty){
+                                              return 'field_empty'.tr();
+                                            }
+                                            if(value.length<1){
+                                              return 'minimal_length'.tr(args: ['1']);
+                                            }
+                                            return null;
+                                          },
+                                          controller: _groupNameController,
+                                          decoration: InputDecoration(
+                                            labelText: 'new_name'.tr(),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                                            ) ,
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                            ),
+
                                           ),
-
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(20),
+                                          ],
+                                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                                          cursorColor: Theme.of(context).colorScheme.secondary,
                                         ),
-                                        inputFormatters: [
-                                          LengthLimitingTextInputFormatter(20),
-                                        ],
-                                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                                        cursorColor: Theme.of(context).colorScheme.secondary,
                                       ),
-                                    ),
-                                    SizedBox(width: 10,),
-                                    RaisedButton(
-                                      onPressed: (){//TODO: validate
-                                        FocusScope.of(context).unfocus();
-                                        String _groupName = _groupNameController.text;
-                                        showDialog(
-                                            barrierDismissible: false,
-                                            context: context,
-                                            child:
-                                            FutureSuccessDialog(
-                                              future: _updateGroupName(_groupName),
-                                              dataTrueText: 'nickname_scf',
-                                              onDataTrue: (){
-                                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                                _groupNameController.text='';
-                                              },
-                                              onDataFalse: (){
-                                                Navigator.pop(context);
-                                                setState(() {
+                                      SizedBox(width: 10,),
+                                      RaisedButton(
+                                        onPressed: (){
+                                          if(_groupNameFormKey.currentState.validate()){
+                                            FocusScope.of(context).unfocus();
+                                            String _groupName = _groupNameController.text;
+                                            showDialog(
+                                                barrierDismissible: false,
+                                                context: context,
+                                                child:
+                                                FutureSuccessDialog(
+                                                  future: _updateGroupName(_groupName),
+                                                  dataTrueText: 'nickname_scf',
+                                                  onDataTrue: (){
+                                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                                    _groupNameController.text='';
+                                                  },
+                                                )
+                                            );
+                                          }
+                                        },
+                                        child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      )
+                                    ],
+                                  ),
 
-                                                });
-                                              },
-                                            )
-                                        );
-                                      },
-                                      child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                                      color: Theme.of(context).colorScheme.secondary,
-                                    )
-                                  ],
-                                ),
-
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

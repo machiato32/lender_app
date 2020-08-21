@@ -9,7 +9,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/person.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/custom_dialog.dart';
+import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -21,126 +21,157 @@ class _LoginRouteState extends State<LoginRoute> {
   TextEditingController _usernameController = TextEditingController(text: currentUser!=null?currentUser.split('#')[0]:'');
   TextEditingController _userNumController = TextEditingController(text: currentUser!=null?currentUser.split('#')[1]:'');
   TextEditingController _passwordController = TextEditingController();
+
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-      appBar: AppBar(title: Text('login'.tr())),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(width: 20,),
-                Flexible(
-                  child: TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      hintText: 'example_name'.tr(),
-                      labelText: 'name'.tr(),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                      ) ,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+    return Form(
+      key: _formKey,
+      child: Scaffold(
+        appBar: AppBar(title: Text('login'.tr())),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(width: 20,),
+                  Flexible(
+                    child: TextFormField(
+                      validator: (value){
+                        if(value.isEmpty){
+                          return 'field_empty'.tr();
+                        }
+                        if(value.length<3){
+                          return 'minimal_length'.tr(args: ['3']);
+                        }
+                        return null;
+                      },
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        hintText: 'example_name'.tr(),
+                        labelText: 'name'.tr(),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                        ) ,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                        ),
+                        errorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2),
+                        ),
                       ),
-                      errorBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red, width: 2),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  SizedBox(width: 5,),
+                  Column(
+                    children: <Widget>[
+                      SizedBox(height: 15,),
+                      Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
+                    ],
+                  ),
+                  SizedBox(width: 5,),
+                  Flexible(
+                    child: TextFormField(
+                      validator: (value){
+                        if(value.isEmpty){
+                          return 'field_empty'.tr();
+                        }
+                        if(value.length!=4){
+                          return 'num_length'.tr();
+                        }
+                        return null;
+                      },
+                      controller: _userNumController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'id'.tr(),
+                        hintText: '1234',
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                          //  when the TextFormField in unfocused
+                        ) ,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                        ) ,
+
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter(RegExp('[a-z0-9]')),
-                      LengthLimitingTextInputFormatter(15),
-                    ],
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
-                ),
-                SizedBox(width: 5,),
-                Column(
-                  children: <Widget>[
-                    SizedBox(height: 15,),
-                    Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
-                  ],
-                ),
-                SizedBox(width: 5,),
-                Flexible(
-                  child: TextField(
-                    controller: _userNumController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'id'.tr(),
-                      hintText: '1234',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                        //  when the TextFormField in unfocused
-                      ) ,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                      ) ,
-
-                    ),
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter(RegExp('[0-9]')),
-                      LengthLimitingTextInputFormatter(4),
-                    ],
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                SizedBox(width: 20,),
-              ],
-            ),
-            SizedBox(height: 30,),
-            Padding(
-              padding: EdgeInsets.only(right: 20, left: 20),
-              child: TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'password'.tr(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                  ) ,
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                  ) ,
-
-                ),
-                obscureText: true,
-                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter(RegExp('[A-Za-z0-9]')),
+                  SizedBox(width: 20,),
                 ],
               ),
-            ),
-            SizedBox(height: 40,)
-          ],
+              SizedBox(height: 30,),
+              Padding(
+                padding: EdgeInsets.only(right: 20, left: 20),
+                child: TextFormField(
+                  validator: (value){
+                    if(value.isEmpty){
+                      return 'field_empty'.tr();
+                    }
+                    return null;
+                  },
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'password'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                    ) ,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                    ) ,
+
+                  ),
+                  obscureText: true,
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40,)
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
-          String password = _passwordController.text;
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: FutureSuccessDialog(
-                dataTrueText: 'login_scf'.tr(),
-                dataFalseText: 'login_scf'.tr(),
-                future: _login(username, password),
-                onDataTrue: (){
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                },
-                onDataFalse: (){
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
-                },
-              )
-          );
-        },
-        child: Icon(Icons.send),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            if(_formKey.currentState.validate()){
+              String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
+              String password = _passwordController.text;
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  child: FutureSuccessDialog(
+                    dataTrueText: 'login_scf'.tr(),
+                    dataFalseText: 'login_scf'.tr(),
+                    future: _login(username, password),
+                    onDataTrue: (){
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                    },
+                    onDataFalse: (){
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
+                    },
+                  )
+              );
+            }
+
+          },
+          child: Icon(Icons.send),
+        ),
       ),
     );
   }
