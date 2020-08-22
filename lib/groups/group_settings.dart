@@ -147,82 +147,82 @@ class _GroupSettingState extends State<GroupSettings> {
       child: ListView(
 //      padding: EdgeInsets.all(15),
         children: <Widget>[
-          Form(
-            key: _nicknameFormKey,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  children: <Widget>[
-                    Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
-                    SizedBox(height: 40,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          child: TextFormField(
-                            validator: (value){
-                              if(value.isEmpty){
-                                return 'field_empty'.tr();
-                              }
-                              if(value.length<1){
-                                return 'minimal_length'.tr(args: ['1']);
-                              }
-                              return null;
-                            },
-                            controller: _nicknameController,
-                            decoration: InputDecoration(
-                              hintText: currentUser.split('#')[0],
-                              labelText: 'nickname'.tr(),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                                //  when the TextFormField in unfocused
-                              ) ,
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                              ),
-
-                            ),
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(15),
-                            ],
-                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        SizedBox(width: 10,),
-                        RaisedButton(
-                          onPressed: (){
-                            if(_nicknameFormKey.currentState.validate()){
-                              FocusScope.of(context).unfocus();
-                              String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child:
-                                  FutureSuccessDialog(
-                                    future: _updateNickname(nickname),
-                                    onDataTrue: (){
-                                      _nicknameController.text='';
-                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                    },
-                                    dataTrueText: 'nickname_scf',
-                                  )
-                              );
-                            }
-
-                          },
-                          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                          color: Theme.of(context).colorScheme.secondary,
-                        )
-                      ],
-                    ),
-
-                  ],
-                ),
-              ),
-            ),
-          ),
+//          Form(
+//            key: _nicknameFormKey,
+//            child: Card(
+//              child: Padding(
+//                padding: const EdgeInsets.all(15),
+//                child: Column(
+//                  children: <Widget>[
+//                    Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
+//                    SizedBox(height: 40,),
+//                    Row(
+//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                      children: <Widget>[
+//                        Flexible(
+//                          child: TextFormField(
+//                            validator: (value){
+//                              if(value.isEmpty){
+//                                return 'field_empty'.tr();
+//                              }
+//                              if(value.length<1){
+//                                return 'minimal_length'.tr(args: ['1']);
+//                              }
+//                              return null;
+//                            },
+//                            controller: _nicknameController,
+//                            decoration: InputDecoration(
+//                              hintText: currentUser.split('#')[0],
+//                              labelText: 'nickname'.tr(),
+//                              enabledBorder: UnderlineInputBorder(
+//                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+//                                //  when the TextFormField in unfocused
+//                              ) ,
+//                              focusedBorder: UnderlineInputBorder(
+//                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+//                              ),
+//
+//                            ),
+//                            inputFormatters: [
+//                              LengthLimitingTextInputFormatter(15),
+//                            ],
+//                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+//                            cursorColor: Theme.of(context).colorScheme.secondary,
+//                          ),
+//                        ),
+//                        SizedBox(width: 10,),
+//                        RaisedButton(
+//                          onPressed: (){
+//                            if(_nicknameFormKey.currentState.validate()){
+//                              FocusScope.of(context).unfocus();
+//                              String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
+//                              showDialog(
+//                                  barrierDismissible: false,
+//                                  context: context,
+//                                  child:
+//                                  FutureSuccessDialog(
+//                                    future: _updateNickname(nickname),
+//                                    onDataTrue: (){
+//                                      _nicknameController.text='';
+//                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+//                                    },
+//                                    dataTrueText: 'nickname_scf',
+//                                  )
+//                              );
+//                            }
+//
+//                          },
+//                          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+//                          color: Theme.of(context).colorScheme.secondary,
+//                        )
+//                      ],
+//                    ),
+//
+//                  ],
+//                ),
+//              ),
+//            ),
+//          ),
           FutureBuilder(
             future: _isUserAdmin,
             builder: (context, snapshot){

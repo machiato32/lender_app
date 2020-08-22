@@ -38,6 +38,11 @@ class AppTheme{
       ),
       elevation: 1,
     ),
+    buttonTheme: ButtonThemeData(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15)
+        )
+    ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -57,6 +62,7 @@ class AppTheme{
           color: Colors.white
       ),
     ),
+    dividerColor: Colors.grey[500]
   );
   static final ThemeData greenDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -83,6 +89,11 @@ class AppTheme{
       ),
       elevation: 5,
     ),
+      buttonTheme: ButtonThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          )
+      ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -102,7 +113,7 @@ class AppTheme{
           color: Colors.black,
       ),
     ),
-    dividerColor: Colors.grey[600]
+    dividerColor: Colors.grey[500]
   );
   static final ThemeData amberLightTheme = ThemeData(
 //    appBarTheme: AppBarTheme(
@@ -121,6 +132,11 @@ class AppTheme{
         onBackground: Colors.white,
         surface: Colors.grey[400],
         onSurface: Colors.grey[300]
+    ),
+    buttonTheme: ButtonThemeData(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15)
+        )
     ),
     textTheme: TextTheme(
       headline6: TextStyle(
@@ -150,6 +166,7 @@ class AppTheme{
 //          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
       elevation: 1,
     ),
+      dividerColor: Colors.grey[500]
   );
   static final ThemeData amberDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -181,6 +198,11 @@ class AppTheme{
 //          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
       elevation: 5,
     ),
+      buttonTheme: ButtonThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          )
+      ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -200,7 +222,7 @@ class AppTheme{
           color: Color.fromARGB(255, 25, 25, 25)
       ),
     ),
-    dividerColor: Colors.grey[600]
+    dividerColor: Colors.grey[500]
   );
   static final ThemeData pinkDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -228,6 +250,11 @@ class AppTheme{
       color: Color.fromARGB(255, 25, 25, 25),
       elevation: 1,
     ),
+      buttonTheme: ButtonThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          )
+      ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -248,7 +275,7 @@ class AppTheme{
         color: Colors.white
       ),
     ),
-    dividerColor: Colors.grey[600]
+    dividerColor: Colors.grey[500]
   );
   static final ThemeData pinkLightTheme = ThemeData(
     brightness: Brightness.light,
@@ -264,6 +291,11 @@ class AppTheme{
         onBackground: Colors.white,
         surface: Colors.grey[400],
         onSurface: Colors.grey[300]
+    ),
+    buttonTheme: ButtonThemeData(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15)
+        )
     ),
     cardTheme: CardTheme(
       color: Colors.white,
@@ -292,6 +324,7 @@ class AppTheme{
           color: Colors.white
       ),
     ),
+      dividerColor: Colors.grey[500]
   );
   static final ThemeData blueDarkTheme = ThemeData(
     appBarTheme: AppBarTheme(
@@ -321,6 +354,11 @@ class AppTheme{
 //          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
       elevation: 5,
     ),
+      buttonTheme: ButtonThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          )
+      ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -340,10 +378,9 @@ class AppTheme{
           color: Colors.black,
       ),
     ),
-    dividerColor: Colors.grey[600]
+    dividerColor: Colors.grey[500]
   );
   static final ThemeData seaBlueLightTheme = ThemeData(
-
     brightness: Brightness.light,
     primaryColor: Colors.blue[700],
     accentColor: Colors.blue[900],
@@ -366,6 +403,11 @@ class AppTheme{
 //          margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
       elevation: 1,
     ),
+    buttonTheme: ButtonThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15)
+      )
+    ),
     textTheme: TextTheme(
       headline6: TextStyle(
           fontSize: 25,
@@ -385,5 +427,6 @@ class AppTheme{
           color: Colors.white
       ),
     ),
+    dividerColor: Colors.grey[500]
   );
 }

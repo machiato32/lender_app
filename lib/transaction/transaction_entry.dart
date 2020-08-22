@@ -77,7 +77,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       boxDecoration=BoxDecoration(
         color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
         border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(15),
       );
       if(widget.data.receivers.length>1){
         names=widget.data.receivers.join(', ');
@@ -99,7 +99,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       boxDecoration=BoxDecoration(
         color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
         border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(15),
       );
       if(widget.data.receivers.length>1){
         names=widget.data.receivers.join(', ');

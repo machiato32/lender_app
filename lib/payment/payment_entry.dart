@@ -66,7 +66,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
       boxDecoration=BoxDecoration(
         color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
         border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(15),
       );
       takerName = widget.data.takerNickname;
       amount = widget.data.amount.toString();

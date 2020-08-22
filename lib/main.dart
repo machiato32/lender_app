@@ -112,7 +112,6 @@ class _LenderAppState extends State<LenderApp>{
 
   @override
   Widget build(BuildContext context) {
-    log(_link??'null');
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child){
         if(_first) {
@@ -156,7 +155,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   TabController _tabController;
   int _selectedIndex=0;
 
-
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   Future<SharedPreferences> getPrefs() async{
@@ -263,6 +262,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
     _tabController = TabController(length: 3, vsync: this);
     groups=null;
     groups=_getGroups();
+
+  }
+
+  void _handleDrawer(){
+    _scaffoldKey.currentState.openDrawer();
+    groups=null;
+    groups=_getGroups();
   }
 
   void callback(){
@@ -275,6 +281,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title:
@@ -294,8 +301,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               style: TextStyle(letterSpacing: 0.25, fontSize: 24),
             );
           },
-        )
-
+        ),
+        leading:
+        IconButton(
+          icon: Icon(Icons.menu),
+          onPressed:_handleDrawer,
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (_index){
@@ -322,86 +333,91 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       ),
       drawer: Drawer(
         elevation: 16,
-        child: ListView(
-//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
                 children: <Widget>[
-                  Expanded(
-                    child: Image(
-                      image: AssetImage('assets/dodo_color.png'),
+                  DrawerHeader(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Image(
+                            image: AssetImage('assets/dodo_color.png'),
+                          ),
+                        ),
+                        Text(
+                          'LENDER',
+                          style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+                        ),
+                        SizedBox(height: 5,),
+                        Text(
+                          currentUser,
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    'LENDER',
-                    style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+
+                  FutureBuilder(
+                    future: groups,
+                    builder: (context, snapshot){
+                      if(snapshot.connectionState==ConnectionState.done){
+                        if(snapshot.hasData){
+                          return ExpansionTile(
+                            title: Text('groups'.tr(), style: Theme.of(context).textTheme.bodyText1),
+                            leading: Icon(Icons.group, color: Theme.of(context).textTheme.bodyText1.color),
+                            children: _generateListTiles(snapshot.data),
+                          );
+                        }else{
+                          return InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Text(snapshot.error.toString()),
+                              ),
+                              onTap: (){
+                                setState(() {
+                                  groups=null;
+                                  groups=_getGroups();
+                                });
+                              }
+                          );
+                        }
+                      }
+                      return LinearProgressIndicator();
+                    },
                   ),
-                  SizedBox(height: 5,),
-                  Text(
-                    currentUser,
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  ListTile(
+                    leading: Icon(
+                      Icons.arrow_forward,
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                    title: Text(
+                      'join_group'.tr(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
+                    },
                   ),
-//                  SizedBox(height: 20,)
+                  ListTile(
+                    leading: Icon(
+                      Icons.create,
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                    title: Text(
+                      'create_group'.tr(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup()));
+                    },
+                  ),
+
+
                 ],
               ),
-            ),
-
-            FutureBuilder(
-              future: groups,
-              builder: (context, snapshot){
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    return ExpansionTile(
-                      title: Text('groups'.tr(), style: Theme.of(context).textTheme.bodyText1),
-                      leading: Icon(Icons.group, color: Theme.of(context).textTheme.bodyText1.color),
-                      children: _generateListTiles(snapshot.data),
-                    );
-                  }else{
-                    return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Text(snapshot.error.toString()),
-                        ),
-                        onTap: (){
-                          setState(() {
-                            groups=null;
-                            groups=_getGroups();
-                          });
-                        }
-                    );
-                  }
-                }
-                return LinearProgressIndicator();
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.arrow_forward,
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              title: Text(
-                'join_group'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.create,
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              title: Text(
-                'create_group'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CreateGroup()));
-              },
             ),
             Divider(),
             ListTile(
@@ -459,8 +475,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 //                });
 //              },
 //            ),
-
           ],
+
         ),
       ),
       floatingActionButton: Visibility(
@@ -473,9 +489,76 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 
           children: [
             SpeedDialChild(
-              label: 'expense'.tr(),
-              labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-              labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
+                labelWidget:
+                GestureDetector(
+                  onTap: (){},
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(height: 24,),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                          //                  margin: EdgeInsets.only(right: 18.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.7),
+                                offset: Offset(0.8, 0.8),
+                                blurRadius: 2.4,
+                              )
+                            ],
+                          ),
+                          child: Text('payment'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color, fontSize: 18)),
+                        ),
+                        SizedBox(height: 10,),
+                        Text('payment_explanation'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 13),),
+                      ],
+                    ),
+                  ),
+                ),
+                child: Icon(Icons.attach_money),
+                onTap: (){
+                  if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddPaymentRoute())).then((value){ setState(() {
+
+                  });
+                  });
+                }
+            ),
+            SpeedDialChild(
+              labelWidget:
+                GestureDetector(
+                onTap: (){},
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(height: 24,),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.7),
+                                offset: Offset(0.8, 0.8),
+                                blurRadius: 2.4,
+                              )
+                            ],
+                          ),
+                          child: Text('expense'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color, fontSize: 18)),
+                        ),
+                        SizedBox(height: 10,),
+                        Text('expense_explanation'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 13),),
+                      ],
+                    ),
+                  ),
+                ),
               child: Icon(Icons.shopping_cart),
               onTap: (){
                 if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransactionRoute(type: ExpenseType.newExpense,))).then((value){ setState(() {
@@ -483,27 +566,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                 });});
               }
             ),
-            SpeedDialChild(
-              label: 'payment'.tr(),
-              labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-              labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
-              child: Icon(Icons.attach_money),
-              onTap: (){
-                if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddPaymentRoute())).then((value){ setState(() {
-
-                });
-                });
-              }
-            ),
-//          SpeedDialChild(
-//            label: 'Bevásárlólista',
-//            labelBackgroundColor: Theme.of(context).colorScheme.secondary,
-//            labelStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.button.color),
-//            child: Icon(Icons.add_shopping_cart),
-//            onTap: (){
-//              if(currentUser!="") Navigator.push(context, MaterialPageRoute(builder: (context) => AddShoppingRoute()));
-//            }
-//          ),
           ],
         ),
       ),

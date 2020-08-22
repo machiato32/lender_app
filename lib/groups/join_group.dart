@@ -103,26 +103,32 @@ class _JoinGroupState extends State<JoinGroup> {
           ),
           drawer: !widget.fromAuth?null:Drawer(
             elevation: 16,
-            child: ListView(
-//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
                     children: <Widget>[
-                      Text(
-                        'LENDER',
-                        style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+                      DrawerHeader(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'LENDER',
+                              style: Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 2.5),
+                            ),
+                            SizedBox(height: 5,),
+                            Text(
+                              currentUser,
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 5,),
-                      Text(
-                        currentUser,
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
-                      ),
-//                  SizedBox(height: 20,)
+
                     ],
                   ),
                 ),
+                Divider(),
                 ListTile(
                   leading: Icon(
                     Icons.settings,
@@ -137,8 +143,6 @@ class _JoinGroupState extends State<JoinGroup> {
                         MaterialPageRoute(builder: (context) => Settings()));
                   },
                 ),
-                Divider(),
-
                 ListTile(
                   leading: Icon(
                     Icons.account_circle,
@@ -164,20 +168,6 @@ class _JoinGroupState extends State<JoinGroup> {
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
                   },
                 ),
-//            Divider(),
-//            ListTile(
-//              leading: Icon(
-//                Icons.bug_report,
-//                color: Colors.red,
-//              ),
-//              title: Text(
-//                'Probléma jelentése',
-//                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-//              ),
-//              onTap: () {},
-//              enabled: false,
-//            ),
-
               ],
             ),
           ),

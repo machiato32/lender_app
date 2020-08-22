@@ -115,7 +115,7 @@ class _BalancesState extends State<Balances> {
                 decoration: BoxDecoration(
                   color: (Theme.of(context).brightness==Brightness.dark)?Colors.transparent:Theme.of(context).colorScheme.secondary,
                   border: Border.all(color: (Theme.of(context).brightness==Brightness.dark)?Theme.of(context).colorScheme.secondary:Colors.transparent, width: 1.5),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

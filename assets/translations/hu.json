@@ -86,6 +86,8 @@
     "num_length": "4 számjegy szükséges!",
     "not_valid_num": "Nem számot adtál meg!",
     "minimal_length": "Legalább {} karakter szükséges!",
-    "edit_nickname": "Új becenév"
+    "edit_nickname": "Új becenév",
+    "payment_explanation": "Fizettél valakinek",
+    "expense_explanation": "Vettél valamit"
 
 }

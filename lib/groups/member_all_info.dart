@@ -148,7 +148,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               ),
               Center(
                 child: Visibility(
-                  visible: widget.isCurrentUserAdmin && widget.member.userId!=currentUser,
+                  visible: widget.isCurrentUserAdmin || widget.member.userId==currentUser,
                   child: RaisedButton.icon(
                     onPressed: (){
                       showDialog(
