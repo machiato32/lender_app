@@ -70,7 +70,7 @@
     "creation_scf": "Das erstellen war erfolgreich!",
 
     "want_make_admin": "Möchtest du, dass er/sie Admin wird?",
-    "admin_scf": "Zum Admin gemacht!",
+    "admin_scf": "Die Änderung war erfolgreich!",
     "yes": "Ja",
     "no": "Nein",
     "make_admin": "Mache ihn/sie zum Admin",
@@ -103,6 +103,14 @@
     "per_person": " Ft/Person",
     "no_amount": "Du hast keine Summe angegeben!",
     "amount_not_negative": "A Summe darf nicht negativ sein!",
-    "transaction_scf": "Die Transaktion wurde gebucht!"
+    "transaction_scf": "Die Transaktion wurde gebucht!",
+
+    "field_empty": "Dieses Feld darf nicht leer sein!",
+    "num_length": "4 Ziffern nötig!",
+    "not_valid_num": "Du hast keine Zahl angegeben!",
+    "minimal_length": "Mindestens {} Charaktere nötig!",
+    "edit_nickname": "Neuer Spitzname",
+    "payment_explanation": "Du hast jemanden Geld gezahlt",
+    "expense_explanation": "Du hast etwas gekauft"
 
 }

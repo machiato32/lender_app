@@ -1,5 +1,0 @@
-const String APPURL =  'http://examp.le';
-String apiToken;
-String currentUser;
-String currentGroupName;
-int currentGroupId;

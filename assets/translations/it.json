@@ -16,7 +16,7 @@
     "home":"Casa",
     "shopping_list":"Lista della spesa",
     "group":"Gruppo",
-    "expense":"Spesa",
+    "exspense":"Spesa",
     "payment":"Pagamento",
 
     "wish":"Desiderio",
@@ -24,6 +24,7 @@
     "nickname":"Soprannome",
     "new_nickname":"Soprannome nuovo",
     "rename_group":"Rinomina il gruppo",
+    "new_name": "Nome nuovo",
     "invitation":"Invito",
     "copied":"Copiato",
     "members":"Membri",
@@ -38,34 +39,38 @@
     "nickname_in_group":"Soprannome nel gruppo",
     "no_group_yet":"Non hai ancora dei gruppi?",
     
-    "group_name":"IL nome del gruppo",
+    "group_name":"Il nome del gruppo",
     "create":"Crea",
 
     "change_password":"Modifica la password",
     "old_password":"Password attuale",
     "new_password":"Password nouva",
-    "new_password_confirm":"La password nuova è confermata",
+    "new_password_confirm":"Conferma la password",
     "send":"Manda",
     "change_theme":"Cambia il tema",
+    "change_language": "Cambia la lingua",
 
     "full_amount":"Somma totale",
     "note":"Nota",
 
     "amount":"Somma",
 
-    "change_language": "Cambia la lingua",
+    
     "change_password_scf": "Il cambiamento è stato di successo!",
-    "okay": "Affermativo!",
+    "passwords_not_match": "Le due password non sono uguali!",
+    "okay": "Va bene!",
     "error": "Un'errore è accaduto!",
+    "back": "Indietro",
 
     "login_scf": "Il login è stato di successo!",
     "example_name": "peppino",
     "not_alterable": "Non alterabile!",
     "registration_scf": "La registrazione è stata di successo!",
     "example_nickname": "Peppino",
+    "creation_scf": "La creazione è stata di successo!",
    
     "want_make_admin": "Vorresti farlo/la admin?",
-    "admin_scf": "L'utente è diventato/a admin!",
+    "admin_scf": "Il cambiamento è stato di successo!",
     "yes": "Sì",
     "no": "No",
     "make_admin": "Sia admin!",
@@ -98,5 +103,16 @@
     "per_person": " Ft/persona",
     "no_amount": "Non hai aggiunto la somma!",
     "amount_not_negative": "La sommma totale non può essere negativa!",
-    "transaction_scf": "La transazione è stata registrata con successo!"
+    "transaction_scf": "La transazione è stata registrata con successo!",
+    "invitation_to_lender": "Invito ad un gruppo Lender",
+
+    "field_empty": "Il campo non può essere vuoto!",
+    "num_length": "Devi scriverci 4 numeri!",
+    "not_valid_num": "Usa solo numeri!",
+
+    "minimal_length": "Devi scriverci almeno {} caratteri!",
+    "edit_nickname": "Soprannome nuovo",
+    "payment_explanation": "Hai pagato a qualcuno",
+    "expense_explanation": "Hai comprato qualcosa"
+
 }

@@ -70,7 +70,7 @@
     "creation_scf": "The creation was successful!",
 
     "want_make_admin": "Do you want to make them an admin?",
-    "admin_scf": "The user is now an admin!",
+    "admin_scf": "The change was successful!",
     "yes": "Yes",
     "no": "No",
     "make_admin": "Make them admin",
@@ -103,5 +103,13 @@
     "per_person": " Ft/person",
     "no_amount": "No amount given!",
     "amount_not_negative": "The amount cannot be negative!",
-    "transaction_scf": "The transaction was saved successfully!"
+    "transaction_scf": "The transaction was saved successfully!",
+
+    "field_empty": "The field cannot be empty!",
+    "num_length": "4 numbers needed!",
+    "not_valid_num": "You did'n enter a number!",
+    "minimal_length": "At least {} characters needed!",
+    "edit_nickname": "New nickname",
+    "payment_explanation": "You paid someone",
+    "expense_explanation": "You bought something"
 }
