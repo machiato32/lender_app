@@ -111,7 +111,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
 
                       ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(new RegExp('[\\. \\,-]')),
+                        FilteringTextInputFormatter.allow(new RegExp('[0-9]')),
                         LengthLimitingTextInputFormatter(4),
                       ],
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
