@@ -99,7 +99,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
                 widget.callback();
             });
           },
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(15),
 
           child: Padding(
 

@@ -169,7 +169,7 @@ class _MemberEntryState extends State<MemberEntry> {
                 widget.callback();
             });
           },
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(15),
 
           child: Padding(
 

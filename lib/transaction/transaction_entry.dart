@@ -139,7 +139,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
 
 
           },
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(15),
 
           child: Padding(
 

@@ -50,7 +50,7 @@ void main() async {
 
   }
   runApp(
-      
+
       EasyLocalization(
         child: ChangeNotifierProvider<AppStateNotifier>(
           create: (context) => AppStateNotifier(), child: LenderApp(themeName: themeName, initURL: initURL,)
@@ -60,6 +60,20 @@ void main() async {
         fallbackLocale: Locale('en'),
         useOnlyLangCode: true,
         saveLocale: true,
+        preloaderColor: (themeName.contains('Light'))?Colors.white:Colors.black,
+        preloaderWidget:
+        MaterialApp(
+          home: Material(
+            type: MaterialType.transparency,
+            // data: ThemeData(),
+            child: Center(
+              child:
+              Text('LENDER',
+                style: TextStyle(color: (themeName.contains('Light'))?Colors.black:Colors.white, letterSpacing: 2.5, fontSize: 35),
+              ),
+            ),
+          ),
+        ),
       )
   
   );
