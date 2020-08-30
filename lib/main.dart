@@ -36,7 +36,8 @@ void main() async {
     themeName=preferences.getString('theme');
   }
   if(preferences.containsKey('current_user')){
-    currentUser=preferences.getString('current_user');
+    currentUser=preferences.getInt('current_user');
+    currentUsername=preferences.getString('current_username');
     apiToken=preferences.getString('api_token');
   }
   if(preferences.containsKey('current_group_name')){
@@ -353,7 +354,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                         ),
                         SizedBox(height: 5,),
                         Text(
-                          currentUser,
+                          currentUsername,
                           style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
                         ),
                       ],
@@ -446,6 +447,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               onTap: () {
                 _logout();
                 currentUser=null;
+                currentUsername=null;
                 currentGroupId=null;
                 currentGroupName=null;
                 apiToken=null;

@@ -16,7 +16,7 @@ class CreateGroup extends StatefulWidget {
 
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
+  TextEditingController _nicknameController = TextEditingController(text: currentUsername);
 
   var _formKey = GlobalKey<FormState>();
 

@@ -103,7 +103,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 children: <Widget>[
                   Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary),
                   Text(' - '),
-                  Flexible(child: Text(widget.member.userId, style: Theme.of(context).textTheme.bodyText1,)),
+                  Flexible(child: Text(widget.member.userName, style: Theme.of(context).textTheme.bodyText1,)),
                 ],
               ),
               SizedBox(height: 5,),
@@ -135,7 +135,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         context: context,
                         child:
                         FutureSuccessDialog(
-                          future: _changeAdmin(widget.member.userId, value),
+                          future: _changeAdmin(widget.member.userName, value),
                           dataTrueText: 'admin_scf',
                           onDataTrue: (){
                             Navigator.pop(context);
@@ -170,7 +170,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                               focusNode: _nicknameFocus,
                               controller: _nicknameController,
                               decoration: InputDecoration(
-                                hintText: widget.member.userId.split('#')[0][0].toUpperCase()+widget.member.userId.split('#')[0].substring(1),
+                                hintText: widget.member.userName,
                                 labelText: 'nickname'.tr(),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
@@ -200,7 +200,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                       context: context,
                                       child:
                                       FutureSuccessDialog(
-                                        future: _updateNickname(nickname, widget.member.userId),
+                                        future: _updateNickname(nickname, widget.member.userName),
                                         onDataTrue: (){
                                           _nicknameController.text='';
                                           Navigator.pop(context);

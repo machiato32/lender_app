@@ -20,21 +20,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
   Random _random = Random();
 
   TextEditingController _usernameController = TextEditingController();
-  TextEditingController _userNumController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   TextEditingController _passwordReminderController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _randomNum;
-
-  @override
-  void initState() {
-    _randomNum=_random.nextInt(10000).toString().padLeft(4, '0');
-    _userNumController.text=_randomNum;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +50,13 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         }
                         if(value.length<3){
                           return 'minimal_length'.tr(args: ['3']);
+                          //TODO change this
                         }
                         return null;
                       },
                       controller: _usernameController,
                       decoration: InputDecoration(
-                        helperText: 'not_alterable'.tr(),
+                        helperText: 'not_alterable'.tr(), //TODO remove
                         hintText: 'example_name'.tr(),
                         labelText: 'name'.tr(),
                         enabledBorder: UnderlineInputBorder(
@@ -75,50 +67,13 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         ) ,
                       ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9#]')),
                         LengthLimitingTextInputFormatter(15),
                       ],
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
-                  SizedBox(width: 5,),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
-                          return 'field_empty'.tr();
-                        }
-                        if(value.length!=4){
-                          return 'num_length'.tr();
-                        }
-                        return null;
-                      },
-                      controller: _userNumController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'id'.tr(),
-                        helperText: 'not_alterable'.tr(),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                          //  when the TextFormField in unfocused
-                        ) ,
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                        ) ,
-
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(new RegExp('[0-9]')),
-                        LengthLimitingTextInputFormatter(4),
-                      ],
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(width: 20,),
                 ],
               ),
 
@@ -218,7 +173,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
           onPressed: (){
             if(_formKey.currentState.validate()){
               String username = _usernameController.text;
-              String userNum = _userNumController.text;
               if(_passwordController.text==_passwordConfirmController.text){
                 String password = _passwordConfirmController.text;
                 showDialog(
@@ -226,7 +180,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     context: context,
                     child:
                     FutureSuccessDialog(
-                      future: _register(username, userNum, password, ''),
+                      future: _register(username, password, ''),
                       dataTrueText: 'registration_scf',
                       onDataTrue: (){
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
@@ -262,10 +216,10 @@ class _RegisterRouteState extends State<RegisterRoute> {
     );
   }
 
-  Future<bool> _register(String username, String userNum, String password, String reminder) async {
+  Future<bool> _register(String username, String password, String reminder) async {
     try{
       Map<String, String> body = {
-        "id":username+"#"+userNum,
+        "username":username,
         "default_currency" : "HUF",
         "password" : password,
         "password_confirmation" : password,
@@ -282,9 +236,11 @@ class _RegisterRouteState extends State<RegisterRoute> {
         Map<String, dynamic> decodedResponse = jsonDecode(response.body);
         apiToken=decodedResponse['api_token'];
         currentUser=decodedResponse['id'];
+        currentUsername=decodedResponse['username'];
 
         SharedPreferences.getInstance().then((_prefs){
-          _prefs.setString('current_user', currentUser);
+          _prefs.setInt('current_user', currentUser);
+          _prefs.setString('current_username', currentUsername);
           _prefs.setString('api_token', apiToken);
         });
         return true;

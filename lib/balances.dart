@@ -27,7 +27,7 @@ class _BalancesState extends State<Balances> {
         Map<String, dynamic> response2 = jsonDecode(response.body);
         List<Member> members=[];
         for(var member in response2['data']['members']){
-          members.add(Member(nickname: member['nickname'], balance: member['balance']*1.0, userId: member['user_id']));
+          members.add(Member(nickname: member['nickname'], balance: member['balance']*1.0, userId: member['user_id'], userName: member['username']));
         }
         return members;
       }else{

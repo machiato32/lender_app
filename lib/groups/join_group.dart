@@ -22,7 +22,7 @@ class JoinGroup extends StatefulWidget {
 
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
+  TextEditingController _nicknameController = TextEditingController(text: currentUsername);
 
   var _formKey = GlobalKey<FormState>();
 
@@ -118,7 +118,7 @@ class _JoinGroupState extends State<JoinGroup> {
                             ),
                             SizedBox(height: 5,),
                             Text(
-                              currentUser,
+                              currentUsername,
                               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),
                             ),
                           ],

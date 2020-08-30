@@ -18,8 +18,7 @@ class LoginRoute extends StatefulWidget {
 
 class _LoginRouteState extends State<LoginRoute> {
 
-  TextEditingController _usernameController = TextEditingController(text: currentUser!=null?currentUser.split('#')[0]:'');
-  TextEditingController _userNumController = TextEditingController(text: currentUser!=null?currentUser.split('#')[1]:'');
+  TextEditingController _usernameController = TextEditingController(text: currentUser!=null?currentUsername:'');
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -44,6 +43,7 @@ class _LoginRouteState extends State<LoginRoute> {
                           return 'field_empty'.tr();
                         }
                         if(value.length<3){
+                          //TODO set new rules
                           return 'minimal_length'.tr(args: ['3']);
                         }
                         return null;
@@ -51,7 +51,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: 'example_name'.tr(),
-                        labelText: 'name'.tr(),
+                        labelText: 'name'.tr(), //TODO change label to username
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
                         ) ,
@@ -63,55 +63,13 @@ class _LoginRouteState extends State<LoginRoute> {
                         ),
                       ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                        LengthLimitingTextInputFormatter(15),
+                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9#]')),
+                        LengthLimitingTextInputFormatter(15), //TODO check this
                       ],
                       style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Column(
-                    children: <Widget>[
-                      SizedBox(height: 15,),
-                      Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
-                    ],
-                  ),
-                  SizedBox(width: 5,),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
-                          return 'field_empty'.tr();
-                        }
-                        if(value.length!=4){
-                          return 'num_length'.tr();
-                        }
-                        return null;
-                      },
-                      controller: _userNumController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'id'.tr(),
-                        hintText: '1234',
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                          //  when the TextFormField in unfocused
-                        ) ,
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                        ) ,
-
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9]')),
-                        LengthLimitingTextInputFormatter(4),
-                      ],
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(width: 20,),
                 ],
               ),
               SizedBox(height: 30,),
@@ -150,7 +108,7 @@ class _LoginRouteState extends State<LoginRoute> {
         floatingActionButton: FloatingActionButton(
           onPressed: (){
             if(_formKey.currentState.validate()){
-              String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
+              String username = _usernameController.text.toLowerCase();
               String password = _passwordController.text;
               showDialog(
                   barrierDismissible: false,
@@ -221,7 +179,7 @@ class _LoginRouteState extends State<LoginRoute> {
   Future<bool> _login(String username, String password) async{
     try{
       Map<String, String> body = {
-        "id":username,
+        "username":username,
         "password":password
       };
       Map<String, String> header = {
@@ -235,9 +193,11 @@ class _LoginRouteState extends State<LoginRoute> {
         Map<String, dynamic> decoded = jsonDecode(response.body);
         apiToken=decoded['data']['api_token'];
         currentUser=decoded['data']['id'];
+        currentUsername=decoded['data']['username'];
 
         SharedPreferences.getInstance().then((_prefs){
-          _prefs.setString('current_user', currentUser);
+          _prefs.setString('current_username', currentUsername);
+          _prefs.setInt('current_user', currentUser);
           _prefs.setString('api_token', apiToken);
         });
 

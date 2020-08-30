@@ -10,15 +10,15 @@ import 'package:csocsort_szamla/config.dart';
 class TransactionData {
   String type;
   DateTime updatedAt;
-  String buyerId, buyerNickname;
+  String buyerName, buyerNickname;
   List<Member> receivers;
   double totalAmount;
-  int transactionId;
+  int transactionId, buyerId;
   String name;
 
   TransactionData({this.type, this.updatedAt, this.buyerId,
     this.buyerNickname, this.receivers, this.totalAmount, this.transactionId,
-    this.name});
+    this.name, this.buyerName});
 
   factory TransactionData.fromJson(Map<String, dynamic> json){
     return TransactionData(
@@ -26,6 +26,7 @@ class TransactionData {
         transactionId: json['data']['transaction_id'],
         name: json['data']['name'],
         updatedAt: json['data']['updated_at']==null?DateTime.now():DateTime.parse(json['data']['updated_at']).toLocal(),
+        buyerName: json['data']['buyer_username'],
         buyerId: json['data']['buyer_id'],
         buyerNickname: json['data']['buyer_nickname'],
         totalAmount: json['data']['total_amount']*1.0,

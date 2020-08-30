@@ -195,7 +195,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Flexible(child: Text(widget.member.userId, style: style.copyWith(fontSize: 22), overflow: TextOverflow.ellipsis,)),
+                                          Flexible(child: Text(widget.member.userName, style: style.copyWith(fontSize: 22), overflow: TextOverflow.ellipsis,)),
                                           Flexible(child: Text(widget.member.nickname, style: TextStyle(color: nicknameColor, fontSize: 15), overflow: TextOverflow.ellipsis,))
                                         ],
                                       ),

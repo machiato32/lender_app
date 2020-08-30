@@ -16,6 +16,7 @@ List<String> placeholder = ["Mamut", "Sarki kisbolt", "Fapuma", "Eltört kiskan�
   "Egy tökéletes kakaóscsiga", "Sajt sajttal", "Gyíkhúsos melegszendvics", "56 alma", "Csigaszerű játékizé", "10 batka", "Egész napos kirándulás", "Paradicsomos kenyér",
   "Kőrözöttes-szardíniás szendvics", "Menő napszemcsi", "Sokadik halálcsillag", "Draco Raphus Cuculatus", "Üres doboz", "Büdös zokni", "Nyikorgó szekér", "Emelt díjas SMS",
   "Teve, sok teve", "Helytartó", "Balatoni jacht", "Kacsajelmez", "Légycsapó", "Pisztáciás fagylalt", "Csocsó", "Egy működő app", "Lekváros couscous", "Nagy bevásárlás"];
+//TODO add this to config
 Random random = Random();
 
 class SavedExpense{
