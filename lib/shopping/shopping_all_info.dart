@@ -157,7 +157,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         },
                         color: Theme.of(context).colorScheme.secondary,
                         label: Text('delete'.tr(), style: Theme.of(context).textTheme.button,),
-                        icon: Icon(Icons.cancel, color: Theme.of(context).textTheme.button.color)
+                        icon: Icon(Icons.delete, color: Theme.of(context).textTheme.button.color)
                     ),
                   ],
                 ),

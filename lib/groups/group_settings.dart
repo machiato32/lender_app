@@ -48,32 +48,6 @@ class _GroupSettingState extends State<GroupSettings> {
       throw _;
     }
   }
-
-  Future<bool> _updateNickname(String nickname) async {
-    try{
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
-      };
-      Map<String, dynamic> body = {
-        "nickname": nickname
-      };
-
-      String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.put(APPURL+'/groups/'+currentGroupId.toString()+'/members', headers: header, body: bodyEncoded);
-      if(response.statusCode==204){
-        return true;
-      }else{
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
-        }
-        throw error['error'];
-      }
-    }catch(_){
-      throw _;
-    }
-  }
   Future<bool> _updateGroupName(String groupName) async {
     try{
       Map<String, String> header = {
@@ -147,88 +121,13 @@ class _GroupSettingState extends State<GroupSettings> {
       child: ListView(
 //      padding: EdgeInsets.all(15),
         children: <Widget>[
-//          Form(
-//            key: _nicknameFormKey,
-//            child: Card(
-//              child: Padding(
-//                padding: const EdgeInsets.all(15),
-//                child: Column(
-//                  children: <Widget>[
-//                    Text('new_nickname'.tr(), style: Theme.of(context).textTheme.headline6,),
-//                    SizedBox(height: 40,),
-//                    Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                      children: <Widget>[
-//                        Flexible(
-//                          child: TextFormField(
-//                            validator: (value){
-//                              if(value.isEmpty){
-//                                return 'field_empty'.tr();
-//                              }
-//                              if(value.length<1){
-//                                return 'minimal_length'.tr(args: ['1']);
-//                              }
-//                              return null;
-//                            },
-//                            controller: _nicknameController,
-//                            decoration: InputDecoration(
-//                              hintText: currentUser.split('#')[0],
-//                              labelText: 'nickname'.tr(),
-//                              enabledBorder: UnderlineInputBorder(
-//                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-//                                //  when the TextFormField in unfocused
-//                              ) ,
-//                              focusedBorder: UnderlineInputBorder(
-//                                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-//                              ),
-//
-//                            ),
-//                            inputFormatters: [
-//                              LengthLimitingTextInputFormatter(15),
-//                            ],
-//                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-//                            cursorColor: Theme.of(context).colorScheme.secondary,
-//                          ),
-//                        ),
-//                        SizedBox(width: 10,),
-//                        RaisedButton(
-//                          onPressed: (){
-//                            if(_nicknameFormKey.currentState.validate()){
-//                              FocusScope.of(context).unfocus();
-//                              String nickname = _nicknameController.text[0].toUpperCase()+_nicknameController.text.substring(1);
-//                              showDialog(
-//                                  barrierDismissible: false,
-//                                  context: context,
-//                                  child:
-//                                  FutureSuccessDialog(
-//                                    future: _updateNickname(nickname),
-//                                    onDataTrue: (){
-//                                      _nicknameController.text='';
-//                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-//                                    },
-//                                    dataTrueText: 'nickname_scf',
-//                                  )
-//                              );
-//                            }
-//
-//                          },
-//                          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-//                          color: Theme.of(context).colorScheme.secondary,
-//                        )
-//                      ],
-//                    ),
-//
-//                  ],
-//                ),
-//              ),
-//            ),
-//          ),
           FutureBuilder(
             future: _isUserAdmin,
             builder: (context, snapshot){
               if(snapshot.connectionState==ConnectionState.done){
                 if(snapshot.hasData){
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Visibility(
                         visible: snapshot.data,
@@ -240,64 +139,62 @@ class _GroupSettingState extends State<GroupSettings> {
                               child: Column(
                                 children: <Widget>[
                                   Text('rename_group'.tr(), style: Theme.of(context).textTheme.headline6,),
-                                  SizedBox(height: 40,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: TextFormField(
-                                          validator: (value){
-                                            if(value.isEmpty){
-                                              return 'field_empty'.tr();
-                                            }
-                                            if(value.length<1){
-                                              return 'minimal_length'.tr(args: ['1']);
-                                            }
-                                            return null;
-                                          },
-                                          controller: _groupNameController,
-                                          decoration: InputDecoration(
-                                            labelText: 'new_name'.tr(),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                                            ) ,
-                                            focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                                            ),
-
-                                          ),
-                                          inputFormatters: [
-                                            LengthLimitingTextInputFormatter(20),
-                                          ],
-                                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-                                          cursorColor: Theme.of(context).colorScheme.secondary,
+                                  SizedBox(height: 10,),
+                                  Center(child: Text('rename_group_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)),
+                                  SizedBox(height: 10,),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8, right: 8),
+                                    child: TextFormField(
+                                      validator: (value){
+                                        if(value.isEmpty){
+                                          return 'field_empty'.tr();
+                                        }
+                                        if(value.length<1){
+                                          return 'minimal_length'.tr(args: ['1']);
+                                        }
+                                        return null;
+                                      },
+                                      controller: _groupNameController,
+                                      decoration: InputDecoration(
+                                        labelText: 'new_name'.tr(),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                                        ) ,
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                                         ),
+
                                       ),
-                                      SizedBox(width: 10,),
-                                      RaisedButton(
-                                        onPressed: (){
-                                          if(_groupNameFormKey.currentState.validate()){
-                                            FocusScope.of(context).unfocus();
-                                            String _groupName = _groupNameController.text;
-                                            showDialog(
-                                                barrierDismissible: false,
-                                                context: context,
-                                                child:
-                                                FutureSuccessDialog(
-                                                  future: _updateGroupName(_groupName),
-                                                  dataTrueText: 'nickname_scf',
-                                                  onDataTrue: (){
-                                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
-                                                    _groupNameController.text='';
-                                                  },
-                                                )
-                                            );
-                                          }
-                                        },
-                                        child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      )
-                                    ],
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(20),
+                                      ],
+                                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                                      cursorColor: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  SizedBox(height: 15,),
+                                  RaisedButton(
+                                    onPressed: (){
+                                      if(_groupNameFormKey.currentState.validate()){
+                                        FocusScope.of(context).unfocus();
+                                        String _groupName = _groupNameController.text;
+                                        showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            child:
+                                            FutureSuccessDialog(
+                                              future: _updateGroupName(_groupName),
+                                              dataTrueText: 'nickname_scf',
+                                              onDataTrue: (){
+                                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                                                _groupNameController.text='';
+                                              },
+                                            )
+                                        );
+                                      }
+                                    },
+                                    child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+                                    color: Theme.of(context).colorScheme.secondary,
                                   ),
 
                                 ],
@@ -312,31 +209,22 @@ class _GroupSettingState extends State<GroupSettings> {
                           child: Column(
                             children: <Widget>[
                               Text('invitation'.tr(), style: Theme.of(context).textTheme.headline6,),
-                              SizedBox(height: 40,),
+                              SizedBox(height: 10,),
+                              Center(child: Text('invitation_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)),
+                              SizedBox(height: 10,),
                               FutureBuilder(
                                 future: _invitation,
                                 builder: (context, snapshot){
                                   if(snapshot.connectionState==ConnectionState.done){
                                     if(snapshot.hasData){
-                                      return Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Flexible(
-                                            child: GestureDetector(
-                                              onTap: (){
-                                                Share.share('http://www.lenderapp.net/join/'+snapshot.data, subject: 'invitation_to_lender'.tr());
-                                              },
-                                              child: Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,),
-                                            ),
-                                          ),
-                                          RaisedButton(
-                                            onPressed: (){
-                                              Share.share('http://www.lenderapp.net/join/'+snapshot.data, subject: 'invitation_to_lender'.tr());
-                                            },
-                                            child: Icon(Icons.share, color: Theme.of(context).colorScheme.onSecondary,),
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          )
-                                        ],
+                                      return Center(
+                                        child: RaisedButton(
+                                          onPressed: (){
+                                            Share.share('http://www.lenderapp.net/join/'+snapshot.data, subject: 'invitation_to_lender'.tr());
+                                          },
+                                          child: Icon(Icons.share, color: Theme.of(context).colorScheme.onSecondary,),
+                                          color: Theme.of(context).colorScheme.secondary,
+                                        ),
                                       );
                                     }else{
                                       return InkWell(

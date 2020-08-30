@@ -68,6 +68,8 @@ class _BalancesState extends State<Balances> {
             Center(
               child: Text('balances'.tr(), style: Theme.of(context).textTheme.headline6,),
             ),
+            // SizedBox(height: 10,),
+            // Text('balances_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
             SizedBox(height: 40),
             Center(
               child: FutureBuilder(

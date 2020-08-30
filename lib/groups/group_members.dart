@@ -18,6 +18,8 @@ class _GroupMembersState extends State<GroupMembers> {
 
   Future<List<Member>> _members;
 
+  Member currentMember;
+
   Future<List<Member>> _getMembers() async {
     try{
       Map<String, String> header = {
@@ -32,6 +34,9 @@ class _GroupMembersState extends State<GroupMembers> {
         for(var member in decoded['data']['members']){
           members.add(Member.fromJson(member));
         }
+        currentMember = members.firstWhere((member) => member.userId==currentUser);
+        members.remove(currentMember);
+        members.insert(0, currentMember);
         return members;
       }else{
         Map<String, dynamic> error = jsonDecode(response.body);
@@ -65,16 +70,42 @@ class _GroupMembersState extends State<GroupMembers> {
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('members'.tr(), style: Theme.of(context).textTheme.headline6,),
-            SizedBox(height: 40,),
+            Center(child: Text('members'.tr(), style: Theme.of(context).textTheme.headline6,)),
             FutureBuilder(
               future: _members,
               builder: (context, snapshot){
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return Column(
-                      children: _generateMembers(snapshot.data)
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                            visible: !currentMember.isAdmin,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 10,),
+                                Center(child: Text('members_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)),
+                              ],
+                            )
+                        ),
+                        Visibility(
+                            visible: currentMember.isAdmin,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 10,),
+                                Center(child: Text('members_explanation_admin'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)),
+                              ],
+                            )
+                        ),
+                        SizedBox(height: 40,),
+                        Column(
+                          children: _generateMembers(snapshot.data)
+                        ),
+                      ],
                     );
                   }else{
                     return InkWell(
@@ -91,7 +122,12 @@ class _GroupMembersState extends State<GroupMembers> {
                     );
                   }
                 }
-                return Center(child: CircularProgressIndicator(),);
+                return Center(child: Column(
+                  children: [
+                    SizedBox(height: 10,),
+                    CircularProgressIndicator(),
+                  ],
+                ),);
               },
             )
           ],
@@ -101,7 +137,6 @@ class _GroupMembersState extends State<GroupMembers> {
   }
 
   List<Widget> _generateMembers(List<Member> members){
-    Member currentMember = members.firstWhere((member) => member.userId==currentUser);
     return members.map((member){
       return MemberEntry(member: member, isCurrentUserAdmin: currentMember.isAdmin, callback: this.callback,);
     }).toList();

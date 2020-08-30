@@ -57,6 +57,10 @@ class AppTheme{
         fontWeight: FontWeight.bold,
         color: Colors.green[700],
       ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.grey[700],
+      ),
       button: TextStyle(
           fontSize: 20,
           color: Colors.white
@@ -108,6 +112,10 @@ class AppTheme{
         fontWeight: FontWeight.bold,
         color: Colors.green[700],
       ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.white,
+      ),
       button: TextStyle(
           fontSize: 20,
           color: Colors.black,
@@ -151,6 +159,10 @@ class AppTheme{
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.amber[500],
+      ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.grey[700],
       ),
       button: TextStyle(
           fontSize: 20,
@@ -217,6 +229,10 @@ class AppTheme{
         fontWeight: FontWeight.bold,
         color: Colors.amber[500],
       ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.white,
+      ),
       button: TextStyle(
           fontSize: 20,
           color: Color.fromARGB(255, 25, 25, 25)
@@ -269,6 +285,10 @@ class AppTheme{
         fontWeight: FontWeight.bold,
         color: Colors.pink[300],
       ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.white,
+      ),
       button: TextStyle(
         fontSize: 20,
 //          color: Color.fromARGB(255, 25, 25, 25),
@@ -318,6 +338,10 @@ class AppTheme{
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.pink[300],
+      ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.grey[700],
       ),
       button: TextStyle(
           fontSize: 20,
@@ -373,6 +397,10 @@ class AppTheme{
         fontWeight: FontWeight.bold,
         color: Colors.blue[800],
       ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.white,
+      ),
       button: TextStyle(
           fontSize: 20,
           color: Colors.black,
@@ -421,6 +449,10 @@ class AppTheme{
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.blue[900],
+      ),
+      subtitle2: TextStyle(
+        fontSize: 15,
+        color: Colors.grey[700],
       ),
       button: TextStyle(
           fontSize: 20,

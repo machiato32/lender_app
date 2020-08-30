@@ -112,17 +112,15 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin{
       child: Padding(
         padding: const EdgeInsets.all(15),
         child:Column(
-//          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text('history'.tr(), style: Theme.of(context).textTheme.headline6,),
+            SizedBox(height: 10,),
+            Text('history_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
             SizedBox(height: 40,),
             TabBar(
               controller: _controller,
               tabs: <Widget>[
-                Tab(
-                  icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.secondary,),
-//                  child: Text('Kaptam', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).colorScheme.secondary),),
-                ),
+                Tab(icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.secondary,),),
                 Tab(icon: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary,)),
               ],
             ),

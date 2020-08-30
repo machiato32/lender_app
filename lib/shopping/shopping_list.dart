@@ -139,6 +139,8 @@ class _ShoppingListState extends State<ShoppingList> {
               child: Column(
                 children: <Widget>[
                   Center(child: Text('shopping_list'.tr(), style: Theme.of(context).textTheme.headline6,)),
+                  SizedBox(height: 10,),
+                  Center(child: Text('shopping_list_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,), ),
                   SizedBox(height: 20,),
                   Row(
                     children: <Widget>[

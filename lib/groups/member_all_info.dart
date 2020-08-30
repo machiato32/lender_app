@@ -212,7 +212,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                 }
 
                               },
-                              child: Text('yes'.tr(), style: Theme.of(context).textTheme.button,),
+                              child: Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                             RaisedButton(
@@ -220,7 +220,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                 FocusScope.of(context).unfocus();
                                 Navigator.pop(context);
                               },
-                              child: Text('no'.tr(), style: Theme.of(context).textTheme.button,),
+                              child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                           ],

@@ -65,7 +65,6 @@ void main() async {
         MaterialApp(
           home: Material(
             type: MaterialType.transparency,
-            // data: ThemeData(),
             child: Center(
               child:
               Text('LENDER',
