@@ -67,7 +67,7 @@
     "registration_scf": "Das registrieren  war erfolgreich!",
 
     "example_nickname": "Daniel",
-    "creation_scf": "Das Erstellen war erfolgreich!"
+    "creation_scf": "Das Erstellen war erfolgreich!",
 
     "want_make_admin": "Möchtest du, dass er/sie Admin wird?",
     "admin_scf": "Die Änderung war erfolgreich!",
@@ -110,15 +110,15 @@
     "not_valid_num": "Du hast keine Zahl angegeben!",
     "minimal_length": "Mindestens {} Charaktere nötig!",
     "edit_nickname": "Neuer Spitzname",
-    "payment_explanation": "Du hast an jemanden Geld gezahlt"
-    "expense_explanation": "Du hast etwas gekauft"
+    "payment_explanation": "Du hast an jemanden Geld gezahlt",
+    "expense_explanation": "Du hast etwas gekauft",
     
-    "members_explanation": "Siehe dir die Gruppenmitglieder an und ändere deinen Spitznamen"
-    "members_explanation_admin": "Verwalte die Genehmigungen und Spitznamen der Mitglieder"
-    "modify": "Ändern"
-    "invitation_explanation": "Lade jemanden in die Gruppe ein"
-    "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt"
-    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufsliste"
+    "members_explanation": "Siehe dir die Gruppenmitglieder an und ändere deinen Spitznamen",
+    "members_explanation_admin": "Verwalte die Genehmigungen und Spitznamen der Mitglieder",
+    "modify": "Ändern",
+    "invitation_explanation": "Lade jemanden in die Gruppe ein",
+    "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
+    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufsliste",
     "history_explanation": "Verfolge und lösche deine früheren Transaktionen"
 
 }

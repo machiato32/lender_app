@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/person.dart';
+import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
@@ -17,12 +17,14 @@ class LoginRoute extends StatefulWidget {
 }
 
 class _LoginRouteState extends State<LoginRoute> {
-
-  TextEditingController _usernameController = TextEditingController(text: currentUser!=null?currentUser.split('#')[0]:'');
-  TextEditingController _userNumController = TextEditingController(text: currentUser!=null?currentUser.split('#')[1]:'');
+  TextEditingController _usernameController = TextEditingController(
+      text: currentUser != null ? currentUser.split('#')[0] : '');
+  TextEditingController _userNumController = TextEditingController(
+      text: currentUser != null ? currentUser.split('#')[1] : '');
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -36,14 +38,16 @@ class _LoginRouteState extends State<LoginRoute> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Flexible(
                     child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
+                      validator: (value) {
+                        if (value.isEmpty) {
                           return 'field_empty'.tr();
                         }
-                        if(value.length<3){
+                        if (value.length < 3) {
                           return 'minimal_length'.tr(args: ['3']);
                         }
                         return null;
@@ -53,10 +57,14 @@ class _LoginRouteState extends State<LoginRoute> {
                         hintText: 'example_name'.tr(),
                         labelText: 'name'.tr(),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                        ) ,
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              width: 2),
+                        ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
                         ),
                         errorBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.red, width: 2),
@@ -66,25 +74,39 @@ class _LoginRouteState extends State<LoginRoute> {
                         FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
                         LengthLimitingTextInputFormatter(15),
                       ],
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  SizedBox(width: 5,),
+                  SizedBox(
+                    width: 5,
+                  ),
                   Column(
                     children: <Widget>[
-                      SizedBox(height: 15,),
-                      Text('#', style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 30),),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        '#',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(fontSize: 30),
+                      ),
                     ],
                   ),
-                  SizedBox(width: 5,),
+                  SizedBox(
+                    width: 5,
+                  ),
                   Flexible(
                     child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
+                      validator: (value) {
+                        if (value.isEmpty) {
                           return 'field_empty'.tr();
                         }
-                        if(value.length!=4){
+                        if (value.length != 4) {
                           return 'num_length'.tr();
                         }
                         return null;
@@ -95,31 +117,40 @@ class _LoginRouteState extends State<LoginRoute> {
                         labelText: 'id'.tr(),
                         hintText: '1234',
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              width: 2),
                           //  when the TextFormField in unfocused
-                        ) ,
+                        ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                        ) ,
-
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                        ),
                       ),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp('[0-9]')),
                         LengthLimitingTextInputFormatter(4),
                       ],
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Padding(
                 padding: EdgeInsets.only(right: 20, left: 20),
                 child: TextFormField(
-                  validator: (value){
-                    if(value.isEmpty){
+                  validator: (value) {
+                    if (value.isEmpty) {
                       return 'field_empty'.tr();
                     }
                     return null;
@@ -128,29 +159,38 @@ class _LoginRouteState extends State<LoginRoute> {
                   decoration: InputDecoration(
                     labelText: 'password'.tr(),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-                    ) ,
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                    ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                    ) ,
-
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
                   obscureText: true,
-                  style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
                   cursorColor: Theme.of(context).colorScheme.secondary,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
                   ],
                 ),
               ),
-              SizedBox(height: 40,)
+              SizedBox(
+                height: 40,
+              )
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            if(_formKey.currentState.validate()){
-              String username = _usernameController.text.toLowerCase()+'#'+_userNumController.text.toLowerCase();
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              String username = _usernameController.text.toLowerCase() +
+                  '#' +
+                  _userNumController.text.toLowerCase();
               String password = _passwordController.text;
               showDialog(
                   barrierDismissible: false,
@@ -159,16 +199,23 @@ class _LoginRouteState extends State<LoginRoute> {
                     dataTrueText: 'login_scf'.tr(),
                     dataFalseText: 'login_scf'.tr(),
                     future: _login(username, password),
-                    onDataTrue: (){
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                    onDataTrue: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainPage()),
+                          (r) => false);
                     },
-                    onDataFalse: (){
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => JoinGroup(fromAuth: true,)), (r)=>false);
+                    onDataFalse: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => JoinGroup(
+                                    fromAuth: true,
+                                  )),
+                          (r) => false);
                     },
-                  )
-              );
+                  ));
             }
-
           },
           child: Icon(Icons.send),
         ),
@@ -177,76 +224,82 @@ class _LoginRouteState extends State<LoginRoute> {
   }
 
   Future<bool> _selectGroup(int lastActiveGroup) async {
-    try{
+    try {
       Map<String, String> header = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
+        "Authorization": "Bearer " + apiToken
       };
 
-      http.Response response = await http.get(APPURL+'/groups', headers: header);
-      if(response.statusCode==200){
+      http.Response response =
+          await http.get(APPURL + '/groups', headers: header);
+      if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        List<Group> groups=[];
-        for(var group in decoded['data']){
-          groups.add(Group(groupName: group['group_name'], groupId: group['group_id']));
+        List<Group> groups = [];
+        for (var group in decoded['data']) {
+          groups.add(Group(
+              groupName: group['group_name'], groupId: group['group_id']));
         }
-        if(groups.length>0){
-          if(groups.where((group) => group.groupId==lastActiveGroup).toList().length!=0){
-            currentGroupName=groups.firstWhere((group) => group.groupId==lastActiveGroup).groupName;
-            currentGroupId=lastActiveGroup;
-            SharedPreferences.getInstance().then((_prefs){
+        if (groups.length > 0) {
+          if (groups
+                  .where((group) => group.groupId == lastActiveGroup)
+                  .toList()
+                  .length !=
+              0) {
+            currentGroupName = groups
+                .firstWhere((group) => group.groupId == lastActiveGroup)
+                .groupName;
+            currentGroupId = lastActiveGroup;
+            SharedPreferences.getInstance().then((_prefs) {
               _prefs.setString('current_group_name', currentGroupName);
               _prefs.setInt('current_group_id', currentGroupId);
             });
             return true;
           }
-          currentGroupName=groups[0].groupName;
-          currentGroupId=groups[0].groupId;
-          SharedPreferences.getInstance().then((_prefs){
+          currentGroupName = groups[0].groupName;
+          currentGroupId = groups[0].groupId;
+          SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
           });
           return true;
         }
         return false;
-      }else{
+      } else {
         Map<String, dynamic> error = jsonDecode(response.body);
         throw error['error'];
       }
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
-  Future<bool> _login(String username, String password) async{
-    try{
-      Map<String, String> body = {
-        "id":username,
-        "password":password
-      };
+  Future<bool> _login(String username, String password) async {
+    try {
+      Map<String, String> body = {"id": username, "password": password};
       Map<String, String> header = {
         "Content-Type": "application/json",
         //"Authorization": "Bearer api_token"
       };
 
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post(APPURL+'/login', headers: header, body: bodyEncoded);
-      if(response.statusCode==200){
+      http.Response response = await http.post(APPURL + '/login',
+          headers: header, body: bodyEncoded);
+      if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        apiToken=decoded['data']['api_token'];
-        currentUser=decoded['data']['id'];
+        apiToken = decoded['data']['api_token'];
+        currentUser = decoded['data']['id'];
 
-        SharedPreferences.getInstance().then((_prefs){
+        SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_user', currentUser);
           _prefs.setString('api_token', apiToken);
         });
 
         return await _selectGroup(decoded['data']['last_active_group']);
-      }else{
+      } else {
         Map<String, dynamic> error = jsonDecode(response.body);
         throw error['error'];
       }
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }

@@ -111,5 +111,13 @@
     "minimal_length": "At least {} characters needed!",
     "edit_nickname": "New nickname",
     "payment_explanation": "You paid someone",
-    "expense_explanation": "You bought something"
+    "expense_explanation": "You bought something",
+
+    "members_explanation": "See the members of the group and modify your nickname",
+    "members_explanation_admin": "Manage member permissions and nicknames",
+    "modify": "Modify",
+    "invitation_explanation": "Invite someone to the group",
+    "rename_group_explanation": "Rename the group if you don't like the name",
+    "shopping_list_explanation": "Write on the joint shopping list",
+    "history_explanation": "Follow and delete recent transactions"
 }

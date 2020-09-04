@@ -13,21 +13,18 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('settings'.tr()),),
+      appBar: AppBar(
+        title: Text('settings'.tr()),
+      ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: (){
+        onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: ListView(
-          children: <Widget>[
-            ChangePin(),
-            ColorPicker(),
-            LanguagePicker()
-          ],
+          children: <Widget>[ChangePin(), ColorPicker(), LanguagePicker()],
         ),
       ),
-
     );
   }
 }
