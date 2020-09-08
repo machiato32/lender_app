@@ -82,7 +82,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
-  Future<bool> _postNewExpense(
+  Future<bool> _postTransaction(
       List<Member> members, double amount, String name) async {
     try {
       Map<String, String> header = {
@@ -502,7 +502,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    future: _postNewExpense(members, amount, note),
+                    future: _postTransaction(members, amount, note),
                     dataTrue: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

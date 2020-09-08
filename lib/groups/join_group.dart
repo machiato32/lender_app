@@ -6,10 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'create_group.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
@@ -57,26 +58,16 @@ class _JoinGroupState extends State<JoinGroup> {
 
       String encoded = json.encode(body);
       http.Response response =
-          await http.post(APPURL + '/join', headers: header, body: encoded);
+          await httpPost(uri: '/join', context: context, body: body);
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> response2 = jsonDecode(response.body);
-        currentGroupName = response2['data']['group_name'];
-        currentGroupId = response2['data']['group_id'];
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-          _prefs.setInt('current_group_id', currentGroupId);
-        });
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      Map<String, dynamic> response2 = jsonDecode(response.body);
+      currentGroupName = response2['data']['group_name'];
+      currentGroupId = response2['data']['group_id'];
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.setString('current_group_name', currentGroupName);
+        _prefs.setInt('current_group_id', currentGroupId);
+      });
+
       return response.statusCode == 200;
     } catch (_) {
       throw _;

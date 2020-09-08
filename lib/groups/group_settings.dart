@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 import 'group_members.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
@@ -20,35 +20,18 @@ class _GroupSettingState extends State<GroupSettings> {
   Future<String> _invitation;
   Future<bool> _isUserAdmin;
 
-  TextEditingController _nicknameController = TextEditingController();
   TextEditingController _groupNameController = TextEditingController();
 
-  var _nicknameFormKey = GlobalKey<FormState>();
   var _groupNameFormKey = GlobalKey<FormState>();
 
   Future<String> _getInvitation() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['invitations'][0]['token'];
 
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        return decoded['data']['invitations'][0]['token'];
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }
@@ -56,32 +39,18 @@ class _GroupSettingState extends State<GroupSettings> {
 
   Future<bool> _updateGroupName(String groupName) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
       Map<String, dynamic> body = {"name": groupName};
 
-      String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.put(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header,
-          body: bodyEncoded);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        currentGroupName = decoded['group_name'];
-        currentGroupId = decoded['group_id'];
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      http.Response response = await httpPut(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context,
+          body: body);
+
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      currentGroupName = decoded['group_name'];
+      currentGroupId = decoded['group_id'];
+      return true;
+
     } catch (_) {
       throw _;
     }
@@ -89,27 +58,12 @@ class _GroupSettingState extends State<GroupSettings> {
 
   Future<bool> _getIsUserAdmin() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString() + '/member',
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['is_admin'] == 1;
 
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString() + '/member',
-          headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        return decoded['data']['is_admin'] == 1;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }
@@ -132,7 +86,6 @@ class _GroupSettingState extends State<GroupSettings> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: ListView(
-//      padding: EdgeInsets.all(15),
         children: <Widget>[
           FutureBuilder(
               future: _isUserAdmin,

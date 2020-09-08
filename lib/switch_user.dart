@@ -146,7 +146,7 @@ class _SwitchUserState extends State<SwitchUser> {
                       ),
                     ),
                     inputFormatters: [
-                      BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))
+                      FilteringTextInputFormatter.deny(new RegExp('[ \\,\\.-]'))
                     ],
                     controller: pinController,
                     keyboardType: TextInputType.number,

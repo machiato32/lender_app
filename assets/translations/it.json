@@ -16,7 +16,7 @@
     "home":"Casa",
     "shopping_list":"Lista della spesa",
     "group":"Gruppo",
-    "exspense":"Spesa",
+    "expense":"Spesa",
     "payment":"Pagamento",
 
     "wish":"Desiderio",
@@ -38,7 +38,7 @@
     "join":"Iscriviti",
     "nickname_in_group":"Soprannome nel gruppo",
     "no_group_yet":"Non hai ancora dei gruppi?",
-    
+
     "group_name":"Il nome del gruppo",
     "create":"Crea",
 
@@ -47,6 +47,7 @@
     "new_password":"Password nouva",
     "new_password_confirm":"Conferma la password",
     "send":"Manda",
+    "change_password_scf": "Il cambiamento è stato di successo!",
     "change_theme":"Cambia il tema",
     "change_language": "Cambia la lingua",
 
@@ -55,20 +56,19 @@
 
     "amount":"Somma",
 
-    
-    "change_password_scf": "Il cambiamento è stato di successo!",
     "passwords_not_match": "Le due password non sono uguali!",
     "okay": "Va bene!",
     "error": "Un'errore è accaduto!",
     "back": "Indietro",
-
     "login_scf": "Il login è stato di successo!",
+
     "example_name": "peppino",
     "not_alterable": "Non alterabile!",
     "registration_scf": "La registrazione è stata di successo!",
+
     "example_nickname": "Peppino",
     "creation_scf": "La creazione è stata di successo!",
-   
+
     "want_make_admin": "Vorresti farlo/la admin?",
     "admin_scf": "Il cambiamento è stato di successo!",
     "yes": "Sì",
@@ -76,7 +76,7 @@
     "make_admin": "Sia admin!",
 
     "nickname_scf": "Il cambiamento del nome è stato di successo!",
-    
+
     "join_scf": "L'iscrizione è stata di successo!",
 
     "login_required": "Purtroppo devi accedere di nuovo!",
@@ -109,10 +109,17 @@
     "field_empty": "Il campo non può essere vuoto!",
     "num_length": "Devi scriverci 4 numeri!",
     "not_valid_num": "Usa solo numeri!",
-
     "minimal_length": "Devi scriverci almeno {} caratteri!",
     "edit_nickname": "Soprannome nuovo",
     "payment_explanation": "Hai pagato a qualcuno",
-    "expense_explanation": "Hai comprato qualcosa"
+    "expense_explanation": "Hai comprato qualcosa",
+
+    "members_explanation": "Dai un'occhiata ai membri del gruppo e cambia il tuo soprannome",
+    "members_explanation_admin": "Gesti il potere dei membri ed i soprannomi",
+    "modify": "Modificare",
+    "invitation_explanation": "Invita qualcuno al gruppo",
+    "rename_group_explanation": "Rinomina il gruppo se non ti piace il cui nome",
+    "shopping_list_explanation": "Scrivi sulla lista comune",
+    "history_explanation": "Segui e cancella le tue transazioni precedenti"
 
 }

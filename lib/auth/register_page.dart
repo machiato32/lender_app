@@ -232,25 +232,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
               SizedBox(
                 height: 30,
               ),
-//            Padding(
-//              padding: EdgeInsets.only(right: 20, left: 20),
-//              child: TextField(
-//                controller: _passwordReminderController,
-//                decoration: InputDecoration(
-//                  labelText: 'Jelszóemlékeztető',
-//                  enabledBorder: UnderlineInputBorder(
-//                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2),
-//                    //  when the TextFormField in unfocused
-//                  ) ,
-//                  focusedBorder: UnderlineInputBorder(
-//                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-//                  ) ,
-//
-//                ),
-//                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-//                cursorColor: Theme.of(context).colorScheme.secondary,
-//              ),
-//            ),
             ],
           ),
         ),

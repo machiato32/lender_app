@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/main.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
 class CreateGroup extends StatefulWidget {
@@ -25,39 +25,20 @@ class _CreateGroupState extends State<CreateGroup> {
 
   Future<bool> _joinGroup(String groupName, String nickname) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
       Map<String, dynamic> body = {
         'group_name': groupName,
         'currency': 'HUF',
         'member_nickname': nickname
       };
-
-      String encoded = json.encode(body);
       http.Response response =
-          await http.post(APPURL + '/groups', headers: header, body: encoded);
-
-      if (response.statusCode == 201) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        currentGroupName = decoded['group_name'];
-        currentGroupId = decoded['group_id'];
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-          _prefs.setInt('current_group_id', currentGroupId);
-        });
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+          await httpPost(uri: '/groups', body: body, context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      currentGroupName = decoded['group_name'];
+      currentGroupId = decoded['group_id'];
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.setString('current_group_name', currentGroupName);
+        _prefs.setInt('current_group_id', currentGroupId);
+      });
       return response.statusCode == 201;
     } catch (_) {
       throw _;

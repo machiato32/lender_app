@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'member_all_info.dart';
 
@@ -21,35 +21,20 @@ class _GroupMembersState extends State<GroupMembers> {
 
   Future<List<Member>> _getMembers() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        List<Member> members = [];
-        for (var member in decoded['data']['members']) {
-          members.add(Member.fromJson(member));
-        }
-        currentMember =
-            members.firstWhere((member) => member.userId == currentUser);
-        members.remove(currentMember);
-        members.insert(0, currentMember);
-        return members;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      List<Member> members = [];
+      for (var member in decoded['data']['members']) {
+        members.add(Member.fromJson(member));
       }
+      currentMember =
+          members.firstWhere((member) => member.userId == currentUser);
+      members.remove(currentMember);
+      members.insert(0, currentMember);
+      return members;
+
     } catch (_) {
       throw _;
     }

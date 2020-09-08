@@ -14,6 +14,7 @@ import 'dart:developer';
 import 'balances.dart';
 import 'config.dart';
 import 'group_objects.dart';
+import 'http_handler.dart';
 import 'app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
@@ -176,89 +177,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<List<Group>> _getGroups() async {
-    try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      http.Response response =
-          await http.get(APPURL + '/groups', headers: header);
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        List<Group> groups = [];
-        for (var group in decoded['data']) {
-          groups.add(Group(
-              groupName: group['group_name'], groupId: group['group_id']));
-        }
-        return groups;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
-    } catch (_) {
-      throw _;
+    http.Response response = await httpGet(context: context, uri: '/groups');
+    Map<String, dynamic> decoded = jsonDecode(response.body);
+    List<Group> groups = [];
+    for (var group in decoded['data']) {
+      groups.add(Group(
+          groupName: group['group_name'], groupId: group['group_id']));
     }
+    return groups;
   }
 
   Future<String> _getCurrentGroup() async {
-    try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        currentGroupName = decoded['data']['group_name'];
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-        });
-        return currentGroupName;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
-    } catch (_) {
-      throw _;
-    }
+    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
+    Map<String, dynamic> decoded = jsonDecode(response.body);
+    currentGroupName = decoded['data']['group_name'];
+    SharedPreferences.getInstance().then((_prefs) {
+      _prefs.setString('current_group_name', currentGroupName);
+    });
+    return currentGroupName;
   }
 
   Future _logout() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      await http.get(APPURL + '/logout', headers: header);
+      await httpGet(uri: '/logout', context: context);
     } catch (_) {
       throw _;
     }
@@ -538,7 +479,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(
-                          height: 24,
+                          height: 20,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -568,7 +509,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                       fontSize: 18)),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Text(
                           'payment_explanation'.tr(),
@@ -601,7 +542,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(
-                          height: 24,
+                          height: 20,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -630,7 +571,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                       fontSize: 18)),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Text(
                           'expense_explanation'.tr(),
