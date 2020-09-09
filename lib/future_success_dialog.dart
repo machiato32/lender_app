@@ -15,59 +15,71 @@ class FutureSuccessDialog extends StatefulWidget {
   final String dataTrueText;
   final String dataFalseText;
 
-  FutureSuccessDialog({
-    this.dataTrue,
-    this.dataFalse,
-    this.noData,
-    @required this.future,
-    this.onDataFalse,
-    this.onDataTrue,
-    this.onNoData,
-    this.dataTrueText,
-    this.dataFalseText='error'
-  });
+  FutureSuccessDialog(
+      {this.dataTrue,
+      this.dataFalse,
+      this.noData,
+      @required this.future,
+      this.onDataFalse,
+      this.onDataTrue,
+      this.onNoData,
+      this.dataTrueText,
+      this.dataFalseText = 'error'});
+
   @override
   _FutureSuccessDialogState createState() => _FutureSuccessDialogState();
 }
 
 class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
-
   Widget dataTrue, dataFalse, noData;
   Function onDataFalse;
   Function onNoData;
 
-
   @override
   void initState() {
-    onDataFalse=widget.onDataFalse;
-    onNoData=widget.onNoData;
+    onDataFalse = widget.onDataFalse;
+    onNoData = widget.onNoData;
 
-    if(onDataFalse==null){
-      onDataFalse=(){
+    if (onDataFalse == null) {
+      onDataFalse = () {
         Navigator.pop(context);
       };
     }
-    if(onNoData==null){
-      onNoData=(){
+    if (onNoData == null) {
+      onNoData = () {
         Navigator.pop(context);
       };
     }
     super.initState();
   }
 
-  Widget _buildDataTrue(){
-    if(widget.dataTrue==null){
+  Widget _buildDataTrue() {
+    if (widget.dataTrue == null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(child: Text(widget.dataTrueText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
-          SizedBox(height: 15,),
+          Flexible(
+              child: Text(
+            widget.dataTrueText.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(color: Colors.white),
+            textAlign: TextAlign.center,
+          )),
+          SizedBox(
+            height: 15,
+          ),
           FlatButton.icon(
-            icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-            onPressed: (){
+            icon: Icon(Icons.check,
+                color: Theme.of(context).colorScheme.onSecondary),
+            onPressed: () {
               widget.onDataTrue();
             },
-            label: Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+            label: Text(
+              'okay'.tr(),
+              style: Theme.of(context).textTheme.button,
+            ),
             color: Theme.of(context).colorScheme.secondary,
           )
         ],
@@ -76,21 +88,40 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
     return widget.dataTrue;
   }
 
-  Widget _buildDataFalse(){
-    if(widget.dataFalse==null){
+  Widget _buildDataFalse() {
+    if (widget.dataFalse == null) {
       return Container(
-        color: Colors.transparent ,
+        color: Colors.transparent,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(child: Text(widget.dataFalseText.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
-            SizedBox(height: 15,),
+            Flexible(
+                child: Text(
+              widget.dataFalseText.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            )),
+            SizedBox(
+              height: 15,
+            ),
             FlatButton.icon(
-              icon: Icon(Icons.clear, color: Colors.white,),
-              onPressed: (){
+              icon: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+              onPressed: () {
                 onDataFalse();
               },
-              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+              label: Text(
+                'back'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: Colors.white),
+              ),
               color: Colors.red,
             )
           ],
@@ -100,21 +131,40 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
     return widget.dataFalse;
   }
 
-  Widget _buildNoData(AsyncSnapshot snapshot){
-    if(widget.noData==null){
+  Widget _buildNoData(AsyncSnapshot snapshot) {
+    if (widget.noData == null) {
       return Container(
-        color: Colors.transparent ,
+        color: Colors.transparent,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(child: Text(snapshot.error.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,)),
-            SizedBox(height: 15,),
+            Flexible(
+                child: Text(
+              snapshot.error.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            )),
+            SizedBox(
+              height: 15,
+            ),
             FlatButton.icon(
-              icon: Icon(Icons.clear, color: Colors.white,),
-              onPressed: (){
+              icon: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+              onPressed: () {
                 onNoData();
               },
-              label: Text('back'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+              label: Text(
+                'back'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: Colors.white),
+              ),
               color: Colors.red,
             )
           ],
@@ -132,15 +182,15 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
       elevation: 0,
       child: FutureBuilder(
         future: widget.future,
-        builder: (context, snapshot){
-          if(snapshot.connectionState==ConnectionState.done){
-            if(snapshot.hasData){
-              if(snapshot.data){
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              if (snapshot.data) {
                 return _buildDataTrue();
-              }else{
+              } else {
                 return _buildDataFalse();
               }
-            }else{
+            } else {
               return _buildNoData(snapshot);
             }
           }

@@ -6,9 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/main.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+
 class CreateGroup extends StatefulWidget {
   @override
   _CreateGroupState createState() => _CreateGroupState();
@@ -16,43 +17,30 @@ class CreateGroup extends StatefulWidget {
 
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(text: currentUser.split('#')[0][0].toUpperCase()+currentUser.split('#')[0].substring(1));
+  TextEditingController _nicknameController = TextEditingController(
+      text: currentUser.split('#')[0][0].toUpperCase() +
+          currentUser.split('#')[0].substring(1));
 
   var _formKey = GlobalKey<FormState>();
 
   Future<bool> _joinGroup(String groupName, String nickname) async {
-    try{
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+apiToken
-      };
-
+    try {
       Map<String, dynamic> body = {
-        'group_name':groupName,
-        'currency':'HUF',
-        'member_nickname':nickname
+        'group_name': groupName,
+        'currency': 'HUF',
+        'member_nickname': nickname
       };
-
-      String encoded = json.encode(body);
-      http.Response response = await http.post(APPURL+'/groups', headers: header, body: encoded);
-
-      if(response.statusCode==201){
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        currentGroupName=decoded['group_name'];
-        currentGroupId=decoded['group_id'];
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-          _prefs.setInt('current_group_id', currentGroupId);
-        });
-      }else{
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if(error['error']=='Unauthenticated.'){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r)=>false);
-        }
-        throw error['error'];
-      }
-      return response.statusCode==201;
-    }catch(_){
+      http.Response response =
+          await httpPost(uri: '/groups', body: body, context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      currentGroupName = decoded['group_name'];
+      currentGroupId = decoded['group_id'];
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.setString('current_group_name', currentGroupName);
+        _prefs.setInt('current_group_id', currentGroupId);
+      });
+      return response.statusCode == 201;
+    } catch (_) {
       throw _;
     }
   }
@@ -70,7 +58,7 @@ class _CreateGroupState extends State<CreateGroup> {
         ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: (){
+          onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: ListView(
@@ -78,30 +66,39 @@ class _CreateGroupState extends State<CreateGroup> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text('group_name'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                  SizedBox(width: 20,),
+                  Text(
+                    'group_name'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Flexible(
                     child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
+                      validator: (value) {
+                        if (value.isEmpty) {
                           return 'field_empty'.tr();
                         }
-                        if(value.length<1){
+                        if (value.length < 1) {
                           return 'minimal_length'.tr(args: ['1']);
                         }
                         return null;
                       },
                       decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        ) ,
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface),
+                        ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                        ) ,
-
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                        ),
                       ),
                       controller: _groupName,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(20),
@@ -110,18 +107,25 @@ class _CreateGroupState extends State<CreateGroup> {
                   ),
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 children: <Widget>[
-                  Text('nickname_in_group'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-                  SizedBox(width: 20,),
+                  Text(
+                    'nickname_in_group'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Flexible(
                     child: TextFormField(
-                      validator: (value){
-                        if(value.isEmpty){
+                      validator: (value) {
+                        if (value.isEmpty) {
                           return 'field_empty'.tr();
                         }
-                        if(value.length<1){
+                        if (value.length < 1) {
                           return 'minimal_length'.tr(args: ['1']);
                         }
                         return null;
@@ -129,14 +133,19 @@ class _CreateGroupState extends State<CreateGroup> {
                       decoration: InputDecoration(
                         hintText: 'example_nickname'.tr(),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
-                        ) ,
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface),
+                        ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                        ) ,
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                        ),
                       ),
                       controller: _nicknameController,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
                       cursorColor: Theme.of(context).colorScheme.secondary,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(15),
@@ -145,27 +154,31 @@ class _CreateGroupState extends State<CreateGroup> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Center(
                 child: RaisedButton(
-                  child: Text('create_group'.tr(), style: Theme.of(context).textTheme.button),
-                  onPressed: (){
-                    if(_formKey.currentState.validate()){
+                  child: Text('create_group'.tr(),
+                      style: Theme.of(context).textTheme.button),
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
                       String token = _groupName.text;
                       String nickname = _nicknameController.text;
                       showDialog(
                           barrierDismissible: false,
                           context: context,
-                          child:
-                          FutureSuccessDialog(
+                          child: FutureSuccessDialog(
                             future: _joinGroup(token, nickname),
-                            onDataTrue: (){
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage()), (r)=>false);
+                            onDataTrue: () {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MainPage()),
+                                  (r) => false);
                             },
                             dataTrueText: 'creation_scf',
-
-                          )
-                      );
+                          ));
                     }
                   },
                   color: Theme.of(context).colorScheme.secondary,

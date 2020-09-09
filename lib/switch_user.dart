@@ -18,44 +18,41 @@ class _SwitchUserState extends State<SwitchUser> {
   TextEditingController pinController = TextEditingController();
 
   Future<List<String>> getNames() async {
-    try{
-
-      http.Response response = await http.get('http://katkodominik.web.elte.hu/JSON/names');
+    try {
+      http.Response response =
+          await http.get('http://katkodominik.web.elte.hu/JSON/names');
       Map<String, dynamic> response2 = jsonDecode(response.body);
 
       List<String> list = response2['names'].cast<String>();
       list.remove(currentUser);
       return list;
-    }catch(_){
+    } catch (_) {
       throw 'Hiba';
     }
-
   }
 
-  Future<bool> postValidate(int pin, String name) async{
-    Map<String,dynamic> map = {
-      'type':'validate',
-      'name':name,
-      'pin':pin
-    };
+  Future<bool> postValidate(int pin, String name) async {
+    Map<String, dynamic> map = {'type': 'validate', 'name': name, 'pin': pin};
     String encoded = json.encode(map);
 
-    http.Response response = await http.post('http://katkodominik.web.elte.hu/JSON/validate/', body: encoded);
+    http.Response response = await http
+        .post('http://katkodominik.web.elte.hu/JSON/validate/', body: encoded);
 
-    Map<String,dynamic> decoded = jsonDecode(response.body);
+    Map<String, dynamic> decoded = jsonDecode(response.body);
 
-    return (response.statusCode==200 && decoded['valid']);
+    return (response.statusCode == 200 && decoded['valid']);
   }
 
-  Future<SharedPreferences> getPrefs() async{
+  Future<SharedPreferences> getPrefs() async {
     return await SharedPreferences.getInstance();
   }
 
   @override
   void initState() {
     super.initState();
-    names=getNames();
+    names = getNames();
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -64,90 +61,120 @@ class _SwitchUserState extends State<SwitchUser> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(child: Text('Felhasználóváltás', style: Theme.of(context).textTheme.headline6,)),
-            SizedBox(height: 10,),
+            Center(
+                child: Text(
+              'Felhasználóváltás',
+              style: Theme.of(context).textTheme.headline6,
+            )),
+            SizedBox(
+              height: 10,
+            ),
             Center(
               child: FutureBuilder(
                 future: names,
                 builder: (context, snapshot) {
-                  if(snapshot.connectionState==ConnectionState.done){
-                    if(snapshot.hasData){
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
                       return DropdownButton(
-                        hint: Text('Felhasználó', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
+                        hint: Text('Felhasználó',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(fontSize: 25)),
                         value: dropdownValue,
                         onChanged: (String newValue) {
                           setState(() {
-                            dropdownValue=newValue;
+                            dropdownValue = newValue;
                           });
                         },
-                        items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
+                        items: snapshot.data
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value, style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
+                            child: Text(value,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(fontSize: 25)),
                           );
                         }).toList(),
-
                       );
-                    }else{
+                    } else {
                       return InkWell(
                           child: Padding(
                             padding: const EdgeInsets.all(32.0),
                             child: Text(snapshot.error.toString()),
                           ),
-                          onTap: (){
+                          onTap: () {
                             setState(() {
-                              names=null;
-                              names=getNames();
+                              names = null;
+                              names = getNames();
                             });
-                          }
-                      );
+                          });
                     }
                   }
 
                   return CircularProgressIndicator();
-
                 },
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               children: <Widget>[
-                Text('PIN kód', style: Theme.of(context).textTheme.bodyText1,),
-                SizedBox(width: 15,),
+                Text(
+                  'PIN kód',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                SizedBox(
+                  width: 15,
+                ),
                 Flexible(
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: '1234',
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurface),
                         //  when the TextFormField in unfocused
-                      ) ,
+                      ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                      ) ,
-
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2),
+                      ),
                     ),
-                    inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[ \\,\\.-]'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(new RegExp('[ \\,\\.-]'))
+                    ],
                     controller: pinController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).textTheme.bodyText1.color),
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 30,),
-             Center(
-               child: RaisedButton.icon(
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: RaisedButton.icon(
                 color: Theme.of(context).colorScheme.secondary,
-                label: Text('Küldés', style: Theme.of(context).textTheme.button),
-                icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
+                label:
+                    Text('Küldés', style: Theme.of(context).textTheme.button),
+                icon: Icon(Icons.send,
+                    color: Theme.of(context).colorScheme.onSecondary),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  if(pinController.text=='' || dropdownValue==null){
+                  if (pinController.text == '' || dropdownValue == null) {
                     Widget toast = Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 12.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         color: Colors.red,
@@ -155,16 +182,28 @@ class _SwitchUserState extends State<SwitchUser> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.clear, color: Colors.white,),
+                          Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                          ),
                           SizedBox(
                             width: 12.0,
                           ),
-                          Flexible(child: Text("Nem töltötted ki a szükséges mezőket!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
+                          Flexible(
+                              child: Text(
+                                  "Nem töltötted ki a szükséges mezőket!",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .copyWith(color: Colors.white))),
                         ],
                       ),
                     );
                     FlutterToast ft = FlutterToast(context);
-                    ft.showToast(child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
+                    ft.showToast(
+                        child: toast,
+                        toastDuration: Duration(seconds: 2),
+                        gravity: ToastGravity.BOTTOM);
                     return;
                   }
                   int pin = int.parse(pinController.text);
@@ -173,64 +212,99 @@ class _SwitchUserState extends State<SwitchUser> {
                       barrierDismissible: false,
                       context: context,
                       child: Dialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
                         backgroundColor: Colors.transparent,
                         elevation: 0,
                         child: FutureBuilder(
                           future: success,
-                          builder: (context, snapshot){
-                            if(snapshot.hasData){
-                              if(snapshot.data){
-                                getPrefs().then((_prefs){
-                                  currentUser=dropdownValue;
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data) {
+                                getPrefs().then((_prefs) {
+                                  currentUser = dropdownValue;
                                   _prefs.setString('name', dropdownValue);
                                 });
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Flexible(child: Text("A bejelentkezés sikeres volt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                    SizedBox(height: 15,),
+                                    Flexible(
+                                        child: Text(
+                                            "A bejelentkezés sikeres volt!",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(
+                                                    color: Colors.white))),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
                                     FlatButton.icon(
-                                      icon: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                      onPressed: (){
+                                      icon: Icon(Icons.check,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSecondary),
+                                      onPressed: () {
                                         Navigator.pop(context);
                                         Navigator.pop(context);
                                       },
-                                      label: Text('Rendben', style: Theme.of(context).textTheme.button,),
-                                      color: Theme.of(context).colorScheme.secondary,
+                                      label: Text(
+                                        'Rendben',
+                                        style:
+                                            Theme.of(context).textTheme.button,
+                                      ),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     )
                                   ],
                                 );
-                              }else{
+                              } else {
                                 return Container(
-                                  color: Colors.transparent ,
+                                  color: Colors.transparent,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Flexible(child: Text("Hiba történt!", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white))),
-                                      SizedBox(height: 15,),
+                                      Flexible(
+                                          child: Text("Hiba történt!",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1
+                                                  .copyWith(
+                                                      color: Colors.white))),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
                                       FlatButton.icon(
-                                        icon: Icon(Icons.clear, color: Colors.white,),
-                                        onPressed: (){
+                                        icon: Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        label: Text('Vissza', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                        label: Text(
+                                          'Vissza',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .copyWith(color: Colors.white),
+                                        ),
                                         color: Colors.red,
                                       )
                                     ],
                                   ),
                                 );
                               }
-                            }else{
+                            } else {
                               return Center(child: CircularProgressIndicator());
                             }
                           },
                         ),
-                      )
-                  );
+                      ));
                 },
               ),
-             ),
+            ),
           ],
         ),
       ),
