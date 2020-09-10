@@ -119,5 +119,10 @@
     "invitation_explanation": "Invite someone to the group",
     "rename_group_explanation": "Rename the group if you don't like the name",
     "shopping_list_explanation": "Write on the joint shopping list",
-    "history_explanation": "Follow and delete recent transactions"
+    "history_explanation": "Follow and delete recent transactions",
+
+    "pay": "Pay",
+    "who_to_pay": "Who should I pay?",
+    "payments_needed": "Necessary payments",
+    "you_are_good": "You don't need to pay anyone"
 }

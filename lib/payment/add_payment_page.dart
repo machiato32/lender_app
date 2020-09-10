@@ -77,7 +77,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
       http.Response response =
           await http.post(APPURL + '/payments', body: encoded, headers: header);
-
       return response.statusCode == 200;
     } catch (_) {
       throw _;

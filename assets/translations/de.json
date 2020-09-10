@@ -25,7 +25,7 @@
     "new_nickname":"Neuer Spitzname",
     "rename_group":"Gruppe umbenennen",
     "new_name":"Neuer Name",
-    "invitation":"Einladung",
+    "invitation":"Einladen",
     "copied":"Kopiert",
     "members":"Mitglieder",
 
@@ -119,6 +119,11 @@
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
     "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufsliste",
-    "history_explanation": "Verfolge und lösche deine früheren Transaktionen"
+    "history_explanation": "Verfolge und lösche deine früheren Transaktionen",
+
+    "pay": "Zahlen",
+    "who_to_pay": "An wen soll ich zahlen?",
+    "payments_needed": "Nötigen Zahlungen",
+    "you_are_good": "Du musst keinem zahlen"
 
 }

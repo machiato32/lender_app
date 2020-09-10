@@ -177,24 +177,79 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<List<Group>> _getGroups() async {
-    http.Response response = await httpGet(context: context, uri: '/groups');
-    Map<String, dynamic> decoded = jsonDecode(response.body);
-    List<Group> groups = [];
-    for (var group in decoded['data']) {
-      groups.add(Group(
-          groupName: group['group_name'], groupId: group['group_id']));
+    try {
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiToken
+      };
+
+      http.Response response =
+          await http.get(APPURL + '/groups', headers: header);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        List<Group> groups = [];
+        for (var group in decoded['data']) {
+          groups.add(Group(
+              groupName: group['group_name'], groupId: group['group_id']));
+        }
+        return groups;
+      } else {
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if (error['error'] == 'Unauthenticated.') {
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(
+              child: Text('login_required'.tr()),
+              toastDuration: Duration(seconds: 2),
+              gravity: ToastGravity.BOTTOM);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+              (r) => false);
+        }
+        throw error['error'];
+      }
+    } catch (_) {
+      throw _;
     }
-    return groups;
   }
 
   Future<String> _getCurrentGroup() async {
-    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
-    Map<String, dynamic> decoded = jsonDecode(response.body);
-    currentGroupName = decoded['data']['group_name'];
-    SharedPreferences.getInstance().then((_prefs) {
-      _prefs.setString('current_group_name', currentGroupName);
-    });
-    return currentGroupName;
+    try {
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiToken
+      };
+
+      http.Response response = await http.get(
+          APPURL + '/groups/' + currentGroupId.toString(),
+          headers: header);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        currentGroupName = decoded['data']['group_name'];
+        SharedPreferences.getInstance().then((_prefs) {
+          _prefs.setString('current_group_name', currentGroupName);
+        });
+        return currentGroupName;
+      } else {
+        Map<String, dynamic> error = jsonDecode(response.body);
+        if (error['error'] == 'Unauthenticated.') {
+          FlutterToast ft = FlutterToast(context);
+          ft.showToast(
+              child: Text('login_required'.tr()),
+              toastDuration: Duration(seconds: 2),
+              gravity: ToastGravity.BOTTOM);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+              (r) => false);
+        }
+        throw error['error'];
+      }
+    } catch (_) {
+      throw _;
+    }
   }
 
   Future _logout() async {
@@ -612,7 +667,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  Balances(),
+                  Balances(
+                    callback: callback,
+                  ),
                   History(
                     callback: callback,
                   )
