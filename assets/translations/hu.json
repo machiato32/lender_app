@@ -129,6 +129,7 @@
 
     "fulfill_scf": "Az elemet sikeresen levettük a listáról",
     "remove_from_list": "Kipipálva",
-    "add_as_expense": "Írd fel bevásárlásnak"
+    "add_as_expense": "Írd fel bevásárlásnak",
+    "revoke": "Visszavonás"
 
 }

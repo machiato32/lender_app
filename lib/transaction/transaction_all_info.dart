@@ -249,7 +249,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                     },
                     color: Theme.of(context).colorScheme.secondary,
                     label: Text(
-                      'delete'.tr(),
+                      'revoke'.tr(),
                       style: Theme.of(context).textTheme.button,
                     ),
                     icon: Icon(Icons.delete,

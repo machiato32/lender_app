@@ -103,7 +103,7 @@
     "per_person": " Ft/Person",
     "no_amount": "Du hast keine Summe angegeben!",
     "amount_not_negative": "Die Summe darf nicht negativ sein!",
-    "transaction_scf": "Die Transaktion wurde gebucht!",
+    "transaction_scf": "Die Transaktion wurde erfolgreich gebucht!",
 
     "field_empty": "Dieses Feld darf nicht leer sein!",
     "num_length": "4 Ziffern nötig!",
@@ -118,12 +118,17 @@
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufsliste",
+    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufszettel",
     "history_explanation": "Verfolge und lösche deine früheren Transaktionen",
 
     "pay": "Zahlen",
     "who_to_pay": "An wen soll ich zahlen?",
     "payments_needed": "Nötigen Zahlungen",
-    "you_are_good": "Du musst keinem zahlen"
+    "you_are_good": "Du musst keinem zahlen",
+
+    "fulfill_scf": "Das Element wurde erfolgreich von der Liste gestrichen",
+    "remove_from_list": "Abgehakt",
+    "add_as_expense": "Schreibe es als Ausgabe auf",
+    "revoke": "Zurückrufen"
 
 }

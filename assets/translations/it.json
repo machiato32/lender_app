@@ -125,6 +125,11 @@
     "pay": "Pagare",
     "who_to_pay": "A chi dovrei pagare?",
     "payments_needed": "Pagamenti necessari",
-    "you_are_good": "Non dovresti pagare a nessuno"
+    "you_are_good": "Non dovresti pagare a nessuno",
+
+    "fulfill_scf": "L'elemento è stato rimosso dalla lista con succeso! ",
+    "remove_from_list": "Spuntato",
+    "add_as_expense": "Registra come spesa",
+    "revoke": "Revocare"
 
 }
