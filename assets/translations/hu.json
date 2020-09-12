@@ -125,6 +125,10 @@
     "pay": "Fizetés",
     "who_to_pay": "Kinek fizessek?",
     "payments_needed": "Szükséges fizetések",
-    "you_are_good": "Nem kell fizetned senkinek"
+    "you_are_good": "Nem kell fizetned senkinek",
+
+    "fulfill_scf": "Az elemet sikeresen levettük a listáról",
+    "remove_from_list": "Kipipálva",
+    "add_as_expense": "Írd fel bevásárlásnak"
 
 }

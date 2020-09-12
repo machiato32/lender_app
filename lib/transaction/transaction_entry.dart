@@ -194,7 +194,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
                                       Flexible(
                                           child: Text(
                                         note,
-                                        style: style.copyWith(fontSize: 22),
+                                        style: style.copyWith(fontSize: 21),
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                       Flexible(

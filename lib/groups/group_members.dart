@@ -200,7 +200,7 @@ class _MemberEntryState extends State<MemberEntry> {
       boxDecoration = BoxDecoration();
     }
     return Container(
-      height: 70,
+      height: 65,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4),

@@ -4,7 +4,7 @@ import 'group_objects.dart';
 List<PaymentData> paymentsNeeded(List<Member> members){
   List<PaymentData> transactions = new List<PaymentData>();
   List<Member> memberCopy = new List<Member>();
-  if (members.where((member) => member.balance != 0) != null){
+  if (members.where((member) => member.balance != 0).length>0){
     for(Member member in members)
     {
       memberCopy.add(new Member(nickname: member.nickname, userId: member.userId, balance: member.balance));
@@ -33,6 +33,6 @@ List<PaymentData> paymentsNeeded(List<Member> members){
   }
   else
   {
-    return null;
+    return transactions;
   }
 }

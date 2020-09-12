@@ -143,7 +143,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
                                       Flexible(
                                           child: Text(
                                         takerName,
-                                        style: style.copyWith(fontSize: 22),
+                                        style: style.copyWith(fontSize: 21),
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                       Flexible(
