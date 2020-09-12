@@ -15,7 +15,7 @@ class Member{
 
   @override
   String toString() {
-    return nickname+': '+balance.toString();
+    return nickname;
   }
 
   Map toJson(){
