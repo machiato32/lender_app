@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -9,12 +8,12 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
-class ChangePin extends StatefulWidget {
+class ChangePassword extends StatefulWidget {
   @override
-  _ChangePinState createState() => _ChangePinState();
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ChangePinState extends State<ChangePin> {
+class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController _oldPasswordController = TextEditingController();
   TextEditingController _newPasswordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();

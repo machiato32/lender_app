@@ -20,7 +20,7 @@ class Balances extends StatefulWidget {
 }
 
 class _BalancesState extends State<Balances> {
-  Future<List<Member>> money;
+  Future<List<Member>> _money;
 
   Future<bool> _postPayment(double amount, String note, String takerId) async {
     try {
@@ -47,7 +47,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount, 'Auto', payment.takerId)){
+      if(await _postPayment(payment.amount, 'Auto', payment.takerUsername)){
         continue;
       }
     }
@@ -63,7 +63,8 @@ class _BalancesState extends State<Balances> {
 
       http.Response response = await http.get(
           APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
+          headers: header
+      );
 
       if (response.statusCode == 200) {
         Map<String, dynamic> response2 = jsonDecode(response.body);
@@ -72,7 +73,10 @@ class _BalancesState extends State<Balances> {
           members.add(Member(
               nickname: member['nickname'],
               balance: member['balance'] * 1.0,
-              userId: member['user_id']));
+              username: member['username'],
+              memberId: member['user_id']
+            )
+          );
         }
         return members;
       } else {
@@ -93,15 +97,15 @@ class _BalancesState extends State<Balances> {
   @override
   void initState() {
     super.initState();
-    money = null;
-    money = _getMoney();
+    _money = null;
+    _money = _getMoney();
   }
 
   @override
   void didUpdateWidget(Balances oldWidget) {
     super.didUpdateWidget(oldWidget);
-    money = null;
-    money = _getMoney();
+    _money = null;
+    _money = _getMoney();
   }
 
   @override
@@ -121,7 +125,7 @@ class _BalancesState extends State<Balances> {
             SizedBox(height: 40),
             Center(
               child: FutureBuilder(
-                future: money,
+                future: _money,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
@@ -130,7 +134,7 @@ class _BalancesState extends State<Balances> {
                           Column(children: _generateBalances(snapshot.data)),
                           RaisedButton(
                             onPressed: (){
-                              List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUser).toList();
+                              List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
@@ -189,8 +193,8 @@ class _BalancesState extends State<Balances> {
                           ),
                           onTap: () {
                             setState(() {
-                              money = null;
-                              money = _getMoney();
+                              _money = null;
+                              _money = _getMoney();
                             });
                           });
                     }
@@ -315,7 +319,7 @@ class _BalancesState extends State<Balances> {
 
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
-      if (member.userId == currentUser) {
+      if (member.memberId == currentUserId) {
         TextStyle style = (Theme.of(context).brightness == Brightness.dark)
             ? Theme.of(context).textTheme.bodyText1
             : Theme.of(context).textTheme.button;

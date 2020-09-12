@@ -24,7 +24,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   var _nicknameFormKey = GlobalKey<FormState>();
   FocusNode _nicknameFocus = FocusNode();
 
-  Future<bool> _changeAdmin(String memberId, bool isAdmin) async {
+  Future<bool> _changeAdmin(int memberId, bool isAdmin) async {
     try {
       Map<String, String> header = {
         "Content-Type": "application/json",
@@ -55,14 +55,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     }
   }
 
-  Future<bool> _updateNickname(String nickname, String userToChange) async {
+  Future<bool> _updateNickname(String nickname, int memberId) async {
     try {
       Map<String, String> header = {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + apiToken
       };
       Map<String, dynamic> body = {
-        "member_id": userToChange,
+        "member_id": memberId,
         "nickname": nickname
       };
 
@@ -113,7 +113,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               Text(' - '),
               Flexible(
                   child: Text(
-                widget.member.userId,
+                widget.member.username,
                 style: Theme.of(context).textTheme.bodyText1,
               )),
             ],
@@ -162,7 +162,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       barrierDismissible: false,
                       context: context,
                       child: FutureSuccessDialog(
-                        future: _changeAdmin(widget.member.userId, value),
+                        future: _changeAdmin(widget.member.memberId, value),
                         dataTrueText: 'admin_scf',
                         onDataTrue: () {
                           Navigator.pop(context);
@@ -174,7 +174,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
           Center(
             child: Visibility(
               visible: widget.isCurrentUserAdmin ||
-                  widget.member.userId == currentUser,
+                  widget.member.memberId == currentUserId,
               child: RaisedButton.icon(
                 onPressed: () {
                   showDialog(
@@ -199,10 +199,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                             focusNode: _nicknameFocus,
                             controller: _nicknameController,
                             decoration: InputDecoration(
-                              hintText: widget.member.userId
+                              hintText: widget.member.username
                                       .split('#')[0][0]
                                       .toUpperCase() +
-                                  widget.member.userId
+                                  widget.member.username
                                       .split('#')[0]
                                       .substring(1),
                               labelText: 'nickname'.tr(),
@@ -247,7 +247,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                     context: context,
                                     child: FutureSuccessDialog(
                                       future: _updateNickname(
-                                          nickname, widget.member.userId),
+                                          nickname, widget.member.memberId),
                                       onDataTrue: () {
                                         _nicknameController.text = '';
                                         Navigator.pop(context);

@@ -10,7 +10,8 @@ import 'package:csocsort_szamla/config.dart';
 class TransactionData {
   String type;
   DateTime updatedAt;
-  String buyerId, buyerNickname;
+  String buyerUsername, buyerNickname;
+  int buyerId;
   List<Member> receivers;
   double totalAmount;
   int transactionId;
@@ -19,8 +20,9 @@ class TransactionData {
   TransactionData(
       {this.type,
       this.updatedAt,
-      this.buyerId,
+      this.buyerUsername,
       this.buyerNickname,
+      this.buyerId,
       this.receivers,
       this.totalAmount,
       this.transactionId,
@@ -34,6 +36,7 @@ class TransactionData {
         updatedAt: json['data']['updated_at'] == null
             ? DateTime.now()
             : DateTime.parse(json['data']['updated_at']).toLocal(),
+        buyerUsername: json['data']['buyer_username'],
         buyerId: json['data']['buyer_id'],
         buyerNickname: json['data']['buyer_nickname'],
         totalAmount: json['data']['total_amount'] * 1.0,
@@ -132,7 +135,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       }
       amount = widget.data.totalAmount.toString();
       selfAmount = (-widget.data.receivers
-              .firstWhere((member) => member.userId == currentUser)
+              .firstWhere((member) => member.memberId == currentUserId)
               .balance)
           .toString();
     } else if (widget.data.type == 'received') {
@@ -142,7 +145,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       dateColor = Theme.of(context).colorScheme.surface;
       names = widget.data.buyerNickname;
       amount = (-widget.data.receivers
-              .firstWhere((element) => element.userId == currentUser)
+              .firstWhere((element) => element.memberId == currentUserId)
               .balance)
           .toString();
       boxDecoration = BoxDecoration();

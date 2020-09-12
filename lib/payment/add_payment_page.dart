@@ -20,7 +20,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
   Member selectedMember;
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-  Future<List<Member>> names;
+  Future<List<Member>> _names;
 
   var _formKey = GlobalKey<FormState>();
 
@@ -39,10 +39,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         Map<String, dynamic> response2 = jsonDecode(response.body);
         List<Member> members = [];
         for (var member in response2['data']['members']) {
-          members.add(Member(
-              nickname: member['nickname'],
-              balance: member['balance'] * 1.0,
-              userId: member['user_id']));
+          if(member['user_id']!=currentUserId){
+            members.add(Member(
+                nickname: member['nickname'],
+                balance: member['balance'] * 1.0,
+                memberId: member['user_id']
+            )
+            );
+          }
         }
         return members;
       } else {
@@ -56,7 +60,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         throw error['error'];
       }
     } catch (_) {
-      throw 'Hiba';
+      throw _;
     }
   }
 
@@ -71,12 +75,16 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         'group': currentGroupId,
         'amount': amount,
         'note': note,
-        'taker_id': toMember.userId
+        'taker_id': toMember.memberId
       };
       String encoded = json.encode(map);
 
       http.Response response =
           await http.post(APPURL + '/payments', body: encoded, headers: header);
+      if(response.statusCode!=200){
+        Map<String, dynamic> error =jsonDecode(response.body);
+        throw error['error'];
+      }
       return response.statusCode == 200;
     } catch (_) {
       throw _;
@@ -86,7 +94,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
   @override
   void initState() {
     super.initState();
-    names = _getNames();
+    _names = _getNames();
   }
 
   @override
@@ -278,7 +286,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                       Divider(),
                       Center(
                         child: FutureBuilder(
-                          future: names,
+                          future: _names,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
@@ -327,7 +335,10 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       child: Text(snapshot.error.toString()),
                                     ),
                                     onTap: () {
-                                      setState(() {});
+                                      setState(() {
+                                        _names=null;
+                                        _names=_getNames();
+                                      });
                                     });
                               }
                             }

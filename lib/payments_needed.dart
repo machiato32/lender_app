@@ -7,7 +7,7 @@ List<PaymentData> paymentsNeeded(List<Member> members){
   if (members.where((member) => member.balance != 0).length>0){
     for(Member member in members)
     {
-      memberCopy.add(new Member(nickname: member.nickname, userId: member.userId, balance: member.balance));
+      memberCopy.add(new Member(nickname: member.nickname, username: member.username, balance: member.balance));
     }
     do
     {
@@ -16,13 +16,13 @@ List<PaymentData> paymentsNeeded(List<Member> members){
       var maxPerson = memberCopy[memberCopy.length - 1];
       if (maxPerson.balance > minPerson.balance.abs())
       {
-        transactions.add(new PaymentData(payerId: minPerson.userId, payerNickname: minPerson.nickname, takerId: maxPerson.userId, takerNickname: maxPerson.nickname, amount: minPerson.balance.abs()));
+        transactions.add(new PaymentData(payerUsername: minPerson.username, payerNickname: minPerson.nickname, takerUsername: maxPerson.username, takerNickname: maxPerson.nickname, amount: minPerson.balance.abs()));
         maxPerson.balance -= minPerson.balance.abs();
         minPerson.balance = 0;
       }
       else
       {
-        transactions.add(new PaymentData(payerId: minPerson.userId, payerNickname: minPerson.nickname, takerId: maxPerson.userId, takerNickname: maxPerson.nickname, amount: maxPerson.balance.abs()));
+        transactions.add(new PaymentData(payerUsername: minPerson.username, payerNickname: minPerson.nickname, takerUsername: maxPerson.username, takerNickname: maxPerson.nickname, amount: maxPerson.balance.abs()));
         minPerson.balance += maxPerson.balance;
         maxPerson.balance = 0;
       }

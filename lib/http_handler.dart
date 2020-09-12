@@ -7,13 +7,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'auth/login_or_register_page.dart';
 import 'config.dart';
 
-Map<String, String> header = {
-  "Content-Type": "application/json",
-  "Authorization": "Bearer " + apiToken
-};
+
 
 Future<http.Response> httpGet({@required BuildContext context, @required String uri}) async {
   try {
+    Map<String, String> header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + apiToken
+    };
     http.Response response = await http.get(APPURL + uri, headers: header);
 
     if (response.statusCode<300 && response.statusCode>=200) {
@@ -40,6 +41,10 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
 
 Future<http.Response> httpPost({@required BuildContext context, @required String uri, @required Map<String, dynamic> body}) async {
   try {
+    Map<String, String> header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + apiToken
+    };
     String bodyEncoded = json.encode(body);
     http.Response response = await http.post(APPURL + uri, headers: header, body: bodyEncoded);
 
@@ -67,6 +72,10 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
 
 Future<http.Response> httpPut({@required BuildContext context, @required String uri, @required Map<String, dynamic> body}) async {
   try {
+    Map<String, String> header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + apiToken
+    };
     String bodyEncoded = json.encode(body);
     http.Response response = await http.put(APPURL + uri, headers: header, body: bodyEncoded);
 

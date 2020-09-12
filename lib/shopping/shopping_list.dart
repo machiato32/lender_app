@@ -16,12 +16,14 @@ import 'package:csocsort_szamla/future_success_dialog.dart';
 class ShoppingRequestData {
   int requestId;
   String name;
-  String requesterId, requesterNickname;
+  String requesterUsername, requesterNickname;
+  int requesterId;
   DateTime updatedAt;
 
   ShoppingRequestData(
       {this.updatedAt,
       this.requesterId,
+      this.requesterUsername,
       this.name,
       this.requestId,
       this.requesterNickname});
@@ -30,6 +32,7 @@ class ShoppingRequestData {
     return ShoppingRequestData(
       requestId: json['request_id'],
       requesterId: json['requester_id'],
+      requesterUsername: json['requester_username'],
       requesterNickname: json['requester_nickname'],
       name: json['name'],
       updatedAt: DateTime.parse(json['updated_at']).toLocal(),
@@ -207,7 +210,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   Theme.of(context).textTheme.bodyText1.color),
                           cursorColor: Theme.of(context).colorScheme.secondary,
                           inputFormatters: [
-                            LengthLimitingTextInputFormatter(20)
+                            LengthLimitingTextInputFormatter(30)
                           ],
                         ),
                       ),
@@ -319,9 +322,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   @override
   Widget build(BuildContext context) {
     name = widget.data.name;
-    user = widget.data.requesterId;
+    user = widget.data.requesterUsername;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-    if (widget.data.requesterId == currentUser) {
+    if (widget.data.requesterId == currentUserId) {
       style = (Theme.of(context).brightness == Brightness.dark)
           ? Theme.of(context).textTheme.bodyText1
           : Theme.of(context).textTheme.button;
@@ -354,19 +357,19 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       secondaryBackground: Container(
         child: Align(
           alignment: Alignment.centerRight,
-          child: Icon(widget.data.requesterId != currentUser?Icons.done:Icons.delete,
+          child: Icon(widget.data.requesterId != currentUserId?Icons.done:Icons.delete,
             size: 30, color: Theme.of(context).textTheme.bodyText1.color,
           )
         ),
       ),
       background: Align(
           alignment: Alignment.centerLeft,
-          child: Icon(widget.data.requesterId != currentUser?Icons.attach_money:Icons.delete,
+          child: Icon(widget.data.requesterId != currentUserId?Icons.attach_money:Icons.delete,
             size: 30, color: Theme.of(context).textTheme.bodyText1.color,
           )
       ),
       onDismissed: (direction){
-        if(widget.data.requesterId != currentUser){
+        if(widget.data.requesterId != currentUserId){
           showDialog(
               barrierDismissible: false,
               context: context,

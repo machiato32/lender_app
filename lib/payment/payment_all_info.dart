@@ -122,7 +122,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == currentUser,
+            visible: widget.data.payerId == currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

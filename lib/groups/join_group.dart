@@ -26,8 +26,7 @@ class JoinGroup extends StatefulWidget {
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(
-      text: currentUser.split('#')[0][0].toUpperCase() +
-          currentUser.split('#')[0].substring(1));
+      text: currentUsername[0].toUpperCase()+currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
 
@@ -46,17 +45,11 @@ class _JoinGroupState extends State<JoinGroup> {
 
   Future<bool> _joinGroup(String token, String nickname) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
 
       Map<String, dynamic> body = {
         'invitation_token': token,
         'nickname': nickname
       };
-
-      String encoded = json.encode(body);
       http.Response response =
           await httpPost(uri: '/join', context: context, body: body);
 
@@ -131,7 +124,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                     height: 5,
                                   ),
                                   Text(
-                                    currentUser,
+                                    currentUsername,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText1
@@ -174,7 +167,7 @@ class _JoinGroupState extends State<JoinGroup> {
                         ),
                         onTap: () {
                           _logout();
-                          currentUser = null;
+                          currentUsername = null;
                           currentGroupId = null;
                           currentGroupName = null;
                           apiToken = null;

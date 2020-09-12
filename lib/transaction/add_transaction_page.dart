@@ -62,9 +62,12 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         List<Member> members = [];
         for (var member in response2['data']['members']) {
           members.add(Member(
-              nickname: member['nickname'],
-              balance: member['balance'] * 1.0,
-              userId: member['user_id']));
+            nickname: member['nickname'],
+            balance: member['balance'] * 1.0,
+            username: member['username'],
+            memberId: member['user_id']
+          )
+          );
         }
         return members;
       } else {
@@ -279,7 +282,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                               if (widget.type == ExpenseType.fromShopping) {
                                 checkboxBool[(snapshot.data as List<Member>)
                                         .firstWhere((member) =>
-                                            member.userId ==
+                                            member.username ==
                                             widget.shoppingData.requesterId)] =
                                     true;
                               }

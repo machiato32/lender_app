@@ -134,7 +134,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.requesterId == currentUser,
+            visible: widget.data.requesterId == currentUserId,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,7 +225,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.data.requesterId != currentUser,
+            visible: widget.data.requesterId != currentUserId,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
