@@ -7,10 +7,10 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/group_objects.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 Random random = Random();
 
@@ -48,38 +48,22 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
   Future<List<Member>> _getNames() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context);
 
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> response2 = jsonDecode(response.body);
-        List<Member> members = [];
-        for (var member in response2['data']['members']) {
-          members.add(Member(
-            nickname: member['nickname'],
-            balance: member['balance'] * 1.0,
-            username: member['username'],
-            memberId: member['user_id']
-          )
-          );
-        }
-        return members;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
+      Map<String, dynamic> response2 = jsonDecode(response.body);
+      List<Member> members = [];
+      for (var member in response2['data']['members']) {
+        members.add(Member(
+          nickname: member['nickname'],
+          balance: member['balance'] * 1.0,
+          username: member['username'],
+          memberId: member['user_id']
+        ));
       }
+      return members;
+
     } catch (_) {
       throw _;
     }
@@ -88,34 +72,17 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   Future<bool> _postTransaction(
       List<Member> members, double amount, String name) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      Map<String, dynamic> map = {
+      Map<String, dynamic> body = {
         "name": name,
         "group": currentGroupId,
         "amount": amount,
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      String encoded = json.encode(map);
+      await httpPost(uri: '/transactions',
+          body: body, context: context);
+      return true;
 
-      http.Response response = await http.post(APPURL + '/transactions',
-          body: encoded, headers: header);
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }

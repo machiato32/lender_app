@@ -100,3 +100,33 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
     throw _;
   }
 }
+
+Future<http.Response> httpDelete({@required BuildContext context, @required String uri}) async {
+  try {
+    Map<String, String> header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + apiToken
+    };
+    http.Response response = await http.delete(APPURL + uri, headers: header);
+
+    if (response.statusCode<300 && response.statusCode>=200) {
+      return response;
+    } else {
+      Map<String, dynamic> error = jsonDecode(response.body);
+      if (error['error'] == 'Unauthenticated.') {
+        FlutterToast ft = FlutterToast(context);
+        ft.showToast(
+            child: Text('login_required'.tr()),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+                (r) => false);
+      }
+      throw error['error'];
+    }
+  } catch (_) {
+    throw _;
+  }
+}

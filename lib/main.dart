@@ -199,6 +199,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future _logout() async {
     try {
+      currentUserId = null;
+      currentUsername = null;
+      currentGroupId = null;
+      currentGroupName = null;
+      apiToken = null;
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.remove('current_user_id');
+        _prefs.remove('current_group_name');
+        _prefs.remove('current_group_id');
+        _prefs.remove('current_username');
+        _prefs.remove('api_token');
+      });
       await httpPost(uri: '/logout', context: context, body: {});
     } catch (_) {
       throw _;
@@ -422,19 +434,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               onTap: () {
                 _logout();
-                currentUserId = null;
-                currentUsername = null;
-                currentGroupId = null;
-                currentGroupName = null;
-                apiToken = null;
-                SharedPreferences.getInstance().then((_prefs) {
-                  _prefs.remove('current_user_id');
-                  _prefs.remove('current_group_name');
-                  _prefs.remove('current_group_id');
-                  _prefs.remove('current_username');
-                  _prefs.remove('api_token');
-                });
-
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

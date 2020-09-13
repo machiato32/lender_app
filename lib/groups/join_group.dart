@@ -32,12 +32,19 @@ class _JoinGroupState extends State<JoinGroup> {
 
   Future _logout() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      await http.get(APPURL + '/logout', headers: header);
+      currentUsername = null;
+      currentUserId = null;
+      currentGroupId = null;
+      currentGroupName = null;
+      apiToken = null;
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.remove('current_group_name');
+        _prefs.remove('current_group_id');
+        _prefs.remove('current_username');
+        _prefs.remove('current_user_id');
+        _prefs.remove('api_token');
+      });
+      await httpPost(context: context, uri: '/logout', body: {});
     } catch (_) {
       throw _;
     }
@@ -167,22 +174,12 @@ class _JoinGroupState extends State<JoinGroup> {
                         ),
                         onTap: () {
                           _logout();
-                          currentUsername = null;
-                          currentGroupId = null;
-                          currentGroupName = null;
-                          apiToken = null;
-                          SharedPreferences.getInstance().then((_prefs) {
-                            _prefs.remove('current_group_name');
-                            _prefs.remove('current_group_id');
-                            _prefs.remove('current_user');
-                            _prefs.remove('api_token');
-                          });
-
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => LoginOrRegisterPage()),
-                              (r) => false);
+                              (r) => false
+                          );
                         },
                       ),
                     ],

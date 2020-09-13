@@ -5,13 +5,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -54,37 +53,18 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<List<ShoppingRequestData>> _getShoppingList() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      http.Response response = await http.get(
-          APPURL + '/requests?group=' + currentGroupId.toString(),
-          headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
+      http.Response response = await httpGet(
+          uri: '/requests?group=' + currentGroupId.toString(),
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
 
-        List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
-        decoded['data']['active'].forEach((element) {
-          shopping.add(ShoppingRequestData.fromJson(element));
-        });
-        shopping = shopping.reversed.toList();
-        return shopping;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
+      decoded['data']['active'].forEach((element) {
+        shopping.add(ShoppingRequestData.fromJson(element));
+      });
+      shopping = shopping.reversed.toList();
+      return shopping;
+
     } catch (_) {
       throw _;
     }
@@ -92,31 +72,11 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postShoppingRequest(String name) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      String encodedBody = jsonEncode(body);
-      http.Response response = await http.post(APPURL + '/requests',
-          headers: header, body: encodedBody);
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      await httpPost(uri: '/requests',
+          context: context, body: body);
+      return true;
+
     } catch (_) {
       throw _;
     }
@@ -566,29 +526,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      http.Response response = await http
-          .put(APPURL + '/requests/' + id.toString(), headers: header);
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
-        throw error['error'];
-      }
+      await httpPut(uri:APPURL + '/requests/' + id.toString(), context: context, body: {});
+      return true;
+
     } catch (_) {
       throw _;
     }
@@ -596,29 +536,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      http.Response response = await http
-          .delete(APPURL + '/requests/' + id.toString(), headers: header);
-      if (response.statusCode == 204) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
-        throw error['error'];
-      }
+      await httpDelete(uri: '/requests/' + id.toString(), context: context);
+      return true;
+
     } catch (_) {
       throw _;
     }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/group_objects.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class MemberAllInfo extends StatefulWidget {
   final Member member;
@@ -26,30 +24,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   Future<bool> _changeAdmin(int memberId, bool isAdmin) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
       Map<String, dynamic> body = {"member_id": memberId, "admin": isAdmin};
 
-      String bodyEncoded = jsonEncode(body);
+      await httpPut(
+          uri: '/groups/' + currentGroupId.toString() + '/admins',
+          context: context,
+          body: body);
+      return true;
 
-      http.Response response = await http.put(
-          APPURL + '/groups/' + currentGroupId.toString() + '/admins',
-          headers: header,
-          body: bodyEncoded);
-      if (response.statusCode == 204) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }
@@ -57,32 +39,16 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   Future<bool> _updateNickname(String nickname, int memberId) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
       Map<String, dynamic> body = {
         "member_id": memberId,
         "nickname": nickname
       };
+      await httpPut(
+          uri: '/groups/' + currentGroupId.toString() + '/members',
+          context: context,
+          body: body);
+      return true;
 
-      String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.put(
-          APPURL + '/groups/' + currentGroupId.toString() + '/members',
-          headers: header,
-          body: bodyEncoded);
-      if (response.statusCode == 204) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }

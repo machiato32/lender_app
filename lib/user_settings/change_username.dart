@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class ChangeUsername extends StatefulWidget {
   @override
@@ -21,29 +20,18 @@ class _ChangeUsernameState extends State<ChangeUsername> {
 
   Future<bool> _updateUsername(String newUsername) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      Map<String, dynamic> map = {
+      Map<String, dynamic> body = {
         'new_username': newUsername
       };
 
-      String encoded = jsonEncode(map);
+      await httpPost(uri: '/change_username',
+          context: context, body: body);
+      SharedPreferences.getInstance().then((prefs){
+        prefs.setString('current_username', newUsername);
+      });
+      currentUsername=newUsername;
+      return true;
 
-      http.Response response = await http.post(APPURL + '/change_username',
-          headers: header, body: encoded);
-      if (response.statusCode == 204) {
-        SharedPreferences.getInstance().then((prefs){
-          prefs.setString('current_username', newUsername);
-        });
-        currentUsername=newUsername;
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }

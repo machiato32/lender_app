@@ -10,6 +10,7 @@ import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -179,49 +180,39 @@ class _LoginRouteState extends State<LoginRoute> {
 
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
       http.Response response =
-          await http.get(APPURL + '/groups', headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        List<Group> groups = [];
-        for (var group in decoded['data']) {
-          groups.add(Group(
-              groupName: group['group_name'], groupId: group['group_id']));
-        }
-        if (groups.length > 0) {
-          if (groups
-                  .where((group) => group.groupId == lastActiveGroup)
-                  .toList()
-                  .length !=
-              0) {
-            currentGroupName = groups
-                .firstWhere((group) => group.groupId == lastActiveGroup)
-                .groupName;
-            currentGroupId = lastActiveGroup;
-            SharedPreferences.getInstance().then((_prefs) {
-              _prefs.setString('current_group_name', currentGroupName);
-              _prefs.setInt('current_group_id', currentGroupId);
-            });
-            return true;
-          }
-          currentGroupName = groups[0].groupName;
-          currentGroupId = groups[0].groupId;
+          await httpGet(uri: '/groups', context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      List<Group> groups = [];
+      for (var group in decoded['data']) {
+        groups.add(Group(
+            groupName: group['group_name'], groupId: group['group_id']));
+      }
+      if (groups.length > 0) {
+        if (groups
+                .where((group) => group.groupId == lastActiveGroup)
+                .toList()
+                .length !=0) {
+          currentGroupName = groups
+              .firstWhere((group) => group.groupId == lastActiveGroup)
+              .groupName;
+          currentGroupId = lastActiveGroup;
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
           });
           return true;
         }
-        return false;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        throw error['error'];
+        currentGroupName = groups[0].groupName;
+        currentGroupId = groups[0].groupId;
+        SharedPreferences.getInstance().then((_prefs) {
+          _prefs.setString('current_group_name', currentGroupName);
+          _prefs.setInt('current_group_id', currentGroupId);
+        });
+        return true;
       }
+      return false;
+
     } catch (_) {
       throw _;
     }
