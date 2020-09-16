@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
@@ -233,6 +234,10 @@ class _LoginRouteState extends State<LoginRoute> {
         apiToken = decoded['data']['api_token'];
         currentUserId = decoded['data']['id'];
         currentUsername = decoded['data']['username'];
+
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
+        firebaseAnalytics.setUserId('1');
+        // firebaseAnalytics.setUserProperty(name: 'userId', value: '1');
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);

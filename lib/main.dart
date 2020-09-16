@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
@@ -9,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -24,6 +26,21 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
+
+
+Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+  if (message.containsKey('data')) {
+    // Handle data message
+    final dynamic data = message['data'];
+  }
+
+  if (message.containsKey('notification')) {
+    // Handle notification message
+    final dynamic notification = message['notification'];
+  }
+
+  // Or do other work.
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +65,22 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  _firebaseMessaging.configure(
+    onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      // _showItemDialog(message);
+    },
+    onBackgroundMessage: myBackgroundMessageHandler,
+    onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+      // _navigateToItemDetail(message);
+    },
+    onResume: (Map<String, dynamic> message) async {
+      print("onResume: $message");
+      // _navigateToItemDetail(message);
+    },
+  );
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
@@ -165,7 +198,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   SharedPreferences prefs;
-  Future<List<Group>> groups;
+  Future<List<Group>> _groups;
 
   TabController _tabController;
   int _selectedIndex = 0;
@@ -197,6 +230,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return currentGroupName;
   }
 
+  Future<double> _getSumBalance() async {
+    try{
+      http.Response response = await httpGet(context: context, uri: '/user');
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['total_balance']*1.0;
+    }catch(_){
+      throw _;
+    }
+  }
+  
   Future _logout() async {
     try {
       currentUserId = null;
@@ -249,14 +292,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    groups = null;
-    groups = _getGroups();
+    _groups = null;
+    _groups = _getGroups();
   }
 
   void _handleDrawer() {
     _scaffoldKey.currentState.openDrawer();
-    groups = null;
-    groups = _getGroups();
+    _groups = null;
+    _groups = _getGroups();
   }
 
   void callback() {
@@ -320,11 +363,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          child: Image(
-                            image: AssetImage('assets/dodo_color.png'),
-                          ),
-                        ),
+                        // Expanded(
+                        //   child: Image(
+                        //     image: AssetImage('assets/dodo_color.png'),
+                        //   ),
+                        // ),
                         Text(
                           'LENDER',
                           style: Theme.of(context)
@@ -333,18 +376,40 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .copyWith(letterSpacing: 2.5),
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
                         Text(
                           currentUsername,
                           style: Theme.of(context).textTheme.bodyText1.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                         ),
+                        FutureBuilder(
+                          future: _getSumBalance(),
+                          builder: (context, snapshot){
+                            if(snapshot.connectionState==ConnectionState.done){
+                              if(snapshot.hasData){
+                                return Text(
+                                  'Σ: '+snapshot.data.toString(),
+                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontSize: 16
+                                  ),
+                                );
+                              }
+                            }
+                            return Text('Σ: ...',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontSize: 16
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
                   ),
                   FutureBuilder(
-                    future: groups,
+                    future: _groups,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
@@ -366,8 +431,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               ),
                               onTap: () {
                                 setState(() {
-                                  groups = null;
-                                  groups = _getGroups();
+                                  _groups = null;
+                                  _groups = _getGroups();
                                 });
                               });
                         }

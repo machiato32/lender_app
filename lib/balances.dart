@@ -20,7 +20,7 @@ class Balances extends StatefulWidget {
 class _BalancesState extends State<Balances> {
   Future<List<Member>> _money;
 
-  Future<bool> _postPayment(double amount, String note, String takerId) async {
+  Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
 
       Map<String, dynamic> body = {
@@ -39,7 +39,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount, 'Auto', payment.takerUsername)){
+      if(await _postPayment(payment.amount, 'Auto', payment.takerId)){
         continue;
       }
     }
