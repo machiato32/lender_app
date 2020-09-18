@@ -132,5 +132,7 @@
     "revoke": "Revoke",
 
     "change_username_scf": "The change was successful.",
-    "change_username": "Change username"
+    "change_username": "Change username",
+
+    "hi": "Hi"
 }

@@ -133,6 +133,8 @@
     "revoke": "Visszavonás",
 
     "change_username_scf": "A felhasználónév megváltoztatása sikeres volt.",
-    "change_username": "Felhasználónév megváltoztatása"
+    "change_username": "Felhasználónév megváltoztatása",
+
+    "hi": "Szia"
 
 }

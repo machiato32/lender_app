@@ -228,7 +228,6 @@ class _LoginRouteState extends State<LoginRoute> {
       Map<String, String> header = {
         "Content-Type": "application/json"
       };
-
       String bodyEncoded = jsonEncode(body);
       http.Response response = await http.post(APPURL + '/login',
           headers: header, body: bodyEncoded);

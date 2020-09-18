@@ -399,11 +399,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        // Expanded(
-                        //   child: Image(
-                        //     image: AssetImage('assets/dodo_color.png'),
-                        //   ),
-                        // ),
+                        Expanded(
+                          child: Image(
+                            image: AssetImage('assets/dodo_color.png'),
+                          ),
+                        ),
                         Text(
                           'LENDER',
                           style: Theme.of(context)
@@ -411,36 +411,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .headline6
                               .copyWith(letterSpacing: 2.5),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         Text(
-                          currentUsername,
+                          'hi'.tr()+' '+currentUsername+'!',
                           style: Theme.of(context).textTheme.bodyText1.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                         ),
-                        FutureBuilder(
-                          future: _getSumBalance(),
-                          builder: (context, snapshot){
-                            if(snapshot.connectionState==ConnectionState.done){
-                              if(snapshot.hasData){
-                                return Text(
-                                  'Σ: '+snapshot.data.toString(),
-                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                    fontSize: 16
-                                  ),
-                                );
-                              }
-                            }
-                            return Text('Σ: ...',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  fontSize: 16
-                              ),
-                            );
-                          },
-                        )
                       ],
                     ),
                   ),
@@ -509,6 +484,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
+
+            FutureBuilder(
+              future: _getSumBalance(),
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return Text(
+                      'Σ: '+snapshot.data.toString(),
+                      style: Theme.of(context).textTheme.bodyText1
+                    );
+                  }
+                }
+                return Text('Σ: ...',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 16
+                  ),
+                );
+              },
+            ),
             Divider(),
             ListTile(
               leading: Icon(
@@ -526,7 +521,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             ListTile(
               leading: Icon(
-                Icons.account_circle,
+                Icons.exit_to_app,
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(

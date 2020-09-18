@@ -132,6 +132,8 @@
     "revoke": "Zurückrufen",
 
     "change_username_scf": "Die Änderung war erfolgreich.",
-    "change_username": "Benutzername ändern"
+    "change_username": "Benutzername ändern",
+
+    "hi": "Hallo"
 
 }
