@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class History extends StatefulWidget {
   final Function callback;
@@ -25,32 +25,17 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   Future<List<TransactionData>> _getTransactions() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
+      http.Response response = await httpGet(
+          uri: '/transactions?group=' + currentGroupId.toString(),
+          context: context);
 
-      http.Response response = await http.get(
-          APPURL + '/transactions?group=' + currentGroupId.toString(),
-          headers: header);
-
-      if (response.statusCode == 200) {
-        List<dynamic> response2 = jsonDecode(response.body)['data'];
-        List<TransactionData> transactionData = [];
-        for (var data in response2) {
-          transactionData.add(TransactionData.fromJson(data));
-        }
-        return transactionData;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
+      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<TransactionData> transactionData = [];
+      for (var data in response2) {
+        transactionData.add(TransactionData.fromJson(data));
       }
+      return transactionData;
+
     } catch (_) {
       throw _;
     }
@@ -58,36 +43,15 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   Future<List<PaymentData>> _getPayments() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      http.Response response = await http.get(
-          APPURL + '/payments?group=' + currentGroupId.toString(),
-          headers: header);
-
-      if (response.statusCode == 200) {
-        List<dynamic> response2 = jsonDecode(response.body)['data'];
-        List<PaymentData> paymentData = [];
-        for (var data in response2) {
-          paymentData.add(PaymentData.fromJson(data));
-        }
-        return paymentData;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
+      http.Response response = await httpGet(
+          uri: '/payments?group=' + currentGroupId.toString(),
+          context: context);
+      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<PaymentData> paymentData = [];
+      for (var data in response2) {
+        paymentData.add(PaymentData.fromJson(data));
       }
+      return paymentData;
     } catch (_) {
       throw _;
     }

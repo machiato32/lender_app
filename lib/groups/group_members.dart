@@ -30,7 +30,7 @@ class _GroupMembersState extends State<GroupMembers> {
         members.add(Member.fromJson(member));
       }
       currentMember =
-          members.firstWhere((member) => member.userId == currentUser);
+          members.firstWhere((member) => member.memberId == currentUserId);
       members.remove(currentMember);
       members.insert(0, currentMember);
       return members;
@@ -174,7 +174,7 @@ class _MemberEntryState extends State<MemberEntry> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.member.userId == currentUser) {
+    if (widget.member.memberId == currentUserId) {
       style = (Theme.of(context).brightness == Brightness.dark)
           ? Theme.of(context).textTheme.bodyText1
           : Theme.of(context).textTheme.button;
@@ -200,7 +200,7 @@ class _MemberEntryState extends State<MemberEntry> {
       boxDecoration = BoxDecoration();
     }
     return Container(
-      height: 70,
+      height: 65,
       width: MediaQuery.of(context).size.width,
       decoration: boxDecoration,
       margin: EdgeInsets.only(bottom: 4),
@@ -252,7 +252,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                     children: <Widget>[
                                       Flexible(
                                           child: Text(
-                                        widget.member.userId,
+                                        widget.member.username,
                                         style: style.copyWith(fontSize: 22),
                                         overflow: TextOverflow.ellipsis,
                                       )),

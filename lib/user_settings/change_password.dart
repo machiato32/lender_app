@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
-class ChangePin extends StatefulWidget {
+class ChangePassword extends StatefulWidget {
   @override
-  _ChangePinState createState() => _ChangePinState();
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ChangePinState extends State<ChangePin> {
+class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController _oldPasswordController = TextEditingController();
   TextEditingController _newPasswordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
@@ -23,27 +20,17 @@ class _ChangePinState extends State<ChangePin> {
 
   Future<bool> _updatePassword(String oldPassword, String newPassword) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      Map<String, dynamic> map = {
+      Map<String, dynamic> body = {
         'old_password': oldPassword,
         'new_password': newPassword,
         'new_password_confirmation': newPassword
       };
 
-      String encoded = jsonEncode(map);
 
-      http.Response response = await http.post(APPURL + '/change_password',
-          headers: header, body: encoded);
-      if (response.statusCode == 204) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
+      await httpPost(uri: '/change_password',
+          context: context, body: body);
+      return true;
 
-        throw error['error'];
-      }
     } catch (_) {
       throw _;
     }

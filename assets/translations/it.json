@@ -120,6 +120,19 @@
     "invitation_explanation": "Invita qualcuno al gruppo",
     "rename_group_explanation": "Rinomina il gruppo se non ti piace il cui nome",
     "shopping_list_explanation": "Scrivi sulla lista comune",
-    "history_explanation": "Segui e cancella le tue transazioni precedenti"
+    "history_explanation": "Segui e cancella le tue transazioni precedenti",
+
+    "pay": "Pagare",
+    "who_to_pay": "A chi dovrei pagare?",
+    "payments_needed": "Pagamenti necessari",
+    "you_are_good": "Non dovresti pagare a nessuno",
+
+    "fulfill_scf": "L'elemento è stato rimosso dalla lista con succeso! ",
+    "remove_from_list": "Spuntato",
+    "add_as_expense": "Registra come spesa",
+    "revoke": "Revocare",
+
+    "change_username_scf": "Il cambiamento è stato di successo!",
+    "change_username": "Modifica la nome utente"
 
 }

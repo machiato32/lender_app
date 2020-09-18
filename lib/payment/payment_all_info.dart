@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class PaymentAllInfo extends StatefulWidget {
   final PaymentData data;
@@ -19,14 +19,8 @@ class PaymentAllInfo extends StatefulWidget {
 class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deleteElement(int id) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
-      http.Response response = await http
-          .delete(APPURL + '/payments/' + id.toString(), headers: header);
-      return response.statusCode == 204;
+      await httpDelete(uri: '/payments/' + id.toString(), context: context);
+      return true;
     } catch (_) {
       throw _;
     }
@@ -122,7 +116,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == currentUser,
+            visible: widget.data.payerId == currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -199,6 +193,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                         .textTheme
                                         .bodyText1
                                         .copyWith(color: Colors.white),
+                                    textAlign: TextAlign.center,
                                   ),
                                   SizedBox(
                                     height: 15,
@@ -251,7 +246,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     },
                     color: Theme.of(context).colorScheme.secondary,
                     label: Text(
-                      'delete'.tr(),
+                      'revoke'.tr(),
                       style: Theme.of(context).textTheme.button,
                     ),
                     icon: Icon(Icons.delete,

@@ -119,5 +119,18 @@
     "invitation_explanation": "Invite someone to the group",
     "rename_group_explanation": "Rename the group if you don't like the name",
     "shopping_list_explanation": "Write on the joint shopping list",
-    "history_explanation": "Follow and delete recent transactions"
+    "history_explanation": "Follow and delete recent transactions",
+
+    "pay": "Pay",
+    "who_to_pay": "Who should I pay?",
+    "payments_needed": "Necessary payments",
+    "you_are_good": "You don't need to pay anyone",
+
+    "fulfill_scf": "The element was successfully removed from the list",
+    "remove_from_list": "Check",
+    "add_as_expense": "Book as expense",
+    "revoke": "Revoke",
+
+    "change_username_scf": "The change was successful.",
+    "change_username": "Change username"
 }

@@ -1,26 +1,28 @@
+import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class ShoppingRequestData {
   int requestId;
   String name;
-  String requesterId, requesterNickname;
+  String requesterUsername, requesterNickname;
+  int requesterId;
   DateTime updatedAt;
 
   ShoppingRequestData(
       {this.updatedAt,
       this.requesterId,
+      this.requesterUsername,
       this.name,
       this.requestId,
       this.requesterNickname});
@@ -29,6 +31,7 @@ class ShoppingRequestData {
     return ShoppingRequestData(
       requestId: json['request_id'],
       requesterId: json['requester_id'],
+      requesterUsername: json['requester_username'],
       requesterNickname: json['requester_nickname'],
       name: json['name'],
       updatedAt: DateTime.parse(json['updated_at']).toLocal(),
@@ -50,37 +53,18 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<List<ShoppingRequestData>> _getShoppingList() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-      http.Response response = await http.get(
-          APPURL + '/requests?group=' + currentGroupId.toString(),
-          headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
+      http.Response response = await httpGet(
+          uri: '/requests?group=' + currentGroupId.toString(),
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
 
-        List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
-        decoded['data']['active'].forEach((element) {
-          shopping.add(ShoppingRequestData.fromJson(element));
-        });
-        shopping = shopping.reversed.toList();
-        return shopping;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
+      decoded['data']['active'].forEach((element) {
+        shopping.add(ShoppingRequestData.fromJson(element));
+      });
+      shopping = shopping.reversed.toList();
+      return shopping;
+
     } catch (_) {
       throw _;
     }
@@ -88,31 +72,11 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postShoppingRequest(String name) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      String encodedBody = jsonEncode(body);
-      http.Response response = await http.post(APPURL + '/requests',
-          headers: header, body: encodedBody);
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
-      }
+      await httpPost(uri: '/requests',
+          context: context, body: body);
+      return true;
+
     } catch (_) {
       throw _;
     }
@@ -177,11 +141,12 @@ class _ShoppingListState extends State<ShoppingList> {
                       Flexible(
                         child: TextFormField(
                           validator: (value) {
+                            value=value.trim();
                             if (value.isEmpty) {
                               return 'field_empty'.tr();
                             }
-                            if (value.length < 3) {
-                              return 'minimal_length'.tr(args: ['3']);
+                            if (value.length < 2) {
+                              return 'minimal_length'.tr(args: ['2']);
                             }
                             return null;
                           },
@@ -205,7 +170,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   Theme.of(context).textTheme.bodyText1.color),
                           cursorColor: Theme.of(context).colorScheme.secondary,
                           inputFormatters: [
-                            LengthLimitingTextInputFormatter(20)
+                            LengthLimitingTextInputFormatter(30)
                           ],
                         ),
                       ),
@@ -313,12 +278,13 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   String name;
   String user;
 
+
   @override
   Widget build(BuildContext context) {
     name = widget.data.name;
-    user = widget.data.requesterId;
+    user = widget.data.requesterUsername;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-    if (widget.data.requesterId == currentUser) {
+    if (widget.data.requesterId == currentUserId) {
       style = (Theme.of(context).brightness == Brightness.dark)
           ? Theme.of(context).textTheme.bodyText1
           : Theme.of(context).textTheme.button;
@@ -346,73 +312,235 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       );
       boxDecoration = BoxDecoration();
     }
-    return Container(
-      height: 65,
-      width: MediaQuery.of(context).size.width,
-      decoration: boxDecoration,
-      margin: EdgeInsets.only(
-        bottom: 4,
+    return Dismissible(
+      key: UniqueKey(),
+      secondaryBackground: Container(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Icon(widget.data.requesterId != currentUserId?Icons.done:Icons.delete,
+            size: 30, color: Theme.of(context).textTheme.bodyText1.color,
+          )
+        ),
       ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: () async {
-            showModalBottomSheetCustom(
-                context: context,
-                backgroundColor: Theme.of(context).cardTheme.color,
-                builder: (context) => SingleChildScrollView(
-                    child: ShoppingAllInfo(widget.data))).then((val) {
-              if (val == 'deleted') widget.callback();
-            });
-          },
-          borderRadius: BorderRadius.circular(15),
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Flex(
-              direction: Axis.horizontal,
-              children: <Widget>[
-                Flexible(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Row(
-                        children: <Widget>[
-                          icon,
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Flexible(
-                                    child: Text(
-                                  name,
-                                  style: style.copyWith(fontSize: 22),
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                                Flexible(
-                                    child: Text(
-                                  widget.data.requesterNickname,
-                                  style:
-                                      TextStyle(color: dateColor, fontSize: 15),
-                                  overflow: TextOverflow.ellipsis,
-                                ))
-                              ],
+      background: Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(widget.data.requesterId != currentUserId?Icons.attach_money:Icons.delete,
+            size: 30, color: Theme.of(context).textTheme.bodyText1.color,
+          )
+      ),
+      onDismissed: (direction){
+        if(widget.data.requesterId != currentUserId){
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              child: FutureSuccessDialog(
+                future: _fulfillShoppingRequest(widget.data.requestId),
+                dataTrueText: 'fulfill_scf',
+                onDataTrue: () {
+                  Navigator.pop(context);
+                },
+              )
+          ).then((value) {
+            widget.callback();
+            if(direction==DismissDirection.startToEnd){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AddTransactionRoute(
+                            type: ExpenseType
+                                .fromShopping,
+                            shoppingData:
+                            widget
+                                .data,
+                          )
+                  )
+              );
+            }
+          });
+
+        }else{
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              child: FutureSuccessDialog(
+                future:
+                _deleteShoppingRequest(
+                    widget
+                        .data.requestId),
+                dataTrueText: 'delete_scf',
+                onDataTrue: () {
+                  Navigator.pop(context);
+                },
+              )
+          ).then((value) => widget.callback());
+        }
+      },
+
+      // confirmDismiss: (direction) async {
+      //   // if(widget.data.requesterId != currentUser){
+      //   //   return Future.value(true);
+      //   // }else{
+      //   //   return await showDialog(
+      //   //       context: context,
+      //   //       child: Dialog(
+      //   //         shape: RoundedRectangleBorder(
+      //   //             borderRadius: BorderRadius.circular(5)),
+      //   //         backgroundColor: Colors.transparent,
+      //   //         elevation: 0,
+      //   //         child: Container(
+      //   //           padding: EdgeInsets.all(8),
+      //   //           child: Column(
+      //   //             crossAxisAlignment: CrossAxisAlignment.center,
+      //   //             mainAxisSize: MainAxisSize.min,
+      //   //             children: <Widget>[
+      //   //               Text(
+      //   //                 'want_delete'.tr(),
+      //   //                 style: Theme.of(context)
+      //   //                     .textTheme
+      //   //                     .bodyText1
+      //   //                     .copyWith(color: Colors.white),
+      //   //               ),
+      //   //               SizedBox(
+      //   //                 height: 15,
+      //   //               ),
+      //   //               Row(
+      //   //                 mainAxisAlignment:
+      //   //                 MainAxisAlignment.spaceAround,
+      //   //                 children: <Widget>[
+      //   //                   RaisedButton(
+      //   //                       color: Theme.of(context)
+      //   //                           .colorScheme
+      //   //                           .secondary,
+      //   //                       onPressed: () async {
+      //   //                         showDialog(
+      //   //                             barrierDismissible: false,
+      //   //                             context: context,
+      //   //                             child: FutureSuccessDialog(
+      //   //                               future:
+      //   //                               _deleteShoppingRequest(
+      //   //                                   widget
+      //   //                                       .data.requestId),
+      //   //                               dataTrueText: 'delete_scf',
+      //   //                               onDataTrue: () {
+      //   //                                 Navigator.pop(context);
+      //   //                                 Navigator.pop(context, true);
+      //   //                               },
+      //   //                             )
+      //   //                         );
+      //   //                       },
+      //   //                       child: Text('yes'.tr(),
+      //   //                           style: Theme.of(context)
+      //   //                               .textTheme
+      //   //                               .button)),
+      //   //                   RaisedButton(
+      //   //                       color: Theme.of(context)
+      //   //                           .colorScheme
+      //   //                           .secondary,
+      //   //                       onPressed: () {
+      //   //                         Navigator.pop(context, false);
+      //   //                       },
+      //   //                       child: Text('no'.tr(),
+      //   //                           style: Theme.of(context)
+      //   //                               .textTheme
+      //   //                               .button))
+      //   //                 ],
+      //   //               )
+      //   //             ],
+      //   //           ),
+      //   //         ),
+      //   //       )
+      //   //   );
+      //   // }
+      // },
+      child: Container(
+        height: 65,
+        width: MediaQuery.of(context).size.width,
+        decoration: boxDecoration,
+        margin: EdgeInsets.only(
+          bottom: 4,
+        ),
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () async {
+              showModalBottomSheetCustom(
+                  context: context,
+                  backgroundColor: Theme.of(context).cardTheme.color,
+                  builder: (context) => SingleChildScrollView(
+                      child: ShoppingAllInfo(widget.data))).then((val) {
+                if (val == 'deleted') widget.callback();
+              });
+            },
+            borderRadius: BorderRadius.circular(15),
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  Flexible(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: Row(
+                          children: <Widget>[
+                            icon,
+                            SizedBox(
+                              width: 20,
                             ),
-                          ),
-                        ],
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Flexible(
+                                      child: Text(
+                                    name,
+                                    style: style.copyWith(fontSize: 22),
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                                  Flexible(
+                                      child: Text(
+                                    widget.data.requesterNickname,
+                                    style:
+                                        TextStyle(color: dateColor, fontSize: 15),
+                                    overflow: TextOverflow.ellipsis,
+                                  ))
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-              ],
+                    ],
+                  )),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> _fulfillShoppingRequest(int id) async {
+    try {
+      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {});
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
+  Future<bool> _deleteShoppingRequest(int id) async {
+    try {
+      await httpDelete(uri: '/requests/' + id.toString(), context: context);
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
   }
 }

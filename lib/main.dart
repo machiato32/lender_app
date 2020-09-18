@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -10,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -26,6 +28,23 @@ import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+  if (message.containsKey('data')) {
+    // Handle data message
+    final dynamic data = message['data'];
+  }
+
+  if (message.containsKey('notification')) {
+    // Handle notification message
+    final dynamic notification = message['notification'];
+  }
+
+  // Or do other work.
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -36,18 +55,32 @@ void main() async {
   } else {
     themeName = preferences.getString('theme');
   }
-  if (preferences.containsKey('current_user')) {
-    currentUser = preferences.getString('current_user');
+  if (preferences.containsKey('current_username')) {
+    currentUsername = preferences.getString('current_username');
+    currentUserId = preferences.getInt('current_user_id');
     apiToken = preferences.getString('api_token');
+  }
+  if(preferences.containsKey('current_user')){
+    currentUsername=preferences.getString('current_user');
   }
   if (preferences.containsKey('current_group_name')) {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
   }
+
+  var initializationSettingsAndroid =
+  new AndroidInitializationSettings('@drawable/dodo_white');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
   String initURL;
   try {
     initURL = await getInitialLink();
   } catch (_) {}
+
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
@@ -95,6 +128,10 @@ class _LenderAppState extends State<LenderApp> {
   StreamSubscription _sub;
   String _link;
 
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+
   Future<Null> initUniLinks() async {
     _sub = getLinksStream().listen((String link) {
       setState(() {
@@ -114,6 +151,40 @@ class _LenderAppState extends State<LenderApp> {
     initPlatformState();
     _link = widget.initURL;
     super.initState();
+
+
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+          '1234',
+          'Lender',
+          'Lender',
+          playSound: false,
+          importance: Importance.High,
+          priority: Priority.Default,
+          styleInformation: BigTextStyleInformation('')
+        );
+        var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+        var platformChannelSpecifics = new NotificationDetails(
+            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        flutterLocalNotificationsPlugin.show(
+          int.parse(message['data']['id'])??0,
+          message['notification']['title'],
+          message['notification']['body'],
+          platformChannelSpecifics,
+        );
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
   }
 
   @override
@@ -136,7 +207,7 @@ class _LenderAppState extends State<LenderApp> {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: currentUser == null
+          home: currentUserId == null
               ? LoginOrRegisterPage(
                   showDialog: true,
                 )
@@ -165,7 +236,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   SharedPreferences prefs;
-  Future<List<Group>> groups;
+  Future<List<Group>> _groups;
 
   TabController _tabController;
   int _selectedIndex = 0;
@@ -197,9 +268,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return currentGroupName;
   }
 
+  Future<double> _getSumBalance() async {
+    try{
+      http.Response response = await httpGet(context: context, uri: '/user');
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['total_balance']*1.0;
+    }catch(_){
+      throw _;
+    }
+  }
+  
   Future _logout() async {
     try {
-      await httpGet(uri: '/logout', context: context);
+      await httpPost(uri: '/logout', context: context, body: {});
+      currentUserId = null;
+      currentGroupId = null;
+      currentGroupName = null;
+      apiToken = null;
+      SharedPreferences.getInstance().then((_prefs) {
+        _prefs.remove('current_user_id');
+        _prefs.remove('current_group_name');
+        _prefs.remove('current_group_id');
+        _prefs.remove('api_token');
+      });
     } catch (_) {
       throw _;
     }
@@ -237,14 +328,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    groups = null;
-    groups = _getGroups();
+    _groups = null;
+    _groups = _getGroups();
   }
 
   void _handleDrawer() {
     _scaffoldKey.currentState.openDrawer();
-    groups = null;
-    groups = _getGroups();
+    _groups = null;
+    _groups = _getGroups();
   }
 
   void callback() {
@@ -308,11 +399,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          child: Image(
-                            image: AssetImage('assets/dodo_color.png'),
-                          ),
-                        ),
+                        // Expanded(
+                        //   child: Image(
+                        //     image: AssetImage('assets/dodo_color.png'),
+                        //   ),
+                        // ),
                         Text(
                           'LENDER',
                           style: Theme.of(context)
@@ -321,18 +412,40 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .copyWith(letterSpacing: 2.5),
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
                         Text(
-                          currentUser,
+                          currentUsername,
                           style: Theme.of(context).textTheme.bodyText1.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                         ),
+                        FutureBuilder(
+                          future: _getSumBalance(),
+                          builder: (context, snapshot){
+                            if(snapshot.connectionState==ConnectionState.done){
+                              if(snapshot.hasData){
+                                return Text(
+                                  'Σ: '+snapshot.data.toString(),
+                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontSize: 16
+                                  ),
+                                );
+                              }
+                            }
+                            return Text('Σ: ...',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontSize: 16
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
                   ),
                   FutureBuilder(
-                    future: groups,
+                    future: _groups,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
@@ -354,8 +467,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               ),
                               onTap: () {
                                 setState(() {
-                                  groups = null;
-                                  groups = _getGroups();
+                                  _groups = null;
+                                  _groups = _getGroups();
                                 });
                               });
                         }
@@ -422,17 +535,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               onTap: () {
                 _logout();
-                currentUser = null;
-                currentGroupId = null;
-                currentGroupName = null;
-                apiToken = null;
-                SharedPreferences.getInstance().then((_prefs) {
-                  _prefs.remove('current_group_name');
-                  _prefs.remove('current_group_id');
-                  _prefs.remove('current_user');
-                  _prefs.remove('api_token');
-                });
-
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -524,7 +626,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 child: Icon(Icons.attach_money),
                 onTap: () {
-                  if (currentUser != "")
+                  if (currentUsername != "")
                     Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -586,15 +688,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 child: Icon(Icons.shopping_cart),
                 onTap: () {
-                  if (currentUser != "")
+                  if (currentUsername != "")
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddTransactionRoute(
                                   type: ExpenseType.newExpense,
-                                ))).then((value) {
-                      setState(() {});
-                    });
+                                )
+                        )).then((value) {
+                          setState(() {});
+                        });
                 }),
           ],
         ),
@@ -612,7 +715,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  Balances(),
+                  Balances(
+                    callback: callback,
+                  ),
                   History(
                     callback: callback,
                   )
