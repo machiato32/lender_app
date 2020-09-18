@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
@@ -225,12 +226,14 @@ class _RegisterRouteState extends State<RegisterRoute> {
   Future<bool> _register(
       String username, String password, String reminder) async {
     try {
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
       Map<String, String> body = {
         "username": username,
         "default_currency": "HUF",
         "password": password,
         "password_confirmation": password,
-        "password_reminder": reminder
+        "password_reminder": reminder,
+        "fcm_token": await _firebaseMessaging.getToken()
       };
       Map<String, String> header = {
         "Content-Type": "application/json",

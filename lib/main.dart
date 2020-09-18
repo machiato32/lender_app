@@ -11,6 +11,7 @@ import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -27,6 +28,8 @@ import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   if (message.containsKey('data')) {
@@ -61,26 +64,20 @@ void main() async {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
   }
+
+  var initializationSettingsAndroid =
+  new AndroidInitializationSettings('@drawable/dodo_white');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
   String initURL;
   try {
     initURL = await getInitialLink();
   } catch (_) {}
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  _firebaseMessaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      print("onMessage: $message");
-      // _showItemDialog(message);
-    },
-    onBackgroundMessage: myBackgroundMessageHandler,
-    onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
-      // _navigateToItemDetail(message);
-    },
-    onResume: (Map<String, dynamic> message) async {
-      print("onResume: $message");
-      // _navigateToItemDetail(message);
-    },
-  );
+
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
@@ -128,6 +125,10 @@ class _LenderAppState extends State<LenderApp> {
   StreamSubscription _sub;
   String _link;
 
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+
   Future<Null> initUniLinks() async {
     _sub = getLinksStream().listen((String link) {
       setState(() {
@@ -140,6 +141,7 @@ class _LenderAppState extends State<LenderApp> {
 
   initPlatformState() async {
     await initUniLinks();
+    print(await _firebaseMessaging.getToken());
   }
 
   @override
@@ -147,6 +149,39 @@ class _LenderAppState extends State<LenderApp> {
     initPlatformState();
     _link = widget.initURL;
     super.initState();
+
+
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+          '1234',
+          'Lender',
+          'Lender',
+          playSound: false,
+          importance: Importance.High,
+          priority: Priority.Default,
+        );
+        var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+        var platformChannelSpecifics = new NotificationDetails(
+            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        flutterLocalNotificationsPlugin.show(
+          int.parse(message['data']['id'])??0,
+          message['notification']['title'],
+          message['notification']['body'],
+          platformChannelSpecifics,
+        );
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
   }
 
   @override
@@ -242,6 +277,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   
   Future _logout() async {
     try {
+      await httpPost(uri: '/logout', context: context, body: {});
       currentUserId = null;
       currentUsername = null;
       currentGroupId = null;
@@ -254,7 +290,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         _prefs.remove('current_username');
         _prefs.remove('api_token');
       });
-      await httpPost(uri: '/logout', context: context, body: {});
     } catch (_) {
       throw _;
     }

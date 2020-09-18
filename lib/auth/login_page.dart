@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
@@ -24,6 +24,9 @@ class _LoginRouteState extends State<LoginRoute> {
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +224,7 @@ class _LoginRouteState extends State<LoginRoute> {
 
   Future<bool> _login(String username, String password) async {
     try {
-      Map<String, String> body = {"username": username, "password": password};
+      Map<String, String> body = {"username": username, "password": password, "fcm_token": await _firebaseMessaging.getToken()};
       Map<String, String> header = {
         "Content-Type": "application/json"
       };
@@ -235,9 +238,6 @@ class _LoginRouteState extends State<LoginRoute> {
         currentUserId = decoded['data']['id'];
         currentUsername = decoded['data']['username'];
 
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
-        firebaseAnalytics.setUserId('1');
-        // firebaseAnalytics.setUserProperty(name: 'userId', value: '1');
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);
