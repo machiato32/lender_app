@@ -164,6 +164,7 @@ class _LenderAppState extends State<LenderApp> {
           playSound: false,
           importance: Importance.High,
           priority: Priority.Default,
+          styleInformation: BigTextStyleInformation('')
         );
         var iOSPlatformChannelSpecifics =
         new IOSNotificationDetails(presentSound: false);
@@ -281,7 +282,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
       currentUserId = null;
-      currentUsername = null;
       currentGroupId = null;
       currentGroupName = null;
       apiToken = null;

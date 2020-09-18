@@ -33,7 +33,6 @@ class _JoinGroupState extends State<JoinGroup> {
   Future _logout() async {
     try {
       await httpPost(context: context, uri: '/logout', body: {});
-      currentUsername = null;
       currentUserId = null;
       currentGroupId = null;
       currentGroupName = null;
