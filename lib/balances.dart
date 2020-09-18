@@ -39,7 +39,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount, 'Auto', payment.takerId)){
+      if(await _postPayment(payment.amount*1.0, 'Auto', payment.takerId)){
         continue;
       }
     }
@@ -59,12 +59,13 @@ class _BalancesState extends State<Balances> {
       for (var member in decoded['data']['members']) {
         members.add(Member(
             nickname: member['nickname'],
-            balance: member['balance'] * 1.0,
+            balance: (member['balance'] * 1.0).round(),
             username: member['username'],
             memberId: member['user_id']
           )
         );
       }
+      members.sort((member1, member2)=>member2.balance.compareTo(member1.balance));
       return members;
 
     } catch (_) {

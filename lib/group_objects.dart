@@ -1,5 +1,5 @@
 class Member{
-  double balance;
+  int balance;
   String nickname;
   String username;
   int memberId;
@@ -10,7 +10,7 @@ class Member{
       username: json['username'],
       memberId: json['user_id'],
       nickname: json['nickname'],
-      balance: json['balance']*1.0,
+      balance: (json['balance']*1.0).round(),
       isAdmin: json['is_admin']==1
     );
   }

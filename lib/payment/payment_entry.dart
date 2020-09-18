@@ -8,7 +8,7 @@ import 'package:csocsort_szamla/payment/payment_all_info.dart';
 
 class PaymentData {
   int paymentId;
-  double amount;
+  int amount;
   DateTime updatedAt;
   String payerUsername, payerNickname, takerUsername, takerNickname, note;
   int payerId, takerId;
@@ -28,7 +28,7 @@ class PaymentData {
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
         paymentId: json['payment_id'],
-        amount: json['amount'] * 1.0,
+        amount: (json['amount'] * 1.0).round(),
         updatedAt: json['updated_at'] == null
             ? DateTime.now()
             : DateTime.parse(json['updated_at']).toLocal(),

@@ -13,7 +13,7 @@ class TransactionData {
   String buyerUsername, buyerNickname;
   int buyerId;
   List<Member> receivers;
-  double totalAmount;
+  int totalAmount;
   int transactionId;
   String name;
 
@@ -39,7 +39,7 @@ class TransactionData {
         buyerUsername: json['data']['buyer_username'],
         buyerId: json['data']['buyer_id'],
         buyerNickname: json['data']['buyer_nickname'],
-        totalAmount: json['data']['total_amount'] * 1.0,
+        totalAmount: (json['data']['total_amount'] * 1.0).round(),
         receivers: json['data']['receivers']
             .map<Member>((element) => Member.fromJson(element))
             .toList());
