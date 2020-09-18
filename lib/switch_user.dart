@@ -24,7 +24,7 @@ class _SwitchUserState extends State<SwitchUser> {
       Map<String, dynamic> response2 = jsonDecode(response.body);
 
       List<String> list = response2['names'].cast<String>();
-      list.remove(currentUser);
+      list.remove(currentUsername);
       return list;
     } catch (_) {
       throw 'Hiba';
@@ -222,7 +222,7 @@ class _SwitchUserState extends State<SwitchUser> {
                             if (snapshot.hasData) {
                               if (snapshot.data) {
                                 getPrefs().then((_prefs) {
-                                  currentUser = dropdownValue;
+                                  currentUsername = dropdownValue;
                                   _prefs.setString('name', dropdownValue);
                                 });
                                 return Column(

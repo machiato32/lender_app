@@ -18,12 +18,12 @@ class CreateGroup extends StatefulWidget {
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(
-      text: currentUser.split('#')[0][0].toUpperCase() +
-          currentUser.split('#')[0].substring(1));
+      text: currentUsername[0].toUpperCase() +
+          currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<bool> _joinGroup(String groupName, String nickname) async {
+  Future<bool> _createGroup(String groupName, String nickname) async {
     try {
       Map<String, dynamic> body = {
         'group_name': groupName,
@@ -169,7 +169,7 @@ class _CreateGroupState extends State<CreateGroup> {
                           barrierDismissible: false,
                           context: context,
                           child: FutureSuccessDialog(
-                            future: _joinGroup(token, nickname),
+                            future: _createGroup(token, nickname),
                             onDataTrue: () {
                               Navigator.pushAndRemoveUntil(
                                   context,

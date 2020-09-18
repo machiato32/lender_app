@@ -3,14 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'config.dart';
-
 import 'package:csocsort_szamla/future_success_dialog.dart';
-
 import 'package:csocsort_szamla/payments_needed.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'group_objects.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
+import 'http_handler.dart';
 
 class Balances extends StatefulWidget {
   final Function callback;
@@ -20,26 +18,20 @@ class Balances extends StatefulWidget {
 }
 
 class _BalancesState extends State<Balances> {
-  Future<List<Member>> money;
+  Future<List<Member>> _money;
 
-  Future<bool> _postPayment(double amount, String note, String takerId) async {
+  Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
 
-      Map<String, dynamic> map = {
+      Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
         'note': note,
         'taker_id': takerId
       };
-      String encoded = json.encode(map);
 
-      http.Response response =
-      await http.post(APPURL + '/payments', body: encoded, headers: header);
-      return response.statusCode == 200;
+      await httpPost(uri: '/payments', body: body, context: context);
+      return true;
     } catch (_) {
       throw _;
     }
@@ -47,7 +39,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount, 'Auto', payment.takerId)){
+      if(await _postPayment(payment.amount*1.0, 'Auto', payment.takerId)){
         continue;
       }
     }
@@ -56,35 +48,26 @@ class _BalancesState extends State<Balances> {
 
   Future<List<Member>> _getMoney() async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
 
-      http.Response response = await http.get(
-          APPURL + '/groups/' + currentGroupId.toString(),
-          headers: header);
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context
+      );
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> response2 = jsonDecode(response.body);
-        List<Member> members = [];
-        for (var member in response2['data']['members']) {
-          members.add(Member(
-              nickname: member['nickname'],
-              balance: member['balance'] * 1.0,
-              userId: member['user_id']));
-        }
-        return members;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        if (error['error'] == 'Unauthenticated.') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-              (r) => false);
-        }
-        throw error['error'];
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      List<Member> members = [];
+      for (var member in decoded['data']['members']) {
+        members.add(Member(
+            nickname: member['nickname'],
+            balance: (member['balance'] * 1.0).round(),
+            username: member['username'],
+            memberId: member['user_id']
+          )
+        );
       }
+      members.sort((member1, member2)=>member2.balance.compareTo(member1.balance));
+      return members;
+
     } catch (_) {
       throw _;
     }
@@ -93,15 +76,15 @@ class _BalancesState extends State<Balances> {
   @override
   void initState() {
     super.initState();
-    money = null;
-    money = _getMoney();
+    _money = null;
+    _money = _getMoney();
   }
 
   @override
   void didUpdateWidget(Balances oldWidget) {
     super.didUpdateWidget(oldWidget);
-    money = null;
-    money = _getMoney();
+    _money = null;
+    _money = _getMoney();
   }
 
   @override
@@ -121,7 +104,7 @@ class _BalancesState extends State<Balances> {
             SizedBox(height: 40),
             Center(
               child: FutureBuilder(
-                future: money,
+                future: _money,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
@@ -130,7 +113,7 @@ class _BalancesState extends State<Balances> {
                           Column(children: _generateBalances(snapshot.data)),
                           RaisedButton(
                             onPressed: (){
-                              List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUser).toList();
+                              List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
@@ -189,8 +172,8 @@ class _BalancesState extends State<Balances> {
                           ),
                           onTap: () {
                             setState(() {
-                              money = null;
-                              money = _getMoney();
+                              _money = null;
+                              _money = _getMoney();
                             });
                           });
                     }
@@ -315,7 +298,7 @@ class _BalancesState extends State<Balances> {
 
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
-      if (member.userId == currentUser) {
+      if (member.memberId == currentUserId) {
         TextStyle style = (Theme.of(context).brightness == Brightness.dark)
             ? Theme.of(context).textTheme.bodyText1
             : Theme.of(context).textTheme.button;

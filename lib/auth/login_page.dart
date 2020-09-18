@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -18,12 +20,13 @@ class LoginRoute extends StatefulWidget {
 
 class _LoginRouteState extends State<LoginRoute> {
   TextEditingController _usernameController = TextEditingController(
-      text: currentUser != null ? currentUser.split('#')[0] : '');
-  TextEditingController _userNumController = TextEditingController(
-      text: currentUser != null ? currentUser.split('#')[1] : '');
+      text: currentUsername ?? '');
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
@@ -35,113 +38,45 @@ class _LoginRouteState extends State<LoginRoute> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'field_empty'.tr();
-                        }
-                        if (value.length < 3) {
-                          return 'minimal_length'.tr(args: ['3']);
-                        }
-                        return null;
-                      },
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        hintText: 'example_name'.tr(),
-                        labelText: 'name'.tr(),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              width: 2),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2),
-                        ),
-                        errorBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 2),
-                        ),
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                        LengthLimitingTextInputFormatter(15),
-                      ],
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    if (value.length < 3) {
+                      return 'minimal_length'.tr(args: ['3']);
+                    }
+                    return null;
+                  },
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    hintText: 'example_name'.tr(),
+                    labelText: 'username'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
+                    errorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 2),
                     ),
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        '#',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText2
-                            .copyWith(fontSize: 30),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'field_empty'.tr();
-                        }
-                        if (value.length != 4) {
-                          return 'num_length'.tr();
-                        }
-                        return null;
-                      },
-                      controller: _userNumController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'id'.tr(),
-                        hintText: '1234',
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              width: 2),
-                          //  when the TextFormField in unfocused
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2),
-                        ),
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9]')),
-                        LengthLimitingTextInputFormatter(4),
-                      ],
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                ],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[a-z0-9#]')),
+                    LengthLimitingTextInputFormatter(15),
+                  ],
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                ),
               ),
               SizedBox(
                 height: 30,
@@ -188,30 +123,54 @@ class _LoginRouteState extends State<LoginRoute> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              String username = _usernameController.text.toLowerCase() +
-                  '#' +
-                  _userNumController.text.toLowerCase();
+              String username = _usernameController.text.toLowerCase();
               String password = _passwordController.text;
               showDialog(
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
                     dataTrueText: 'login_scf'.tr(),
-                    dataFalseText: 'login_scf'.tr(),
+                    dataFalse: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                            child: Text(
+                              'login_scf'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            )),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        FlatButton.icon(
+                          icon: Icon(Icons.check,
+                              color: Theme.of(context).colorScheme.onSecondary),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JoinGroup(
+                                      fromAuth: true,
+                                    )),
+                                    (r) => false
+                            );
+                          },
+                          label: Text(
+                            'okay'.tr(),
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                          color: Theme.of(context).colorScheme.secondary,
+                        )
+                      ],
+                    ),
                     future: _login(username, password),
                     onDataTrue: () {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => MainPage()),
-                          (r) => false);
-                    },
-                    onDataFalse: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => JoinGroup(
-                                    fromAuth: true,
-                                  )),
                           (r) => false);
                     },
                   ));
@@ -225,49 +184,39 @@ class _LoginRouteState extends State<LoginRoute> {
 
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
-      Map<String, String> header = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiToken
-      };
-
       http.Response response =
-          await http.get(APPURL + '/groups', headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decoded = jsonDecode(response.body);
-        List<Group> groups = [];
-        for (var group in decoded['data']) {
-          groups.add(Group(
-              groupName: group['group_name'], groupId: group['group_id']));
-        }
-        if (groups.length > 0) {
-          if (groups
-                  .where((group) => group.groupId == lastActiveGroup)
-                  .toList()
-                  .length !=
-              0) {
-            currentGroupName = groups
-                .firstWhere((group) => group.groupId == lastActiveGroup)
-                .groupName;
-            currentGroupId = lastActiveGroup;
-            SharedPreferences.getInstance().then((_prefs) {
-              _prefs.setString('current_group_name', currentGroupName);
-              _prefs.setInt('current_group_id', currentGroupId);
-            });
-            return true;
-          }
-          currentGroupName = groups[0].groupName;
-          currentGroupId = groups[0].groupId;
+          await httpGet(uri: '/groups', context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      List<Group> groups = [];
+      for (var group in decoded['data']) {
+        groups.add(Group(
+            groupName: group['group_name'], groupId: group['group_id']));
+      }
+      if (groups.length > 0) {
+        if (groups
+                .where((group) => group.groupId == lastActiveGroup)
+                .toList()
+                .length !=0) {
+          currentGroupName = groups
+              .firstWhere((group) => group.groupId == lastActiveGroup)
+              .groupName;
+          currentGroupId = lastActiveGroup;
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
           });
           return true;
         }
-        return false;
-      } else {
-        Map<String, dynamic> error = jsonDecode(response.body);
-        throw error['error'];
+        currentGroupName = groups[0].groupName;
+        currentGroupId = groups[0].groupId;
+        SharedPreferences.getInstance().then((_prefs) {
+          _prefs.setString('current_group_name', currentGroupName);
+          _prefs.setInt('current_group_id', currentGroupId);
+        });
+        return true;
       }
+      return false;
+
     } catch (_) {
       throw _;
     }
@@ -275,10 +224,9 @@ class _LoginRouteState extends State<LoginRoute> {
 
   Future<bool> _login(String username, String password) async {
     try {
-      Map<String, String> body = {"id": username, "password": password};
+      Map<String, String> body = {"username": username, "password": password, "fcm_token": await _firebaseMessaging.getToken()};
       Map<String, String> header = {
-        "Content-Type": "application/json",
-        //"Authorization": "Bearer api_token"
+        "Content-Type": "application/json"
       };
 
       String bodyEncoded = jsonEncode(body);
@@ -287,11 +235,15 @@ class _LoginRouteState extends State<LoginRoute> {
       if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
         apiToken = decoded['data']['api_token'];
-        currentUser = decoded['data']['id'];
+        currentUserId = decoded['data']['id'];
+        currentUsername = decoded['data']['username'];
+
 
         SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_user', currentUser);
+          _prefs.setString('current_username', currentUsername);
+          _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
+          _prefs.remove('current_user');
         });
 
         return await _selectGroup(decoded['data']['last_active_group']);

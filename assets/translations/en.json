@@ -124,5 +124,13 @@
     "pay": "Pay",
     "who_to_pay": "Who should I pay?",
     "payments_needed": "Necessary payments",
-    "you_are_good": "You don't need to pay anyone"
+    "you_are_good": "You don't need to pay anyone",
+
+    "fulfill_scf": "The element was successfully removed from the list",
+    "remove_from_list": "Check",
+    "add_as_expense": "Book as expense",
+    "revoke": "Revoke",
+
+    "change_username_scf": "The change was successful.",
+    "change_username": "Change username"
 }

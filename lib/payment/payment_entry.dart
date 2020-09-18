@@ -8,16 +8,19 @@ import 'package:csocsort_szamla/payment/payment_all_info.dart';
 
 class PaymentData {
   int paymentId;
-  double amount;
+  int amount;
   DateTime updatedAt;
-  String payerId, payerNickname, takerId, takerNickname, note;
+  String payerUsername, payerNickname, takerUsername, takerNickname, note;
+  int payerId, takerId;
 
   PaymentData(
       {this.paymentId,
       this.amount,
       this.updatedAt,
+      this.payerUsername,
       this.payerId,
       this.payerNickname,
+      this.takerUsername,
       this.takerId,
       this.takerNickname,
       this.note});
@@ -25,13 +28,15 @@ class PaymentData {
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
         paymentId: json['payment_id'],
-        amount: json['amount'] * 1.0,
-        payerId: json['payer_id'],
+        amount: (json['amount'] * 1.0).round(),
         updatedAt: json['updated_at'] == null
             ? DateTime.now()
             : DateTime.parse(json['updated_at']).toLocal(),
+        payerId: json['payer_id'],
+        payerUsername: json['payer_username'],
         payerNickname: json['payer_nickname'],
         takerId: json['taker_id'],
+        takerUsername: json['taker_username'],
         takerNickname: json['taker_nickname'],
         note: json['note']);
   }
@@ -63,7 +68,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
     note = (widget.data.note == '' || widget.data.note == null)
         ? 'no_note'.tr()
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
-    if (widget.data.payerId == currentUser) {
+    if (widget.data.payerId == currentUserId) {
       icon = Icon(Icons.call_made,
           color: (Theme.of(context).brightness == Brightness.dark)
               ? Theme.of(context).textTheme.bodyText1.color
