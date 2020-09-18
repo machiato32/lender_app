@@ -55,7 +55,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   hintText: 'example_name'.tr(),
-                  labelText: 'name'.tr(),
+                  labelText: 'username'.tr(),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                         color: Theme.of(context).colorScheme.onSurface,

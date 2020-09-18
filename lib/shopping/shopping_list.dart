@@ -526,7 +526,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      await httpPut(uri:APPURL + '/requests/' + id.toString(), context: context, body: {});
+      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {});
       return true;
 
     } catch (_) {

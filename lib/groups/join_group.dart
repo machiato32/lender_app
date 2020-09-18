@@ -41,7 +41,6 @@ class _JoinGroupState extends State<JoinGroup> {
       SharedPreferences.getInstance().then((_prefs) {
         _prefs.remove('current_group_name');
         _prefs.remove('current_group_id');
-        _prefs.remove('current_username');
         _prefs.remove('current_user_id');
         _prefs.remove('api_token');
       });

@@ -55,10 +55,13 @@ void main() async {
   } else {
     themeName = preferences.getString('theme');
   }
-  if (preferences.containsKey('current_user')) {
+  if (preferences.containsKey('current_username')) {
     currentUsername = preferences.getString('current_username');
     currentUserId = preferences.getInt('current_user_id');
     apiToken = preferences.getString('api_token');
+  }
+  if(preferences.containsKey('current_user')){
+    currentUsername=preferences.getString('current_user');
   }
   if (preferences.containsKey('current_group_name')) {
     currentGroupName = preferences.getString('current_group_name');
@@ -141,7 +144,6 @@ class _LenderAppState extends State<LenderApp> {
 
   initPlatformState() async {
     await initUniLinks();
-    print(await _firebaseMessaging.getToken());
   }
 
   @override
@@ -287,7 +289,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         _prefs.remove('current_user_id');
         _prefs.remove('current_group_name');
         _prefs.remove('current_group_id');
-        _prefs.remove('current_username');
         _prefs.remove('api_token');
       });
     } catch (_) {

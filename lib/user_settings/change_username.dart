@@ -52,6 +52,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                   child: Text(
                     'change_username'.tr(),
                     style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center,
                   )),
               SizedBox(
                 height: 10,

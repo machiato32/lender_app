@@ -20,7 +20,7 @@ class LoginRoute extends StatefulWidget {
 
 class _LoginRouteState extends State<LoginRoute> {
   TextEditingController _usernameController = TextEditingController(
-      text: currentUsername != null ? currentUsername:'');
+      text: currentUsername ?? '');
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -53,7 +53,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'example_name'.tr(),
-                    labelText: 'name'.tr(),
+                    labelText: 'username'.tr(),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.onSurface,
@@ -243,6 +243,7 @@ class _LoginRouteState extends State<LoginRoute> {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
+          _prefs.remove('current_user');
         });
 
         return await _selectGroup(decoded['data']['last_active_group']);

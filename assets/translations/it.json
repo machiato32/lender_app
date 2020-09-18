@@ -130,6 +130,9 @@
     "fulfill_scf": "L'elemento è stato rimosso dalla lista con succeso! ",
     "remove_from_list": "Spuntato",
     "add_as_expense": "Registra come spesa",
-    "revoke": "Revocare"
+    "revoke": "Revocare",
+
+    "change_username_scf": "Il cambiamento è stato di successo!",
+    "change_username": "Modifica la nome utente"
 
 }

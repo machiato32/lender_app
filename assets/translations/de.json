@@ -129,6 +129,9 @@
     "fulfill_scf": "Das Element wurde erfolgreich von der Liste gestrichen",
     "remove_from_list": "Abgehakt",
     "add_as_expense": "Schreibe es als Ausgabe auf",
-    "revoke": "Zurückrufen"
+    "revoke": "Zurückrufen",
+
+    "change_username_scf": "Die Änderung war erfolgreich.",
+    "change_username": "Benutzername ändern"
 
 }

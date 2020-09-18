@@ -132,7 +132,7 @@
     "add_as_expense": "Írd fel bevásárlásnak",
     "revoke": "Visszavonás",
 
-    "change_username_scf": "change_username_scf",
-    "change_username": "change_username"
+    "change_username_scf": "A felhasználónév megváltoztatása sikeres volt.",
+    "change_username": "Felhasználónév megváltoztatása"
 
 }

@@ -76,14 +76,19 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
   }
 }
 
-Future<http.Response> httpPut({@required BuildContext context, @required String uri, @required Map<String, dynamic> body}) async {
+Future<http.Response> httpPut({@required BuildContext context, @required String uri, @required Map<String, dynamic> body=null}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + apiToken
     };
-    String bodyEncoded = json.encode(body);
-    http.Response response = await http.put(APPURL + uri, headers: header, body: bodyEncoded);
+    http.Response response;
+    if(body!=null){
+      String bodyEncoded = json.encode(body);
+      response = await http.put(APPURL + uri, headers: header, body: bodyEncoded);
+    }else{
+      response = await http.put(APPURL + uri, headers: header);
+    }
 
     if (response.statusCode<300 && response.statusCode>=200) {
       return response;
