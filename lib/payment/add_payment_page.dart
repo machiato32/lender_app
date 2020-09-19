@@ -30,13 +30,13 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
           uri: '/groups/' + currentGroupId.toString(),
           context: context);
 
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      for (var member in response2['data']['members']) {
+      for (var member in decoded['data']['members']) {
         if(member['user_id']!=currentUserId){
           members.add(Member(
               nickname: member['nickname'],
-              balance: member['balance'] * 1.0,
+              balance: (member['balance'] * 1.0).round(),
               memberId: member['user_id']
           )
           );

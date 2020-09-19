@@ -57,7 +57,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       for (var member in response2['data']['members']) {
         members.add(Member(
           nickname: member['nickname'],
-          balance: member['balance'] * 1.0,
+          balance: (member['balance'] * 1.0).round(),
           username: member['username'],
           memberId: member['user_id']
         ));
