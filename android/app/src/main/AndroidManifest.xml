@@ -17,7 +17,7 @@
             android:resource="@drawable/dodo_white" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@android:color/holo_green_dark" />
+            android:resource="@android:color/white" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
