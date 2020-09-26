@@ -27,6 +27,7 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'report_a_bug.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -430,15 +431,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
-                          return ExpansionTile(
-                            title: Text('groups'.tr(),
-                                style: Theme.of(context).textTheme.bodyText1),
-                            leading: Icon(Icons.group,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .color),
-                            children: _generateListTiles(snapshot.data),
+                          return Theme(
+                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: Text('groups'.tr(),
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              leading: Icon(Icons.group,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color),
+                              children: _generateListTiles(snapshot.data),
+                            ),
                           );
                         } else {
                           return InkWell(
@@ -543,22 +547,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     (r) => false);
               },
             ),
-//            Divider(),
-//            ListTile(
-//              leading: Icon(
-//                Icons.bug_report,
-//                color: Colors.red,
-//              ),
-//              title: Text(
-//                'Probléma jelentése',
-//                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-//              ),
-//              onTap: () {
-//                setState(() {
-//                  context.locale=Locale('hu');
-//                });
-//              },
-//            ),
+           Divider(),
+           ListTile(
+             leading: Icon(
+               Icons.bug_report,
+               color: Colors.red,
+             ),
+             title: Text(
+               'report_a_bug'.tr(),
+               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+             ),
+             onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+             },
+           ),
           ],
         ),
       ),

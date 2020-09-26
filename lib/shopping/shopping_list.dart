@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -331,6 +332,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           )
         ),
       ),
+      dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
       background: Align(
           alignment: Alignment.centerLeft,
           child: Icon(widget.data.requesterId != currentUserId?Icons.attach_money:Icons.delete,

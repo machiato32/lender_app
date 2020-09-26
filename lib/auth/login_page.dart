@@ -129,13 +129,13 @@ class _LoginRouteState extends State<LoginRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    dataTrueText: 'login_scf'.tr(),
+                    dataTrueText: 'login_scf',
                     dataFalse: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Flexible(
                             child: Text(
-                              'login_scf'.tr(),
+                              'login_scf',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1
@@ -159,7 +159,7 @@ class _LoginRouteState extends State<LoginRoute> {
                             );
                           },
                           label: Text(
-                            'okay'.tr(),
+                            'okay',
                             style: Theme.of(context).textTheme.button,
                           ),
                           color: Theme.of(context).colorScheme.secondary,
