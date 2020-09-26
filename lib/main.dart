@@ -33,13 +33,12 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
+
   }
 
+  print(message);
+
   if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
   }
 
   // Or do other work.
@@ -68,14 +67,7 @@ void main() async {
     currentGroupId = preferences.getInt('current_group_id');
   }
 
-  var initializationSettingsAndroid =
-  new AndroidInitializationSettings('@drawable/dodo_white');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
 
-  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings);
   String initURL;
   try {
     initURL = await getInitialLink();
@@ -146,8 +138,20 @@ class _LenderAppState extends State<LenderApp> {
     await initUniLinks();
   }
 
+  Future onSelectNotification(String payload) async {
+    //TODO: this
+  }
+
   @override
   void initState() {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@drawable/dodo_white');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
     initPlatformState();
     _link = widget.initURL;
     super.initState();
@@ -179,9 +183,11 @@ class _LenderAppState extends State<LenderApp> {
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
+        print(message);
         print("onLaunch: $message");
       },
       onResume: (Map<String, dynamic> message) async {
+        print(message);
         print("onResume: $message");
       },
     );
@@ -228,7 +234,7 @@ class _LenderAppState extends State<LenderApp> {
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key);
+  MainPage({int drawerIndex=-1});
 
   @override
   _MainPageState createState() => _MainPageState();

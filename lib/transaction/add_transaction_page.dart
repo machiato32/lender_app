@@ -105,7 +105,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
       setInitialValues();
     }
     _names = _getNames();
-
     _focusNode.addListener(() {
       setState(() {});
     });
@@ -249,7 +248,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                               if (widget.type == ExpenseType.fromShopping) {
                                 checkboxBool[(snapshot.data as List<Member>)
                                         .firstWhere((member) =>
-                                            member.username ==
+                                            member.memberId ==
                                             widget.shoppingData.requesterId)] =
                                     true;
                               }

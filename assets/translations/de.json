@@ -43,7 +43,7 @@
     "create":"Erstellen",
 
     "change_password":"Passwort ändern",
-    "old_password":"Dein Password",
+    "old_password":"Dein Passwort",
     "new_password":"Neues Passwort",
     "new_password_confirm":"Passwort bestätigen",
     "send":"Senden",
@@ -64,7 +64,7 @@
 
     "example_name": "daniel",
     "not_alterable": "Später nicht änderbar!",
-    "registration_scf": "Das registrieren  war erfolgreich!",
+    "registration_scf": "Das Registrieren  war erfolgreich!",
 
     "example_nickname": "Daniel",
     "creation_scf": "Das Erstellen war erfolgreich!",
@@ -77,7 +77,7 @@
 
     "nickname_scf": "Der Namenswechsel war erfolgreich!",
 
-    "join_scf": "Das beitreten war erfolgreich!",
+    "join_scf": "Das Beitreten war erfolgreich!",
 
     "login_required": "Leider must du dich neu anmelden!",
     "transactions": "Ausgaben",
@@ -92,7 +92,7 @@
 
     "no_note": "Keine notiz",
     "want_delete": "Möchtest du den Artikel löschen?",
-    "delete_scf":"Das löschen war erfolgreich!",
+    "delete_scf":"Das Löschen war erfolgreich!",
     "delete": "Löschen",
 
     "want_expense": "Möchtest du es aufrechnen?",
@@ -118,7 +118,7 @@
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufszettel",
+    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
     "history_explanation": "Verfolge und lösche deine früheren Transaktionen",
 
     "pay": "Zahlen",
