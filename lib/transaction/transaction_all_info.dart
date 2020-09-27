@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -114,141 +115,154 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 SizedBox(
                   height: 10,
                 ),
-                Visibility(
-                  visible: widget.data.buyerId == currentUserId,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-      //                          FlatButton.icon(
-      //
-      //                            onPressed: (){
-      //                              showDialog(
-      //                                  context: context,
-      //                                  child: Dialog(
-      //                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      //                                    backgroundColor: Theme.of(context).colorScheme.onBackground,
-      //                                    child: Container(
-      //                                      padding: EdgeInsets.all(8),
-      //                                      child: Column(
-      //                                        crossAxisAlignment: CrossAxisAlignment.center,
-      //                                        mainAxisSize: MainAxisSize.min,
-      //                                        children: <Widget>[
-      //                                          Text('Szerkeszteni szeretnéd a tételt?', style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-      //                                          SizedBox(height: 15,),
-      //                                          Row(
-      //                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //                                            children: <Widget>[
-      //                                              RaisedButton(
-      //                                                  color: Theme.of(context).colorScheme.secondary,
-      //                                                  onPressed: (){
-      //                                                        Navigator.pop(context);
-      //                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewExpense(type: ExpenseType.fromSavedExpense,
-      //                                                          expense: new SavedExpense(name: widget.data.fromUser,
-      //                                                              names: widget.data.toUser,
-      //                                                              amount: widget.data.amount,
-      //                                                              note: widget.data.note,
-      //                                                              iD: widget.data.transactionID
-      //                                                          ),
-      //                                                        )));
-      //                                                  },
-      //                                                  child: Text('Igen', style: Theme.of(context).textTheme.button)
-      //                                              ),
-      //                                              RaisedButton(
-      //                                                  color: Theme.of(context).colorScheme.secondary,
-      //                                                  onPressed: (){ Navigator.pop(context);},
-      //                                                  child: Text('Nem', style: Theme.of(context).textTheme.button)
-      //                                              )
-      //                                            ],
-      //                                          )
-      //                                        ],
-      //                                      ),
-      //                                    ),
-      //                                  )
-      //                              );
-      //                            },
-      //                            color: Theme.of(context).colorScheme.secondary,
-      //                            label: Text('Szerkesztés', style: Theme.of(context).textTheme.button,),
-      //                            icon: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-      //                          ),
-                      FlatButton.icon(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                child: Dialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          'want_delete'.tr(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .copyWith(color: Colors.white),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: <Widget>[
-                                            RaisedButton(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                                onPressed: () async {
+                Center(
+                  child: Visibility(
+                    visible: widget.data.buyerId == currentUserId,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                         FlatButton.icon(
+
+                           onPressed: (){
+                             showDialog(
+                                 context: context,
+                                 child: Dialog(
+                                   shape: RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(5)),
+                                   backgroundColor: Colors.transparent,
+                                   elevation: 0,
+                                   child: Container(
+                                     padding: EdgeInsets.all(8),
+                                     child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                       mainAxisSize: MainAxisSize.min,
+                                       children: <Widget>[
+                                         Text('want_edit'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
+                                         SizedBox(height: 15,),
+                                         Row(
+                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                           children: <Widget>[
+                                             RaisedButton(
+                                                 color: Theme.of(context).colorScheme.secondary,
+                                                 onPressed: (){
                                                   Navigator.pop(context);
-                                                  showDialog(
-                                                      barrierDismissible: false,
-                                                      context: context,
-                                                      child: FutureSuccessDialog(
-                                                        future: _deleteElement(widget
-                                                            .data.transactionId),
-                                                        dataTrueText: 'delete_scf',
-                                                        onDataTrue: () {
-                                                          Navigator.pop(context);
-                                                          Navigator.pop(
-                                                              context, 'deleted');
-                                                        },
-                                                      ));
-                                                },
-                                                child: Text('yes'.tr(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .button)),
-                                            RaisedButton(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                                onPressed: () {
                                                   Navigator.pop(context);
-                                                },
-                                                child: Text('no'.tr(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .button))
-                                          ],
-                                        )
-                                      ],
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                                      AddTransactionRoute(
+                                                        type: TransactionType.fromModifyExpense,
+                                                        expense: SavedTransaction(
+                                                         buyerNickname: widget.data.buyerNickname,
+                                                         buyerId: widget.data.buyerId,
+                                                         buyerUsername: widget.data.buyerUsername,
+                                                         receivers: widget.data.receivers,
+                                                         totalAmount: widget.data.totalAmount,
+                                                         name: widget.data.name,
+                                                         transactionId: widget.data.transactionId
+                                                        ),
+                                                      )
+                                                    )
+                                                  );
+                                                 },
+                                                 child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
+                                             ),
+                                             RaisedButton(
+                                                 color: Theme.of(context).colorScheme.secondary,
+                                                 onPressed: (){ Navigator.pop(context);},
+                                                 child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
+                                             )
+                                           ],
+                                         )
+                                       ],
+                                     ),
+                                   ),
+                                 )
+                             );
+                           },
+                           color: Theme.of(context).colorScheme.secondary,
+                           label: Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
+                           icon: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
+                         ),
+                        FlatButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  child: Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Text(
+                                            'want_delete'.tr(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(color: Colors.white),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: <Widget>[
+                                              RaisedButton(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    showDialog(
+                                                        barrierDismissible: false,
+                                                        context: context,
+                                                        child: FutureSuccessDialog(
+                                                          future: _deleteElement(widget
+                                                              .data.transactionId),
+                                                          dataTrueText: 'delete_scf',
+                                                          onDataTrue: () {
+                                                            Navigator.pop(context);
+                                                            Navigator.pop(
+                                                                context, 'deleted');
+                                                          },
+                                                        ));
+                                                  },
+                                                  child: Text('yes'.tr(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .button)),
+                                              RaisedButton(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('no'.tr(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .button))
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ));
-                          },
-                          color: Theme.of(context).colorScheme.secondary,
-                          label: Text(
-                            'revoke'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          icon: Icon(Icons.delete,
-                              color: Theme.of(context).textTheme.button.color)),
-                    ],
+                                  ));
+                            },
+                            color: Theme.of(context).colorScheme.secondary,
+                            label: Text(
+                              'revoke'.tr(),
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                            icon: Icon(Icons.delete,
+                                color: Theme.of(context).textTheme.button.color)),
+                      ],
+                    ),
                   ),
                 )
               ],

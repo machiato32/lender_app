@@ -696,7 +696,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddTransactionRoute(
-                                  type: ExpenseType.newExpense,
+                                  type: TransactionType.newExpense,
                                 )
                         )).then((value) {
                           setState(() {});

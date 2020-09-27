@@ -1,5 +1,4 @@
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -179,7 +178,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                     Theme.of(context).textTheme.bodyText1.color),
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(30)
+                              LengthLimitingTextInputFormatter(50)
                             ],
                           ),
                         ),
@@ -230,6 +229,12 @@ class _ShoppingListState extends State<ShoppingList> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
+                        if(snapshot.data.length==0){
+                          return Padding(
+                            padding: EdgeInsets.all(25),
+                            child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                          );
+                        }
                         return ListView(
                             padding: EdgeInsets.all(15),
                             children: _generateShoppingList(snapshot.data));
@@ -359,7 +364,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                   MaterialPageRoute(
                       builder: (context) =>
                           AddTransactionRoute(
-                            type: ExpenseType
+                            type: TransactionType
                                 .fromShopping,
                             shoppingData:
                             widget

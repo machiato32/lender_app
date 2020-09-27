@@ -66,6 +66,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
           onPressed: (){
             if(_formKey.currentState.validate()){
               showDialog(
+                barrierDismissible: false,
                 context: context,
                 child: FutureSuccessDialog(
                   future: _postBug(_bugController.text),

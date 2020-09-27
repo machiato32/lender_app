@@ -14,20 +14,23 @@ import 'package:csocsort_szamla/http_handler.dart';
 
 Random random = Random();
 
-class SavedExpense {
-  String name, note;
-  List<String> names;
-  int amount;
-  int iD;
+class SavedTransaction {
+  String buyerNickname, buyerUsername;
+  int buyerId;
+  String name;  
+  List<Member> receivers;
+  int totalAmount;
+  int transactionId;
 
-  SavedExpense({this.name, this.names, this.amount, this.note, this.iD});
+  SavedTransaction({this.buyerId, this.buyerUsername, this.buyerNickname,
+    this.receivers, this.totalAmount, this.name, this.transactionId});
 }
 
-enum ExpenseType { fromShopping, fromSavedExpense, newExpense }
+enum TransactionType { fromShopping, fromModifyExpense, newExpense }
 
 class AddTransactionRoute extends StatefulWidget {
-  final ExpenseType type;
-  final SavedExpense expense;
+  final TransactionType type;
+  final SavedTransaction expense;
   final ShoppingRequestData shoppingData;
 
   AddTransactionRoute({@required this.type, this.expense, this.shoppingData});
@@ -39,22 +42,22 @@ class AddTransactionRoute extends StatefulWidget {
 class _AddTransactionRouteState extends State<AddTransactionRoute> {
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-  Future<List<Member>> _names;
+  Future<List<Member>> _members;
   Future<bool> success;
   Map<Member, bool> checkboxBool = Map<Member, bool>();
   FocusNode _focusNode = FocusNode();
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<Member>> _getNames() async {
+  Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
           uri: '/groups/' + currentGroupId.toString(),
           context: context);
 
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      for (var member in response2['data']['members']) {
+      for (var member in decoded['data']['members']) {
         members.add(Member(
           nickname: member['nickname'],
           balance: (member['balance'] * 1.0).round(),
@@ -88,10 +91,28 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
+  Future<bool> _updateTransaction(
+      List<Member> members, double amount, String name, int transactionId) async {
+    try {
+      Map<String, dynamic> body = {
+        "name": name,
+        "amount": amount,
+        "receivers": members.map((e) => e.toJson()).toList()
+      };
+
+      await httpPut(uri: '/transactions/'+transactionId.toString(),
+          body: body, context: context);
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
   void setInitialValues() {
-    if (widget.type == ExpenseType.fromSavedExpense) {
-      noteController.text = widget.expense.note;
-      amountController.text = widget.expense.amount.toString();
+    if (widget.type == TransactionType.fromModifyExpense) {
+      noteController.text = widget.expense.name;
+      amountController.text = widget.expense.totalAmount.toString();
     } else {
       noteController.text = widget.shoppingData.name;
     }
@@ -100,11 +121,11 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   @override
   void initState() {
     super.initState();
-    if (widget.type == ExpenseType.fromSavedExpense ||
-        widget.type == ExpenseType.fromShopping) {
+    if (widget.type == TransactionType.fromModifyExpense ||
+        widget.type == TransactionType.fromShopping) {
       setInitialValues();
     }
-    _names = _getNames();
+    _members = _getMembers();
     _focusNode.addListener(() {
       setState(() {});
     });
@@ -231,21 +252,22 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                     Divider(),
                     Center(
                       child: FutureBuilder(
-                        future: _names,
+                        future: _members,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
+                          if (snapshot.connectionState == ConnectionState.done) {
                             if (snapshot.hasData) {
+                              List<Member> snapshotMembers = snapshot.data;
                               for (Member member in snapshot.data) {
                                 checkboxBool.putIfAbsent(member, () => false);
                               }
-//                          if(widget.type==ExpenseType.fromSavedExpense && widget.expense.names!=null){
-//                            for(String name in widget.expense.names){
-//                              checkboxBool[name]=true;
-//                            }
-//                            widget.expense.names=null;
-//                          }else
-                              if (widget.type == ExpenseType.fromShopping) {
+                             if(widget.type==TransactionType.fromModifyExpense && widget.expense.receivers!=null){
+                               for(Member member in widget.expense.receivers){
+                                 Member memberInCheckbox = snapshotMembers.firstWhere((element) => element.memberId==member.memberId, orElse: null);
+                                 if(memberInCheckbox!=null)
+                                   checkboxBool[memberInCheckbox]=true;
+                               }
+                               widget.expense.receivers=null;
+                             }else if (widget.type == TransactionType.fromShopping) {
                                 checkboxBool[(snapshot.data as List<Member>)
                                         .firstWhere((member) =>
                                             member.memberId ==
@@ -294,8 +316,8 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      _names = null;
-                                      _names = _getNames();
+                                      _members = null;
+                                      _members = _getMembers();
                                     });
                                   });
                             }
@@ -450,28 +472,16 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                 return;
               }
               double amount = double.parse(amountController.text);
-              String note = noteController.text;
+              String name = noteController.text;
               List<Member> members = new List<Member>();
               checkboxBool.forEach((Member key, bool value) {
                 if (value) members.add(key);
               });
-              Function f;
-              var param;
-//          if(widget.type==ExpenseType.fromSavedExpense){
-//            f=_deleteExpense;
-//            param=widget.expense.iD;
-//          }else{
-              f = (par) {
-                return true;
-              };
-              param = 5;
-//          }
-              f(param);
               showDialog(
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    future: _postTransaction(members, amount, note),
+                    future: widget.type==TransactionType.fromModifyExpense?_updateTransaction(members, amount, name, widget.expense.transactionId):_postTransaction(members, amount, name),
                     dataTrue: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

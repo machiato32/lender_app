@@ -39,7 +39,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   }
 }
 
-Future<http.Response> httpPost({@required BuildContext context, @required String uri, @required Map<String, dynamic> body=null}) async {
+Future<http.Response> httpPost({@required BuildContext context, @required String uri, Map<String, dynamic> body}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
@@ -76,7 +76,7 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
   }
 }
 
-Future<http.Response> httpPut({@required BuildContext context, @required String uri, @required Map<String, dynamic> body=null}) async {
+Future<http.Response> httpPut({@required BuildContext context, @required String uri,  Map<String, dynamic> body}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",

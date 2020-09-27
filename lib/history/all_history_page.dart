@@ -9,6 +9,8 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
 class AllHistoryRoute extends StatefulWidget {
+  final int startingIndex;
+  AllHistoryRoute({@required this.startingIndex});
   @override
   _AllHistoryRouteState createState() => _AllHistoryRouteState();
 }
@@ -69,7 +71,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.startingIndex);
+    _selectedIndex = widget.startingIndex;
 
     _transactions = null;
     _transactions = _getTransactions();

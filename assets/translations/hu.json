@@ -91,8 +91,8 @@
     "payment_hint": "Mamut",
 
     "no_note": "Nincs megjegyzés",
-    "want_delete": "Törölni szeretnéd a tételt?",
-    "delete_scf": "A törlés sikeres volt!",
+    "want_delete": "Vissza szeretnéd vonni a tételt?",
+    "delete_scf": "A visszavonás sikeres volt!",
     "delete": "Törlés",
 
     "want_expense": "Fel szeretnéd számolni?",
@@ -116,11 +116,11 @@
 
     "members_explanation": "Nézd meg a csoport tagjait és változtasd meg a beceneved",
     "members_explanation_admin": "Kezeld a tagok jogosultságát, becenevét",
-    "modify": "Módosít",
+    "modify": "Módosítás",
     "invitation_explanation": "Hívj meg valakit a csoportba",
     "rename_group_explanation": "Nevezd át a csoportod, ha nem tetszik a neve",
     "shopping_list_explanation": "Írj a közös bevásárlólistára",
-    "history_explanation": "Kövesd nyomon és töröld korábbi tranzakcióid",
+    "history_explanation": "Kövesd nyomon, vond vissza és módosítsd korábbi tranzakcióid",
 
     "pay": "Fizetés",
     "who_to_pay": "Kinek fizessek?",
@@ -135,6 +135,14 @@
     "change_username_scf": "A felhasználónév megváltoztatása sikeres volt.",
     "change_username": "Felhasználónév megváltoztatása",
 
-    "hi": "Szia"
+    "hi": "Szia",
+
+    "report_a_bug": "Hiba jelentése",
+    "bug": "Hiba",
+    "what_is_wrong": "Mi a hiba?",
+    "bug_scf": "A hiba jelentése sikeres volt.",
+
+    "want_edit": "Változtatni szeretnéd a tételt?",
+    "nothing_to_show": "Nagy az üresség..."
 
 }
