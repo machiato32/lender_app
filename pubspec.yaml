@@ -11,7 +11,7 @@ description: Csocsort
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.3+31
+version: 1.4.4+32
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -23,13 +23,14 @@ dependencies:
   shared_preferences: ^0.5.3+5
   intl: 0.16.1
   fluttertoast: ^6.0.1
-  provider: 4.0.2
+  provider: ^4.0.4
   flutter_speed_dial: ^1.2.5
   easy_localization: 2.3.3
   uni_links: 0.4.0
   share: 0.6.4+3
   firebase_messaging: 7.0.0
   flutter_local_notifications: 1.4.4+4
+  feature_discovery: ^0.12.0+2
   flutter:
     sdk: flutter
   flutter_localizations:

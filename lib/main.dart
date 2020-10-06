@@ -12,6 +12,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -208,26 +209,28 @@ class _LenderAppState extends State<LenderApp> {
           appState.updateThemeNoNotify(widget.themeName);
           _first = false;
         }
-        return MaterialApp(
-          title: 'Lender',
-          theme: appState.theme,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          home: currentUserId == null
-              ? LoginOrRegisterPage(
-                  showDialog: true,
-                )
-              : (_link != null)
-                  ? JoinGroup(
-                      inviteURL: _link,
-                      fromAuth: (currentGroupId == null) ? true : false,
-                    )
-                  : (currentGroupId == null)
-                      ? JoinGroup(
-                          fromAuth: true,
-                        )
-                      : MainPage(),
+        return FeatureDiscovery(
+          child: MaterialApp(
+            title: 'Lender',
+            theme: appState.theme,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            home: currentUserId == null
+                ? LoginOrRegisterPage(
+                    showDialog: true,
+                  )
+                : (_link != null)
+                    ? JoinGroup(
+                        inviteURL: _link,
+                        fromAuth: (currentGroupId == null) ? true : false,
+                      )
+                    : (currentGroupId == null)
+                        ? JoinGroup(
+                            fromAuth: true,
+                          )
+                        : MainPage(),
+          ),
         );
       },
     );
@@ -340,6 +343,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   void _handleDrawer() {
+    FeatureDiscovery.clearPreferences(context, <String>['drawer']);
+    FeatureDiscovery.discoverFeatures(context, <String>['drawer']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
@@ -348,6 +353,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void callback() {
     setState(() {});
   }
+  var icon = Icon(Icons.add);
 
   @override
   Widget build(BuildContext context) {
@@ -372,9 +378,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             );
           },
         ),
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: _handleDrawer,
+        leading: DescribedFeatureOverlay(
+          tapTarget: Icon(Icons.menu),
+          featureId: 'drawer',
+          targetColor: Theme.of(context).colorScheme.secondary,
+          child: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _handleDrawer,
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -564,16 +575,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: Visibility(
+      floatingActionButton:
+      Visibility(
         visible: _selectedIndex == 0,
         child: SpeedDial(
-          child: Icon(Icons.add),
+          child: DescribedFeatureOverlay(
+            featureId: 'asd',
+            contentLocation: ContentLocation.trivial,
+            tapTarget: Icon(Icons.add),
+              child: Icon(Icons.add)
+          ),
           overlayColor: (Theme.of(context).brightness == Brightness.dark)
               ? Colors.black
               : Colors.white,
 //        animatedIcon: AnimatedIcons.menu_close,
           curve: Curves.bounceIn,
-
+          onOpen: (){
+            FeatureDiscovery.clearPreferences(context, <String>['asd']);
+            FeatureDiscovery.discoverFeatures(context, <String>['asd']);
+          },
           children: [
             SpeedDialChild(
                 labelWidget: GestureDetector(

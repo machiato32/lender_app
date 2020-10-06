@@ -119,7 +119,7 @@
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
     "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
-    "history_explanation": "Verfolge, rufe zurück und Ändere deine früheren Transaktionen",
+    "history_explanation": "Verfolge, rufe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
     "who_to_pay": "An wen soll ich zahlen?",
@@ -141,7 +141,7 @@
     "what_is_wrong": "Was ist der Fehler?",
     "bug_scf": "Das Melden war erfolgreich",
 
-    "want_edit": "Möchtest du den Artikel Ändern?",
+    "want_edit": "Möchtest du den Artikel ändern?",
     "nothing_to_show": "Es fühlt sich leer an..."
 
 }
