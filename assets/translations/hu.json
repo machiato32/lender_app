@@ -143,6 +143,17 @@
     "bug_scf": "A hiba jelentése sikeres volt.",
 
     "want_edit": "Változtatni szeretnéd a tételt?",
-    "nothing_to_show": "Nagy az üresség..."
+    "nothing_to_show": "Nagy az üresség...",
+
+    "discovery_add_floating_title": "Bevásárlás és fizetés hozzáadása",
+    "discovery_add_floating_description": "\nBevásárlás:\nItt írhatod fel az összeget, ha vettél valamit egy vagy több tagnak, az alkalmazás pedig arányosan elosztja köztük\n\nFizetés:\nItt írhatod fel ide az összeget, ha fizettél egy tagnak",
+    "discovery_drawer_title": "Felhasználói beállítások",
+    "discovery_drawer_description": "\nA menü felső részében kezelheted csoportjaidat.\n\nAlatta a személyes beállításaidat találod.",
+    "discovery_settings_title": "Személyes beállítások",
+    "discovery_settings_description": "\nItt változtathatod meg felhasználóneved, jelszavad, illetve választhatsz jobbnál jobb színek közül.",
+    "discover_shopping_title": "Közös bevásárlólista",
+    "discover_shopping_description" : "\nEzt a bevásárlólistát a csoport összes tagja látja.\n\nFelhasználhatjátok pl. nyaraláson közös bevásárláshoz vagy lakótársakként, hogy ne mindenki külön menjen boltba.",
+    "discover_group_settings_title": "Csoport beállításai",
+    "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, illetve változtathatod meg a beceneved."
 
 }

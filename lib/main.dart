@@ -340,11 +340,46 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
     _groups = null;
     _groups = _getGroups();
+    print('lol');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await showDialog(
+          context: context,
+          child: AlertDialog(
+            // elevation: 0,
+            backgroundColor: Theme.of(context).cardTheme.color,
+            title: Text('Légyszi olvasd el!'),
+            content: SingleChildScrollView(
+              child: Text(
+                'Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
+                    'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
+                    'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
+                    'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
+                    'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
+                    'U.I.: Ez később nem ilyen bénán fog megjelenni.',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Tényleg elolvastam',
+                  style: Theme.of(context).textTheme.button,
+                ),
+                color: Theme.of(context).colorScheme.secondary,
+              )
+            ],
+          ));
+    });
   }
 
   void _handleDrawer() {
-    FeatureDiscovery.clearPreferences(context, <String>['drawer']);
-    FeatureDiscovery.discoverFeatures(context, <String>['drawer']);
+    FeatureDiscovery.clearPreferences(context, <String>['drawer', 'settings']);
+    FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
@@ -379,9 +414,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           },
         ),
         leading: DescribedFeatureOverlay(
-          tapTarget: Icon(Icons.menu),
+          tapTarget: Icon(Icons.menu, color: Colors.black),
           featureId: 'drawer',
-          targetColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          overflowMode: OverflowMode.extendBackground,
+          title: Text('discovery_drawer_title'.tr()),
+          description: Text('discovery_drawer_description'.tr()),
+          barrierDismissible: false,
           child: IconButton(
             icon: Icon(Icons.menu),
             onPressed: _handleDrawer,
@@ -394,16 +433,39 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             _selectedIndex = _index;
             _tabController.animateTo(_index);
           });
+          if(_selectedIndex==1){
+            FeatureDiscovery.clearPreferences(context, ['shopping_list']);
+            FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+          }else if(_selectedIndex==2){
+            FeatureDiscovery.clearPreferences(context, ['group_settings']);
+            FeatureDiscovery.discoverFeatures(context, ['group_settings']);
+          }
         },
         currentIndex: _selectedIndex,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.home), title: Text('home'.tr())),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
-              title: Text('shopping_list'.tr())),
+            icon: DescribedFeatureOverlay(
+              featureId: 'shopping_list',
+              tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
+              title: Text('discover_shopping_title'.tr()),
+              description: Text('discover_shopping_description'.tr()),
+              overflowMode: OverflowMode.extendBackground,
+              child: Icon(Icons.add_shopping_cart)
+            ),
+            title: Text('shopping_list'.tr())
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text('group'.tr()))
+            icon: DescribedFeatureOverlay(
+              featureId: 'group_settings',
+              tapTarget: Icon(Icons.settings, color: Colors.black),
+              title: Text('discover_group_settings_title'.tr()),
+              description: Text('discover_group_settings_description'.tr()),
+                overflowMode: OverflowMode.extendBackground,
+              child: Icon(Icons.settings)),
+              title: Text('group'.tr())
+          )
         ],
       ),
       drawer: Drawer(
@@ -474,7 +536,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.arrow_forward,
+                      Icons.group_add,
                       color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     title: Text(
@@ -527,15 +589,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             Divider(),
             ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1.color,
+              leading: DescribedFeatureOverlay(
+                tapTarget: Icon(Icons.settings, color: Colors.black),
+                featureId: 'settings',
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                overflowMode: OverflowMode.extendBackground,
+                allowShowingDuplicate: true,
+                contentLocation: ContentLocation.above,
+                title: Text('discovery_settings_title'.tr()),
+                description: Text('discovery_settings_description'.tr()),
+                child: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
               ),
               title: Text(
                 'settings'.tr(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
+
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -580,10 +653,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         visible: _selectedIndex == 0,
         child: SpeedDial(
           child: DescribedFeatureOverlay(
-            featureId: 'asd',
-            contentLocation: ContentLocation.trivial,
-            tapTarget: Icon(Icons.add),
-              child: Icon(Icons.add)
+            featureId: 'add_payment_expense',
+            tapTarget: Icon(Icons.add, color: Colors.black,),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            title: Text('discovery_add_floating_title'.tr()),
+            description: Text('discovery_add_floating_description'.tr()),
+            contentLocation: ContentLocation.above,
+            overflowMode: OverflowMode.extendBackground,
+
+            child: Icon(Icons.add),
           ),
           overlayColor: (Theme.of(context).brightness == Brightness.dark)
               ? Colors.black
@@ -591,13 +669,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 //        animatedIcon: AnimatedIcons.menu_close,
           curve: Curves.bounceIn,
           onOpen: (){
-            FeatureDiscovery.clearPreferences(context, <String>['asd']);
-            FeatureDiscovery.discoverFeatures(context, <String>['asd']);
+            FeatureDiscovery.clearPreferences(context, <String>['add_payment_expense']);
+            FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
           },
           children: [
             SpeedDialChild(
                 labelWidget: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    if (currentUsername != "")
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddPaymentRoute()))
+                          .then((value) {
+                        setState(() {});
+                      });
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(right: 18.0),
                     child: Column(
@@ -660,7 +747,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 }),
             SpeedDialChild(
                 labelWidget: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    if (currentUsername != "")
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddTransactionRoute()))
+                          .then((value) {
+                        setState(() {});
+                      });
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(right: 18.0),
                     child: Column(
