@@ -119,7 +119,7 @@
     "modify": "Módosítás",
     "invitation_explanation": "Hívj meg valakit a csoportba",
     "rename_group_explanation": "Nevezd át a csoportod, ha nem tetszik a neve",
-    "shopping_list_explanation": "Írj a közös bevásárlólistára",
+    "shopping_list_explanation": "Írj a közös bevásárlólistára, vagy szólj a többieknek, hogy éppen boltaban vagy",
     "history_explanation": "Kövesd nyomon, vond vissza és módosítsd korábbi tranzakcióid",
 
     "pay": "Fizetés",
@@ -145,6 +145,9 @@
     "want_edit": "Változtatni szeretnéd a tételt?",
     "nothing_to_show": "Nagy az üresség...",
 
+    "i_m_shopping" : "Vásárolni vagyok",
+    "where" : "Hol?",
+
     "discovery_add_floating_title": "Bevásárlás és fizetés hozzáadása",
     "discovery_add_floating_description": "\nBevásárlás:\nItt írhatod fel az összeget, ha vettél valamit egy vagy több tagnak, az alkalmazás pedig arányosan elosztja köztük\n\nFizetés:\nItt írhatod fel ide az összeget, ha fizettél egy tagnak",
     "discovery_drawer_title": "Felhasználói beállítások",
@@ -154,6 +157,8 @@
     "discover_shopping_title": "Közös bevásárlólista",
     "discover_shopping_description" : "\nEzt a bevásárlólistát a csoport összes tagja látja.\n\nFelhasználhatjátok pl. nyaraláson közös bevásárláshoz vagy lakótársakként, hogy ne mindenki külön menjen boltba.",
     "discover_group_settings_title": "Csoport beállításai",
-    "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, illetve változtathatod meg a beceneved."
+    "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, illetve változtathatod meg a beceneved.",
+
+    "tutorial_1" : ""
 
 }

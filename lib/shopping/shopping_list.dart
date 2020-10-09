@@ -123,7 +123,7 @@ class _ShoppingListState extends State<ShoppingList> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                 child: Column(
                   children: <Widget>[
                     Center(
@@ -217,9 +217,61 @@ class _ShoppingListState extends State<ShoppingList> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 10,),
+                    RaisedButton(
+                      onPressed: (){
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                            return Form(
+                              key: formKey,
+                              child: AlertDialog(
+                                title: Text('where'.tr()),
+                                content: TextField(
+                                  decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                          Theme.of(context).colorScheme.onSurface),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          width: 2),
+                                    ),
+                                  ),
+                                  controller: _addRequestController,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                      Theme.of(context).textTheme.bodyText1.color),
+                                  cursorColor: Theme.of(context).colorScheme.secondary,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(50)
+                                  ],
+                                ),
+                                actions: [
+                                  RaisedButton(
+                                    onPressed: (){
+                                      //TODO: API request
+                                    },
+                                    child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                      color: Theme.of(context).colorScheme.secondary,
+
                     ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
                   ],
                 ),
               ),
@@ -230,9 +282,11 @@ class _ShoppingListState extends State<ShoppingList> {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                         if(snapshot.data.length==0){
-                          return Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                          return ListView(
+                            padding: EdgeInsets.all(15),
+                            children: [
+                              Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                            ],
                           );
                         }
                         return ListView(
