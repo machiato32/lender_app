@@ -30,7 +30,7 @@ class _GroupSettingState extends State<GroupSettings> {
           uri: '/groups/' + currentGroupId.toString(),
           context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      return decoded['data']['invitations'][0]['token'];
+      return decoded['data']['invitation'];
 
     } catch (_) {
       throw _;
