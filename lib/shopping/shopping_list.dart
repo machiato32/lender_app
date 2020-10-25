@@ -59,7 +59,7 @@ class _ShoppingListState extends State<ShoppingList> {
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
-      decoded['data']['active'].forEach((element) {
+      decoded['data'].forEach((element) {
         shopping.add(ShoppingRequestData.fromJson(element));
       });
       shopping = shopping.reversed.toList();
