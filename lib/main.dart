@@ -12,6 +12,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -27,19 +28,19 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'report_a_bug.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
+
   }
 
+  print(message);
+
   if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
   }
 
   // Or do other work.
@@ -68,14 +69,7 @@ void main() async {
     currentGroupId = preferences.getInt('current_group_id');
   }
 
-  var initializationSettingsAndroid =
-  new AndroidInitializationSettings('@drawable/dodo_white');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
 
-  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings);
   String initURL;
   try {
     initURL = await getInitialLink();
@@ -146,8 +140,20 @@ class _LenderAppState extends State<LenderApp> {
     await initUniLinks();
   }
 
+  Future onSelectNotification(String payload) async {
+    //TODO: this
+  }
+
   @override
   void initState() {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@drawable/dodo_white');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
     initPlatformState();
     _link = widget.initURL;
     super.initState();
@@ -179,9 +185,11 @@ class _LenderAppState extends State<LenderApp> {
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
+        print(message);
         print("onLaunch: $message");
       },
       onResume: (Map<String, dynamic> message) async {
+        print(message);
         print("onResume: $message");
       },
     );
@@ -201,26 +209,28 @@ class _LenderAppState extends State<LenderApp> {
           appState.updateThemeNoNotify(widget.themeName);
           _first = false;
         }
-        return MaterialApp(
-          title: 'Lender',
-          theme: appState.theme,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          home: currentUserId == null
-              ? LoginOrRegisterPage(
-                  showDialog: true,
-                )
-              : (_link != null)
-                  ? JoinGroup(
-                      inviteURL: _link,
-                      fromAuth: (currentGroupId == null) ? true : false,
-                    )
-                  : (currentGroupId == null)
-                      ? JoinGroup(
-                          fromAuth: true,
-                        )
-                      : MainPage(),
+        return FeatureDiscovery(
+          child: MaterialApp(
+            title: 'Lender',
+            theme: appState.theme,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            home: currentUserId == null
+                ? LoginOrRegisterPage(
+                    showDialog: true,
+                  )
+                : (_link != null)
+                    ? JoinGroup(
+                        inviteURL: _link,
+                        fromAuth: (currentGroupId == null) ? true : false,
+                      )
+                    : (currentGroupId == null)
+                        ? JoinGroup(
+                            fromAuth: true,
+                          )
+                        : MainPage(),
+          ),
         );
       },
     );
@@ -228,7 +238,7 @@ class _LenderAppState extends State<LenderApp> {
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key);
+  MainPage({int drawerIndex=-1});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -333,6 +343,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   void _handleDrawer() {
+    FeatureDiscovery.clearPreferences(context, <String>['drawer']);
+    FeatureDiscovery.discoverFeatures(context, <String>['drawer']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
@@ -341,6 +353,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void callback() {
     setState(() {});
   }
+  var icon = Icon(Icons.add);
 
   @override
   Widget build(BuildContext context) {
@@ -365,9 +378,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             );
           },
         ),
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: _handleDrawer,
+        leading: DescribedFeatureOverlay(
+          tapTarget: Icon(Icons.menu),
+          featureId: 'drawer',
+          targetColor: Theme.of(context).colorScheme.secondary,
+          child: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _handleDrawer,
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -399,11 +417,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        // Expanded(
-                        //   child: Image(
-                        //     image: AssetImage('assets/dodo_color.png'),
-                        //   ),
-                        // ),
+                        Expanded(
+                          child: Image(
+                            image: AssetImage('assets/dodo_color.png'),
+                          ),
+                        ),
                         Text(
                           'LENDER',
                           style: Theme.of(context)
@@ -411,36 +429,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               .headline6
                               .copyWith(letterSpacing: 2.5),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         Text(
-                          currentUsername,
+                          'hi'.tr()+' '+currentUsername+'!',
                           style: Theme.of(context).textTheme.bodyText1.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                         ),
-                        FutureBuilder(
-                          future: _getSumBalance(),
-                          builder: (context, snapshot){
-                            if(snapshot.connectionState==ConnectionState.done){
-                              if(snapshot.hasData){
-                                return Text(
-                                  'Σ: '+snapshot.data.toString(),
-                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                    fontSize: 16
-                                  ),
-                                );
-                              }
-                            }
-                            return Text('Σ: ...',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  fontSize: 16
-                              ),
-                            );
-                          },
-                        )
                       ],
                     ),
                   ),
@@ -449,15 +442,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
-                          return ExpansionTile(
-                            title: Text('groups'.tr(),
-                                style: Theme.of(context).textTheme.bodyText1),
-                            leading: Icon(Icons.group,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .color),
-                            children: _generateListTiles(snapshot.data),
+                          return Theme(
+                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: Text('groups'.tr(),
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              leading: Icon(Icons.group,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color),
+                              children: _generateListTiles(snapshot.data),
+                            ),
                           );
                         } else {
                           return InkWell(
@@ -509,6 +505,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
+
+            FutureBuilder(
+              future: _getSumBalance(),
+              builder: (context, snapshot){
+                if(snapshot.connectionState==ConnectionState.done){
+                  if(snapshot.hasData){
+                    return Text(
+                      'Σ: '+snapshot.data.toString(),
+                      style: Theme.of(context).textTheme.bodyText1
+                    );
+                  }
+                }
+                return Text('Σ: ...',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 16
+                  ),
+                );
+              },
+            ),
             Divider(),
             ListTile(
               leading: Icon(
@@ -526,7 +542,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             ListTile(
               leading: Icon(
-                Icons.account_circle,
+                Icons.exit_to_app,
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               title: Text(
@@ -542,35 +558,42 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     (r) => false);
               },
             ),
-//            Divider(),
-//            ListTile(
-//              leading: Icon(
-//                Icons.bug_report,
-//                color: Colors.red,
-//              ),
-//              title: Text(
-//                'Probléma jelentése',
-//                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-//              ),
-//              onTap: () {
-//                setState(() {
-//                  context.locale=Locale('hu');
-//                });
-//              },
-//            ),
+           Divider(),
+           ListTile(
+             leading: Icon(
+               Icons.bug_report,
+               color: Colors.red,
+             ),
+             title: Text(
+               'report_a_bug'.tr(),
+               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+             ),
+             onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+             },
+           ),
           ],
         ),
       ),
-      floatingActionButton: Visibility(
+      floatingActionButton:
+      Visibility(
         visible: _selectedIndex == 0,
         child: SpeedDial(
-          child: Icon(Icons.add),
+          child: DescribedFeatureOverlay(
+            featureId: 'asd',
+            contentLocation: ContentLocation.trivial,
+            tapTarget: Icon(Icons.add),
+              child: Icon(Icons.add)
+          ),
           overlayColor: (Theme.of(context).brightness == Brightness.dark)
               ? Colors.black
               : Colors.white,
 //        animatedIcon: AnimatedIcons.menu_close,
           curve: Curves.bounceIn,
-
+          onOpen: (){
+            FeatureDiscovery.clearPreferences(context, <String>['asd']);
+            FeatureDiscovery.discoverFeatures(context, <String>['asd']);
+          },
           children: [
             SpeedDialChild(
                 labelWidget: GestureDetector(
@@ -693,7 +716,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddTransactionRoute(
-                                  type: ExpenseType.newExpense,
+                                  type: TransactionType.newExpense,
                                 )
                         )).then((value) {
                           setState(() {});

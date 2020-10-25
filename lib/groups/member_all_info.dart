@@ -202,6 +202,17 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         actions: [
                           RaisedButton(
                             onPressed: () {
+                              FocusScope.of(context).unfocus();
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'back'.tr(),
+                              style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
+                            ),
+                            color: Colors.grey[700],
+                          ),
+                          RaisedButton(
+                            onPressed: () {
                               if (_nicknameFormKey.currentState.validate()) {
                                 Navigator.pop(context);
                                 FocusScope.of(context).unfocus();
@@ -229,17 +240,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                             ),
                             color: Theme.of(context).colorScheme.secondary,
                           ),
-                          RaisedButton(
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'back'.tr(),
-                              style: Theme.of(context).textTheme.button,
-                            ),
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+
                         ],
                       ));
                 },

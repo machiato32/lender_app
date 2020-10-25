@@ -25,7 +25,7 @@
     "new_nickname":"Neuer Spitzname",
     "rename_group":"Gruppe umbenennen",
     "new_name":"Neuer Name",
-    "invitation":"Einladen",
+    "invitation":"Einladung",
     "copied":"Kopiert",
     "members":"Mitglieder",
 
@@ -43,7 +43,7 @@
     "create":"Erstellen",
 
     "change_password":"Passwort ändern",
-    "old_password":"Dein Password",
+    "old_password":"Dein Passwort",
     "new_password":"Neues Passwort",
     "new_password_confirm":"Passwort bestätigen",
     "send":"Senden",
@@ -64,7 +64,7 @@
 
     "example_name": "daniel",
     "not_alterable": "Später nicht änderbar!",
-    "registration_scf": "Das registrieren  war erfolgreich!",
+    "registration_scf": "Das Registrieren  war erfolgreich!",
 
     "example_nickname": "Daniel",
     "creation_scf": "Das Erstellen war erfolgreich!",
@@ -77,7 +77,7 @@
 
     "nickname_scf": "Der Namenswechsel war erfolgreich!",
 
-    "join_scf": "Das beitreten war erfolgreich!",
+    "join_scf": "Das Beitreten war erfolgreich!",
 
     "login_required": "Leider must du dich neu anmelden!",
     "transactions": "Ausgaben",
@@ -91,8 +91,8 @@
     "payment_hint": "Mammut",
 
     "no_note": "Keine notiz",
-    "want_delete": "Möchtest du den Artikel löschen?",
-    "delete_scf":"Das löschen war erfolgreich!",
+    "want_delete": "Möchtest du den Artikel zurückrufen?",
+    "delete_scf":"Das Zurückrufen war erfolgreich!",
     "delete": "Löschen",
 
     "want_expense": "Möchtest du es aufrechnen?",
@@ -118,8 +118,8 @@
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf die gemeinsame Einkaufszettel",
-    "history_explanation": "Verfolge und lösche deine früheren Transaktionen",
+    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
+    "history_explanation": "Verfolge, rufe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
     "who_to_pay": "An wen soll ich zahlen?",
@@ -132,6 +132,16 @@
     "revoke": "Zurückrufen",
 
     "change_username_scf": "Die Änderung war erfolgreich.",
-    "change_username": "Benutzername ändern"
+    "change_username": "Benutzername ändern",
+
+    "hi": "Hallo",
+
+    "report_a_bug": "Melde einen Fehler",
+    "bug": "Fehler",
+    "what_is_wrong": "Was ist der Fehler?",
+    "bug_scf": "Das Melden war erfolgreich",
+
+    "want_edit": "Möchtest du den Artikel ändern?",
+    "nothing_to_show": "Es fühlt sich leer an..."
 
 }

@@ -105,144 +105,159 @@ class _ShoppingListState extends State<ShoppingList> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+    return RefreshIndicator(
+      onRefresh: (){
+        setState(() {
+          _shoppingList = null;
+          _shoppingList = _getShoppingList();
+        });
+        return Future.value(true);
       },
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                children: <Widget>[
-                  Center(
-                      child: Text(
-                    'shopping_list'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
-                  )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child: Text(
-                      'shopping_list_explanation'.tr(),
-                      style: Theme.of(context).textTheme.subtitle2,
-                      textAlign: TextAlign.center,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                        child: Text(
+                      'shopping_list'.tr(),
+                      style: Theme.of(context).textTheme.headline6,
+                    )),
+                    SizedBox(
+                      height: 10,
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Flexible(
-                        child: TextFormField(
-                          validator: (value) {
-                            value=value.trim();
-                            if (value.isEmpty) {
-                              return 'field_empty'.tr();
-                            }
-                            if (value.length < 2) {
-                              return 'minimal_length'.tr(args: ['2']);
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'wish'.tr(),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface),
+                    Center(
+                      child: Text(
+                        'shopping_list_explanation'.tr(),
+                        style: Theme.of(context).textTheme.subtitle2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: TextFormField(
+                            validator: (value) {
+                              value=value.trim();
+                              if (value.isEmpty) {
+                                return 'field_empty'.tr();
+                              }
+                              if (value.length < 2) {
+                                return 'minimal_length'.tr(args: ['2']);
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'wish'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                              ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2),
-                            ),
+                            controller: _addRequestController,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color:
+                                    Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(50)
+                            ],
                           ),
-                          controller: _addRequestController,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(30)
-                          ],
                         ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      RaisedButton(
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Icon(Icons.add,
-                            color: Theme.of(context).colorScheme.onSecondary),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          if (_formKey.currentState.validate()) {
-                            String name = _addRequestController.text;
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                child: FutureSuccessDialog(
-                                  future: _postShoppingRequest(name),
-                                  dataTrueText: 'add_scf',
-                                  onDataTrue: () {
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      _shoppingList = null;
-                                      _shoppingList = _getShoppingList();
-                                      _addRequestController.text = '';
-                                    });
-                                  },
-                                  onDataFalse: () {
-                                    Navigator.pop(context);
-                                    setState(() {});
-                                  },
-                                ));
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
+                        SizedBox(
+                          width: 20,
+                        ),
+                        RaisedButton(
+                          color: Theme.of(context).colorScheme.secondary,
+                          child: Icon(Icons.add,
+                              color: Theme.of(context).colorScheme.onSecondary),
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (_formKey.currentState.validate()) {
+                              String name = _addRequestController.text;
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future: _postShoppingRequest(name),
+                                    dataTrueText: 'add_scf',
+                                    onDataTrue: () {
+                                      Navigator.pop(context);
+                                      setState(() {
+                                        _shoppingList = null;
+                                        _shoppingList = _getShoppingList();
+                                        _addRequestController.text = '';
+                                      });
+                                    },
+                                    onDataFalse: () {
+                                      Navigator.pop(context);
+                                      setState(() {});
+                                    },
+                                  ));
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: FutureBuilder(
-                future: _shoppingList,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return ListView(
-                          padding: EdgeInsets.all(15),
-                          children: _generateShoppingList(snapshot.data));
-                    } else {
-                      return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(snapshot.error.toString()),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _shoppingList = null;
-                              _shoppingList = _getShoppingList();
+              Expanded(
+                child: FutureBuilder(
+                  future: _shoppingList,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        if(snapshot.data.length==0){
+                          return Padding(
+                            padding: EdgeInsets.all(25),
+                            child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                          );
+                        }
+                        return ListView(
+                            padding: EdgeInsets.all(15),
+                            children: _generateShoppingList(snapshot.data));
+                      } else {
+                        return InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Text(snapshot.error.toString()),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _shoppingList = null;
+                                _shoppingList = _getShoppingList();
+                              });
                             });
-                          });
+                      }
                     }
-                  }
-                  return Center(child: CircularProgressIndicator());
-                },
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -322,6 +337,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           )
         ),
       ),
+      dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
       background: Align(
           alignment: Alignment.centerLeft,
           child: Icon(widget.data.requesterId != currentUserId?Icons.attach_money:Icons.delete,
@@ -348,7 +364,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                   MaterialPageRoute(
                       builder: (context) =>
                           AddTransactionRoute(
-                            type: ExpenseType
+                            type: TransactionType
                                 .fromShopping,
                             shoppingData:
                             widget

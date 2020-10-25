@@ -10,33 +10,42 @@ import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
+class SavedPayment{
+  String note;
+  int payerId, takerId;
+  int amount;
+  int paymentId;
+  SavedPayment({this.note, this.payerId, this.takerId, this.amount, this.paymentId});
+}
+
 class AddPaymentRoute extends StatefulWidget {
+  final SavedPayment payment;
+  AddPaymentRoute({this.payment});
   @override
   _AddPaymentRouteState createState() => _AddPaymentRouteState();
 }
 
 class _AddPaymentRouteState extends State<AddPaymentRoute> {
-  String dropdownValue;
-  Member selectedMember;
-  TextEditingController amountController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
-  Future<List<Member>> _names;
+  Member _dropdownValue;
+  TextEditingController _amountController = TextEditingController();
+  TextEditingController _noteController = TextEditingController();
+  Future<List<Member>> _members;
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<Member>> _getNames() async {
+  Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
           uri: '/groups/' + currentGroupId.toString(),
           context: context);
 
-      Map<String, dynamic> response2 = jsonDecode(response.body);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      for (var member in response2['data']['members']) {
+      for (var member in decoded['data']['members']) {
         if(member['user_id']!=currentUserId){
           members.add(Member(
               nickname: member['nickname'],
-              balance: member['balance'] * 1.0,
+              balance: (member['balance'] * 1.0).round(),
               memberId: member['user_id']
           )
           );
@@ -65,10 +74,33 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
     }
   }
 
+  Future<bool> _updatePayment(double amount, String note, Member toMember, int paymentId) async {
+    try {
+      print(toMember.memberId);
+
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'note': note,
+        'taker_id': toMember.memberId
+      };
+
+      await httpPut(uri: '/payments/'+paymentId.toString(), body: body, context: context);
+      return true;
+    } catch (_) {
+      throw _;
+    }
+  }
+
+  
+  
   @override
   void initState() {
     super.initState();
-    _names = _getNames();
+    if(widget.payment!=null){
+      _amountController.text=widget.payment.amount.toString();
+      _noteController.text=widget.payment.note;
+    }
+    _members = _getMembers();
   }
 
   @override
@@ -84,7 +116,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             onPressed: () {
               FocusScope.of(context).unfocus();
               if (_formKey.currentState.validate()) {
-                if (dropdownValue == null) {
+                if (_dropdownValue == null) {
                   Widget toast = Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24.0, vertical: 12.0),
@@ -121,13 +153,13 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                       gravity: ToastGravity.BOTTOM);
                   return;
                 }
-                double amount = double.parse(amountController.text);
-                String note = noteController.text;
+                double amount = double.parse(_amountController.text);
+                String note = _noteController.text;
                 showDialog(
                     barrierDismissible: false,
                     context: context,
                     child: FutureSuccessDialog(
-                      future: _postPayment(amount, note, selectedMember),
+                      future: widget.payment!=null?_updatePayment(amount, note, _dropdownValue, widget.payment.paymentId):_postPayment(amount, note, _dropdownValue),
                       dataTrue: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -160,9 +192,9 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                 color:
                                     Theme.of(context).colorScheme.onSecondary),
                             onPressed: () {
-                              amountController.text = '';
-                              noteController.text = '';
-                              dropdownValue = null;
+                              _amountController.text = '';
+                              _noteController.text = '';
+                              _dropdownValue = null;
                               Navigator.pop(context);
                             },
                             label: Text(
@@ -206,7 +238,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           }
                           return null;
                         },
-                        controller: amountController,
+                        controller: _amountController,
                         decoration: InputDecoration(
                           labelText: 'amount'.tr(),
                           enabledBorder: UnderlineInputBorder(
@@ -248,7 +280,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           ),
                         ),
                         inputFormatters: [LengthLimitingTextInputFormatter(25)],
-                        controller: noteController,
+                        controller: _noteController,
                         style: TextStyle(
                             fontSize: 20,
                             color: Theme.of(context).textTheme.bodyText1.color),
@@ -260,11 +292,17 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                       Divider(),
                       Center(
                         child: FutureBuilder(
-                          future: _names,
+                          future: _members,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               if (snapshot.hasData) {
+                                if(widget.payment!=null && widget.payment.takerId!=-1){
+                                  Member selectMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==widget.payment.takerId, orElse: null);
+                                  if(selectMember!=null)
+                                    _dropdownValue=selectMember;
+                                  widget.payment.takerId=-1;
+                                }
                                 return Wrap(
                                   spacing: 10,
                                   children: snapshot.data
@@ -272,17 +310,17 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                           ChoiceChip(
                                             label: Text(member.nickname),
                                             pressElevation: 30,
-                                            selected: dropdownValue ==
-                                                member.nickname,
+                                            selected: _dropdownValue ==
+                                                member,
                                             onSelected: (bool newValue) {
                                               FocusScope.of(context).unfocus();
                                               setState(() {
-                                                dropdownValue = member.nickname;
-                                                selectedMember = member;
+                                                _dropdownValue = member;
+                                                // _selectedMember = member;
                                               });
                                             },
-                                            labelStyle: dropdownValue ==
-                                                    member.nickname
+                                            labelStyle: _dropdownValue ==
+                                                    member
                                                 ? Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
@@ -310,8 +348,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                     ),
                                     onTap: () {
                                       setState(() {
-                                        _names=null;
-                                        _names=_getNames();
+                                        _members=null;
+                                        _members=_getMembers();
                                       });
                                     });
                               }

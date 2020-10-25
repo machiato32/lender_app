@@ -163,7 +163,7 @@ class _JoinGroupState extends State<JoinGroup> {
                       ),
                       ListTile(
                         leading: Icon(
-                          Icons.account_circle,
+                          Icons.exit_to_app,
                           color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         title: Text(

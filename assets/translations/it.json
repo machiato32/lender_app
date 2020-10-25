@@ -91,8 +91,8 @@
     "payment_hint": "Mammut",
 
     "no_note": "Non c'è nota",
-    "want_delete": "Vorresti cancellare l'articolo?",
-    "delete_scf":"La cancellazione è stata di successo!",
+    "want_delete": "Vorresti modificare l'articolo?",
+    "delete_scf":"La modificazione è stata di successo!",
     "delete": "Cancella",
 
     "want_expense": "Vorresti addebitare?",
@@ -120,7 +120,7 @@
     "invitation_explanation": "Invita qualcuno al gruppo",
     "rename_group_explanation": "Rinomina il gruppo se non ti piace il cui nome",
     "shopping_list_explanation": "Scrivi sulla lista comune",
-    "history_explanation": "Segui e cancella le tue transazioni precedenti",
+    "history_explanation": "Segui, modifica e revocare le tue transazioni precedenti",
 
     "pay": "Pagare",
     "who_to_pay": "A chi dovrei pagare?",
@@ -133,6 +133,15 @@
     "revoke": "Revocare",
 
     "change_username_scf": "Il cambiamento è stato di successo!",
-    "change_username": "Modifica la nome utente"
+    "change_username": "Modifica il nome utente",
 
+    "hi": "Ciao",
+
+    "report_a_bug": "Annunciare un errore",
+    "bug": "Errore",
+    "what_is_wrong": "Che c'è che non va?",
+    "bug_scf": "L'errore è stato annunciato con successo",
+
+    "want_edit": "Vorresti modificare l'articolo?",
+    "nothing_to_show": "Questo è un po' vuoto..."
 }

@@ -91,8 +91,8 @@
     "payment_hint": "Elephant",
 
     "no_note": "No additional note",
-    "want_delete": "Do you want to delete the item?",
-    "delete_scf":"The item was deleted successfully!",
+    "want_delete": "Do you want to revoke the item?",
+    "delete_scf":"The item was revoked successfully!",
     "delete": "Delete",
 
     "want_expense": "Do you want them to pay for it?",
@@ -119,7 +119,7 @@
     "invitation_explanation": "Invite someone to the group",
     "rename_group_explanation": "Rename the group if you don't like the name",
     "shopping_list_explanation": "Write on the joint shopping list",
-    "history_explanation": "Follow and delete recent transactions",
+    "history_explanation": "Follow, modify and revoke recent transactions",
 
     "pay": "Pay",
     "who_to_pay": "Who should I pay?",
@@ -132,5 +132,15 @@
     "revoke": "Revoke",
 
     "change_username_scf": "The change was successful.",
-    "change_username": "Change username"
+    "change_username": "Change username",
+
+    "hi": "Hi",
+
+    "report_a_bug": "Report bug",
+    "bug": "Bug",
+    "what_is_wrong": "What is wrong?",
+    "bug_scf": "Bug logged successfully",
+
+    "want_edit": "Do you want to modify the item?",
+    "nothing_to_show": "It feels empty..."
 }

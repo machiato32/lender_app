@@ -253,7 +253,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                       Flexible(
                                           child: Text(
                                         widget.member.username,
-                                        style: style.copyWith(fontSize: 22),
+                                        style: style.copyWith(fontSize: 20),
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                       Flexible(
