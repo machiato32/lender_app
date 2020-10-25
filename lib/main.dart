@@ -340,40 +340,93 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
     _groups = null;
     _groups = _getGroups();
-    print('lol');
+    List<String> title = ['hi', '', '', '', ''];
+    List<String> content = ['welcome', 'tutorial_1', 'tutorial_2', 'tutorial_3', 'tutorial_4'];
+    int index=0;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await showDialog(
           context: context,
-          child: AlertDialog(
-            // elevation: 0,
-            backgroundColor: Theme.of(context).cardTheme.color,
-            title: Text('Légyszi olvasd el!'),
-            content: SingleChildScrollView(
-              child: Text(
-                'Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
-                    'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
-                    'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
-                    'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
-                    'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
-                    'U.I.: Ez később nem ilyen bénán fog megjelenni.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1,
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Tényleg elolvastam',
-                  style: Theme.of(context).textTheme.button,
-                ),
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            ],
-          ));
+          builder: (context){
+            return StatefulBuilder(
+              builder: (context, setState){
+                return AlertDialog(
+                  backgroundColor: Theme.of(context).cardTheme.color,
+                  title: Center(child: Text(title[index].tr()+((index==0)?'!':''))),
+                  content: Container(
+                    width: double.minPositive,
+                    child: ListView(
+                      shrinkWrap: true,
+                      // mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Visibility(visible: index!=0,child: Image.asset('assets/tutorial/lendertut'+index.toString()+'.gif')),
+                        Text(content[index].tr(),
+                          // 'Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
+                          //     'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
+                          //     'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
+                          //     'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
+                          //     'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
+                          //     'U.I.: Ez később nem ilyen bénán fog megjelenni.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1,
+                        ),
+                      ],
+
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Visibility(
+                      visible: index!=0,
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            index--;
+                          });
+                        },
+                        child: Icon(Icons.navigate_before, color: Theme.of(context).textTheme.button.color),
+                        // Text(
+                        //   'previous'.tr(),
+                        //   style: Theme.of(context).textTheme.button,
+                        // ),
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    Visibility(
+                      visible: index!=4,
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            index++;
+                          });
+                        },
+                        child: Icon(Icons.navigate_next, color: Theme.of(context).textTheme.button.color),
+                        // Text(
+                        //   'next'.tr(),
+                        //   style: Theme.of(context).textTheme.button,
+                        // ),
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    Visibility(
+                      visible: index==4,
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(Icons.check, color: Theme.of(context).textTheme.button.color),
+                        // Text(
+                        //   'finish'.tr(),
+                        //   style: Theme.of(context).textTheme.button,
+                        // ),
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+      );
     });
   }
 
@@ -752,7 +805,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddTransactionRoute()))
+                              builder: (context) => AddTransactionRoute(type: null,)))
                           .then((value) {
                         setState(() {});
                       });

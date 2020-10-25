@@ -159,6 +159,13 @@
     "discover_group_settings_title": "Csoport beállításai",
     "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, illetve változtathatod meg a beceneved.",
 
-    "tutorial_1" : ""
-
+    "tutorial_1" : "Ha vásárolnak neked, tartozásod lesz, amelyet fizetéssel egyenlíthetsz ki. Így a csoportban sok felesleges tranzakció történik.",
+    "tutorial_2" : "A Lender ezeket a tranzakciókat leegyszerűsíti.\nKésőbb látni fogod, hogy a tartozásod így nem egy személy felé, hanem a csoport felé irányul.",
+    "tutorial_3" : "A csoportban mindenki rendelkezik egy egyenleggel.\nPozitív egyenleg esetén neked tartoznak, míg negatív esetén te tartozol a csoportnak.",
+    "tutorial_4" : "Azt, hogy kinek kell fizetned, az egyenlegek alapján döntheted el, továbbá használhatod a \"Kinek fizessek?\" gombot.",
+    "welcome": "Köszönjük, hogy regisztráltál a Lenderbe!\n\nA következőkben egy rövid tutorialban mutatjuk be az alkalmazás használatát.",
+    "next": "Következő",
+    "previous": "Előző",
+    "finish": "Megértettem",
+    "": ""
 }
