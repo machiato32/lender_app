@@ -4,3 +4,5 @@ String currentUsername;
 int currentUserId;
 String currentGroupName;
 int currentGroupId;
+List<String> usersGroups;
+List<int> usersGroupIds;

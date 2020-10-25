@@ -68,7 +68,10 @@ void main() async {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
   }
-
+  if(preferences.containsKey('users_groups')){
+    usersGroups=preferences.getStringList('users_groups');
+    usersGroupIds=preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
+  }
 
   String initURL;
   try {
@@ -96,7 +99,7 @@ void main() async {
             'LENDER',
             style: TextStyle(
                 color:
-                    (themeName.contains('Light')) ? Colors.black : Colors.white,
+                (themeName.contains('Light')) ? Colors.black : Colors.white,
                 letterSpacing: 2.5,
                 fontSize: 35),
           ),
@@ -164,13 +167,13 @@ class _LenderAppState extends State<LenderApp> {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-          '1234',
-          'Lender',
-          'Lender',
-          playSound: false,
-          importance: Importance.High,
-          priority: Priority.Default,
-          styleInformation: BigTextStyleInformation('')
+            '1234',
+            'Lender',
+            'Lender',
+            playSound: false,
+            importance: Importance.High,
+            priority: Priority.Default,
+            styleInformation: BigTextStyleInformation('')
         );
         var iOSPlatformChannelSpecifics =
         new IOSNotificationDetails(presentSound: false);
@@ -218,18 +221,18 @@ class _LenderAppState extends State<LenderApp> {
             locale: context.locale,
             home: currentUserId == null
                 ? LoginOrRegisterPage(
-                    showDialog: true,
-                  )
+              showDialog: true,
+            )
                 : (_link != null)
-                    ? JoinGroup(
-                        inviteURL: _link,
-                        fromAuth: (currentGroupId == null) ? true : false,
-                      )
-                    : (currentGroupId == null)
-                        ? JoinGroup(
-                            fromAuth: true,
-                          )
-                        : MainPage(),
+                ? JoinGroup(
+              inviteURL: _link,
+              fromAuth: (currentGroupId == null) ? true : false,
+            )
+                : (currentGroupId == null)
+                ? JoinGroup(
+              fromAuth: true,
+            )
+                : MainPage(),
           ),
         );
       },
@@ -287,7 +290,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       throw _;
     }
   }
-  
+
   Future _logout() async {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
@@ -300,6 +303,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         _prefs.remove('current_group_name');
         _prefs.remove('current_group_id');
         _prefs.remove('api_token');
+        _prefs.remove('users_groups');
+        _prefs.remove('users_group_ids');
       });
     } catch (_) {
       throw _;
@@ -313,9 +318,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           group.groupName,
           style: (group.groupName == currentGroupName)
               ? Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Theme.of(context).colorScheme.secondary)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Theme.of(context).colorScheme.secondary)
               : Theme.of(context).textTheme.bodyText1,
         ),
         onTap: () {
@@ -347,19 +352,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           child: AlertDialog(
             // elevation: 0,
             backgroundColor: Theme.of(context).cardTheme.color,
-            title: Text('Légyszi olvasd el!'),
+            title: Text('hi'.tr()),
             content: SingleChildScrollView(
-              child: Text(
-                'Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
-                    'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
-                    'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
-                    'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
-                    'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
-                    'U.I.: Ez később nem ilyen bénán fog megjelenni.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1,
-              ),
+              child: Image.asset('assets/lendertut1.gif'),
             ),
             actions: <Widget>[
               FlatButton(
@@ -378,7 +373,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   void _handleDrawer() {
-    FeatureDiscovery.clearPreferences(context, <String>['drawer', 'settings']);
+    // FeatureDiscovery.clearPreferences(context, <String>['drawer', 'settings']);
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
@@ -434,10 +429,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             _tabController.animateTo(_index);
           });
           if(_selectedIndex==1){
-            FeatureDiscovery.clearPreferences(context, ['shopping_list']);
+            // FeatureDiscovery.clearPreferences(context, ['shopping_list']);
             FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
           }else if(_selectedIndex==2){
-            FeatureDiscovery.clearPreferences(context, ['group_settings']);
+            // FeatureDiscovery.clearPreferences(context, ['group_settings']);
             FeatureDiscovery.discoverFeatures(context, ['group_settings']);
           }
         },
@@ -446,24 +441,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           BottomNavigationBarItem(
               icon: Icon(Icons.home), title: Text('home'.tr())),
           BottomNavigationBarItem(
-            icon: DescribedFeatureOverlay(
-              featureId: 'shopping_list',
-              tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
-              title: Text('discover_shopping_title'.tr()),
-              description: Text('discover_shopping_description'.tr()),
-              overflowMode: OverflowMode.extendBackground,
-              child: Icon(Icons.add_shopping_cart)
-            ),
-            title: Text('shopping_list'.tr())
+              icon: DescribedFeatureOverlay(
+                  featureId: 'shopping_list',
+                  tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
+                  title: Text('discover_shopping_title'.tr()),
+                  description: Text('discover_shopping_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.add_shopping_cart)
+              ),
+              title: Text('shopping_list'.tr())
           ),
           BottomNavigationBarItem(
-            icon: DescribedFeatureOverlay(
-              featureId: 'group_settings',
-              tapTarget: Icon(Icons.settings, color: Colors.black),
-              title: Text('discover_group_settings_title'.tr()),
-              description: Text('discover_group_settings_description'.tr()),
-                overflowMode: OverflowMode.extendBackground,
-              child: Icon(Icons.settings)),
+              icon: DescribedFeatureOverlay(
+                  featureId: 'group_settings',
+                  tapTarget: Icon(Icons.settings, color: Colors.black),
+                  title: Text('discover_group_settings_title'.tr()),
+                  description: Text('discover_group_settings_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.settings)),
               title: Text('group'.tr())
           )
         ],
@@ -574,8 +569,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return Text(
-                      'Σ: '+snapshot.data.toString(),
-                      style: Theme.of(context).textTheme.bodyText1
+                        'Σ: '+snapshot.data.toString(),
+                        style: Theme.of(context).textTheme.bodyText1
                     );
                   }
                 }
@@ -628,23 +623,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => LoginOrRegisterPage()),
-                    (r) => false);
+                        (r) => false);
               },
             ),
-           Divider(),
-           ListTile(
-             leading: Icon(
-               Icons.bug_report,
-               color: Colors.red,
-             ),
-             title: Text(
-               'report_a_bug'.tr(),
-               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-             ),
-             onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
-             },
-           ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
+              ),
+              title: Text(
+                'report_a_bug'.tr(),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+              },
+            ),
           ],
         ),
       ),
@@ -669,7 +664,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 //        animatedIcon: AnimatedIcons.menu_close,
           curve: Curves.bounceIn,
           onOpen: (){
-            FeatureDiscovery.clearPreferences(context, <String>['add_payment_expense']);
+            // FeatureDiscovery.clearPreferences(context, <String>['add_payment_expense']);
             FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
           },
           children: [
@@ -700,7 +695,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
+                            BorderRadius.all(Radius.circular(6.0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.7),
@@ -714,11 +709,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                   .textTheme
                                   .bodyText1
                                   .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .color,
+                                  fontSize: 18)),
                         ),
                         SizedBox(
                           height: 5,
@@ -738,9 +733,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 onTap: () {
                   if (currentUsername != "")
                     Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddPaymentRoute()))
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPaymentRoute()))
                         .then((value) {
                       setState(() {});
                     });
@@ -752,7 +747,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddTransactionRoute()))
+                              builder: (context) => AddTransactionRoute(type: null,)))
                           .then((value) {
                         setState(() {});
                       });
@@ -771,7 +766,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
+                            BorderRadius.all(Radius.circular(6.0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.7),
@@ -785,11 +780,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                   .textTheme
                                   .bodyText1
                                   .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .color,
+                                  fontSize: 18)),
                         ),
                         SizedBox(
                           height: 5,
@@ -812,11 +807,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddTransactionRoute(
-                                  type: TransactionType.newExpense,
-                                )
+                              type: TransactionType.newExpense,
+                            )
                         )).then((value) {
-                          setState(() {});
-                        });
+                      setState(() {});
+                    });
                 }),
           ],
         ),
@@ -831,6 +826,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   setState(() {});
                 });
               },
+              // Card(
+              //   child: Padding(
+              //       padding: EdgeInsets.all(15),
+              //       child: Text('current_user'.tr()+(guestNickname??'yourself'.tr()))
+              //   ),
+              // ),
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[

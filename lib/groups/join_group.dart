@@ -42,6 +42,8 @@ class _JoinGroupState extends State<JoinGroup> {
         _prefs.remove('current_group_id');
         _prefs.remove('current_user_id');
         _prefs.remove('api_token');
+        _prefs.remove('users_groups');
+        _prefs.remove('users_group_ids');
       });
     } catch (_) {
       throw _;
@@ -56,7 +58,7 @@ class _JoinGroupState extends State<JoinGroup> {
         'nickname': nickname
       };
       http.Response response =
-          await httpPost(uri: '/join', context: context, body: body);
+      await httpPost(uri: '/join', context: context, body: body);
 
       Map<String, dynamic> response2 = jsonDecode(response.body);
       currentGroupName = response2['data']['group_name'];
@@ -75,14 +77,14 @@ class _JoinGroupState extends State<JoinGroup> {
   @override
   Widget build(BuildContext context) {
     _tokenController.text =
-        widget.inviteURL != '' ? widget.inviteURL.split('/').removeLast() : '';
+    widget.inviteURL != '' ? widget.inviteURL.split('/').removeLast() : '';
     return WillPopScope(
       onWillPop: () {
         if (currentGroupName != null) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),
-              (r) => false);
+                  (r) => false);
           return Future.value(false);
         }
         return Future.value(true);
@@ -97,92 +99,92 @@ class _JoinGroupState extends State<JoinGroup> {
             ),
             leading: (currentGroupName != null)
                 ? IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainPage()),
-                        (r) => false),
-                  )
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                      (r) => false),
+            )
                 : null,
           ),
           drawer: !widget.fromAuth
               ? null
               : Drawer(
-                  elevation: 16,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView(
+            elevation: 16,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: <Widget>[
+                      DrawerHeader(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            DrawerHeader(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    'LENDER',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .copyWith(letterSpacing: 2.5),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    currentUsername,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
-                                ],
-                              ),
+                            Text(
+                              'LENDER',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(letterSpacing: 2.5),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              currentUsername,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondary),
                             ),
                           ],
                         ),
                       ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(
-                          Icons.settings,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                        title: Text(
-                          'settings'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Settings()));
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.exit_to_app,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                        title: Text(
-                          'logout'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          _logout();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginOrRegisterPage()),
-                              (r) => false
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),
+                Divider(),
+                ListTile(
+                  leading: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'settings'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Settings()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.exit_to_app,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'logout'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    _logout();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginOrRegisterPage()),
+                            (r) => false
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
           body: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
@@ -223,7 +225,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary,
                                       width: 2),
                                 ),
                               ),
@@ -235,7 +237,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                       .bodyText1
                                       .color),
                               cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
+                              Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -275,7 +277,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary,
                                       width: 2),
                                 ),
                               ),
@@ -287,7 +289,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                       .bodyText1
                                       .color),
                               cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
+                              Theme.of(context).colorScheme.secondary,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(15),
                               ],
@@ -319,7 +321,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => MainPage()),
-                                          (r) => false);
+                                              (r) => false);
                                     },
                                   ));
                             }
@@ -343,12 +345,12 @@ class _JoinGroupState extends State<JoinGroup> {
                       children: <Widget>[
                         Center(
                             child: Text(
-                          'no_group_yet'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 12),
-                        )),
+                              'no_group_yet'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(fontSize: 12),
+                            )),
                         SizedBox(
                           height: 10,
                         ),
