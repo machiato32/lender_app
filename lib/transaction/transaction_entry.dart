@@ -8,7 +8,6 @@ import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
 import 'package:csocsort_szamla/config.dart';
 
 class TransactionData {
-  String type;
   DateTime updatedAt;
   String buyerUsername, buyerNickname;
   int buyerId;
@@ -18,8 +17,7 @@ class TransactionData {
   String name;
 
   TransactionData(
-      {this.type,
-      this.updatedAt,
+      {this.updatedAt,
       this.buyerUsername,
       this.buyerNickname,
       this.buyerId,
@@ -30,17 +28,16 @@ class TransactionData {
 
   factory TransactionData.fromJson(Map<String, dynamic> json) {
     return TransactionData(
-        type: json['type'],
-        transactionId: json['data']['transaction_id'],
-        name: json['data']['name'],
-        updatedAt: json['data']['updated_at'] == null
+        transactionId: json['transaction_id'],
+        name: json['name'],
+        updatedAt: json['updated_at'] == null
             ? DateTime.now()
-            : DateTime.parse(json['data']['updated_at']).toLocal(),
-        buyerUsername: json['data']['buyer_username'],
-        buyerId: json['data']['buyer_id'],
-        buyerNickname: json['data']['buyer_nickname'],
-        totalAmount: (json['data']['total_amount'] * 1.0).round(),
-        receivers: json['data']['receivers']
+            : DateTime.parse(json['updated_at']).toLocal(),
+        buyerUsername: json['buyer_username'],
+        buyerId: json['buyer_id'],
+        buyerNickname: json['buyer_nickname'],
+        totalAmount: (json['total_amount'] * 1.0).round(),
+        receivers: json['receivers']
             .map<Member>((element) => Member.fromJson(element))
             .toList());
   }
@@ -78,7 +75,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
     note = (widget.data.name == '')
         ? 'no_note'.tr()
         : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
-    if (widget.data.type == 'buyed') {
+    if (widget.data.buyerId == currentUserId && true) { //TODO
       icon = Icon(Icons.call_made,
           color: (Theme.of(context).brightness == Brightness.dark)
               ? Theme.of(context).textTheme.bodyText1.color
@@ -106,7 +103,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
         names = widget.data.receivers[0].nickname;
       }
       amount = widget.data.totalAmount.toString();
-    } else if (widget.data.type == 'buyed_received') {
+    } else if (widget.data.buyerId == currentUserId) {
       icon = Icon(Icons.swap_horiz,
           color: (Theme.of(context).brightness == Brightness.dark)
               ? Theme.of(context).textTheme.bodyText1.color
@@ -138,7 +135,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
               .firstWhere((member) => member.memberId == currentUserId)
               .balance)
           .toString();
-    } else if (widget.data.type == 'received') {
+    } else if (true) { //TODO received
       icon = Icon(Icons.call_received,
           color: Theme.of(context).textTheme.bodyText1.color);
       style = Theme.of(context).textTheme.bodyText1;
@@ -222,7 +219,8 @@ class _TransactionEntryState extends State<TransactionEntry> {
                                 style: style,
                               ),
                               Visibility(
-                                  visible: widget.data.type == 'buyed_received',
+                                  //visible: widget.data.type == 'buyed_received',
+                                  //TODO
                                   child: Text(
                                     selfAmount,
                                     style: style,
