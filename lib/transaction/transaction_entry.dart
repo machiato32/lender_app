@@ -75,78 +75,70 @@ class _TransactionEntryState extends State<TransactionEntry> {
     note = (widget.data.name == '')
         ? 'no_note'.tr()
         : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
-    if (widget.data.buyerId == currentUserId && true) { //TODO
-      icon = Icon(Icons.call_made,
-          color: (Theme.of(context).brightness == Brightness.dark)
-              ? Theme.of(context).textTheme.bodyText1.color
-              : Theme.of(context).textTheme.button.color);
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
-      boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
-        borderRadius: BorderRadius.circular(15),
-      );
-      if (widget.data.receivers.length > 1) {
-        names = widget.data.receivers.join(', ');
-      } else {
-        names = widget.data.receivers[0].nickname;
-      }
-      amount = widget.data.totalAmount.toString();
-    } else if (widget.data.buyerId == currentUserId) {
+    bool buyed = widget.data.buyerId == currentUserId;
+    bool received = widget.data.receivers.where((element) => element.memberId == currentUserId).isNotEmpty;
+    /* Set icon, amount and names */
+    if (buyed && received) {
       icon = Icon(Icons.swap_horiz,
           color: (Theme.of(context).brightness == Brightness.dark)
               ? Theme.of(context).textTheme.bodyText1.color
               : Theme.of(context).textTheme.button.color);
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
-      boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
-        borderRadius: BorderRadius.circular(15),
-      );
-      if (widget.data.receivers.length > 1) {
-        names = widget.data.receivers.join(', ');
-      } else {
-        names = widget.data.receivers[0].nickname;
-      }
       amount = widget.data.totalAmount.toString();
       selfAmount = (-widget.data.receivers
               .firstWhere((member) => member.memberId == currentUserId)
               .balance)
           .toString();
-    } else if (true) { //TODO received
+      if (widget.data.receivers.length > 1) {
+        names = widget.data.receivers.join(', ');
+      } else {
+        names = widget.data.receivers[0].nickname;
+      }
+    } else if (buyed) {
+      icon = Icon(Icons.call_made,
+          color: (Theme.of(context).brightness == Brightness.dark)
+              ? Theme.of(context).textTheme.bodyText1.color
+              : Theme.of(context).textTheme.button.color);
+      amount = widget.data.totalAmount.toString();
+      if (widget.data.receivers.length > 1) {
+        names = widget.data.receivers.join(', ');
+      } else {
+        names = widget.data.receivers[0].nickname;
+      }
+    } else if (received) {
       icon = Icon(Icons.call_received,
           color: Theme.of(context).textTheme.bodyText1.color);
-      style = Theme.of(context).textTheme.bodyText1;
-      dateColor = Theme.of(context).colorScheme.surface;
       names = widget.data.buyerNickname;
       amount = (-widget.data.receivers
               .firstWhere((element) => element.memberId == currentUserId)
               .balance)
           .toString();
+    }
+
+    /* Set style color */
+    if (buyed) {
+      style = (Theme.of(context).brightness == Brightness.dark)
+          ? Theme.of(context).textTheme.bodyText1
+          : Theme.of(context).textTheme.button;
+      dateColor = (Theme.of(context).brightness == Brightness.dark)
+          ? Theme.of(context).colorScheme.surface
+          : Theme.of(context).textTheme.button.color;
+      boxDecoration = BoxDecoration(
+        color: (Theme.of(context).brightness == Brightness.dark)
+            ? Colors.transparent
+            : Theme.of(context).colorScheme.secondary,
+        border: Border.all(
+            color: (Theme.of(context).brightness == Brightness.dark)
+                ? Theme.of(context).colorScheme.secondary
+                : Colors.transparent,
+            width: 1.5),
+        borderRadius: BorderRadius.circular(15),
+      );
+    } else {
+      style = Theme.of(context).textTheme.bodyText1;
+      dateColor = Theme.of(context).colorScheme.surface;
       boxDecoration = BoxDecoration();
     }
+
     return Container(
       height: 80,
       width: MediaQuery.of(context).size.width,
@@ -219,8 +211,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
                                 style: style,
                               ),
                               Visibility(
-                                  //visible: widget.data.type == 'buyed_received',
-                                  //TODO
+                                  visible: received && buyed,
                                   child: Text(
                                     selfAmount,
                                     style: style,
