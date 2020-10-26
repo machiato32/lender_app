@@ -29,6 +29,7 @@ import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'report_a_bug.dart';
+import 'tutorial_dialog.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -217,9 +218,7 @@ class _LenderAppState extends State<LenderApp> {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             home: currentUserId == null
-                ? LoginOrRegisterPage(
-                    showDialog: true,
-                  )
+                ? LoginOrRegisterPage()
                 : (_link != null)
                     ? JoinGroup(
                         inviteURL: _link,
@@ -340,98 +339,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
     _groups = null;
     _groups = _getGroups();
-    List<String> title = ['hi', '', '', '', ''];
-    List<String> content = ['welcome', 'tutorial_1', 'tutorial_2', 'tutorial_3', 'tutorial_4'];
-    int index=0;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await showDialog(
+      bool showTutorial=true;
+      await SharedPreferences.getInstance().then((prefs) {
+        if(prefs.containsKey('show_tutorial')){
+          showTutorial=prefs.getBool('show_tutorial');
+        }
+      });
+      if(showTutorial){
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setBool('show_tutorial', false);
+        });
+        await showDialog(
           context: context,
           builder: (context){
-            return StatefulBuilder(
-              builder: (context, setState){
-                return AlertDialog(
-                  backgroundColor: Theme.of(context).cardTheme.color,
-                  title: Center(child: Text(title[index].tr()+((index==0)?'!':''))),
-                  content: Container(
-                    width: double.minPositive,
-                    child: ListView(
-                      shrinkWrap: true,
-                      // mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Visibility(visible: index!=0,child: Image.asset('assets/tutorial/lendertut'+index.toString()+'.gif')),
-                        Text(content[index].tr(),
-                          // 'Szia! Először is köszi, hogy teszteled az appunkat. Tartsd fejben, hogy ez egy béta, így nem biztos hogy minden helyzetben hiba nélkül tud futni (bár elég sokat teszteltük). Ezen kívül sok funkció még nincs benne, ami már tervben van. \n\nEzért is szeretnénk arra kérni Téged, hogy ha bármilyen ötleted van, bármilyen hibát találsz, fura dolgot ír ki az app, feltétlenül írjál nekünk. Ezt legegyszerűbben a Play Áruház visszajelző felületén teheted meg, vagy írhatsz nekünk egy emailt a developer@lenderapp.net címre is.\n\n'
-                          //     'Röviden az alkalmazás használatáról.\n\nElőször regisztrálj! Itt fontos tudni, hogy a felhasználóneved és azonosítószámod nem megváltoztatható, a bejelentkezéshez mindkettő szükséges. Ezeket feltétlenül jegyezd meg!\nTipp: ha mégis elfelejtenéd, de már tagja vagy egy csoportnak, barátaid meg tudják neked mondani, ha a csoport beállításaira mennek.\nAmennyiben te vagy az első letöltő a csoportodban, hozz létre egy új csoportot! Ez után a csoport beállításainál találsz egy meghívót, amit elküldve barátaidnak, ők be tudnak lépni a csoportba.\n\n'
-                          //     'Amennyiben már más létrehozta a csoportot, akkor a meghívót a regisztráció után bemásolva tudsz belépni a csoportba.\nA csoport létrehozásakor, illetve oda belépéskor megadhatod becenevedet, ami csak abban a csoportban lesz látható a barátaid számára. Ezt a csoport beállításainál megváltoztathatod.\n\n'
-                          //     'Innentől az alkalmazás felfedezését rád bízzuk, reméljük minden működni fog.\n\n'
-                          //     'Remélem hasznodra válik az alkalmazás!\nA fejlesztők.\n\n'
-                          //     'U.I.: Ez később nem ilyen bénán fog megjelenni.',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1,
-                        ),
-                      ],
-
-                    ),
-                  ),
-                  actions: <Widget>[
-                    Visibility(
-                      visible: index!=0,
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            index--;
-                          });
-                        },
-                        child: Icon(Icons.navigate_before, color: Theme.of(context).textTheme.button.color),
-                        // Text(
-                        //   'previous'.tr(),
-                        //   style: Theme.of(context).textTheme.button,
-                        // ),
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                    Visibility(
-                      visible: index!=4,
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            index++;
-                          });
-                        },
-                        child: Icon(Icons.navigate_next, color: Theme.of(context).textTheme.button.color),
-                        // Text(
-                        //   'next'.tr(),
-                        //   style: Theme.of(context).textTheme.button,
-                        // ),
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                    Visibility(
-                      visible: index==4,
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(Icons.check, color: Theme.of(context).textTheme.button.color),
-                        // Text(
-                        //   'finish'.tr(),
-                        //   style: Theme.of(context).textTheme.button,
-                        // ),
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
+            return TutorialDialog();
           },
-      );
+        );
+      }
+
     });
   }
 
   void _handleDrawer() {
-    FeatureDiscovery.clearPreferences(context, <String>['drawer', 'settings']);
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
@@ -441,7 +371,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void callback() {
     setState(() {});
   }
-  var icon = Icon(Icons.add);
 
   @override
   Widget build(BuildContext context) {
@@ -487,10 +416,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             _tabController.animateTo(_index);
           });
           if(_selectedIndex==1){
-            FeatureDiscovery.clearPreferences(context, ['shopping_list']);
             FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
           }else if(_selectedIndex==2){
-            FeatureDiscovery.clearPreferences(context, ['group_settings']);
             FeatureDiscovery.discoverFeatures(context, ['group_settings']);
           }
         },
@@ -722,7 +649,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 //        animatedIcon: AnimatedIcons.menu_close,
           curve: Curves.bounceIn,
           onOpen: (){
-            FeatureDiscovery.clearPreferences(context, <String>['add_payment_expense']);
             FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
           },
           children: [

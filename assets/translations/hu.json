@@ -167,5 +167,8 @@
     "next": "Következő",
     "previous": "Előző",
     "finish": "Megértettem",
-    "": ""
+    "": "",
+
+    "reset_tutorial": "Tutorial újranézése",
+    "reset_tutorial_explanation": "Ehhez újra kell indítanod az alkalmazást"
 }
