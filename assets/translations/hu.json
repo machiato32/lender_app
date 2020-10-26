@@ -167,5 +167,7 @@
     "next": "Következő",
     "previous": "Előző",
     "finish": "Megértettem",
-    "": ""
+
+    "password_reminder": "Jelszóemlékeztető",
+    "forgot_password": "Elfelejtett jelszó"
 }
