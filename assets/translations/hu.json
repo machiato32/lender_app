@@ -169,5 +169,6 @@
     "finish": "Megértettem",
 
     "password_reminder": "Jelszóemlékeztető",
-    "forgot_password": "Elfelejtett jelszó"
+    "forgot_password": "Elfelejtett jelszó",
+    "your_password_reminder": "A te jelszóemlékeztetőd:"
 }

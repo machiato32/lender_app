@@ -116,8 +116,8 @@ class _LoginRouteState extends State<LoginRoute> {
                 height: 40,
               ),
               Center(
-                child: RaisedButton(
-                  child: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.button),
+                child: FlatButton(
+                  child: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 15)),
                   onPressed: () async {
                     GlobalKey<FormState> formState = GlobalKey<FormState>();
                     TextEditingController controller = TextEditingController();
@@ -126,47 +126,44 @@ class _LoginRouteState extends State<LoginRoute> {
                       child: Form(
                         key: formState,
                         child: AlertDialog(
-                          title: Text('username'.tr(), style: Theme.of(context).textTheme.headline6,),
-                          content: Form(
-                            key: formState,
-                            child: TextFormField(
-                              controller: controller,
-                              validator: (value){
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                if (value.length < 3) {
-                                  return 'minimal_length'.tr(args: ['3']);
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'example_name'.tr(),
-                                labelText: 'username'.tr(),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).colorScheme.onSurface,
-                                      width: 2),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      width: 2),
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red, width: 2),
-                                ),
+                          title: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.headline6,),
+                          content: TextFormField(
+                            controller: controller,
+                            validator: (value){
+                              if (value.isEmpty) {
+                                return 'field_empty'.tr();
+                              }
+                              if (value.length < 3) {
+                                return 'minimal_length'.tr(args: ['3']);
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'example_name'.tr(),
+                              labelText: 'username'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    width: 2),
                               ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                                LengthLimitingTextInputFormatter(15),
-                              ],
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).textTheme.bodyText1.color),
-                              cursorColor: Theme.of(context).colorScheme.secondary,
-
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                              ),
+                              errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 2),
+                              ),
                             ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+
                           ),
                           actions: [
                             RaisedButton(
@@ -180,13 +177,14 @@ class _LoginRouteState extends State<LoginRoute> {
                                   );
                                 }
                               },
+                              child: Icon(Icons.send, color: Theme.of(context).textTheme.button.color),
+                              color: Theme.of(context).colorScheme.secondary,
                             )
                           ],
                         ),
                       )
                     );
                   },
-                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ],
@@ -207,7 +205,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       children: [
                         Flexible(
                             child: Text(
-                              'login_scf',
+                              'login_scf'.tr(),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1
@@ -231,7 +229,7 @@ class _LoginRouteState extends State<LoginRoute> {
                             );
                           },
                           label: Text(
-                            'okay',
+                            'okay'.tr(),
                             style: Theme.of(context).textTheme.button,
                           ),
                           color: Theme.of(context).colorScheme.secondary,

@@ -13,7 +13,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiToken
+      "Authorization": "Bearer " + (apiToken==null?'':apiToken)
     };
     http.Response response = await http.get(APPURL + uri, headers: header);
 

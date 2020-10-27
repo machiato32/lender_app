@@ -15,9 +15,13 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future<String> _getPasswordReminder(String username) async {
-    http.Response response = await httpGet(context: context, uri: '/password_reminder?id='+username);
+    print('lol');
+    http.Response response = await httpGet(context: context, uri: '/password_reminder?username='+username);
+    print('valami');
     Map<String, dynamic> decoded = jsonDecode(response.body);
-    return decoded['password_reminder'];
+    print(decoded);
+    print('valami');
+    return decoded['data'];
   }
 
   @override
@@ -27,12 +31,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
+          Text('your_password_reminder'.tr(),),
+          SizedBox(height: 20,),
           FutureBuilder(
             future: _getPasswordReminder(widget.username),
             builder: (context, snapshot){
               if(snapshot.connectionState==ConnectionState.done){
                 if(snapshot.hasData){
-                  return Text(snapshot.data);
+                  return Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,);
                 }else{
                   return InkWell(
                       child: Padding(
