@@ -43,6 +43,7 @@ class _LoginRouteState extends State<LoginRoute> {
             children: <Widget>[
               TextFormField(
                 validator: (value) {
+                  value=value.trim();
                   if (value.isEmpty) {
                     return 'field_empty'.tr();
                   }
@@ -70,7 +71,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   ),
                 ),
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[a-z0-9#]')),
+                  FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
                   LengthLimitingTextInputFormatter(15),
                 ],
                 style: TextStyle(
@@ -83,7 +84,7 @@ class _LoginRouteState extends State<LoginRoute> {
               ),
               TextFormField(
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value.trim().isEmpty) {
                     return 'field_empty'.tr();
                   }
                   return null;
@@ -117,11 +118,73 @@ class _LoginRouteState extends State<LoginRoute> {
               Center(
                 child: RaisedButton(
                   child: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.button),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotPasswordPage()));
+                  onPressed: () async {
+                    GlobalKey<FormState> formState = GlobalKey<FormState>();
+                    TextEditingController controller = TextEditingController();
+                    await showDialog(
+                      context: context,
+                      child: Form(
+                        key: formState,
+                        child: AlertDialog(
+                          title: Text('username'.tr(), style: Theme.of(context).textTheme.headline6,),
+                          content: Form(
+                            key: formState,
+                            child: TextFormField(
+                              controller: controller,
+                              validator: (value){
+                                if (value.isEmpty) {
+                                  return 'field_empty'.tr();
+                                }
+                                if (value.length < 3) {
+                                  return 'minimal_length'.tr(args: ['3']);
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'example_name'.tr(),
+                                labelText: 'username'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      width: 2),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
+                                errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                ),
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                                LengthLimitingTextInputFormatter(15),
+                              ],
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+
+                            ),
+                          ),
+                          actions: [
+                            RaisedButton(
+                              onPressed: (){
+                                if(formState.currentState.validate()){
+                                  String username = controller.text;
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ForgotPasswordPage(username: username,))
+                                  );
+                                }
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    );
                   },
                   color: Theme.of(context).colorScheme.secondary,
                 ),

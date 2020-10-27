@@ -6,14 +6,16 @@ import 'dart:convert';
 import 'package:csocsort_szamla/http_handler.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
+  final String username;
+  ForgotPasswordPage({@required this.username});
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
-  Future<String> _getPasswordReminder() async {
-    http.Response response = await httpGet(context: context, uri: '/password_reminder');
+  Future<String> _getPasswordReminder(String username) async {
+    http.Response response = await httpGet(context: context, uri: '/password_reminder?id='+username);
     Map<String, dynamic> decoded = jsonDecode(response.body);
     return decoded['password_reminder'];
   }
@@ -26,7 +28,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         padding: EdgeInsets.all(20),
         children: [
           FutureBuilder(
-            future: _getPasswordReminder(),
+            future: _getPasswordReminder(widget.username),
             builder: (context, snapshot){
               if(snapshot.connectionState==ConnectionState.done){
                 if(snapshot.hasData){
