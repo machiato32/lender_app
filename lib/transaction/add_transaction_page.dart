@@ -140,7 +140,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
-            FocusScope.of(context).unfocus();
+            FocusScope.of(context).requestFocus(FocusNode());
           },
           child: ListView(
             children: <Widget>[

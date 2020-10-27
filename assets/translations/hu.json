@@ -170,5 +170,9 @@
     "": "",
 
     "reset_tutorial": "Tutorial újranézése",
-    "reset_tutorial_explanation": "Ehhez újra kell indítanod az alkalmazást"
+    "reset_tutorial_explanation": "Ehhez újra kell indítanod az alkalmazást",
+
+    "password_reminder": "Jelszóemlékeztető",
+    "forgot_password": "Elfelejtett jelszó",
+    "your_password_reminder": "A te jelszóemlékeztetőd:"
 }
