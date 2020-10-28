@@ -13,6 +13,7 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -426,24 +427,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           BottomNavigationBarItem(
               icon: Icon(Icons.home), title: Text('home'.tr())),
           BottomNavigationBarItem(
-            icon: DescribedFeatureOverlay(
-              featureId: 'shopping_list',
-              tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
-              title: Text('discover_shopping_title'.tr()),
-              description: Text('discover_shopping_description'.tr()),
-              overflowMode: OverflowMode.extendBackground,
-              child: Icon(Icons.add_shopping_cart)
-            ),
-            title: Text('shopping_list'.tr())
+              icon: DescribedFeatureOverlay(
+                  featureId: 'shopping_list',
+                  tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
+                  title: Text('discover_shopping_title'.tr()),
+                  description: Text('discover_shopping_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.add_shopping_cart)
+              ),
+              title: Text('shopping_list'.tr())
           ),
           BottomNavigationBarItem(
-            icon: DescribedFeatureOverlay(
-              featureId: 'group_settings',
-              tapTarget: Icon(Icons.settings, color: Colors.black),
-              title: Text('discover_group_settings_title'.tr()),
-              description: Text('discover_group_settings_description'.tr()),
-                overflowMode: OverflowMode.extendBackground,
-              child: Icon(Icons.settings)),
+              icon: DescribedFeatureOverlay(
+                  featureId: 'group_settings',
+                  tapTarget: Icon(Icons.settings, color: Colors.black),
+                  title: Text('discover_group_settings_title'.tr()),
+                  description: Text('discover_group_settings_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.settings)),
               title: Text('group'.tr())
           )
         ],
@@ -554,8 +555,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return Text(
-                      'Σ: '+snapshot.data.toString(),
-                      style: Theme.of(context).textTheme.bodyText1
+                        'Σ: '+snapshot.data.toString(),
+                        style: Theme.of(context).textTheme.bodyText1
                     );
                   }
                 }
@@ -608,28 +609,27 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => LoginOrRegisterPage()),
-                    (r) => false);
+                        (r) => false);
               },
             ),
-           Divider(),
-           ListTile(
-             leading: Icon(
-               Icons.bug_report,
-               color: Colors.red,
-             ),
-             title: Text(
-               'report_a_bug'.tr(),
-               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-             ),
-             onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
-             },
-           ),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
+              ),
+              title: Text(
+                'report_a_bug'.tr(),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+              },
+            ),
           ],
         ),
       ),
-      floatingActionButton:
-      Visibility(
+      floatingActionButton: Visibility(
         visible: _selectedIndex == 0,
         child: SpeedDial(
           child: DescribedFeatureOverlay(
@@ -679,7 +679,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
+                            BorderRadius.all(Radius.circular(6.0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.7),
@@ -693,11 +693,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                   .textTheme
                                   .bodyText1
                                   .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .color,
+                                  fontSize: 18)),
                         ),
                         SizedBox(
                           height: 5,
@@ -717,9 +717,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 onTap: () {
                   if (currentUsername != "")
                     Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddPaymentRoute()))
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPaymentRoute()))
                         .then((value) {
                       setState(() {});
                     });
@@ -750,7 +750,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
+                            BorderRadius.all(Radius.circular(6.0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.7),
@@ -764,11 +764,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                   .textTheme
                                   .bodyText1
                                   .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .color,
+                                  fontSize: 18)),
                         ),
                         SizedBox(
                           height: 5,
@@ -791,40 +791,56 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddTransactionRoute(
-                                  type: TransactionType.newExpense,
-                                )
+                              type: TransactionType.newExpense,
+                            )
                         )).then((value) {
-                          setState(() {});
-                        });
+                      setState(() {});
+                    });
                 }),
           ],
         ),
       ),
-      body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            RefreshIndicator(
-              onRefresh: () {
-                return getPrefs().then((_money) {
-                  setState(() {});
-                });
-              },
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Balances(
-                    callback: callback,
+      body: ConnectivityWidget(
+        offlineBanner: Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            color: Colors.red,
+            child: Text(
+              'no_connection'.tr(),
+              style: TextStyle(
+                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            )
+        ),
+        builder: (context, isOnline){
+          return TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                RefreshIndicator(
+                  onRefresh: () {
+                    return getPrefs().then((_money) {
+                      setState(() {});
+                    });
+                  },
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Balances(
+                        callback: callback,
+                      ),
+                      History(
+                        callback: callback,
+                      )
+                    ],
                   ),
-                  History(
-                    callback: callback,
-                  )
-                ],
-              ),
-            ),
-            ShoppingList(),
-            GroupSettings(),
-          ]),
+                ),
+                ShoppingList(),
+                GroupSettings(),
+              ]
+          );
+        }
+      ),
     );
   }
 }
