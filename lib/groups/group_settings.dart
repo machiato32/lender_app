@@ -81,6 +81,7 @@ class _GroupSettingState extends State<GroupSettings> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
+        await deleteCache(uri: '/groups');
         setState(() {
           _invitation = null;
           _invitation = _getInvitation();

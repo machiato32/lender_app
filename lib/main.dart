@@ -4,9 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
@@ -21,16 +19,15 @@ import 'group_objects.dart';
 import 'http_handler.dart';
 import 'app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
-import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'report_a_bug.dart';
-import 'tutorial_dialog.dart';
+import 'main/report_a_bug.dart';
+import 'main/tutorial_dialog.dart';
+import 'main/speed_dial.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -63,9 +60,6 @@ void main() async {
     currentUserId = preferences.getInt('current_user_id');
     apiToken = preferences.getString('api_token');
   }
-  if(preferences.containsKey('current_user')){
-    currentUsername=preferences.getString('current_user');
-  }
   if (preferences.containsKey('current_group_name')) {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
@@ -77,35 +71,37 @@ void main() async {
     initURL = await getInitialLink();
   } catch (_) {}
 
-  runApp(EasyLocalization(
-    child: ChangeNotifierProvider<AppStateNotifier>(
-        create: (context) => AppStateNotifier(),
-        child: LenderApp(
-          themeName: themeName,
-          initURL: initURL,
-        )),
-    supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
-    path: 'assets/translations',
-    fallbackLocale: Locale('en'),
-    useOnlyLangCode: true,
-    saveLocale: true,
-    preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
-    preloaderWidget: MaterialApp(
-      home: Material(
-        type: MaterialType.transparency,
-        child: Center(
-          child: Text(
-            'LENDER',
-            style: TextStyle(
-                color:
-                    (themeName.contains('Light')) ? Colors.black : Colors.white,
-                letterSpacing: 2.5,
-                fontSize: 35),
+  runApp(
+      EasyLocalization(
+        child: ChangeNotifierProvider<AppStateNotifier>(
+            create: (context) => AppStateNotifier(),
+            child: LenderApp(
+              themeName: themeName,
+              initURL: initURL,
+            )),
+        supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en'),
+        useOnlyLangCode: true,
+        saveLocale: true,
+        preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
+        preloaderWidget: MaterialApp(
+          home: Material(
+            type: MaterialType.transparency,
+            child: Center(
+              child: Text(
+                'LENDER',
+                style: TextStyle(
+                    color:
+                        (themeName.contains('Light')) ? Colors.black : Colors.white,
+                    letterSpacing: 2.5,
+                    fontSize: 35),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  ));
+      )
+  );
 }
 
 class LenderApp extends StatefulWidget {
@@ -280,7 +276,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<double> _getSumBalance() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/user');
+      http.Response response = await httpGet(context: context, uri: '/user', useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['total_balance']*1.0;
     }catch(_){
@@ -631,163 +627,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: Visibility(
         visible: _selectedIndex == 0,
-        child: SpeedDial(
-          child: DescribedFeatureOverlay(
-            featureId: 'add_payment_expense',
-            tapTarget: Icon(Icons.add, color: Colors.black,),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Text('discovery_add_floating_title'.tr()),
-            description: Text('discovery_add_floating_description'.tr()),
-            contentLocation: ContentLocation.above,
-            overflowMode: OverflowMode.extendBackground,
-
-            child: Icon(Icons.add),
-          ),
-          overlayColor: (Theme.of(context).brightness == Brightness.dark)
-              ? Colors.black
-              : Colors.white,
-//        animatedIcon: AnimatedIcons.menu_close,
-          curve: Curves.bounceIn,
-          onOpen: (){
-            FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
-          },
-          children: [
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddPaymentRoute())).then((value) => callback());
-                    callback();
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          //                  margin: EdgeInsets.only(right: 18.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('payment'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .color,
-                                  fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'payment_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.attach_money),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddPaymentRoute()))
-                      .then((value)=>callback());
-                }),
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddTransactionRoute(type: null,)
-                        )
-                    ).then((value) {callback();});
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('expense'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .color,
-                                  fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'expense_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.shopping_cart),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddTransactionRoute(
-                            type: TransactionType.newExpense,
-                          )
-                      )).then((value) {callback();});
-                }),
-          ],
-        ),
+        child: MainPageSpeedDial(callback: this.callback,),
       ),
       body: ConnectivityWidget(
         offlineBanner: Container(

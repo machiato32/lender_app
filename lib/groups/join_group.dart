@@ -314,7 +314,8 @@ class _JoinGroupState extends State<JoinGroup> {
                                   child: FutureSuccessDialog(
                                     future: _joinGroup(token, nickname),
                                     dataTrueText: 'join_scf',
-                                    onDataTrue: () {
+                                    onDataTrue: () async {
+                                      await clearCache();
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
@@ -376,5 +377,12 @@ class _JoinGroupState extends State<JoinGroup> {
         ),
       ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

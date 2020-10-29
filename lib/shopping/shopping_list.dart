@@ -107,6 +107,7 @@ class _ShoppingListState extends State<ShoppingList> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
+        await deleteCache(uri: '/groups');
         setState(() {
           _shoppingList = null;
           _shoppingList = _getShoppingList(overwriteCache: true);

@@ -312,7 +312,6 @@ class _LoginRouteState extends State<LoginRoute> {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
-          _prefs.remove('current_user');
         });
 
         return await _selectGroup(decoded['data']['last_active_group']);
