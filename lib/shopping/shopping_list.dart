@@ -51,11 +51,11 @@ class _ShoppingListState extends State<ShoppingList> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<ShoppingRequestData>> _getShoppingList() async {
+  Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/requests?group=' + currentGroupId.toString(),
-          context: context);
+          context: context, overwriteCache: overwriteCache);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
@@ -85,7 +85,7 @@ class _ShoppingListState extends State<ShoppingList> {
   void callback() {
     setState(() {
       _shoppingList = null;
-      _shoppingList = _getShoppingList();
+      _shoppingList = _getShoppingList(overwriteCache: true);
     });
   }
 
@@ -106,12 +106,12 @@ class _ShoppingListState extends State<ShoppingList> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: (){
+      onRefresh: () async {
         setState(() {
           _shoppingList = null;
-          _shoppingList = _getShoppingList();
+          _shoppingList = _getShoppingList(overwriteCache: true);
         });
-        return Future.value(true);
+
       },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -203,7 +203,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                       Navigator.pop(context);
                                       setState(() {
                                         _shoppingList = null;
-                                        _shoppingList = _getShoppingList();
+                                        _shoppingList = _getShoppingList(overwriteCache: true);
                                         _addRequestController.text = '';
                                       });
                                     },
@@ -446,83 +446,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           ).then((value) => widget.callback());
         }
       },
-
-      // confirmDismiss: (direction) async {
-      //   // if(widget.data.requesterId != currentUser){
-      //   //   return Future.value(true);
-      //   // }else{
-      //   //   return await showDialog(
-      //   //       context: context,
-      //   //       child: Dialog(
-      //   //         shape: RoundedRectangleBorder(
-      //   //             borderRadius: BorderRadius.circular(5)),
-      //   //         backgroundColor: Colors.transparent,
-      //   //         elevation: 0,
-      //   //         child: Container(
-      //   //           padding: EdgeInsets.all(8),
-      //   //           child: Column(
-      //   //             crossAxisAlignment: CrossAxisAlignment.center,
-      //   //             mainAxisSize: MainAxisSize.min,
-      //   //             children: <Widget>[
-      //   //               Text(
-      //   //                 'want_delete'.tr(),
-      //   //                 style: Theme.of(context)
-      //   //                     .textTheme
-      //   //                     .bodyText1
-      //   //                     .copyWith(color: Colors.white),
-      //   //               ),
-      //   //               SizedBox(
-      //   //                 height: 15,
-      //   //               ),
-      //   //               Row(
-      //   //                 mainAxisAlignment:
-      //   //                 MainAxisAlignment.spaceAround,
-      //   //                 children: <Widget>[
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () async {
-      //   //                         showDialog(
-      //   //                             barrierDismissible: false,
-      //   //                             context: context,
-      //   //                             child: FutureSuccessDialog(
-      //   //                               future:
-      //   //                               _deleteShoppingRequest(
-      //   //                                   widget
-      //   //                                       .data.requestId),
-      //   //                               dataTrueText: 'delete_scf',
-      //   //                               onDataTrue: () {
-      //   //                                 Navigator.pop(context);
-      //   //                                 Navigator.pop(context, true);
-      //   //                               },
-      //   //                             )
-      //   //                         );
-      //   //                       },
-      //   //                       child: Text('yes'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button)),
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () {
-      //   //                         Navigator.pop(context, false);
-      //   //                       },
-      //   //                       child: Text('no'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button))
-      //   //                 ],
-      //   //               )
-      //   //             ],
-      //   //           ),
-      //   //         ),
-      //   //       )
-      //   //   );
-      //   // }
-      // },
       child: Container(
         height: 65,
         width: MediaQuery.of(context).size.width,

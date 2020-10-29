@@ -369,7 +369,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _groups = _getGroups();
   }
 
-  void callback() {
+  void callback() async {
+    await clearCache();
     setState(() {});
   }
 
@@ -589,7 +590,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
-
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -655,14 +655,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             SpeedDialChild(
                 labelWidget: GestureDetector(
                   onTap: () {
-                    if (currentUsername != "")
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddPaymentRoute()))
-                          .then((value) {
-                        setState(() {});
-                      });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPaymentRoute())).then((value) => callback());
+                    callback();
                   },
                   child: Padding(
                     padding: EdgeInsets.only(right: 18.0),
@@ -715,26 +712,21 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 child: Icon(Icons.attach_money),
                 onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddPaymentRoute()))
-                        .then((value) {
-                      setState(() {});
-                    });
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddPaymentRoute()))
+                      .then((value)=>callback());
                 }),
             SpeedDialChild(
                 labelWidget: GestureDetector(
                   onTap: () {
-                    if (currentUsername != "")
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddTransactionRoute(type: null,)))
-                          .then((value) {
-                        setState(() {});
-                      });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddTransactionRoute(type: null,)
+                        )
+                    ).then((value) {callback();});
                   },
                   child: Padding(
                     padding: EdgeInsets.only(right: 18.0),
@@ -786,16 +778,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 child: Icon(Icons.shopping_cart),
                 onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddTransactionRoute(
-                              type: TransactionType.newExpense,
-                            )
-                        )).then((value) {
-                      setState(() {});
-                    });
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddTransactionRoute(
+                            type: TransactionType.newExpense,
+                          )
+                      )).then((value) {callback();});
                 }),
           ],
         ),
@@ -818,9 +807,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               controller: _tabController,
               children: [
                 RefreshIndicator(
-                  onRefresh: () {
-                    return getPrefs().then((_money) {
-                      setState(() {});
+                  onRefresh: () async {
+                    await clearCache();
+                    setState(() {
+
                     });
                   },
                   child: ListView(
@@ -842,5 +832,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         }
       ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

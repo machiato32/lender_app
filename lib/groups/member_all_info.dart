@@ -256,12 +256,6 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               ),
             ),
           ),
-//              Visibility(
-//                visible: _nicknameFocus.hasFocus,
-//                child: SizedBox(
-//                  height: MediaQuery.of(context).viewInsets.bottom,
-//                ),
-//              )
         ],
       ),
     ));

@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'auth/login_or_register_page.dart';
 import 'config.dart';
@@ -50,31 +50,65 @@ String errorHandler(String error){
   }
 }
 
-Future<http.Response> httpGet({@required BuildContext context, @required String uri}) async {
+Future<http.Response> fromCache({@required String uri, @required bool overwriteCache}) async {
+  String fileName = uri.replaceAll('/', '-');
+  var cacheDir = await getTemporaryDirectory();
+  File file = File(cacheDir.path+'/'+fileName);
+  if(!overwriteCache && (await file.exists() &&  DateTime.now().difference(await file.lastModified()).inSeconds<30)){
+    print('from cache');
+    return http.Response(file.readAsStringSync(), 200);
+  }
+  print('from API');
+  return null;
+}
+Future toCache({@required String uri, @required http.Response response}) async {
+  print('to cache');
+  String fileName = uri.replaceAll('/', '-');
+  var cacheDir = await getTemporaryDirectory();
+  File file = File(cacheDir.path+'/'+fileName);
+  file.writeAsString(response.body, flush: true, mode: FileMode.write);
+}
+
+Future deleteCache({@required String uri}) async {
+  String fileName = uri.replaceAll('/', '-');
+  var cacheDir = await getTemporaryDirectory();
+  File file = File(cacheDir.path+'/'+fileName);
+  if(await file.exists()){
+    print('delete cache');
+    file.delete();
+  }
+}
+
+Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true}) async {
   try {
+    if(useCache){
+      http.Response responseFromCache = await fromCache(uri: uri, overwriteCache: overwriteCache);
+      if(responseFromCache!=null){
+        return responseFromCache;
+      }
+    }
+
     Map<String, String> header = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + (apiToken==null?'':apiToken)
     };
     http.Response response = await http.get(APPURL + uri, headers: header);
-
     if (response.statusCode<300 && response.statusCode>=200) {
+      if(useCache) toCache(uri: uri, response: response);
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
-        if(!needsLogin){
-          needsLogin=true;
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
+        FlutterToast ft = FlutterToast(context);
+        ft.showToast(
+            child: Text('login_required'.tr()),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+                (r) => false);
+
       }
       throw errorHandler(error['error']);
     }
@@ -107,18 +141,15 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
-        if(!needsLogin){
-          needsLogin=true;
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
+        FlutterToast ft = FlutterToast(context);
+        ft.showToast(
+            child: Text('login_required'.tr()),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+                (r) => false);
       }
       throw errorHandler(error['error']);
     }
@@ -150,18 +181,15 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
-        if(!needsLogin){
-          needsLogin=true;
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
+        FlutterToast ft = FlutterToast(context);
+        ft.showToast(
+            child: Text('login_required'.tr()),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+                (r) => false);
       }
       throw errorHandler(error['error']);
     }
@@ -187,18 +215,15 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
-        if(!needsLogin){
-          needsLogin=true;
-          FlutterToast ft = FlutterToast(context);
-          ft.showToast(
-              child: Text('login_required'.tr()),
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-        }
+        FlutterToast ft = FlutterToast(context);
+        ft.showToast(
+            child: Text('login_required'.tr()),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+                (r) => false);
       }
       throw errorHandler(error['error']);
     }

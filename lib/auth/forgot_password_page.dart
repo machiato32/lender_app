@@ -15,12 +15,9 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future<String> _getPasswordReminder(String username) async {
-    print('lol');
     http.Response response = await httpGet(context: context, uri: '/password_reminder?username='+username);
-    print('valami');
     Map<String, dynamic> decoded = jsonDecode(response.body);
     print(decoded);
-    print('valami');
     return decoded['data'];
   }
 
