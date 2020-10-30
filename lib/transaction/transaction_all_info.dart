@@ -146,7 +146,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                  color: Theme.of(context).colorScheme.secondary,
                                                  onPressed: (){
                                                   Navigator.pop(context);
-                                                  Navigator.pop(context);
+
                                                   Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                                       AddTransactionRoute(
                                                         type: TransactionType.fromModifyExpense,
@@ -161,7 +161,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                                         ),
                                                       )
                                                     )
-                                                  );
+                                                  ).then((value) => Navigator.pop(context, 'deleted'));
                                                  },
                                                  child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                              ),

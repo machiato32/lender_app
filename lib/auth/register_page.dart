@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -301,6 +303,10 @@ class _RegisterRouteState extends State<RegisterRoute> {
         Map<String, dynamic> error = jsonDecode(response.body);
         throw error['error'];
       }
+    } on FormatException {
+      throw 'format_exception'.tr()+' F01';
+    } on SocketException {
+      throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
       throw _;
     }

@@ -79,7 +79,7 @@
 
     "join_scf": "Das Beitreten war erfolgreich!",
 
-    "login_required": "Leider must du dich neu anmelden!",
+    "login_required": "Leider musst du dich neu anmelden!",
     "transactions": "Ausgaben",
     "payments": "Zahlungen",
 
@@ -90,15 +90,15 @@
     "add_new": "Neues hinzufügen",
     "payment_hint": "Mammut",
 
-    "no_note": "Keine notiz",
-    "want_delete": "Möchtest du den Artikel zurückrufen?",
-    "delete_scf":"Das Zurückrufen war erfolgreich!",
+    "no_note": "Keine Notiz",
+    "want_delete": "Möchtest du den Artikel zurückziehen?",
+    "delete_scf":"Das Zurückziehen war erfolgreich!",
     "delete": "Löschen",
 
     "want_expense": "Möchtest du es aufrechnen?",
     "bought": "Gekauft",
 
-    "add_scf":"Das hinzufügen war erfolgreich!",
+    "add_scf":"Das Hinzufügen war erfolgreich!",
 
     "per_person": " Ft/Person",
     "no_amount": "Du hast keine Summe angegeben!",
@@ -119,7 +119,7 @@
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
     "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
-    "history_explanation": "Verfolge, rufe zurück und ändere deine früheren Transaktionen",
+    "history_explanation": "Verfolge, ziehe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
     "who_to_pay": "An wen soll ich zahlen?",
@@ -129,7 +129,7 @@
     "fulfill_scf": "Das Element wurde erfolgreich von der Liste gestrichen",
     "remove_from_list": "Abgehakt",
     "add_as_expense": "Schreibe es als Ausgabe auf",
-    "revoke": "Zurückrufen",
+    "revoke": "Zurückziehen",
 
     "change_username_scf": "Die Änderung war erfolgreich.",
     "change_username": "Benutzername ändern",
@@ -151,20 +151,20 @@
     "discovery_add_floating_description": "\nEinkauf:\nSchreibe hier die Summe auf, wenn du was für einen Mitglied oder mehrere Mitglieder gekauft hast, die App wird es dann gleichmäßig verteilen.\n\nZahlung:\nHier kannst du die Summe aufschreiben, falls du an jemanden gezahlt hast.",
     "discovery_drawer_title": "Nutzereinstellungen",
     "discovery_drawer_description": "\nOben wechselst du zwischen deinen Gruppen\n\nDarunter findest du deine persönlichen Einstellungen.",
-    "discovery_settings_title": "Persönliche einstellungen",
+    "discovery_settings_title": "Persönliche Einstellungen",
     "discovery_settings_description": "\nHier kannst du deinen Benutzernamen oder Passwort ändern, und dich zwischen mehreren Farbthemen entscheiden.",
     "discover_shopping_title": "Gemeinsame Einkaufsliste",
-    "discover_shopping_description" : "\nDiese einkaufsliste sehen alle Mitglieder der Gruppe.\n\nIhr könnt sie zum Beispiel auf einer gemeinsamen Reise oder in einer WG benutzen.",
+    "discover_shopping_description" : "\nDiese Einkaufsliste sehen alle Mitglieder der Gruppe.\n\nIhr könnt sie zum Beispiel auf einer gemeinsamen Reise oder in einer WG benutzen.",
     "discover_group_settings_title": "Gruppeneinstellungen",
     "discover_group_settings_description" : "\nUnter anderem kannst du hier neue Mitglieder zur Gruppe einladen und deinen Spitznamen ändern.",
 
-    "tutorial_1" : "Normalerweise werden in einer Gruppe viele überflüssige Transaktionen durchgeführt, weil man immer Zahlen muss, wenn jemand einem was kauft.",
+    "tutorial_1" : "Normalerweise werden in einer Gruppe viele überflüssige Transaktionen durchgeführt, weil man immer zahlen muss, wenn jemand einem was kauft.",
     "tutorial_2" : "Lender verringert die Zahl der Transaktionen.\nSpäter wirst du sehen, dass dies so erreicht wird, dass die Mitglieder der Gruppe schulden und nicht einander.",
     "tutorial_3" : "In der Gruppe verfügt jeder über ein Konto.\nPositiv bedeutet, dass die Gruppe dir schuldet, negativ dass du der Gruppe schuldig bist.",
-    "tutorial_4" : "An wen du Zahlen solltest kannst du anhand der Konten entscheiden, außerdem kannst du den \"An wen soll ich zahlen?\" Knopf benutzen.",
-    "welcome": "Dankeschön, dass du registriert hast!\n\nIn den nächsten paar Seiten werden wir dir die Benutzung der App zeigen.",
-    "next": "Nächstes",
-    "previous": "Vorheriges",
+    "tutorial_4" : "An wen du zahlen solltest kannst du anhand der Konten entscheiden, außerdem kannst du den \"An wen soll ich zahlen?\" Knopf benutzen.",
+    "welcome": "Danke schön, dass du registriert hast!\n\nIn den nächsten paar Seiten werden wir dir die Benutzung der App zeigen.",
+    "next": "Weiter",
+    "previous": "Zurück",
     "finish": "Verstanden",
     "": "",
 
@@ -175,9 +175,9 @@
     "forgot_password": "Vergessenes Password",
     "your_password_reminder": "Deine passworterinnerung:",
 
-    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.\nHibakód:",
-    "format_exception": "Fehler bei der verarbeitung der Daten. Probiere es noch einmal.\nHibakód:",
-    "no_connection": "Keine internetverbindung.",
+    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.\nError code:",
+    "format_exception": "Fehler bei der Verarbeitung der Daten. Probiere es noch einmal.\nError code:",
+    "no_connection": "Keine Internetverbindung.",
 
     "input_error": "input_error",
     "user_not_member": "user_not_member_error",
