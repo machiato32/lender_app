@@ -195,5 +195,8 @@
     "new_password_cannot_same": "new_password_cannot_same",
     "not_buyer_of_transaction": "not_buyer_of_transaction",
     "not_payer_of_transaction": "not_payer_of_transaction",
-    "did_not_request_this": "did_not_request_this"
+    "did_not_request_this": "did_not_request_this",
+
+    "store": "Bolt",
+    "store_scf": "Az értesítés sikeresen elküldve."
 }

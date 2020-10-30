@@ -54,7 +54,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
-  if(!overwriteCache && (await file.exists() &&  DateTime.now().difference(await file.lastModified()).inSeconds<30)){
+  if(!overwriteCache && (await file.exists() &&  DateTime.now().difference(await file.lastModified()).inMinutes<5)){
     print('from cache');
     return http.Response(file.readAsStringSync(), 200);
   }

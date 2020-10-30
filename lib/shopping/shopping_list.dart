@@ -82,6 +82,17 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
+  Future<bool> _postImShopping(String store) async {
+    try {
+      Map<String, dynamic> body = {'store':store};
+      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification');
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
   void callback() {
     setState(() {
       _shoppingList = null;
@@ -224,13 +235,22 @@ class _ShoppingListState extends State<ShoppingList> {
                         showDialog(
                           context: context,
                           builder: (context) {
+                            TextEditingController controller = TextEditingController();
                             GlobalKey<FormState> formKey = GlobalKey<FormState>();
                             return Form(
                               key: formKey,
                               child: AlertDialog(
                                 title: Text('where'.tr()),
-                                content: TextField(
+                                content: TextFormField(
+                                  validator: (value){
+                                    value=value.trim();
+                                    if (value.isEmpty) {
+                                      return 'field_empty'.tr();
+                                    }
+                                    return null;
+                                  },
                                   decoration: InputDecoration(
+                                    labelText: 'store'.tr(),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                           color:
@@ -242,20 +262,37 @@ class _ShoppingListState extends State<ShoppingList> {
                                           width: 2),
                                     ),
                                   ),
-                                  controller: _addRequestController,
+                                  controller: controller,
                                   style: TextStyle(
                                       fontSize: 20,
                                       color:
                                       Theme.of(context).textTheme.bodyText1.color),
                                   cursorColor: Theme.of(context).colorScheme.secondary,
                                   inputFormatters: [
-                                    LengthLimitingTextInputFormatter(50)
+                                    LengthLimitingTextInputFormatter(20)
                                   ],
                                 ),
                                 actions: [
                                   RaisedButton(
                                     onPressed: (){
-                                      //TODO: API request
+                                      if(formKey.currentState.validate()){
+                                        String store = controller.text;
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          child: FutureSuccessDialog(
+                                            future: _postImShopping(store),
+                                            dataTrueText: 'store_scf',
+                                            onDataTrue: () {
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            },
+                                          )
+
+                                        );
+
+                                      }
+
                                     },
                                     child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
                                     color: Theme.of(context).colorScheme.secondary,
@@ -270,9 +307,6 @@ class _ShoppingListState extends State<ShoppingList> {
                       color: Theme.of(context).colorScheme.secondary,
 
                     ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
                   ],
                 ),
               ),
