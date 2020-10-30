@@ -265,7 +265,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<String> _getCurrentGroup() async {
-    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
+    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString(), useCache: false);
     Map<String, dynamic> decoded = jsonDecode(response.body);
     currentGroupName = decoded['data']['group_name'];
     SharedPreferences.getInstance().then((_prefs) {
@@ -286,6 +286,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   
   Future _logout() async {
     try {
+      await clearAllCache();
       await httpPost(uri: '/logout', context: context, body: {});
       currentUserId = null;
       currentGroupId = null;

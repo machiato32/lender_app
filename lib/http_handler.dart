@@ -79,6 +79,11 @@ Future deleteCache({@required String uri}) async {
   }
 }
 
+Future clearAllCache() async {
+  var cacheDir = await getTemporaryDirectory();
+  cacheDir.delete(recursive: true);
+}
+
 Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true}) async {
   try {
     if(useCache){

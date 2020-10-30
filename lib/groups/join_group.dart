@@ -32,6 +32,7 @@ class _JoinGroupState extends State<JoinGroup> {
 
   Future _logout() async {
     try {
+      await clearAllCache();
       await httpPost(context: context, uri: '/logout', body: {});
       currentUserId = null;
       currentGroupId = null;
