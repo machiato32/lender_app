@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/user_settings/change_password.dart';
-import 'package:csocsort_szamla/user_settings/color_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import 'change_password.dart';
+import 'color_picker.dart';
 import 'change_language.dart';
 import 'change_username.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'reset_tutorial.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -20,10 +22,10 @@ class _SettingsState extends State<Settings> {
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          FocusScope.of(context).unfocus();
+          FocusScope.of(context).requestFocus(FocusNode());
         },
         child: ListView(
-          children: <Widget>[ChangePassword(), ChangeUsername(), ColorPicker(), LanguagePicker()],
+          children: <Widget>[ChangePassword(), ChangeUsername(), ColorPicker(), LanguagePicker(), ResetTutorial()],
         ),
       ),
     );

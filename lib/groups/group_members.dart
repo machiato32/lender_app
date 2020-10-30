@@ -23,7 +23,7 @@ class _GroupMembersState extends State<GroupMembers> {
     try {
       http.Response response = await httpGet(
           uri: '/groups/' + currentGroupId.toString(),
-          context: context);
+          context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       for (var member in decoded['data']['members']) {
@@ -38,6 +38,12 @@ class _GroupMembersState extends State<GroupMembers> {
     } catch (_) {
       throw _;
     }
+  }
+  @override
+  void didUpdateWidget(GroupMembers oldWidget) {
+    _members = null;
+    _members = _getMembers();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -253,7 +259,7 @@ class _MemberEntryState extends State<MemberEntry> {
                                       Flexible(
                                           child: Text(
                                         widget.member.username,
-                                        style: style.copyWith(fontSize: 22),
+                                        style: style.copyWith(fontSize: 20),
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                       Flexible(

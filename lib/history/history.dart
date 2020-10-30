@@ -21,17 +21,17 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
   Future<List<TransactionData>> _transactions;
-  TabController _controller;
+  TabController _tabController;
 
-  Future<List<TransactionData>> _getTransactions() async {
+  Future<List<TransactionData>> _getTransactions({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/transactions?group=' + currentGroupId.toString(),
-          context: context);
+          context: context, overwriteCache: overwriteCache);
 
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<TransactionData> transactionData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         transactionData.add(TransactionData.fromJson(data));
       }
       return transactionData;
@@ -41,14 +41,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  Future<List<PaymentData>> _getPayments() async {
+  Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/payments?group=' + currentGroupId.toString(),
-          context: context);
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+          context: context, overwriteCache: overwriteCache);
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         paymentData.add(PaymentData.fromJson(data));
       }
       return paymentData;
@@ -60,14 +60,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   void callback() {
     widget.callback();
     _payments = null;
-    _payments = _getPayments();
+    _payments = _getPayments(overwriteCache: true);
     _transactions = null;
-    _transactions = _getTransactions();
+    _transactions = _getTransactions(overwriteCache: true);
   }
 
   @override
   void initState() {
-    _controller = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _payments = null;
     _payments = _getPayments();
     _transactions = null;
@@ -107,7 +107,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
               height: 20,
             ),
             TabBar(
-              controller: _controller,
+              controller: _tabController,
               tabs: <Widget>[
                 Tab(
                   icon: Icon(
@@ -125,13 +125,19 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
             Container(
               height: 500,
               child: TabBarView(
-                controller: _controller,
+                controller: _tabController,
                 children: <Widget>[
                   FutureBuilder(
                     future: _transactions,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
+                          if(snapshot.data.length==0){
+                            return Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                            );
+                          }
                           return Column(
                             children: <Widget>[
                               SizedBox(
@@ -148,7 +154,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  AllHistoryRoute()));
+                                                  AllHistoryRoute(startingIndex: _tabController.index)));
                                     },
                                     icon: Icon(
                                       Icons.more_horiz,
@@ -189,6 +195,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
+                          if(snapshot.data.length==0){
+                            return Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                            );
+                          }
                           return Column(
                             children: <Widget>[
                               SizedBox(
@@ -204,7 +216,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  AllHistoryRoute()));
+                                                  AllHistoryRoute(startingIndex: _tabController.index,)));
                                     },
                                     icon: Icon(
                                       Icons.more_horiz,

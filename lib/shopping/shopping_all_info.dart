@@ -171,7 +171,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       AddTransactionRoute(
-                                        type: ExpenseType
+                                        type: TransactionType
                                             .fromShopping,
                                         shoppingData:
                                         widget

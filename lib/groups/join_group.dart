@@ -32,6 +32,7 @@ class _JoinGroupState extends State<JoinGroup> {
 
   Future _logout() async {
     try {
+      await clearAllCache();
       await httpPost(context: context, uri: '/logout', body: {});
       currentUserId = null;
       currentGroupId = null;
@@ -163,7 +164,7 @@ class _JoinGroupState extends State<JoinGroup> {
                       ),
                       ListTile(
                         leading: Icon(
-                          Icons.account_circle,
+                          Icons.exit_to_app,
                           color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         title: Text(
@@ -314,7 +315,8 @@ class _JoinGroupState extends State<JoinGroup> {
                                   child: FutureSuccessDialog(
                                     future: _joinGroup(token, nickname),
                                     dataTrueText: 'join_scf',
-                                    onDataTrue: () {
+                                    onDataTrue: () async {
+                                      await clearCache();
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
@@ -376,5 +378,12 @@ class _JoinGroupState extends State<JoinGroup> {
         ),
       ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

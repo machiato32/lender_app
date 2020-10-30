@@ -91,8 +91,8 @@
     "payment_hint": "Mammut",
 
     "no_note": "Non c'è nota",
-    "want_delete": "Vorresti cancellare l'articolo?",
-    "delete_scf":"La cancellazione è stata di successo!",
+    "want_delete": "Vorresti modificare l'articolo?",
+    "delete_scf":"La modificazione è stata di successo!",
     "delete": "Cancella",
 
     "want_expense": "Vorresti addebitare?",
@@ -120,7 +120,7 @@
     "invitation_explanation": "Invita qualcuno al gruppo",
     "rename_group_explanation": "Rinomina il gruppo se non ti piace il cui nome",
     "shopping_list_explanation": "Scrivi sulla lista comune",
-    "history_explanation": "Segui e cancella le tue transazioni precedenti",
+    "history_explanation": "Segui, modifica e revocare le tue transazioni precedenti",
 
     "pay": "Pagare",
     "who_to_pay": "A chi dovrei pagare?",
@@ -133,6 +133,55 @@
     "revoke": "Revocare",
 
     "change_username_scf": "Il cambiamento è stato di successo!",
-    "change_username": "Modifica la nome utente"
+    "change_username": "Modifica il nome utente",
 
+    "hi": "Ciao",
+
+    "report_a_bug": "Annunciare un errore",
+    "bug": "Errore",
+    "what_is_wrong": "Che c'è che non va?",
+    "bug_scf": "L'errore è stato annunciato con successo",
+
+    "want_edit": "Vorresti modificare l'articolo?",
+    "nothing_to_show": "Silenzio...",
+
+    "i_m_shopping" : "Sono nel supermercato",
+    "where" : "Dove?",
+
+    "discovery_add_floating_title": "Aggiungere spesa o pagamento",
+    "discovery_add_floating_description": "\nSpesa:\nQuando compri qualcosa per uno o più membri, inseriscici la somma e l'applicazione la dividerà in parti uguali.\n\nPagamento:\nQuando paghi a un membro, ci puoi inserire la somma.",
+    "discovery_drawer_title": "Impostazioni degli utenti",
+    "discovery_drawer_description": "\nNella parte superiore del menu puoi gestire i tuoi grupppi.\n\nSotto trovi le impostazioni personali.",
+    "discovery_settings_title": "Impostazioni personali",
+    "discovery_settings_description": "\nQui puoi modificare il tuo nome utente, la tua password, persino puoi scegliere tra bellissimi colori.",
+    "discover_shopping_title": "Lista della spesa comune",
+    "discover_shopping_description" : "\nQuesta lista è visibile per tutti i membri del gruppo.\n\nLa potete usare in vacanza o con i coinquilini.",
+    "discover_group_settings_title": "Impostazioni del gruppo",
+    "discover_group_settings_description" : "\nQui puoi, tra l'altro, invitare nuovi membri e modificare il tuo soprannove.",
+
+
+    "tutorial_1" : "In genere ci sono molte transazioni inutili in un gruppo siccome devi sempre pagare quando ti comprano qualcosa.",
+    "tutorial_2" : "Il Lender rende queste transazioni più semplici.\nPiù tardi lo vedrai che il debito lo avrai verso il gruppo e non verso una persona.",
+    "tutorial_3" : "Nel gruppo ogni membro ha il proprio saldo.\nSe il tuo salso è positivo, gli altri hanno debito con te, se hai quello negativo, tu sei in debito.",
+    "tutorial_4" : "Potresti decidere a chi devi pagare mettendo in considerazione i saldi oppure puoi usare il bottone \"A chi dovrei pagare?\".",
+    "welcome": "Grazie per esserti registrato a Lender! In seguito ti mostriamo l'uso dell'applicazione tramite un tutorial.",
+    "next": "Seguente",
+    "previous": "Precedente",
+    "finish": "Capito",
+    "": "",
+
+    "reset_tutorial": "Rivedere il tutorial",
+    "reset_tutorial_explanation": "Per poter farlo devi iniziare di nuovo l'applicazione!",
+
+    "password_reminder": "Promemoria della password",
+    "forgot_password": "Password dimenticata",
+    "your_password_reminder": "La tua promemoria della password:",
+
+    "cannot_connect": "La connessione al server non è stata di successo. Controlli la connessione internet e riprovi dopo.\nCodice di errore:",
+
+    "format_exception": "Errore mentre analizzare i dati. Cerca di riprovare!\nCodice di errore:",
+    "no_connection": "Non hai connessione internet.",
+
+    "store": "Negozio",
+    "store_scf": "La notifica è mandata con successo."
 }

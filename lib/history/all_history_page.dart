@@ -9,6 +9,8 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
 class AllHistoryRoute extends StatefulWidget {
+  final int startingIndex;
+  AllHistoryRoute({@required this.startingIndex});
   @override
   _AllHistoryRouteState createState() => _AllHistoryRouteState();
 }
@@ -46,9 +48,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           uri: '/payments?group=' + currentGroupId.toString(),
           context: context);
 
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         paymentData.add(PaymentData.fromJson(data));
       }
       return paymentData;
@@ -69,7 +71,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.startingIndex);
+    _selectedIndex = widget.startingIndex;
 
     _transactions = null;
     _transactions = _getTransactions();

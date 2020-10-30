@@ -42,15 +42,6 @@ class _ColorPickerState extends State<ColorPicker> {
                 children: _getColors(),
               ),
             )
-//            Wrap(
-//              spacing: 10,
-//              children: _getLightColors(),
-//            ),
-//            SizedBox(height: 10),
-//            Wrap(
-//              spacing: 10,
-//              children: _getDarkColors(),
-//            ),
           ],
         ),
       ),
