@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'http_handler.dart';
-import 'future_success_dialog.dart';
+import '../http_handler.dart';
+import '../future_success_dialog.dart';
 
 class ReportABugPage extends StatefulWidget {
   @override

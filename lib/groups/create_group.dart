@@ -170,7 +170,8 @@ class _CreateGroupState extends State<CreateGroup> {
                           context: context,
                           child: FutureSuccessDialog(
                             future: _createGroup(token, nickname),
-                            onDataTrue: () {
+                            onDataTrue: () async {
+                              await clearCache();
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -189,5 +190,12 @@ class _CreateGroupState extends State<CreateGroup> {
         ),
       ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

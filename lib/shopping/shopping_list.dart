@@ -51,15 +51,15 @@ class _ShoppingListState extends State<ShoppingList> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<ShoppingRequestData>> _getShoppingList() async {
+  Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/requests?group=' + currentGroupId.toString(),
-          context: context);
+          context: context, overwriteCache: overwriteCache);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
-      decoded['data']['active'].forEach((element) {
+      decoded['data'].forEach((element) {
         shopping.add(ShoppingRequestData.fromJson(element));
       });
       shopping = shopping.reversed.toList();
@@ -82,10 +82,21 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
+  Future<bool> _postImShopping(String store) async {
+    try {
+      Map<String, dynamic> body = {'store':store};
+      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification');
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
   void callback() {
     setState(() {
       _shoppingList = null;
-      _shoppingList = _getShoppingList();
+      _shoppingList = _getShoppingList(overwriteCache: true);
     });
   }
 
@@ -106,12 +117,13 @@ class _ShoppingListState extends State<ShoppingList> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: (){
+      onRefresh: () async {
+        await deleteCache(uri: '/groups');
         setState(() {
           _shoppingList = null;
-          _shoppingList = _getShoppingList();
+          _shoppingList = _getShoppingList(overwriteCache: true);
         });
-        return Future.value(true);
+
       },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -203,7 +215,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                       Navigator.pop(context);
                                       setState(() {
                                         _shoppingList = null;
-                                        _shoppingList = _getShoppingList();
+                                        _shoppingList = _getShoppingList(overwriteCache: true);
                                         _addRequestController.text = '';
                                       });
                                     },
@@ -223,13 +235,22 @@ class _ShoppingListState extends State<ShoppingList> {
                         showDialog(
                           context: context,
                           builder: (context) {
+                            TextEditingController controller = TextEditingController();
                             GlobalKey<FormState> formKey = GlobalKey<FormState>();
                             return Form(
                               key: formKey,
                               child: AlertDialog(
                                 title: Text('where'.tr()),
-                                content: TextField(
+                                content: TextFormField(
+                                  validator: (value){
+                                    value=value.trim();
+                                    if (value.isEmpty) {
+                                      return 'field_empty'.tr();
+                                    }
+                                    return null;
+                                  },
                                   decoration: InputDecoration(
+                                    labelText: 'store'.tr(),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                           color:
@@ -241,20 +262,37 @@ class _ShoppingListState extends State<ShoppingList> {
                                           width: 2),
                                     ),
                                   ),
-                                  controller: _addRequestController,
+                                  controller: controller,
                                   style: TextStyle(
                                       fontSize: 20,
                                       color:
                                       Theme.of(context).textTheme.bodyText1.color),
                                   cursorColor: Theme.of(context).colorScheme.secondary,
                                   inputFormatters: [
-                                    LengthLimitingTextInputFormatter(50)
+                                    LengthLimitingTextInputFormatter(20)
                                   ],
                                 ),
                                 actions: [
                                   RaisedButton(
                                     onPressed: (){
-                                      //TODO: API request
+                                      if(formKey.currentState.validate()){
+                                        String store = controller.text;
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          child: FutureSuccessDialog(
+                                            future: _postImShopping(store),
+                                            dataTrueText: 'store_scf',
+                                            onDataTrue: () {
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            },
+                                          )
+
+                                        );
+
+                                      }
+
                                     },
                                     child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
                                     color: Theme.of(context).colorScheme.secondary,
@@ -269,9 +307,6 @@ class _ShoppingListState extends State<ShoppingList> {
                       color: Theme.of(context).colorScheme.secondary,
 
                     ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
                   ],
                 ),
               ),
@@ -446,83 +481,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           ).then((value) => widget.callback());
         }
       },
-
-      // confirmDismiss: (direction) async {
-      //   // if(widget.data.requesterId != currentUser){
-      //   //   return Future.value(true);
-      //   // }else{
-      //   //   return await showDialog(
-      //   //       context: context,
-      //   //       child: Dialog(
-      //   //         shape: RoundedRectangleBorder(
-      //   //             borderRadius: BorderRadius.circular(5)),
-      //   //         backgroundColor: Colors.transparent,
-      //   //         elevation: 0,
-      //   //         child: Container(
-      //   //           padding: EdgeInsets.all(8),
-      //   //           child: Column(
-      //   //             crossAxisAlignment: CrossAxisAlignment.center,
-      //   //             mainAxisSize: MainAxisSize.min,
-      //   //             children: <Widget>[
-      //   //               Text(
-      //   //                 'want_delete'.tr(),
-      //   //                 style: Theme.of(context)
-      //   //                     .textTheme
-      //   //                     .bodyText1
-      //   //                     .copyWith(color: Colors.white),
-      //   //               ),
-      //   //               SizedBox(
-      //   //                 height: 15,
-      //   //               ),
-      //   //               Row(
-      //   //                 mainAxisAlignment:
-      //   //                 MainAxisAlignment.spaceAround,
-      //   //                 children: <Widget>[
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () async {
-      //   //                         showDialog(
-      //   //                             barrierDismissible: false,
-      //   //                             context: context,
-      //   //                             child: FutureSuccessDialog(
-      //   //                               future:
-      //   //                               _deleteShoppingRequest(
-      //   //                                   widget
-      //   //                                       .data.requestId),
-      //   //                               dataTrueText: 'delete_scf',
-      //   //                               onDataTrue: () {
-      //   //                                 Navigator.pop(context);
-      //   //                                 Navigator.pop(context, true);
-      //   //                               },
-      //   //                             )
-      //   //                         );
-      //   //                       },
-      //   //                       child: Text('yes'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button)),
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () {
-      //   //                         Navigator.pop(context, false);
-      //   //                       },
-      //   //                       child: Text('no'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button))
-      //   //                 ],
-      //   //               )
-      //   //             ],
-      //   //           ),
-      //   //         ),
-      //   //       )
-      //   //   );
-      //   // }
-      // },
       child: Container(
         height: 65,
         width: MediaQuery.of(context).size.width,

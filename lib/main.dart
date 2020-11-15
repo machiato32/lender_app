@@ -4,15 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -28,7 +27,9 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'report_a_bug.dart';
+import 'main/report_a_bug.dart';
+import 'main/tutorial_dialog.dart';
+import 'main/speed_dial.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -107,6 +108,37 @@ void main() async {
       ),
     ),
   ));
+  runApp(
+      EasyLocalization(
+        child: ChangeNotifierProvider<AppStateNotifier>(
+            create: (context) => AppStateNotifier(),
+            child: LenderApp(
+              themeName: themeName,
+              initURL: initURL,
+            )),
+        supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en'),
+        useOnlyLangCode: true,
+        saveLocale: true,
+        preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
+        preloaderWidget: MaterialApp(
+          home: Material(
+            type: MaterialType.transparency,
+            child: Center(
+              child: Text(
+                'LENDER',
+                style: TextStyle(
+                    color:
+                        (themeName.contains('Light')) ? Colors.black : Colors.white,
+                    letterSpacing: 2.5,
+                    fontSize: 35),
+              ),
+            ),
+          ),
+        ),
+      )
+  );
 }
 
 class LenderApp extends StatefulWidget {
@@ -220,9 +252,7 @@ class _LenderAppState extends State<LenderApp> {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             home: currentUserId == null
-                ? LoginOrRegisterPage(
-              showDialog: true,
-            )
+                ? LoginOrRegisterPage()
                 : (_link != null)
                 ? JoinGroup(
               inviteURL: _link,
@@ -290,7 +320,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       throw _;
     }
   }
-
+  
   Future _logout() async {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
@@ -303,8 +333,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         _prefs.remove('current_group_name');
         _prefs.remove('current_group_id');
         _prefs.remove('api_token');
-        _prefs.remove('users_groups');
-        _prefs.remove('users_group_ids');
       });
     } catch (_) {
       throw _;
@@ -345,45 +373,39 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
     _groups = null;
     _groups = _getGroups();
-    print('lol');
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await showDialog(
+      bool showTutorial=true;
+      await SharedPreferences.getInstance().then((prefs) {
+        if(prefs.containsKey('show_tutorial')){
+          showTutorial=prefs.getBool('show_tutorial');
+        }
+      });
+      if(showTutorial){
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setBool('show_tutorial', false);
+        });
+        await showDialog(
           context: context,
-          child: AlertDialog(
-            // elevation: 0,
-            backgroundColor: Theme.of(context).cardTheme.color,
-            title: Text('hi'.tr()),
-            content: SingleChildScrollView(
-              child: Image.asset('assets/lendertut1.gif'),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Tényleg elolvastam',
-                  style: Theme.of(context).textTheme.button,
-                ),
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            ],
-          ));
+          builder: (context){
+            return TutorialDialog();
+          },
+        );
+      }
+
     });
   }
 
   void _handleDrawer() {
-    // FeatureDiscovery.clearPreferences(context, <String>['drawer', 'settings']);
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
   }
 
-  void callback() {
+  void callback() async {
+    await clearCache();
     setState(() {});
   }
-  var icon = Icon(Icons.add);
 
   @override
   Widget build(BuildContext context) {
@@ -429,10 +451,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             _tabController.animateTo(_index);
           });
           if(_selectedIndex==1){
-            // FeatureDiscovery.clearPreferences(context, ['shopping_list']);
             FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
           }else if(_selectedIndex==2){
-            // FeatureDiscovery.clearPreferences(context, ['group_settings']);
             FeatureDiscovery.discoverFeatures(context, ['group_settings']);
           }
         },
@@ -603,7 +623,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
-
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -643,210 +662,59 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton:
-      Visibility(
+      floatingActionButton: Visibility(
         visible: _selectedIndex == 0,
-        child: SpeedDial(
-          child: DescribedFeatureOverlay(
-            featureId: 'add_payment_expense',
-            tapTarget: Icon(Icons.add, color: Colors.black,),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Text('discovery_add_floating_title'.tr()),
-            description: Text('discovery_add_floating_description'.tr()),
-            contentLocation: ContentLocation.above,
-            overflowMode: OverflowMode.extendBackground,
-
-            child: Icon(Icons.add),
-          ),
-          overlayColor: (Theme.of(context).brightness == Brightness.dark)
-              ? Colors.black
-              : Colors.white,
-//        animatedIcon: AnimatedIcons.menu_close,
-          curve: Curves.bounceIn,
-          onOpen: (){
-            // FeatureDiscovery.clearPreferences(context, <String>['add_payment_expense']);
-            FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
-          },
-          children: [
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {
-                    if (currentUsername != "")
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddPaymentRoute()))
-                          .then((value) {
-                        setState(() {});
-                      });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          //                  margin: EdgeInsets.only(right: 18.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('payment'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .color,
-                                  fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'payment_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.attach_money),
-                onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddPaymentRoute()))
-                        .then((value) {
-                      setState(() {});
-                    });
-                }),
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {
-                    if (currentUsername != "")
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddTransactionRoute(type: null,)))
-                          .then((value) {
-                        setState(() {});
-                      });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('expense'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .button
-                                      .color,
-                                  fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'expense_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.shopping_cart),
-                onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddTransactionRoute(
-                              type: TransactionType.newExpense,
-                            )
-                        )).then((value) {
-                      setState(() {});
-                    });
-                }),
-          ],
-        ),
+        child: MainPageSpeedDial(callback: this.callback,),
       ),
-      body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            RefreshIndicator(
-              onRefresh: () {
-                return getPrefs().then((_money) {
-                  setState(() {});
-                });
-              },
-              // Card(
-              //   child: Padding(
-              //       padding: EdgeInsets.all(15),
-              //       child: Text('current_user'.tr()+(guestNickname??'yourself'.tr()))
-              //   ),
-              // ),
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Balances(
-                    callback: callback,
+      body: ConnectivityWidget(
+        offlineBanner: Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            color: Colors.red,
+            child: Text(
+              'no_connection'.tr(),
+              style: TextStyle(
+                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            )
+        ),
+        builder: (context, isOnline){
+          return TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                RefreshIndicator(
+                  onRefresh: () async {
+                    await clearCache();
+                    setState(() {
+
+                    });
+                  },
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Balances(
+                        callback: callback,
+                      ),
+                      History(
+                        callback: callback,
+                      )
+                    ],
                   ),
-                  History(
-                    callback: callback,
-                  )
-                ],
-              ),
-            ),
-            ShoppingList(),
-            GroupSettings(),
-          ]),
+                ),
+                ShoppingList(),
+                GroupSettings(),
+              ]
+          );
+        }
+      ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }
