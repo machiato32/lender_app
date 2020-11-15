@@ -243,7 +243,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => MainPage()),
-                          (r) => false);
+                              (r) => false);
                     },
                   ));
             }
@@ -257,7 +257,7 @@ class _LoginRouteState extends State<LoginRoute> {
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
       http.Response response =
-          await httpGet(uri: '/groups', context: context);
+      await httpGet(uri: '/groups', context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {
@@ -265,10 +265,12 @@ class _LoginRouteState extends State<LoginRoute> {
             groupName: group['group_name'], groupId: group['group_id']));
       }
       if (groups.length > 0) {
+        usersGroups=groups.map<String>((group) => group.groupName).toList();
+        usersGroupIds=groups.map<int>((group) => group.groupId).toList();
         if (groups
-                .where((group) => group.groupId == lastActiveGroup)
-                .toList()
-                .length !=0) {
+            .where((group) => group.groupId == lastActiveGroup)
+            .toList()
+            .length !=0) {
           currentGroupName = groups
               .firstWhere((group) => group.groupId == lastActiveGroup)
               .groupName;
@@ -276,6 +278,8 @@ class _LoginRouteState extends State<LoginRoute> {
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
+            _prefs.setStringList('users_groups', usersGroups);
+            _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
           });
           return true;
         }
@@ -284,6 +288,8 @@ class _LoginRouteState extends State<LoginRoute> {
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_group_name', currentGroupName);
           _prefs.setInt('current_group_id', currentGroupId);
+          _prefs.setStringList('users_groups', usersGroups);
+          _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
         });
         return true;
       }

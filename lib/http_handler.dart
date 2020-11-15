@@ -1,13 +1,19 @@
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+
 
 import 'auth/login_or_register_page.dart';
 import 'config.dart';
+import 'groups/join_group.dart';
+import 'main.dart';
+
 
 bool needsLogin = false;
 
@@ -50,6 +56,37 @@ String errorHandler(String error){
   }
 }
 
+void memberNotInGroup(BuildContext context){
+  usersGroupIds.remove(currentGroupId);
+  usersGroups.remove(currentGroupName);
+  SharedPreferences.getInstance().then((prefs) {
+    prefs.setStringList('users_groups', usersGroups);
+    prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+  });
+  FlutterToast ft = FlutterToast(context);
+  ft.showToast(
+      child: Text('not_in_group'.tr()),
+      toastDuration: Duration(seconds: 2),
+      gravity: ToastGravity.BOTTOM);
+  if(usersGroups.length>0){
+    currentGroupName=usersGroups[0];
+    currentGroupId=usersGroupIds[0];
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()),
+            (r) => false);
+  }else{
+    currentGroupName=null;
+    currentGroupId=null;
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => JoinGroup()),
+            (r) => false);
+  }
+
+}
 Future<http.Response> fromCache({@required String uri, @required bool overwriteCache}) async {
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();

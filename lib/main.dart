@@ -19,8 +19,10 @@ import 'group_objects.dart';
 import 'http_handler.dart';
 import 'app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
+import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
@@ -60,17 +62,52 @@ void main() async {
     currentUserId = preferences.getInt('current_user_id');
     apiToken = preferences.getString('api_token');
   }
+  if(preferences.containsKey('current_user')){
+    currentUsername=preferences.getString('current_user');
+  }
   if (preferences.containsKey('current_group_name')) {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
   }
-
+  if(preferences.containsKey('users_groups')){
+    usersGroups=preferences.getStringList('users_groups');
+    usersGroupIds=preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
+  }
 
   String initURL;
   try {
     initURL = await getInitialLink();
   } catch (_) {}
 
+  runApp(EasyLocalization(
+    child: ChangeNotifierProvider<AppStateNotifier>(
+        create: (context) => AppStateNotifier(),
+        child: LenderApp(
+          themeName: themeName,
+          initURL: initURL,
+        )),
+    supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
+    path: 'assets/translations',
+    fallbackLocale: Locale('en'),
+    useOnlyLangCode: true,
+    saveLocale: true,
+    preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
+    preloaderWidget: MaterialApp(
+      home: Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Text(
+            'LENDER',
+            style: TextStyle(
+                color:
+                (themeName.contains('Light')) ? Colors.black : Colors.white,
+                letterSpacing: 2.5,
+                fontSize: 35),
+          ),
+        ),
+      ),
+    ),
+  ));
   runApp(
       EasyLocalization(
         child: ChangeNotifierProvider<AppStateNotifier>(
@@ -162,13 +199,13 @@ class _LenderAppState extends State<LenderApp> {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-          '1234',
-          'Lender',
-          'Lender',
-          playSound: false,
-          importance: Importance.High,
-          priority: Priority.Default,
-          styleInformation: BigTextStyleInformation('')
+            '1234',
+            'Lender',
+            'Lender',
+            playSound: false,
+            importance: Importance.High,
+            priority: Priority.Default,
+            styleInformation: BigTextStyleInformation('')
         );
         var iOSPlatformChannelSpecifics =
         new IOSNotificationDetails(presentSound: false);
@@ -217,15 +254,15 @@ class _LenderAppState extends State<LenderApp> {
             home: currentUserId == null
                 ? LoginOrRegisterPage()
                 : (_link != null)
-                    ? JoinGroup(
-                        inviteURL: _link,
-                        fromAuth: (currentGroupId == null) ? true : false,
-                      )
-                    : (currentGroupId == null)
-                        ? JoinGroup(
-                            fromAuth: true,
-                          )
-                        : MainPage(),
+                ? JoinGroup(
+              inviteURL: _link,
+              fromAuth: (currentGroupId == null) ? true : false,
+            )
+                : (currentGroupId == null)
+                ? JoinGroup(
+              fromAuth: true,
+            )
+                : MainPage(),
           ),
         );
       },
@@ -265,7 +302,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<String> _getCurrentGroup() async {
-    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString(), useCache: false);
+    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
     Map<String, dynamic> decoded = jsonDecode(response.body);
     currentGroupName = decoded['data']['group_name'];
     SharedPreferences.getInstance().then((_prefs) {
@@ -276,7 +313,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<double> _getSumBalance() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/user', useCache: false);
+      http.Response response = await httpGet(context: context, uri: '/user');
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['total_balance']*1.0;
     }catch(_){
@@ -286,7 +323,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   
   Future _logout() async {
     try {
-      await clearAllCache();
       await httpPost(uri: '/logout', context: context, body: {});
       currentUserId = null;
       currentGroupId = null;
@@ -310,9 +346,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           group.groupName,
           style: (group.groupName == currentGroupName)
               ? Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Theme.of(context).colorScheme.secondary)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Theme.of(context).colorScheme.secondary)
               : Theme.of(context).textTheme.bodyText1,
         ),
         onTap: () {
