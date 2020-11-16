@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -37,140 +39,183 @@ class _RegisterRouteState extends State<RegisterRoute> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(title: Text('register'.tr())),
-        body: Center(
-          child: ListView(
-            padding: EdgeInsets.only(left:20, right: 20),
-            shrinkWrap: true,
-            children: <Widget>[
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'field_empty'.tr();
-                  }
-                  if (value.length < 3) {
-                    return 'minimal_length'.tr(args: ['3']);
-                  }
-                  return null;
-                },
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  hintText: 'example_name'.tr(),
-                  labelText: 'username'.tr(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 2),
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Center(
+            child: ListView(
+              padding: EdgeInsets.only(left:20, right: 20),
+              shrinkWrap: true,
+              children: <Widget>[
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    if (value.length < 3) {
+                      return 'minimal_length'.tr(args: ['3']);
+                    }
+                    return null;
+                  },
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    hintText: 'example_name'.tr(),
+                    labelText: 'username'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
-                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                    LengthLimitingTextInputFormatter(15),
+                  ],
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                  LengthLimitingTextInputFormatter(15),
-                ],
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-              ),
 
-              SizedBox(
-                height: 30,
-              ),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'field_empty'.tr();
-                  }
-                  if (value.length < 4) {
-                    return 'minimal_length'.tr(args: ['4']);
-                  }
-                  return null;
-                },
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'password'.tr(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 2),
-                    //  when the TextFormField in unfocused
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
-                  ),
+                SizedBox(
+                  height: 30,
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
-                ],
-                obscureText: true,
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              TextFormField(
-                validator: (value) {
-                  if (value != _passwordController.text) {
-                    return 'passwords_not_match'.tr();
-                  }
-                  if (value.isEmpty) {
-                    return 'field_empty'.tr();
-                  }
-                  if (value.length < 4) {
-                    return 'minimal_length'.tr(args: ['4']);
-                  }
-                  return null;
-                },
-                controller: _passwordConfirmController,
-                decoration: InputDecoration(
-                  labelText: 'confirm_password'.tr(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 2),
-                    //  when the TextFormField in unfocused
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    if (value.length < 4) {
+                      return 'minimal_length'.tr(args: ['4']);
+                    }
+                    return null;
+                  },
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'password'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                      //  when the TextFormField in unfocused
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
-                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
+                  ],
+                  obscureText: true,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
-                ],
-                obscureText: true,
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
+                SizedBox(
+                  height: 30,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value != _passwordController.text) {
+                      return 'passwords_not_match'.tr();
+                    }
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    if (value.length < 4) {
+                      return 'minimal_length'.tr(args: ['4']);
+                    }
+                    return null;
+                  },
+                  controller: _passwordConfirmController,
+                  decoration: InputDecoration(
+                    labelText: 'confirm_password'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                      //  when the TextFormField in unfocused
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
+                  ],
+                  obscureText: true,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    if (value.length < 3) {
+                      return 'minimal_length'.tr(args: ['3']);
+                    }
+                    return null;
+                  },
+                  controller: _passwordReminderController,
+                  decoration: InputDecoration(
+                    labelText: 'password_reminder'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          width: 2),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
+                  ),
+                  inputFormatters: [
+                    // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                    LengthLimitingTextInputFormatter(50),
+                  ],
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
               String username = _usernameController.text;
+              String passwordReminder = _passwordReminderController.text;
               if (_passwordController.text == _passwordConfirmController.text) {
                 String password = _passwordConfirmController.text;
                 showDialog(
                     barrierDismissible: false,
                     context: context,
                     child: FutureSuccessDialog(
-                      future: _register(username, password, ''),
+                      future: _register(username, password, passwordReminder),
                       dataTrueText: 'registration_scf',
                       onDataTrue: () {
                         Navigator.pushAndRemoveUntil(
@@ -258,6 +303,10 @@ class _RegisterRouteState extends State<RegisterRoute> {
         Map<String, dynamic> error = jsonDecode(response.body);
         throw error['error'];
       }
+    } on FormatException {
+      throw 'format_exception'.tr()+' F01';
+    } on SocketException {
+      throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
       throw _;
     }

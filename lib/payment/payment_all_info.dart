@@ -147,7 +147,6 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                           color: Theme.of(context).colorScheme.secondary,
                                           onPressed: (){
                                             Navigator.pop(context);
-                                            Navigator.pop(context);
                                             Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                                 AddPaymentRoute(
                                                   payment: SavedPayment(
@@ -159,7 +158,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                                   ),
                                                 )
                                               )
-                                            );
+                                            ).then((value) => Navigator.pop(context, 'deleted'));
                                           },
                                           child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                                       ),

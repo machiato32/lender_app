@@ -23,15 +23,15 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<TransactionData>> _transactions;
   TabController _tabController;
 
-  Future<List<TransactionData>> _getTransactions() async {
+  Future<List<TransactionData>> _getTransactions({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/transactions?group=' + currentGroupId.toString(),
-          context: context);
+          context: context, overwriteCache: overwriteCache);
 
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<TransactionData> transactionData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         transactionData.add(TransactionData.fromJson(data));
       }
       return transactionData;
@@ -41,14 +41,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  Future<List<PaymentData>> _getPayments() async {
+  Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/payments?group=' + currentGroupId.toString(),
-          context: context);
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+          context: context, overwriteCache: overwriteCache);
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         paymentData.add(PaymentData.fromJson(data));
       }
       return paymentData;
@@ -60,9 +60,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   void callback() {
     widget.callback();
     _payments = null;
-    _payments = _getPayments();
+    _payments = _getPayments(overwriteCache: true);
     _transactions = null;
-    _transactions = _getTransactions();
+    _transactions = _getTransactions(overwriteCache: true);
   }
 
   @override

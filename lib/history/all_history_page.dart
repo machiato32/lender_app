@@ -48,9 +48,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           uri: '/payments?group=' + currentGroupId.toString(),
           context: context);
 
-      List<dynamic> response2 = jsonDecode(response.body)['data'];
+      List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
-      for (var data in response2) {
+      for (var data in decoded) {
         paymentData.add(PaymentData.fromJson(data));
       }
       return paymentData;
