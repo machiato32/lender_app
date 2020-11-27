@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -70,17 +71,25 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
           SizedBox(
             height: 15,
           ),
-          FlatButton.icon(
-            icon: Icon(Icons.check,
-                color: Theme.of(context).colorScheme.onSecondary),
-            onPressed: () {
-              widget.onDataTrue();
-            },
-            label: Text(
-              'okay'.tr(),
-              style: Theme.of(context).textTheme.button,
-            ),
-            color: Theme.of(context).colorScheme.secondary,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.onSecondary),
+                    SizedBox(width: 3,),
+                    Text('okay'.tr(),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  widget.onDataTrue();
+                },
+              ),
+            ],
           )
         ],
       );

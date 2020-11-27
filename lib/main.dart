@@ -4,15 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -20,15 +19,16 @@ import 'group_objects.dart';
 import 'http_handler.dart';
 import 'app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
-import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'report_a_bug.dart';
+import 'main/report_a_bug_page.dart';
+import 'main/tutorial_dialog.dart';
+import 'main/speed_dial.dart';
+import 'app_theme.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -68,7 +68,10 @@ void main() async {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
   }
-
+  if(preferences.containsKey('users_groups')){
+    usersGroups=preferences.getStringList('users_groups');
+    usersGroupIds=preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
+  }
 
   String initURL;
   try {
@@ -96,7 +99,7 @@ void main() async {
             'LENDER',
             style: TextStyle(
                 color:
-                    (themeName.contains('Light')) ? Colors.black : Colors.white,
+                (themeName.contains('Light')) ? Colors.black : Colors.white,
                 letterSpacing: 2.5,
                 fontSize: 35),
           ),
@@ -164,13 +167,13 @@ class _LenderAppState extends State<LenderApp> {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-          '1234',
-          'Lender',
-          'Lender',
-          playSound: false,
-          importance: Importance.High,
-          priority: Priority.Default,
-          styleInformation: BigTextStyleInformation('')
+            '1234',
+            'Lender',
+            'Lender',
+            playSound: false,
+            importance: Importance.High,
+            priority: Priority.Default,
+            styleInformation: BigTextStyleInformation('')
         );
         var iOSPlatformChannelSpecifics =
         new IOSNotificationDetails(presentSound: false);
@@ -217,19 +220,17 @@ class _LenderAppState extends State<LenderApp> {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             home: currentUserId == null
-                ? LoginOrRegisterPage(
-                    showDialog: true,
-                  )
+                ? LoginOrRegisterPage()
                 : (_link != null)
-                    ? JoinGroup(
-                        inviteURL: _link,
-                        fromAuth: (currentGroupId == null) ? true : false,
-                      )
-                    : (currentGroupId == null)
-                        ? JoinGroup(
-                            fromAuth: true,
-                          )
-                        : MainPage(),
+                ? JoinGroup(
+              inviteURL: _link,
+              fromAuth: (currentGroupId == null) ? true : false,
+            )
+                : (currentGroupId == null)
+                ? JoinGroup(
+              fromAuth: true,
+            )
+                : MainPage(),
           ),
         );
       },
@@ -287,7 +288,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       throw _;
     }
   }
-  
+
   Future _logout() async {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
@@ -313,9 +314,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           group.groupName,
           style: (group.groupName == currentGroupName)
               ? Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Theme.of(context).colorScheme.secondary)
+              .textTheme
+              .bodyText1
+              .copyWith(color: Theme.of(context).colorScheme.secondary)
               : Theme.of(context).textTheme.bodyText1,
         ),
         onTap: () {
@@ -340,20 +341,39 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
     _groups = null;
     _groups = _getGroups();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      bool showTutorial=true;
+      await SharedPreferences.getInstance().then((prefs) {
+        if(prefs.containsKey('show_tutorial')){
+          showTutorial=prefs.getBool('show_tutorial');
+        }
+      });
+      if(showTutorial){
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setBool('show_tutorial', false);
+        });
+        await showDialog(
+          context: context,
+          builder: (context){
+            return TutorialDialog();
+          },
+        );
+      }
+
+    });
   }
 
   void _handleDrawer() {
-    FeatureDiscovery.clearPreferences(context, <String>['drawer']);
-    FeatureDiscovery.discoverFeatures(context, <String>['drawer']);
+    FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
   }
 
-  void callback() {
+  void callback() async {
+    await clearCache();
     setState(() {});
   }
-  var icon = Icon(Icons.add);
 
   @override
   Widget build(BuildContext context) {
@@ -361,6 +381,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.gradientFromTheme(Theme.of(context))
+          ),
+        ),
         title: FutureBuilder(
           future: _getCurrentGroup(),
           builder: (context, snapshot) {
@@ -368,22 +393,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               if (snapshot.hasData) {
                 return Text(
                   snapshot.data,
-                  style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
                 );
               }
             }
             return Text(
               currentGroupName ?? 'asd',
-              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
             );
           },
         ),
         leading: DescribedFeatureOverlay(
-          tapTarget: Icon(Icons.menu),
+          tapTarget: Icon(Icons.menu, color: Colors.black),
           featureId: 'drawer',
-          targetColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          overflowMode: OverflowMode.extendBackground,
+          title: Text('discovery_drawer_title'.tr()),
+          description: Text('discovery_drawer_description'.tr()),
+          barrierDismissible: false,
           child: IconButton(
-            icon: Icon(Icons.menu),
+            icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.onSecondary,),
             onPressed: _handleDrawer,
           ),
         ),
@@ -394,16 +423,37 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             _selectedIndex = _index;
             _tabController.animateTo(_index);
           });
+          if(_selectedIndex==1){
+            FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+          }else if(_selectedIndex==2){
+            FeatureDiscovery.discoverFeatures(context, ['group_settings']);
+          }
         },
         currentIndex: _selectedIndex,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.home), title: Text('home'.tr())),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
-              title: Text('shopping_list'.tr())),
+              icon: DescribedFeatureOverlay(
+                  featureId: 'shopping_list',
+                  tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
+                  title: Text('discover_shopping_title'.tr()),
+                  description: Text('discover_shopping_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.add_shopping_cart)
+              ),
+              title: Text('shopping_list'.tr())
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text('group'.tr()))
+              icon: DescribedFeatureOverlay(
+                  featureId: 'group_settings',
+                  tapTarget: Icon(Icons.settings, color: Colors.black),
+                  title: Text('discover_group_settings_title'.tr()),
+                  description: Text('discover_group_settings_description'.tr()),
+                  overflowMode: OverflowMode.extendBackground,
+                  child: Icon(Icons.settings)),
+              title: Text('group'.tr())
+          )
         ],
       ),
       drawer: Drawer(
@@ -474,7 +524,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.arrow_forward,
+                      Icons.group_add,
                       color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     title: Text(
@@ -512,8 +562,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
                     return Text(
-                      'Σ: '+snapshot.data.toString(),
-                      style: Theme.of(context).textTheme.bodyText1
+                        'Σ: '+snapshot.data.toString(),
+                        style: Theme.of(context).textTheme.bodyText1
                     );
                   }
                 }
@@ -527,9 +577,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             Divider(),
             ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1.color,
+              leading: DescribedFeatureOverlay(
+                tapTarget: Icon(Icons.settings, color: Colors.black),
+                featureId: 'settings',
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                overflowMode: OverflowMode.extendBackground,
+                allowShowingDuplicate: true,
+                contentLocation: ContentLocation.above,
+                title: Text('discovery_settings_title'.tr()),
+                description: Text('discovery_settings_description'.tr()),
+                child: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
               ),
               title: Text(
                 'settings'.tr(),
@@ -551,205 +611,84 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               onTap: () {
                 _logout();
+                clearCache();
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => LoginOrRegisterPage()),
-                    (r) => false);
+                        (r) => false);
               },
             ),
-           Divider(),
-           ListTile(
-             leading: Icon(
-               Icons.bug_report,
-               color: Colors.red,
-             ),
-             title: Text(
-               'report_a_bug'.tr(),
-               style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-             ),
-             onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
-             },
-           ),
-          ],
-        ),
-      ),
-      floatingActionButton:
-      Visibility(
-        visible: _selectedIndex == 0,
-        child: SpeedDial(
-          child: DescribedFeatureOverlay(
-            featureId: 'asd',
-            contentLocation: ContentLocation.trivial,
-            tapTarget: Icon(Icons.add),
-              child: Icon(Icons.add)
-          ),
-          overlayColor: (Theme.of(context).brightness == Brightness.dark)
-              ? Colors.black
-              : Colors.white,
-//        animatedIcon: AnimatedIcons.menu_close,
-          curve: Curves.bounceIn,
-          onOpen: (){
-            FeatureDiscovery.clearPreferences(context, <String>['asd']);
-            FeatureDiscovery.discoverFeatures(context, <String>['asd']);
-          },
-          children: [
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          //                  margin: EdgeInsets.only(right: 18.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('payment'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'payment_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.attach_money),
-                onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddPaymentRoute()))
-                        .then((value) {
-                      setState(() {});
-                    });
-                }),
-            SpeedDialChild(
-                labelWidget: GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 3.0, horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                offset: Offset(0.8, 0.8),
-                                blurRadius: 2.4,
-                              )
-                            ],
-                          ),
-                          child: Text('expense'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                      fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'expense_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                child: Icon(Icons.shopping_cart),
-                onTap: () {
-                  if (currentUsername != "")
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddTransactionRoute(
-                                  type: TransactionType.newExpense,
-                                )
-                        )).then((value) {
-                          setState(() {});
-                        });
-                }),
-          ],
-        ),
-      ),
-      body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            RefreshIndicator(
-              onRefresh: () {
-                return getPrefs().then((_money) {
-                  setState(() {});
-                });
-              },
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Balances(
-                    callback: callback,
-                  ),
-                  History(
-                    callback: callback,
-                  )
-                ],
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.bug_report,
+                color: Colors.red,
               ),
+              title: Text(
+                'report_a_bug'.tr(),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+              },
             ),
-            ShoppingList(),
-            GroupSettings(),
-          ]),
+          ],
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: _selectedIndex == 0,
+        child: MainPageSpeedDial(callback: this.callback,),
+      ),
+      body: ConnectivityWidget(
+        offlineBanner: Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            color: Colors.red,
+            child: Text(
+              'no_connection'.tr(),
+              style: TextStyle(
+                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            )
+        ),
+        builder: (context, isOnline){
+          return TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                RefreshIndicator(
+                  onRefresh: () async {
+                    await clearCache();
+                    setState(() {
+
+                    });
+                  },
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Balances(
+                        callback: callback,
+                      ),
+                      History(
+                        callback: callback,
+                      )
+                    ],
+                  ),
+                ),
+                ShoppingList(),
+                GroupSettings(),
+              ]
+          );
+        }
+      ),
     );
+  }
+  Future clearCache() async {
+    await deleteCache(uri: '/groups/' + currentGroupId.toString());
+    await deleteCache(uri: '/groups');
+    await deleteCache(uri: '/user');
+    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
+    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

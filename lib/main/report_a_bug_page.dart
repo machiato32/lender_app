@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'http_handler.dart';
-import 'future_success_dialog.dart';
+import '../app_theme.dart';
+import '../http_handler.dart';
+import '../future_success_dialog.dart';
 
 class ReportABugPage extends StatefulWidget {
   @override
@@ -22,7 +23,12 @@ class _ReportABugPageState extends State<ReportABugPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('report_a_bug'.tr()),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+          title: Text('report_a_bug'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, ),),
         ),
         body: Form(
           key: _formKey,

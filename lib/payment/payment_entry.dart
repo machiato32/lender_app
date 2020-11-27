@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 class PaymentData {
   int paymentId;
@@ -70,24 +71,19 @@ class _PaymentEntryState extends State<PaymentEntry> {
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
     if (widget.data.payerId == currentUserId) {
       icon = Icon(Icons.call_made,
-          color: (Theme.of(context).brightness == Brightness.dark)
-              ? Theme.of(context).textTheme.bodyText1.color
-              : Theme.of(context).textTheme.button.color);
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+          color: Theme.of(context).textTheme.button.color);
+      style = Theme.of(context).textTheme.button;
+      dateColor = Theme.of(context).textTheme.button.color;
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+        // color: (Theme.of(context).brightness == Brightness.dark)
+        //     ? Colors.transparent
+        //     : Theme.of(context).colorScheme.secondary,
+        // border: Border.all(
+        //     color: (Theme.of(context).brightness == Brightness.dark)
+        //         ? Theme.of(context).colorScheme.secondary
+        //         : Colors.transparent,
+        //     width: 1.5),
         borderRadius: BorderRadius.circular(15),
       );
       takerName = widget.data.takerNickname;

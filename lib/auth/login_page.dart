@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -12,6 +14,8 @@ import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import '../app_theme.dart';
+import 'forgot_password_page.dart';
 
 class LoginRoute extends StatefulWidget {
   @override
@@ -33,90 +37,166 @@ class _LoginRouteState extends State<LoginRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(title: Text('login'.tr())),
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+          title: Text('login'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
+        ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
+            padding: EdgeInsets.only(left:20, right: 20),
+            shrinkWrap: true,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 3) {
-                      return 'minimal_length'.tr(args: ['3']);
-                    }
-                    return null;
-                  },
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    hintText: 'example_name'.tr(),
-                    labelText: 'username'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
-                    errorBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red, width: 2),
-                    ),
+              TextFormField(
+                validator: (value) {
+                  value=value.trim();
+                  if (value.isEmpty) {
+                    return 'field_empty'.tr();
+                  }
+                  if (value.length < 3) {
+                    return 'minimal_length'.tr(args: ['3']);
+                  }
+                  return null;
+                },
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  hintText: 'example_name'.tr(),
+                  labelText: 'username'.tr(),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        width: 2),
                   ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[a-z0-9#]')),
-                    LengthLimitingTextInputFormatter(15),
-                  ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2),
+                  ),
+                  errorBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 2),
+                  ),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                  LengthLimitingTextInputFormatter(15),
+                ],
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Theme.of(context).textTheme.bodyText1.color),
+                cursorColor: Theme.of(context).colorScheme.secondary,
               ),
               SizedBox(
                 height: 30,
               ),
-              Padding(
-                padding: EdgeInsets.only(right: 20, left: 20),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    return null;
-                  },
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'password'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
+              TextFormField(
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'field_empty'.tr();
+                  }
+                  return null;
+                },
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'password'.tr(),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        width: 2),
                   ),
-                  obscureText: true,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
-                  ],
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2),
+                  ),
                 ),
+                obscureText: true,
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Theme.of(context).textTheme.bodyText1.color),
+                cursorColor: Theme.of(context).colorScheme.secondary,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
+                ],
               ),
               SizedBox(
                 height: 40,
-              )
+              ),
+              Center(
+                child: FlatButton(
+                  child: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 15)),
+                  onPressed: () async {
+                    GlobalKey<FormState> formState = GlobalKey<FormState>();
+                    TextEditingController controller = TextEditingController();
+                    await showDialog(
+                      context: context,
+                      child: Form(
+                        key: formState,
+                        child: AlertDialog(
+                          title: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.headline6,),
+                          content: TextFormField(
+                            controller: controller,
+                            validator: (value){
+                              if (value.isEmpty) {
+                                return 'field_empty'.tr();
+                              }
+                              if (value.length < 3) {
+                                return 'minimal_length'.tr(args: ['3']);
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'example_name'.tr(),
+                              labelText: 'username'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    width: 2),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                              ),
+                              errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 2),
+                              ),
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+
+                          ),
+                          actions: [
+                            RaisedButton(
+                              onPressed: (){
+                                if(formState.currentState.validate()){
+                                  String username = controller.text;
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ForgotPasswordPage(username: username,))
+                                  );
+                                }
+                              },
+                              child: Icon(Icons.send, color: Theme.of(context).textTheme.button.color),
+                              color: Theme.of(context).colorScheme.secondary,
+                            )
+                          ],
+                        ),
+                      )
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -135,7 +215,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       children: [
                         Flexible(
                             child: Text(
-                              'login_scf',
+                              'login_scf'.tr(),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1
@@ -159,7 +239,7 @@ class _LoginRouteState extends State<LoginRoute> {
                             );
                           },
                           label: Text(
-                            'okay',
+                            'okay'.tr(),
                             style: Theme.of(context).textTheme.button,
                           ),
                           color: Theme.of(context).colorScheme.secondary,
@@ -171,7 +251,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => MainPage()),
-                          (r) => false);
+                              (r) => false);
                     },
                   ));
             }
@@ -185,7 +265,7 @@ class _LoginRouteState extends State<LoginRoute> {
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
       http.Response response =
-          await httpGet(uri: '/groups', context: context);
+      await httpGet(uri: '/groups', context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {
@@ -193,10 +273,12 @@ class _LoginRouteState extends State<LoginRoute> {
             groupName: group['group_name'], groupId: group['group_id']));
       }
       if (groups.length > 0) {
+        usersGroups=groups.map<String>((group) => group.groupName).toList();
+        usersGroupIds=groups.map<int>((group) => group.groupId).toList();
         if (groups
-                .where((group) => group.groupId == lastActiveGroup)
-                .toList()
-                .length !=0) {
+            .where((group) => group.groupId == lastActiveGroup)
+            .toList()
+            .length !=0) {
           currentGroupName = groups
               .firstWhere((group) => group.groupId == lastActiveGroup)
               .groupName;
@@ -204,6 +286,8 @@ class _LoginRouteState extends State<LoginRoute> {
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
+            _prefs.setStringList('users_groups', usersGroups);
+            _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
           });
           return true;
         }
@@ -212,6 +296,8 @@ class _LoginRouteState extends State<LoginRoute> {
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_group_name', currentGroupName);
           _prefs.setInt('current_group_id', currentGroupId);
+          _prefs.setStringList('users_groups', usersGroups);
+          _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
         });
         return true;
       }
@@ -242,7 +328,6 @@ class _LoginRouteState extends State<LoginRoute> {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
-          _prefs.remove('current_user');
         });
 
         return await _selectGroup(decoded['data']['last_active_group']);
@@ -250,6 +335,10 @@ class _LoginRouteState extends State<LoginRoute> {
         Map<String, dynamic> error = jsonDecode(response.body);
         throw error['error'];
       }
+    } on FormatException {
+      throw 'format_exception'.tr()+' F01';
+    } on SocketException {
+      throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
       throw _;
     }

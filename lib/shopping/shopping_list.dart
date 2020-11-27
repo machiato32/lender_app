@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -11,6 +12,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -51,15 +53,15 @@ class _ShoppingListState extends State<ShoppingList> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<ShoppingRequestData>> _getShoppingList() async {
+  Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache=false}) async {
     try {
       http.Response response = await httpGet(
           uri: '/requests?group=' + currentGroupId.toString(),
-          context: context);
+          context: context, overwriteCache: overwriteCache);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
-      decoded['data']['active'].forEach((element) {
+      decoded['data'].forEach((element) {
         shopping.add(ShoppingRequestData.fromJson(element));
       });
       shopping = shopping.reversed.toList();
@@ -82,10 +84,21 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
+  Future<bool> _postImShopping(String store) async {
+    try {
+      Map<String, dynamic> body = {'store':store};
+      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification');
+      return true;
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
   void callback() {
     setState(() {
       _shoppingList = null;
-      _shoppingList = _getShoppingList();
+      _shoppingList = _getShoppingList(overwriteCache: true);
     });
   }
 
@@ -106,12 +119,13 @@ class _ShoppingListState extends State<ShoppingList> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: (){
+      onRefresh: () async {
+        await deleteCache(uri: '/groups');
         setState(() {
           _shoppingList = null;
-          _shoppingList = _getShoppingList();
+          _shoppingList = _getShoppingList(overwriteCache: true);
         });
-        return Future.value(true);
+
       },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -123,7 +137,7 @@ class _ShoppingListState extends State<ShoppingList> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                 child: Column(
                   children: <Widget>[
                     Center(
@@ -185,8 +199,8 @@ class _ShoppingListState extends State<ShoppingList> {
                         SizedBox(
                           width: 20,
                         ),
-                        RaisedButton(
-                          color: Theme.of(context).colorScheme.secondary,
+                        GradientButton(
+                          // color: Theme.of(context).colorScheme.secondary,
                           child: Icon(Icons.add,
                               color: Theme.of(context).colorScheme.onSecondary),
                           onPressed: () {
@@ -203,7 +217,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                       Navigator.pop(context);
                                       setState(() {
                                         _shoppingList = null;
-                                        _shoppingList = _getShoppingList();
+                                        _shoppingList = _getShoppingList(overwriteCache: true);
                                         _addRequestController.text = '';
                                       });
                                     },
@@ -217,8 +231,88 @@ class _ShoppingListState extends State<ShoppingList> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: (){
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                TextEditingController controller = TextEditingController();
+                                GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                                return Form(
+                                  key: formKey,
+                                  child: AlertDialog(
+                                    title: Text('where'.tr()),
+                                    content: TextFormField(
+                                      validator: (value){
+                                        value=value.trim();
+                                        if (value.isEmpty) {
+                                          return 'field_empty'.tr();
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: 'store'.tr(),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                              Theme.of(context).colorScheme.onSurface),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
+                                        ),
+                                      ),
+                                      controller: controller,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color:
+                                          Theme.of(context).textTheme.bodyText1.color),
+                                      cursorColor: Theme.of(context).colorScheme.secondary,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(20)
+                                      ],
+                                    ),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          if(formKey.currentState.validate()){
+                                            String store = controller.text;
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              child: FutureSuccessDialog(
+                                                future: _postImShopping(store),
+                                                dataTrueText: 'store_scf',
+                                                onDataTrue: () {
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                },
+                                              )
+
+                                            );
+
+                                          }
+
+                                        },
+                                        child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                          // color: Theme.of(context).colorScheme.secondary,
+
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -230,9 +324,11 @@ class _ShoppingListState extends State<ShoppingList> {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                         if(snapshot.data.length==0){
-                          return Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                          return ListView(
+                            padding: EdgeInsets.all(15),
+                            children: [
+                              Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                            ],
                           );
                         }
                         return ListView(
@@ -300,22 +396,11 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     user = widget.data.requesterUsername;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
     if (widget.data.requesterId == currentUserId) {
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+      style = Theme.of(context).textTheme.button;
+      dateColor = Theme.of(context).textTheme.button.color;
       icon = Icon(Icons.receipt, color: style.color);
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
         borderRadius: BorderRadius.circular(15),
       );
     } else {
@@ -392,83 +477,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           ).then((value) => widget.callback());
         }
       },
-
-      // confirmDismiss: (direction) async {
-      //   // if(widget.data.requesterId != currentUser){
-      //   //   return Future.value(true);
-      //   // }else{
-      //   //   return await showDialog(
-      //   //       context: context,
-      //   //       child: Dialog(
-      //   //         shape: RoundedRectangleBorder(
-      //   //             borderRadius: BorderRadius.circular(5)),
-      //   //         backgroundColor: Colors.transparent,
-      //   //         elevation: 0,
-      //   //         child: Container(
-      //   //           padding: EdgeInsets.all(8),
-      //   //           child: Column(
-      //   //             crossAxisAlignment: CrossAxisAlignment.center,
-      //   //             mainAxisSize: MainAxisSize.min,
-      //   //             children: <Widget>[
-      //   //               Text(
-      //   //                 'want_delete'.tr(),
-      //   //                 style: Theme.of(context)
-      //   //                     .textTheme
-      //   //                     .bodyText1
-      //   //                     .copyWith(color: Colors.white),
-      //   //               ),
-      //   //               SizedBox(
-      //   //                 height: 15,
-      //   //               ),
-      //   //               Row(
-      //   //                 mainAxisAlignment:
-      //   //                 MainAxisAlignment.spaceAround,
-      //   //                 children: <Widget>[
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () async {
-      //   //                         showDialog(
-      //   //                             barrierDismissible: false,
-      //   //                             context: context,
-      //   //                             child: FutureSuccessDialog(
-      //   //                               future:
-      //   //                               _deleteShoppingRequest(
-      //   //                                   widget
-      //   //                                       .data.requestId),
-      //   //                               dataTrueText: 'delete_scf',
-      //   //                               onDataTrue: () {
-      //   //                                 Navigator.pop(context);
-      //   //                                 Navigator.pop(context, true);
-      //   //                               },
-      //   //                             )
-      //   //                         );
-      //   //                       },
-      //   //                       child: Text('yes'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button)),
-      //   //                   RaisedButton(
-      //   //                       color: Theme.of(context)
-      //   //                           .colorScheme
-      //   //                           .secondary,
-      //   //                       onPressed: () {
-      //   //                         Navigator.pop(context, false);
-      //   //                       },
-      //   //                       child: Text('no'.tr(),
-      //   //                           style: Theme.of(context)
-      //   //                               .textTheme
-      //   //                               .button))
-      //   //                 ],
-      //   //               )
-      //   //             ],
-      //   //           ),
-      //   //         ),
-      //   //       )
-      //   //   );
-      //   // }
-      // },
       child: Container(
         height: 65,
         width: MediaQuery.of(context).size.width,

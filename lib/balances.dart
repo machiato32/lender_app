@@ -9,6 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'group_objects.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'http_handler.dart';
+import 'app_theme.dart';
+import 'gradient_button.dart';
 
 class Balances extends StatefulWidget {
   final Function callback;
@@ -111,56 +113,84 @@ class _BalancesState extends State<Balances> {
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
-                          RaisedButton(
-                            onPressed: (){
-                              List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
-                              showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder:(context){
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15)),
-                                    title: Text('payments_needed'.tr(),
-                                      style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
-                                    ),
-                                    content: _generatePaymentsNeeded(payments),
-                                    actions: [
-                                      RaisedButton(
-                                        onPressed: (){
-                                          Navigator.pop(context);
-                                        },
-                                        color: Theme.of(context).colorScheme.primary,
-                                        child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
-                                      ),
-                                      Visibility(
-                                        visible: payments.length>0,
-                                        child: RaisedButton(
-                                          onPressed: () async {
-                                            showDialog(
-                                              context: context,
-                                              child: FutureSuccessDialog(
-                                                future: _postPayments(payments),
-                                                dataTrueText: 'payment_scf',
-                                                onDataTrue: (){
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                  widget.callback();
-                                                },
-                                              )
-                                            );
-                                          },
-                                          color: Theme.of(context).colorScheme.primary,
-                                          child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GradientButton(
+                                onPressed: (){
+                                  List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder:(BuildContext context){
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15)
                                         ),
-                                      ),
-                                    ],
+                                        
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('payments_needed'.tr(),
+                                                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              _generatePaymentsNeeded(payments),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  GradientButton(
+                                                    onPressed: (){
+                                                      Navigator.pop(context);
+                                                    },
+                                                    // color: Theme.of(context).colorScheme.primary,
+                                                    child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
+                                                  ),
+                                                  Visibility(
+                                                    visible: payments.length>0,
+                                                    child: GradientButton(
+                                                      onPressed: () async {
+                                                        showDialog(
+                                                            context: context,
+                                                            child: FutureSuccessDialog(
+                                                              future: _postPayments(payments),
+                                                              dataTrueText: 'payment_scf',
+                                                              onDataTrue: (){
+                                                                Navigator.pop(context);
+                                                                Navigator.pop(context);
+                                                                widget.callback();
+                                                              },
+                                                            )
+                                                        );
+                                                      },
+                                                      child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   );
-                                }
-                              );
-                            },
-                            color: Theme.of(context).colorScheme.primary,
-                            child: Text('who_to_pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                },
+
+                                // text: 'who_to_pay'.tr(),
+                                // color: Theme.of(context).colorScheme.secondary,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('who_to_pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                ),
+                              ),
+                            ],
                           )
                         ],
                       );
@@ -190,31 +220,16 @@ class _BalancesState extends State<Balances> {
 
   Widget _generatePaymentsNeeded(List<PaymentData> payments){
     if(payments.length!=0){
-      return Container(
-        width: double.maxFinite,
-        // padding: EdgeInsets.all(8),
+      return Flexible(
         child: ListView(
           shrinkWrap: true,
           children: payments.map<Widget>((PaymentData payment) {
             var icon = Icon(Icons.call_made,
-                color: (Theme.of(context).brightness == Brightness.dark)
-                    ? Theme.of(context).textTheme.bodyText1.color
-                    : Theme.of(context).textTheme.button.color);
-            var style = (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).textTheme.bodyText1
-                : Theme.of(context).textTheme.button;
-            var dateColor = (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.surface
-                : Theme.of(context).textTheme.button.color;
+                color: Theme.of(context).textTheme.button.color);
+            var style = Theme.of(context).textTheme.button;
+            var dateColor = Theme.of(context).textTheme.button.color;
             var boxDecoration = BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.dark)
-                  ? Colors.transparent
-                  : Theme.of(context).colorScheme.secondary,
-              border: Border.all(
-                  color: (Theme.of(context).brightness == Brightness.dark)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
-                  width: 1.5),
+              gradient: AppTheme.gradientFromTheme(Theme.of(context)),
               borderRadius: BorderRadius.circular(15),
             );
             var amount = payment.amount.toString();
@@ -257,7 +272,7 @@ class _BalancesState extends State<Balances> {
                                                   )),
                                               Flexible(
                                                   child: Text(
-                                                    'automatic',
+                                                    'auto_payment'.tr(),
                                                     style: TextStyle(
                                                         color: dateColor, fontSize: 15),
                                                     overflow: TextOverflow.ellipsis,
@@ -299,22 +314,13 @@ class _BalancesState extends State<Balances> {
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
       if (member.memberId == currentUserId) {
-        TextStyle style = (Theme.of(context).brightness == Brightness.dark)
-            ? Theme.of(context).textTheme.bodyText1
-            : Theme.of(context).textTheme.button;
+        TextStyle style = Theme.of(context).textTheme.button;
         return Column(
           children: <Widget>[
             Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: (Theme.of(context).brightness == Brightness.dark)
-                      ? Colors.transparent
-                      : Theme.of(context).colorScheme.secondary,
-                  border: Border.all(
-                      color: (Theme.of(context).brightness == Brightness.dark)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                      width: 1.5),
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context)),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(

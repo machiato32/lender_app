@@ -6,6 +6,12 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
+import 'join_group.dart';
+import 'package:csocsort_szamla/confirm_choice_dialog.dart';
 
 class MemberAllInfo extends StatefulWidget {
   final Member member;
@@ -68,202 +74,318 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   Widget build(BuildContext context) {
     return Card(
         child: Padding(
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
-              Flexible(
-                  child: Text(
-                widget.member.username,
-                style: Theme.of(context).textTheme.bodyText1,
-              )),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: <Widget>[
-              Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
-              Flexible(
-                  child: Text(
-                widget.member.nickname,
-                style: Theme.of(context).textTheme.bodyText1,
-              )),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Center(
-            child: Visibility(
-                visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
-                child: Text(
-                  'Admin',
-                  style: Theme.of(context).textTheme.bodyText1,
-                )),
-          ),
+              Row(
+                children: <Widget>[
+                  Icon(Icons.account_circle,
+                      color: Theme.of(context).colorScheme.primary),
+                  Text(' - '),
+                  Flexible(
+                      child: Text(
+                        widget.member.username,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: <Widget>[
+                  Icon(Icons.account_box,
+                      color: Theme.of(context).colorScheme.primary),
+                  Text(' - '),
+                  Flexible(
+                      child: Text(
+                        widget.member.nickname,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Center(
+                child: Visibility(
+                    visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
+                    child: Text(
+                      'Admin',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    )),
+              ),
 
-          SizedBox(
-            height: 10,
-          ),
-          Visibility(
-              visible: widget.isCurrentUserAdmin,
-              child: SwitchListTile(
-                value: widget.member.isAdmin,
-                title: Text(
-                  'Admin',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                activeColor: Theme.of(context).colorScheme.secondary,
-                onChanged: (value) {
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      child: FutureSuccessDialog(
-                        future: _changeAdmin(widget.member.memberId, value),
-                        dataTrueText: 'admin_scf',
-                        onDataTrue: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context, 'madeAdmin');
-                        },
-                      ));
-                },
-              )),
-          Center(
-            child: Visibility(
-              visible: widget.isCurrentUserAdmin ||
-                  widget.member.memberId == currentUserId,
-              child: RaisedButton.icon(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      child: AlertDialog(
-                        title: Text(
-                          'edit_nickname'.tr(),
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        content: Form(
-                          key: _nicknameFormKey,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'field_empty'.tr();
-                              }
-                              if (value.length < 1) {
-                                return 'minimal_length'.tr(args: ['1']);
-                              }
-                              return null;
+              SizedBox(
+                height: 10,
+              ),
+              Visibility(
+                  visible: widget.isCurrentUserAdmin,
+                  child: SwitchListTile(
+                    value: widget.member.isAdmin,
+                    title: Text(
+                      'Admin',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    onChanged: (value) {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          child: FutureSuccessDialog(
+                            future: _changeAdmin(widget.member.memberId, value),
+                            dataTrueText: 'admin_scf',
+                            onDataTrue: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context, 'madeAdmin');
                             },
-                            focusNode: _nicknameFocus,
-                            controller: _nicknameController,
-                            decoration: InputDecoration(
-                              hintText: widget.member.username
+                          ));
+                    },
+                  )),
+              Center(
+                child: Visibility(
+                  visible: widget.isCurrentUserAdmin ||
+                      widget.member.memberId == currentUserId,
+                  child: RaisedButton.icon(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          child: AlertDialog(
+                            title: Text(
+                              'edit_nickname'.tr(),
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            content: Form(
+                              key: _nicknameFormKey,
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
+                                  }
+                                  if (value.length < 1) {
+                                    return 'minimal_length'.tr(args: ['1']);
+                                  }
+                                  return null;
+                                },
+                                focusNode: _nicknameFocus,
+                                controller: _nicknameController,
+                                decoration: InputDecoration(
+                                  hintText: widget.member.username
                                       .split('#')[0][0]
                                       .toUpperCase() +
-                                  widget.member.username
-                                      .split('#')[0]
-                                      .substring(1),
-                              labelText: 'nickname'.tr(),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color:
+                                      widget.member.username
+                                          .split('#')[0]
+                                          .substring(1),
+                                  labelText: 'nickname'.tr(),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
                                         Theme.of(context).colorScheme.onSurface,
-                                    width: 2),
-                                //  when the TextFormField in unfocused
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color:
+                                        width: 2),
+                                    //  when the TextFormField in unfocused
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
                                         Theme.of(context).colorScheme.primary,
-                                    width: 2),
+                                        width: 2),
+                                  ),
+                                ),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(15),
+                                ],
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color),
+                                cursorColor:
+                                Theme.of(context).colorScheme.secondary,
                               ),
                             ),
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(15),
-                            ],
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .color),
-                            cursorColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        actions: [
-                          RaisedButton(
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'back'.tr(),
-                              style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
-                            ),
-                            color: Colors.grey[700],
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              if (_nicknameFormKey.currentState.validate()) {
-                                Navigator.pop(context);
-                                FocusScope.of(context).unfocus();
-                                String nickname =
-                                    _nicknameController.text[0].toUpperCase() +
-                                        _nicknameController.text.substring(1);
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    child: FutureSuccessDialog(
-                                      future: _updateNickname(
-                                          nickname, widget.member.memberId),
-                                      onDataTrue: () {
-                                        _nicknameController.text = '';
-                                        Navigator.pop(context);
-                                        Navigator.pop(context, 'madeAdmin');
-                                      },
-                                      dataTrueText: 'nickname_scf',
-                                    ));
-                              }
-                            },
-                            child: Text(
-                              'modify'.tr(),
-                              style: Theme.of(context).textTheme.button,
-                            ),
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                            actions: [
+                              RaisedButton(
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  'back'.tr(),
+                                  style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
+                                ),
+                                color: Colors.grey[700],
+                              ),
+                              RaisedButton(
+                                onPressed: () {
+                                  if (_nicknameFormKey.currentState.validate()) {
+                                    Navigator.pop(context);
+                                    FocusScope.of(context).unfocus();
+                                    String nickname =
+                                        _nicknameController.text[0].toUpperCase() +
+                                            _nicknameController.text.substring(1);
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        child: FutureSuccessDialog(
+                                          future: _updateNickname(
+                                              nickname, widget.member.memberId),
+                                          onDataTrue: () {
+                                            _nicknameController.text = '';
+                                            Navigator.pop(context);
+                                            Navigator.pop(context, 'madeAdmin');
+                                          },
+                                          dataTrueText: 'nickname_scf',
+                                        ));
+                                  }
+                                },
+                                child: Text(
+                                  'modify'.tr(),
+                                  style: Theme.of(context).textTheme.button,
+                                ),
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
 
-                        ],
-                      ));
-                },
-                color: Theme.of(context).colorScheme.secondary,
-                label: Text(
-                  'edit_nickname'.tr(),
-                  style: Theme.of(context).textTheme.button,
-                ),
-                icon: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).textTheme.button.color,
+                            ],
+                          ));
+                    },
+                    color: Theme.of(context).colorScheme.secondary,
+                    label: Text(
+                      'edit_nickname'.tr(),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    icon: Icon(
+                      Icons.edit,
+                      color: Theme.of(context).textTheme.button.color,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Center(
+                child: Visibility(
+                  visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
+                  child: RaisedButton.icon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        child: ConfirmChoiceDialog(
+                          choice: 'really_kick',
+                        )
+                      ).then((value){
+                        if(value!=null && value){
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              child: FutureSuccessDialog(
+                                future: _removeMember(widget.member.memberId),
+                                dataTrueText: 'kick_member_scf',
+                                onDataTrue: (){
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MainPage()),
+                                          (r) => false);
+                                },
+                              )
+                          );
+                        }
+                      });
+
+                    },
+                    color: Theme.of(context).colorScheme.secondary,
+                    label: Text(
+                      'kick_member'.tr(),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    icon: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).textTheme.button.color,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Visibility(
+                  visible: widget.member.memberId==currentUserId,
+                  child: RaisedButton.icon(
+                    onPressed: () {
+                      if(widget.member.balance<0){
+                        FlutterToast ft = FlutterToast(context);
+                        ft.showToast(
+                            child: errorToast('balance_at_least_0', context),
+                            toastDuration: Duration(seconds: 2),
+                            gravity: ToastGravity.BOTTOM);
+                        return;
+                      }else{
+                        showDialog(
+                          context: context,
+                          child: ConfirmChoiceDialog(
+                            choice: 'really_leave',
+                          )
+                        ).then((value){
+                          if(value!=null && value){
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child: FutureSuccessDialog(
+                                  future: _removeMember(null),
+                                  dataTrueText: 'leave_scf',
+                                  onDataTrue: (){
+                                    usersGroupIds.remove(currentGroupId);
+                                    usersGroups.remove(currentGroupName);
+                                    SharedPreferences.getInstance().then((prefs) {
+                                      prefs.setStringList('users_groups', usersGroups);
+                                      prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+                                    });
+                                    if(usersGroups.length>0){
+                                      currentGroupName=usersGroups[0];
+                                      currentGroupId=usersGroupIds[0];
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MainPage()),
+                                              (r) => false);
+                                    }else{
+                                      currentGroupName=null;
+                                      currentGroupId=null;
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => JoinGroup()),
+                                              (r) => false);
+                                    }
+
+                                  },
+                                )
+                            );
+                          }
+                        });
+
+                      }
+                    },
+                    color: Theme.of(context).colorScheme.secondary,
+                    label: Text(
+                      'leave_group'.tr(),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).textTheme.button.color,
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
-//              Visibility(
-//                visible: _nicknameFocus.hasFocus,
-//                child: SizedBox(
-//                  height: MediaQuery.of(context).viewInsets.bottom,
-//                ),
-//              )
-        ],
-      ),
-    ));
+        ));
+  }
+
+  Future<bool> _removeMember(int memberId) async {
+    Map<String, dynamic> body ={
+      "member_id":memberId??currentUserId
+    };
+    clearAllCache();
+    return (await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body)).statusCode==204;
   }
 }

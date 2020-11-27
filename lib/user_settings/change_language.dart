@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/rendering.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override
@@ -29,11 +30,8 @@ class _LanguagePickerState extends State<LanguagePicker> {
               style: Theme.of(context).textTheme.headline6,
             )),
             SizedBox(height: 10),
-            Container(
-              height: 80,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
+            Center(
+              child: Wrap(
                 children: _getLocales(),
               ),
             )
@@ -56,42 +54,40 @@ class LanguageElement extends StatefulWidget {
 class _LanguageElementState extends State<LanguageElement> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            context.locale = Locale(widget.localeName);
-          },
-          child: Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
+    return InkWell(
+      borderRadius: BorderRadius.circular(15),
+      onTap: () {
+        context.locale = Locale(widget.localeName);
+      },
+      child: Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: (widget.localeName == context.locale.languageCode)
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: (widget.localeName == context.locale.languageCode)
+                ? Theme.of(context).colorScheme.secondary
+                : Colors.white,
+            borderRadius: BorderRadius.circular(15)
+          ),
+          child: Center(
+            child: Text(
+              widget.localeName.toUpperCase(),
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
                 color: (widget.localeName == context.locale.languageCode)
-                    ? Colors.grey
-                    : Colors.transparent,
-                shape: BoxShape.circle),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: (widget.localeName == context.locale.languageCode)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.white,
-                  shape: BoxShape.circle),
-              child: Center(
-                  child: Text(
-                widget.localeName.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    color: (widget.localeName == context.locale.languageCode)
-                        ? Theme.of(context).textTheme.button.color
-                        : Colors.black),
-              )),
-            ),
+                    ? Theme.of(context).textTheme.button.color
+                    : Colors.black,
+              )
+            )
           ),
         ),
-        SizedBox(
-          width: 5,
-        )
-      ],
+      ),
     );
   }
 }
