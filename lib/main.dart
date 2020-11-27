@@ -19,10 +19,8 @@ import 'group_objects.dart';
 import 'http_handler.dart';
 import 'app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
-import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
@@ -108,37 +106,6 @@ void main() async {
       ),
     ),
   ));
-  runApp(
-      EasyLocalization(
-        child: ChangeNotifierProvider<AppStateNotifier>(
-            create: (context) => AppStateNotifier(),
-            child: LenderApp(
-              themeName: themeName,
-              initURL: initURL,
-            )),
-        supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
-        path: 'assets/translations',
-        fallbackLocale: Locale('en'),
-        useOnlyLangCode: true,
-        saveLocale: true,
-        preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
-        preloaderWidget: MaterialApp(
-          home: Material(
-            type: MaterialType.transparency,
-            child: Center(
-              child: Text(
-                'LENDER',
-                style: TextStyle(
-                    color:
-                        (themeName.contains('Light')) ? Colors.black : Colors.white,
-                    letterSpacing: 2.5,
-                    fontSize: 35),
-              ),
-            ),
-          ),
-        ),
-      )
-  );
 }
 
 class LenderApp extends StatefulWidget {
@@ -638,6 +605,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               onTap: () {
                 _logout();
+                clearCache();
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

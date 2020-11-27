@@ -171,8 +171,8 @@
     "reset_tutorial": "Tutorial neu anschauen",
     "reset_tutorial_explanation": "Dafür musst du die App neustarten",
 
-    "password_reminder": "Passworderinnerung",
-    "forgot_password": "Vergessenes Password",
+    "password_reminder": "Passworterinnerung",
+    "forgot_password": "Vergessenes Passwort",
     "your_password_reminder": "Deine passworterinnerung:",
 
     "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.\nError code:",

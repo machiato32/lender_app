@@ -17,6 +17,36 @@ import 'main.dart';
 
 bool needsLogin = false;
 
+Widget errorToast(String msg, BuildContext context){
+
+  return Container(
+    padding: const EdgeInsets.symmetric(
+        horizontal: 24.0, vertical: 12.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(25.0),
+      color: Colors.red,
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.clear,
+          color: Colors.white,
+        ),
+        SizedBox(
+          width: 12.0,
+        ),
+        Flexible(
+            child: Text(msg.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: Colors.white))),
+      ],
+    ),
+  );
+}
+
 String errorHandler(String error){
   switch(error){
     case '0':
@@ -57,15 +87,17 @@ String errorHandler(String error){
 }
 
 void memberNotInGroup(BuildContext context){
+  print('asd');
   usersGroupIds.remove(currentGroupId);
   usersGroups.remove(currentGroupName);
   SharedPreferences.getInstance().then((prefs) {
     prefs.setStringList('users_groups', usersGroups);
     prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
   });
+  clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.showToast(
-      child: Text('not_in_group'.tr()),
+      child: errorToast('not_in_group'.tr(), context),
       toastDuration: Duration(seconds: 2),
       gravity: ToastGravity.BOTTOM);
   if(usersGroups.length>0){
@@ -143,7 +175,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
-            child: Text('login_required'.tr()),
+            child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
@@ -151,6 +183,8 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
 
+      }else if(error['error']=='1'){
+        memberNotInGroup(context);
       }
       throw errorHandler(error['error']);
     }
@@ -185,13 +219,15 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
-            child: Text('login_required'.tr()),
+            child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
+      }else if(error['error']=='1'){
+        memberNotInGroup(context);
       }
       throw errorHandler(error['error']);
     }
@@ -225,13 +261,15 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
-            child: Text('login_required'.tr()),
+            child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
+      }else if(error['error']=='1'){
+        memberNotInGroup(context);
       }
       throw errorHandler(error['error']);
     }
@@ -259,13 +297,15 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
-            child: Text('login_required'.tr()),
+            child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
+      }else if(error['error']=='1'){
+        memberNotInGroup(context);
       }
       throw errorHandler(error['error']);
     }

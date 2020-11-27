@@ -6,10 +6,12 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import 'join_group.dart';
+import 'package:csocsort_szamla/confirm_choice_dialog.dart';
 
 class MemberAllInfo extends StatefulWidget {
   final Member member;
@@ -266,24 +268,34 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                   child: RaisedButton.icon(
                     onPressed: () {
                       showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
-                            future: _deleteMember(widget.member.memberId),
-                            dataTrueText: 'remove_member_scf',
-                            onDataTrue: (){
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainPage()),
-                                      (r) => false);
-                            },
-                          )
-                      );
+                        context: context,
+                        child: ConfirmChoiceDialog(
+                          choice: 'really_kick',
+                        )
+                      ).then((value){
+                        if(value!=null && value){
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              child: FutureSuccessDialog(
+                                future: _removeMember(widget.member.memberId),
+                                dataTrueText: 'kick_member_scf',
+                                onDataTrue: (){
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MainPage()),
+                                          (r) => false);
+                                },
+                              )
+                          );
+                        }
+                      });
+
                     },
                     color: Theme.of(context).colorScheme.secondary,
                     label: Text(
-                      'remove_member'.tr(),
+                      'kick_member'.tr(),
                       style: Theme.of(context).textTheme.button,
                     ),
                     icon: Icon(
@@ -299,43 +311,57 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                   child: RaisedButton.icon(
                     onPressed: () {
                       if(widget.member.balance<0){
-                        //TODO: valami hogy nem lehet
+                        FlutterToast ft = FlutterToast(context);
+                        ft.showToast(
+                            child: errorToast('balance_at_least_0', context),
+                            toastDuration: Duration(seconds: 2),
+                            gravity: ToastGravity.BOTTOM);
                         return;
                       }else{
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
-                              future: _deleteMember(null),
-                              dataTrueText: 'leave_scf',
-                              onDataTrue: (){
-                                usersGroupIds.remove(currentGroupId);
-                                usersGroups.remove(currentGroupName);
-                                SharedPreferences.getInstance().then((prefs) {
-                                  prefs.setStringList('users_groups', usersGroups);
-                                  prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-                                });
-                                if(usersGroups.length>0){
-                                  currentGroupName=usersGroups[0];
-                                  currentGroupId=usersGroupIds[0];
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MainPage()),
-                                          (r) => false);
-                                }else{
-                                  currentGroupName=null;
-                                  currentGroupId=null;
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => JoinGroup()),
-                                          (r) => false);
-                                }
+                          context: context,
+                          child: ConfirmChoiceDialog(
+                            choice: 'really_leave',
+                          )
+                        ).then((value){
+                          if(value!=null && value){
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child: FutureSuccessDialog(
+                                  future: _removeMember(null),
+                                  dataTrueText: 'leave_scf',
+                                  onDataTrue: (){
+                                    usersGroupIds.remove(currentGroupId);
+                                    usersGroups.remove(currentGroupName);
+                                    SharedPreferences.getInstance().then((prefs) {
+                                      prefs.setStringList('users_groups', usersGroups);
+                                      prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+                                    });
+                                    if(usersGroups.length>0){
+                                      currentGroupName=usersGroups[0];
+                                      currentGroupId=usersGroupIds[0];
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MainPage()),
+                                              (r) => false);
+                                    }else{
+                                      currentGroupName=null;
+                                      currentGroupId=null;
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => JoinGroup()),
+                                              (r) => false);
+                                    }
 
-                              },
-                            )
-                        );
+                                  },
+                                )
+                            );
+                          }
+                        });
+
                       }
                     },
                     color: Theme.of(context).colorScheme.secondary,
@@ -355,10 +381,11 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
         ));
   }
 
-  Future<bool> _deleteMember(int memberId) async {
+  Future<bool> _removeMember(int memberId) async {
     Map<String, dynamic> body ={
-      "member_id":memberId
+      "member_id":memberId??currentUserId
     };
+    clearAllCache();
     return (await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body)).statusCode==204;
   }
 }

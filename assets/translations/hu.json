@@ -198,5 +198,13 @@
     "did_not_request_this": "did_not_request_this",
 
     "store": "Bolt",
-    "store_scf": "Az értesítés sikeresen elküldve."
+    "store_scf": "Az értesítés sikeresen elküldve.",
+
+    "leave_group": "leave_group",
+    "leave_scf": "leave_scf",
+    "balance_at_least_0": "balance_at_least_0",
+    "kick_member": "kick_member",
+    "kick_member_scf": "kick_member_scf",
+    "really_kick": "really_kick",
+    "really_leave": "really_leave"
 }

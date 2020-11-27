@@ -79,3 +79,4 @@ google-services.json
 config.dart
 
 /.flutter-plugins-dependencies
+/android/settings_aar.gradle
