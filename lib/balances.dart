@@ -320,7 +320,7 @@ class _BalancesState extends State<Balances> {
             Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(

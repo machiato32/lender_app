@@ -9,6 +9,8 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
+import '../gradient_button.dart';
+
 class History extends StatefulWidget {
   final Function callback;
 
@@ -148,28 +150,38 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
-                                child: FlatButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AllHistoryRoute(startingIndex: _tabController.index)));
-                                    },
-                                    icon: Icon(
-                                      Icons.more_horiz,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GradientButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllHistoryRoute(startingIndex: _tabController.index)
+                                            )
+                                        );
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                          Icons.more_horiz,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .button
+                                              .color,
+                                          ),
+                                          SizedBox(width: 4,),
+                                          Text(
+                                          'more'.tr(),
+                                          style: Theme.of(context).textTheme.button,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    label: Text(
-                                      'more'.tr(),
-                                      style: Theme.of(context).textTheme.button,
-                                    ),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                  ],
+                                )
                               )
                             ],
                           );
@@ -210,28 +222,36 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                   children: _generatePayments(snapshot.data)),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
-                                child: FlatButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AllHistoryRoute(startingIndex: _tabController.index,)));
-                                    },
-                                    icon: Icon(
-                                      Icons.more_horiz,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GradientButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllHistoryRoute(startingIndex: _tabController.index,)));
+                                        },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.more_horiz,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .button
+                                                .color,
+                                          ),
+                                          SizedBox(width: 4,),
+                                          Text(
+                                            'more'.tr(),
+                                            style: Theme.of(context).textTheme.button,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    label: Text(
-                                      'more'.tr(),
-                                      style: Theme.of(context).textTheme.button,
-                                    ),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                  ],
+                                ),
                               )
                             ],
                           );

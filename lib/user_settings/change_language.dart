@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/rendering.dart';
 
+import 'package:csocsort_szamla/app_theme.dart';
+import 'package:flutter/widgets.dart';
+
 class LanguagePicker extends StatefulWidget {
   @override
   _LanguagePickerState createState() => _LanguagePickerState();
@@ -32,6 +35,7 @@ class _LanguagePickerState extends State<LanguagePicker> {
             SizedBox(height: 10),
             Center(
               child: Wrap(
+                spacing: 5,
                 children: _getLocales(),
               ),
             )
@@ -60,32 +64,23 @@ class _LanguageElementState extends State<LanguageElement> {
         context.locale = Locale(widget.localeName);
       },
       child: Container(
-        padding: EdgeInsets.all(4),
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
-          color: (widget.localeName == context.locale.languageCode)
-              ? Theme.of(context).colorScheme.primary
-              : Colors.transparent,
+          gradient: (widget.localeName == context.locale.languageCode)
+              ? AppTheme.gradientFromTheme(Theme.of(context))
+              : LinearGradient(colors: [Colors.white, Colors.white]),
           borderRadius: BorderRadius.circular(15)
         ),
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: (widget.localeName == context.locale.languageCode)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.white,
-            borderRadius: BorderRadius.circular(15)
-          ),
-          child: Center(
-            child: Text(
-              widget.localeName.toUpperCase(),
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                color: (widget.localeName == context.locale.languageCode)
-                    ? Theme.of(context).textTheme.button.color
-                    : Colors.black,
-              )
+        child: Center(
+          child: Text(
+            widget.localeName.toUpperCase(),
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: (widget.localeName == context.locale.languageCode)
+                  ? Theme.of(context).textTheme.button.color
+                  : Colors.black,
             )
-          ),
+          )
         ),
       ),
     );

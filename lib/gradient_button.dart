@@ -16,13 +16,15 @@ class GradientButton extends StatelessWidget {
       ),
       child: Ink(
         decoration: BoxDecoration(
-          gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+          gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
           borderRadius: BorderRadius.circular(15),
-          // boxShadow: [ BoxShadow(
-          //   color: Colors.grey[500],
-          //   offset: Offset(0.0, 1.5),
-          //   blurRadius: 1.5,
-          // )]
+          boxShadow: (Theme.of(context).brightness==Brightness.light)
+          ?[ BoxShadow(
+            color: Colors.grey[500],
+            offset: Offset(0.0, 1.5),
+            blurRadius: 1.5,
+          )]
+          : []
         ),
         child: InkWell(
             borderRadius: BorderRadius.circular(15),
