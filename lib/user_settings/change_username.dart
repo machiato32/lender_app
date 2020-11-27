@@ -8,6 +8,8 @@ import 'package:csocsort_szamla/main.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
+import '../gradient_button.dart';
+
 class ChangeUsername extends StatefulWidget {
   @override
   _ChangeUsernameState createState() => _ChangeUsernameState();
@@ -86,33 +88,38 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                 cursorColor: Theme.of(context).colorScheme.secondary,
               ),
               SizedBox(height: 30,),
-              Center(
-                child: RaisedButton.icon(
-                  color: Theme.of(context).colorScheme.secondary,
-                  label: Text('send'.tr(),
-                      style: Theme.of(context).textTheme.button),
-                  icon: Icon(Icons.send,
-                      color: Theme.of(context).colorScheme.onSecondary),
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    if (_formKey.currentState.validate()) {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
-                            future: _updateUsername(_usernameController.text),
-                            dataTrueText: 'change_username_scf',
-                            onDataTrue: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainPage()),
-                                      (route) => false);
-                            },
-                          ));
-                    }
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
+                        SizedBox(width: 3,),
+                        Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                      ],
+                    ),
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState.validate()) {
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child: FutureSuccessDialog(
+                              future: _updateUsername(_usernameController.text),
+                              dataTrueText: 'change_username_scf',
+                              onDataTrue: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()),
+                                        (route) => false);
+                              },
+                            ));
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),

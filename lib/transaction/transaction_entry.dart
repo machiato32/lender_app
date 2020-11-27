@@ -6,6 +6,7 @@ import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 class TransactionData {
   DateTime updatedAt;
@@ -75,14 +76,12 @@ class _TransactionEntryState extends State<TransactionEntry> {
     note = (widget.data.name == '')
         ? 'no_note'.tr()
         : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
-    bool buyed = widget.data.buyerId == currentUserId;
+    bool bought = widget.data.buyerId == currentUserId;
     bool received = widget.data.receivers.where((element) => element.memberId == currentUserId).isNotEmpty;
     /* Set icon, amount and names */
-    if (buyed && received) {
+    if (bought && received) {
       icon = Icon(Icons.swap_horiz,
-          color: (Theme.of(context).brightness == Brightness.dark)
-              ? Theme.of(context).textTheme.bodyText1.color
-              : Theme.of(context).textTheme.button.color);
+          color: Theme.of(context).textTheme.button.color);
       amount = widget.data.totalAmount.toString();
       selfAmount = (-widget.data.receivers
               .firstWhere((member) => member.memberId == currentUserId)
@@ -93,11 +92,9 @@ class _TransactionEntryState extends State<TransactionEntry> {
       } else {
         names = widget.data.receivers[0].nickname;
       }
-    } else if (buyed) {
+    } else if (bought) {
       icon = Icon(Icons.call_made,
-          color: (Theme.of(context).brightness == Brightness.dark)
-              ? Theme.of(context).textTheme.bodyText1.color
-              : Theme.of(context).textTheme.button.color);
+          color: Theme.of(context).textTheme.button.color);
       amount = widget.data.totalAmount.toString();
       if (widget.data.receivers.length > 1) {
         names = widget.data.receivers.join(', ');
@@ -115,22 +112,19 @@ class _TransactionEntryState extends State<TransactionEntry> {
     }
 
     /* Set style color */
-    if (buyed) {
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+    if (bought) {
+      style = Theme.of(context).textTheme.button;
+      dateColor = Theme.of(context).textTheme.button.color;
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        // color: (Theme.of(context).brightness == Brightness.dark)
+        //     ? Colors.transparent
+        //     : Theme.of(context).colorScheme.secondary,
+        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+        // border: Border.all(
+        //     color: (Theme.of(context).brightness == Brightness.dark)
+        //         ? Theme.of(context).colorScheme.secondary
+        //         : Colors.transparent,
+        //     width: 1.5),
         borderRadius: BorderRadius.circular(15),
       );
     } else {
@@ -211,7 +205,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
                                 style: style,
                               ),
                               Visibility(
-                                  visible: received && buyed,
+                                  visible: received && bought,
                                   child: Text(
                                     selfAmount,
                                     style: style,

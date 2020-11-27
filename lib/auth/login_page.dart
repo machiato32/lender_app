@@ -14,6 +14,7 @@ import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import '../app_theme.dart';
 import 'forgot_password_page.dart';
 
 class LoginRoute extends StatefulWidget {
@@ -36,7 +37,14 @@ class _LoginRouteState extends State<LoginRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(title: Text('login'.tr())),
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+          title: Text('login'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
+        ),
         body: Center(
           child: ListView(
             padding: EdgeInsets.only(left:20, right: 20),

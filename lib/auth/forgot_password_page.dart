@@ -5,6 +5,8 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/http_handler.dart';
 
+import '../app_theme.dart';
+
 class ForgotPasswordPage extends StatefulWidget {
   final String username;
   ForgotPasswordPage({@required this.username});
@@ -24,7 +26,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('forgot_password'.tr()),),
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: AppTheme.gradientFromTheme(Theme.of(context))
+          ),
+        ),
+        title: Text('forgot_password'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24)),
+      ),
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [

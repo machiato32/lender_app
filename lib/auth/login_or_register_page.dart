@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
@@ -55,26 +56,34 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
             SizedBox(
               height: 100,
             ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginRoute()));
-              },
-              child: Text(
-                'login'.tr(),
-                style: Theme.of(context).textTheme.button,
-                textAlign: TextAlign.center,
-              ),
-              color: Theme.of(context).colorScheme.secondary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginRoute()));
+                  },
+                  child: Text(
+                    'login'.tr(),
+                    style: Theme.of(context).textTheme.button,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterRoute()));
-              },
-              child: Text('register'.tr(),
-                  style: Theme.of(context).textTheme.button),
-              color: Theme.of(context).colorScheme.secondary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RegisterRoute()));
+                  },
+                  child: Text('register'.tr(),
+                      style: Theme.of(context).textTheme.button),
+                ),
+              ],
             ),
           ],
         ),

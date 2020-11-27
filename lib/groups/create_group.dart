@@ -10,6 +10,8 @@ import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
+import '../app_theme.dart';
+
 class CreateGroup extends StatefulWidget {
   @override
   _CreateGroupState createState() => _CreateGroupState();
@@ -51,9 +53,14 @@ class _CreateGroupState extends State<CreateGroup> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
           title: Text(
             'create'.tr(),
-            style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
           ),
         ),
         body: GestureDetector(

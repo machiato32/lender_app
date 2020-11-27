@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -11,6 +12,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -197,8 +199,8 @@ class _ShoppingListState extends State<ShoppingList> {
                         SizedBox(
                           width: 20,
                         ),
-                        RaisedButton(
-                          color: Theme.of(context).colorScheme.secondary,
+                        GradientButton(
+                          // color: Theme.of(context).colorScheme.secondary,
                           child: Icon(Icons.add,
                               color: Theme.of(context).colorScheme.onSecondary),
                           onPressed: () {
@@ -230,82 +232,87 @@ class _ShoppingListState extends State<ShoppingList> {
                       ],
                     ),
                     SizedBox(height: 10,),
-                    RaisedButton(
-                      onPressed: (){
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            TextEditingController controller = TextEditingController();
-                            GlobalKey<FormState> formKey = GlobalKey<FormState>();
-                            return Form(
-                              key: formKey,
-                              child: AlertDialog(
-                                title: Text('where'.tr()),
-                                content: TextFormField(
-                                  validator: (value){
-                                    value=value.trim();
-                                    if (value.isEmpty) {
-                                      return 'field_empty'.tr();
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'store'.tr(),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: (){
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                TextEditingController controller = TextEditingController();
+                                GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                                return Form(
+                                  key: formKey,
+                                  child: AlertDialog(
+                                    title: Text('where'.tr()),
+                                    content: TextFormField(
+                                      validator: (value){
+                                        value=value.trim();
+                                        if (value.isEmpty) {
+                                          return 'field_empty'.tr();
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: 'store'.tr(),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                              Theme.of(context).colorScheme.onSurface),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
+                                        ),
+                                      ),
+                                      controller: controller,
+                                      style: TextStyle(
+                                          fontSize: 20,
                                           color:
-                                          Theme.of(context).colorScheme.onSurface),
+                                          Theme.of(context).textTheme.bodyText1.color),
+                                      cursorColor: Theme.of(context).colorScheme.secondary,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(20)
+                                      ],
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).colorScheme.primary,
-                                          width: 2),
-                                    ),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          if(formKey.currentState.validate()){
+                                            String store = controller.text;
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              child: FutureSuccessDialog(
+                                                future: _postImShopping(store),
+                                                dataTrueText: 'store_scf',
+                                                onDataTrue: () {
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                },
+                                              )
+
+                                            );
+
+                                          }
+
+                                        },
+                                        child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      )
+                                    ],
                                   ),
-                                  controller: controller,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color:
-                                      Theme.of(context).textTheme.bodyText1.color),
-                                  cursorColor: Theme.of(context).colorScheme.secondary,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(20)
-                                  ],
-                                ),
-                                actions: [
-                                  RaisedButton(
-                                    onPressed: (){
-                                      if(formKey.currentState.validate()){
-                                        String store = controller.text;
-                                        showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          child: FutureSuccessDialog(
-                                            future: _postImShopping(store),
-                                            dataTrueText: 'store_scf',
-                                            onDataTrue: () {
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
-                                            },
-                                          )
-
-                                        );
-
-                                      }
-
-                                    },
-                                    child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  )
-                                ],
-                              ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
-                      color: Theme.of(context).colorScheme.secondary,
+                          child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                          // color: Theme.of(context).colorScheme.secondary,
 
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -389,22 +396,11 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     user = widget.data.requesterUsername;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
     if (widget.data.requesterId == currentUserId) {
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      dateColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+      style = Theme.of(context).textTheme.button;
+      dateColor = Theme.of(context).textTheme.button.color;
       icon = Icon(Icons.receipt, color: style.color);
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
         borderRadius: BorderRadius.circular(15),
       );
     } else {

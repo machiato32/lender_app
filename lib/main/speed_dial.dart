@@ -6,6 +6,8 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 
+import '../app_theme.dart';
+
 class MainPageSpeedDial extends StatefulWidget {
   final Function callback;
   MainPageSpeedDial({this.callback});
@@ -25,7 +27,6 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
         description: Text('discovery_add_floating_description'.tr()),
         contentLocation: ContentLocation.above,
         overflowMode: OverflowMode.extendBackground,
-
         child: Icon(Icons.add),
       ),
       overlayColor: (Theme.of(context).brightness == Brightness.dark)
@@ -59,7 +60,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                           vertical: 3.0, horizontal: 5.0),
                       //                  margin: EdgeInsets.only(right: 18.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
+                        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
                         borderRadius:
                         BorderRadius.all(Radius.circular(6.0)),
                         boxShadow: [
@@ -125,7 +126,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                       padding: EdgeInsets.symmetric(
                           vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
+                        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
                         borderRadius:
                         BorderRadius.all(Radius.circular(6.0)),
                         boxShadow: [

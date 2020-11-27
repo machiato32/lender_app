@@ -206,5 +206,7 @@
     "kick_member": "kick_member",
     "kick_member_scf": "kick_member_scf",
     "really_kick": "really_kick",
-    "really_leave": "really_leave"
+    "really_leave": "really_leave",
+
+    "auto_payment": "auto_payment"
 }

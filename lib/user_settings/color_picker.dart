@@ -34,11 +34,10 @@ class _ColorPickerState extends State<ColorPicker> {
               style: Theme.of(context).textTheme.headline6,
             )),
             SizedBox(height: 10),
-            Container(
-              height: 80,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
+            Center(
+              child: Wrap(
+                runSpacing: 5,
+                spacing: 5,
                 children: _getColors(),
               ),
             )
@@ -66,43 +65,44 @@ class _ColorElementState extends State<ColorElement> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            Provider.of<AppStateNotifier>(context, listen: false)
-                .updateTheme(widget.themeName);
-            _getPrefs().then((_prefs) {
-              _prefs.setString('theme', widget.themeName);
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-                color: (widget.themeName ==
-                        Provider.of<AppStateNotifier>(context, listen: false)
-                            .themeName)
-                    ? Colors.grey
-                    : Colors.transparent,
-                shape: BoxShape.circle),
-            child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  color: widget.theme.colorScheme.secondary,
-                  border: Border.all(
-                      color: widget.theme.scaffoldBackgroundColor, width: 10),
-                  shape: BoxShape.circle),
-              child: SizedBox(
-                width: 20,
-                height: 20,
+    return InkWell(
+      borderRadius: BorderRadius.circular(15),
+      onTap: () {
+        Provider.of<AppStateNotifier>(context, listen: false)
+            .updateTheme(widget.themeName);
+        _getPrefs().then((_prefs) {
+          _prefs.setString('theme', widget.themeName);
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+            gradient: (widget.themeName ==
+                    Provider.of<AppStateNotifier>(context, listen: false)
+                        .themeName)
+                ? AppTheme.gradientFromTheme(widget.theme)
+                : LinearGradient(colors:[Colors.transparent, Colors.transparent]),
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: Container(
+          padding: EdgeInsets.all(4),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [widget.theme.colorScheme.onPrimary, widget.theme.colorScheme.secondary]
               ),
+              border: Border.all(
+                  color: widget.theme.scaffoldBackgroundColor, 
+                  width: 8
+              ),
+              borderRadius: BorderRadius.circular(20)
             ),
+          child: SizedBox(
+            width: 25,
+            height: 25,
           ),
         ),
-        SizedBox(
-          width: 5,
-        )
-      ],
+      ),
     );
+
   }
 }

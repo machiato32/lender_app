@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -194,34 +195,39 @@ class _ChangePasswordState extends State<ChangePassword> {
               SizedBox(
                 height: 30,
               ),
-              Center(
-                child: RaisedButton.icon(
-                  color: Theme.of(context).colorScheme.secondary,
-                  label: Text('send'.tr(),
-                      style: Theme.of(context).textTheme.button),
-                  icon: Icon(Icons.send,
-                      color: Theme.of(context).colorScheme.onSecondary),
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    if (_formKey.currentState.validate()) {
-                      showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        child: FutureSuccessDialog(
-                          future: _updatePassword(_oldPasswordController.text,
-                              _newPasswordController.text, _passwordReminderController.text),
-                          dataTrueText: 'change_password_scf',
-                          onDataTrue: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainPage()),
-                                (route) => false);
-                          },
-                        ));
-                    }
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
+                        SizedBox(width: 3,),
+                        Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                      ],
+                    ),
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState.validate()) {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          child: FutureSuccessDialog(
+                            future: _updatePassword(_oldPasswordController.text,
+                                _newPasswordController.text, _passwordReminderController.text),
+                            dataTrueText: 'change_password_scf',
+                            onDataTrue: () {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MainPage()),
+                                  (route) => false);
+                            },
+                          ));
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),

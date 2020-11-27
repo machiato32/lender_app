@@ -13,6 +13,8 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
+import '../app_theme.dart';
+
 class RegisterRoute extends StatefulWidget {
   @override
   _RegisterRouteState createState() => _RegisterRouteState();
@@ -38,7 +40,14 @@ class _RegisterRouteState extends State<RegisterRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(title: Text('register'.tr())),
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+          title: Text('register'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {

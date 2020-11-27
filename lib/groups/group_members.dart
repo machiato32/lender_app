@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import '../app_theme.dart';
 import 'member_all_info.dart';
 
 class GroupMembers extends StatefulWidget {
@@ -181,22 +182,11 @@ class _MemberEntryState extends State<MemberEntry> {
   @override
   Widget build(BuildContext context) {
     if (widget.member.memberId == currentUserId) {
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      nicknameColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+      style = Theme.of(context).textTheme.button;
+      nicknameColor = Theme.of(context).textTheme.button.color;
       iconColor = style.color;
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
         borderRadius: BorderRadius.circular(15),
       );
     } else {

@@ -9,6 +9,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/main.dart';
+import '../app_theme.dart';
 import 'create_group.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
@@ -94,18 +95,23 @@ class _JoinGroupState extends State<JoinGroup> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context))
+              ),
+            ),
             title: Text(
               'join'.tr(),
-              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
             ),
             leading: (currentGroupName != null)
                 ? IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainPage()),
-                      (r) => false),
-            )
+                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSecondary),
+                    onPressed: () => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainPage()),
+                            (r) => false),
+                  )
                 : null,
           ),
           drawer: !widget.fromAuth

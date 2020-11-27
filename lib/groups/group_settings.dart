@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -180,42 +181,44 @@ class _GroupSettingState extends State<GroupSettings> {
                                       SizedBox(
                                         height: 15,
                                       ),
-                                      RaisedButton(
-                                        onPressed: () {
-                                          if (_groupNameFormKey.currentState
-                                              .validate()) {
-                                            FocusScope.of(context).unfocus();
-                                            String _groupName =
-                                                _groupNameController.text;
-                                            showDialog(
-                                                barrierDismissible: false,
-                                                context: context,
-                                                child: FutureSuccessDialog(
-                                                  future: _updateGroupName(
-                                                      _groupName),
-                                                  dataTrueText: 'nickname_scf',
-                                                  onDataTrue: () {
-                                                    Navigator.pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MainPage()),
-                                                        (r) => false);
-                                                    _groupNameController.text =
-                                                        '';
-                                                  },
-                                                ));
-                                          }
-                                        },
-                                        child: Icon(
-                                          Icons.send,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSecondary,
-                                        ),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          GradientButton(
+                                            onPressed: () {
+                                              if (_groupNameFormKey.currentState
+                                                  .validate()) {
+                                                FocusScope.of(context).unfocus();
+                                                String _groupName =
+                                                    _groupNameController.text;
+                                                showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    child: FutureSuccessDialog(
+                                                      future: _updateGroupName(
+                                                          _groupName),
+                                                      dataTrueText: 'nickname_scf',
+                                                      onDataTrue: () {
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    MainPage()),
+                                                            (r) => false);
+                                                        _groupNameController.text =
+                                                            '';
+                                                      },
+                                                    ));
+                                              }
+                                            },
+                                            child: Icon(
+                                              Icons.send,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSecondary,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -251,24 +254,26 @@ class _GroupSettingState extends State<GroupSettings> {
                                           ConnectionState.done) {
                                         if (snapshot.hasData) {
                                           return Center(
-                                            child: RaisedButton(
-                                              onPressed: () {
-                                                Share.share(
-                                                    'http://www.lenderapp.net/join/' +
-                                                        snapshot.data,
-                                                    subject:
-                                                        'invitation_to_lender'
-                                                            .tr());
-                                              },
-                                              child: Icon(
-                                                Icons.share,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSecondary,
-                                              ),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                GradientButton(
+                                                  onPressed: () {
+                                                    Share.share(
+                                                        'http://www.lenderapp.net/join/' +
+                                                            snapshot.data,
+                                                        subject:
+                                                            'invitation_to_lender'
+                                                                .tr());
+                                                  },
+                                                  child: Icon(
+                                                    Icons.share,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSecondary,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           );
                                         } else {

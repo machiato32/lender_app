@@ -3,7 +3,7 @@ import 'app_theme.dart';
 
 class AppStateNotifier extends ChangeNotifier {
   String themeName = 'greenLightTheme';
-  ThemeData theme = AppTheme.greenLightTheme;
+  ThemeData theme = AppTheme.themes['greenLightTheme'];
 
   void updateThemeNoNotify(String themeName) {
     this.theme = AppTheme.themes[themeName];

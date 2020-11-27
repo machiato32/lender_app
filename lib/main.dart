@@ -25,9 +25,10 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'main/report_a_bug.dart';
+import 'main/report_a_bug_page.dart';
 import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
+import 'app_theme.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -287,7 +288,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       throw _;
     }
   }
-  
+
   Future _logout() async {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
@@ -380,6 +381,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.gradientFromTheme(Theme.of(context))
+          ),
+        ),
         title: FutureBuilder(
           future: _getCurrentGroup(),
           builder: (context, snapshot) {
@@ -387,13 +393,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               if (snapshot.hasData) {
                 return Text(
                   snapshot.data,
-                  style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
                 );
               }
             }
             return Text(
               currentGroupName ?? 'asd',
-              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
             );
           },
         ),
@@ -406,7 +412,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           description: Text('discovery_drawer_description'.tr()),
           barrierDismissible: false,
           child: IconButton(
-            icon: Icon(Icons.menu),
+            icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.onSecondary,),
             onPressed: _handleDrawer,
           ),
         ),
