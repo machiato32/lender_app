@@ -10,6 +10,9 @@ import 'package:csocsort_szamla/group_objects.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
+import '../app_theme.dart';
+import '../gradient_button.dart';
+
 class SavedPayment{
   String note;
   int payerId, takerId;
@@ -109,8 +112,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
       key: _formKey,
       child: Scaffold(
           appBar: AppBar(
-            title: Text('payment'.tr()),
+            title: Text('payment'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context))
+              ),
+            ),
           ),
+
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.send),
             onPressed: () {
@@ -173,35 +182,43 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           SizedBox(
                             height: 15,
                           ),
-                          FlatButton.icon(
-                            icon: Icon(Icons.check,
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            label: Text(
-                              'okay'.tr(),
-                              style: Theme.of(context).textTheme.button,
-                            ),
-                            color: Theme.of(context).colorScheme.secondary,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GradientButton(
+                                child:Row(
+                                  children: [
+                                    Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                    SizedBox(width: 3,),
+                                    Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
                           ),
-                          FlatButton.icon(
-                            icon: Icon(Icons.add,
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary),
-                            onPressed: () {
-                              _amountController.text = '';
-                              _noteController.text = '';
-                              _dropdownValue = null;
-                              Navigator.pop(context);
-                            },
-                            label: Text(
-                              'add_new'.tr(),
-                              style: Theme.of(context).textTheme.button,
-                            ),
-                            color: Theme.of(context).colorScheme.secondary,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GradientButton(
+                                child:Row(
+                                  children: [
+                                    Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                    SizedBox(width: 3,),
+                                    Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
+                                  ],
+                                ),
+                                onPressed: () {
+                                  _amountController.text = '';
+                                  _noteController.text = '';
+                                  _dropdownValue = null;
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),

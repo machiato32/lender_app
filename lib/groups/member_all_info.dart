@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -143,185 +144,155 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                           ));
                     },
                   )),
-              Center(
-                child: Visibility(
-                  visible: widget.isCurrentUserAdmin ||
-                      widget.member.memberId == currentUserId,
-                  child: RaisedButton.icon(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          child: AlertDialog(
-                            title: Text(
-                              'edit_nickname'.tr(),
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            content: Form(
-                              key: _nicknameFormKey,
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 1) {
-                                    return 'minimal_length'.tr(args: ['1']);
-                                  }
-                                  return null;
-                                },
-                                focusNode: _nicknameFocus,
-                                controller: _nicknameController,
-                                decoration: InputDecoration(
-                                  hintText: widget.member.username
-                                      .split('#')[0][0]
-                                      .toUpperCase() +
-                                      widget.member.username
-                                          .split('#')[0]
-                                          .substring(1),
-                                  labelText: 'nickname'.tr(),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                        width: 2),
-                                    //  when the TextFormField in unfocused
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                        Theme.of(context).colorScheme.primary,
-                                        width: 2),
-                                  ),
-                                ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(15),
-                                ],
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                            actions: [
-                              RaisedButton(
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'back'.tr(),
-                                  style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
-                                ),
-                                color: Colors.grey[700],
-                              ),
-                              RaisedButton(
-                                onPressed: () {
-                                  if (_nicknameFormKey.currentState.validate()) {
-                                    Navigator.pop(context);
-                                    FocusScope.of(context).unfocus();
-                                    String nickname =
-                                        _nicknameController.text[0].toUpperCase() +
-                                            _nicknameController.text.substring(1);
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        child: FutureSuccessDialog(
-                                          future: _updateNickname(
-                                              nickname, widget.member.memberId),
-                                          onDataTrue: () {
-                                            _nicknameController.text = '';
+              Visibility(
+                visible: widget.isCurrentUserAdmin ||
+                    widget.member.memberId == currentUserId,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            child: Dialog(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        'edit_nickname'.tr(),
+                                        style: Theme.of(context).textTheme.headline6,
+                                      ),
+                                    ),
+                                    Form(
+                                      key: _nicknameFormKey,
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'field_empty'.tr();
+                                          }
+                                          if (value.length < 1) {
+                                            return 'minimal_length'.tr(args: ['1']);
+                                          }
+                                          return null;
+                                        },
+                                        focusNode: _nicknameFocus,
+                                        controller: _nicknameController,
+                                        decoration: InputDecoration(
+                                          hintText: widget.member.username
+                                              .split('#')[0][0]
+                                              .toUpperCase() +
+                                              widget.member.username
+                                                  .split('#')[0]
+                                                  .substring(1),
+                                          labelText: 'nickname'.tr(),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color:
+                                                Theme.of(context).colorScheme.onSurface,
+                                                width: 2),
+                                            //  when the TextFormField in unfocused
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color:
+                                                Theme.of(context).colorScheme.primary,
+                                                width: 2),
+                                          ),
+                                        ),
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(15),
+                                        ],
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .color),
+                                        cursorColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        RaisedButton(
+                                          onPressed: () {
+                                            FocusScope.of(context).unfocus();
                                             Navigator.pop(context);
-                                            Navigator.pop(context, 'madeAdmin');
                                           },
-                                          dataTrueText: 'nickname_scf',
-                                        ));
-                                  }
-                                },
-                                child: Text(
-                                  'modify'.tr(),
-                                  style: Theme.of(context).textTheme.button,
+                                          child: Text(
+                                            'back'.tr(),
+                                            style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
+                                          ),
+                                          color: Colors.grey[700],
+                                        ),
+                                        GradientButton(
+                                          onPressed: () {
+                                            if (_nicknameFormKey.currentState.validate()) {
+                                              Navigator.pop(context);
+                                              FocusScope.of(context).unfocus();
+                                              String nickname =
+                                                  _nicknameController.text[0].toUpperCase() +
+                                                      _nicknameController.text.substring(1);
+                                              showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  child: FutureSuccessDialog(
+                                                    future: _updateNickname(
+                                                        nickname, widget.member.memberId),
+                                                    onDataTrue: () {
+                                                      _nicknameController.text = '';
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context, 'madeAdmin');
+                                                    },
+                                                    dataTrueText: 'nickname_scf',
+                                                  ));
+                                            }
+                                          },
+                                          child: Text(
+                                            'modify'.tr(),
+                                            style: Theme.of(context).textTheme.button,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                color: Theme.of(context).colorScheme.secondary,
                               ),
-
-                            ],
-                          ));
-                    },
-                    color: Theme.of(context).colorScheme.secondary,
-                    label: Text(
-                      'edit_nickname'.tr(),
-                      style: Theme.of(context).textTheme.button,
+                            ));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Theme.of(context).textTheme.button.color,
+                          ),
+                          SizedBox(width: 3,),
+                          Text(
+                            'edit_nickname'.tr(),
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        ],
+                      ),
                     ),
-                    icon: Icon(
-                      Icons.edit,
-                      color: Theme.of(context).textTheme.button.color,
-                    ),
-                  ),
+                  ],
                 ),
               ),
-              Center(
-                child: Visibility(
-                  visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
-                  child: RaisedButton.icon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        child: ConfirmChoiceDialog(
-                          choice: 'really_kick',
-                        )
-                      ).then((value){
-                        if(value!=null && value){
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
-                                future: _removeMember(widget.member.memberId),
-                                dataTrueText: 'kick_member_scf',
-                                onDataTrue: (){
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MainPage()),
-                                          (r) => false);
-                                },
-                              )
-                          );
-                        }
-                      });
-
-                    },
-                    color: Theme.of(context).colorScheme.secondary,
-                    label: Text(
-                      'kick_member'.tr(),
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    icon: Icon(
-                      Icons.delete,
-                      color: Theme.of(context).textTheme.button.color,
-                    ),
-                  ),
-                ),
-              ),
-              Center(
-                child: Visibility(
-                  visible: widget.member.memberId==currentUserId,
-                  child: RaisedButton.icon(
-                    onPressed: () {
-                      if(widget.member.balance<0){
-                        FlutterToast ft = FlutterToast(context);
-                        ft.showToast(
-                            child: errorToast('balance_at_least_0', context),
-                            toastDuration: Duration(seconds: 2),
-                            gravity: ToastGravity.BOTTOM);
-                        return;
-                      }else{
+              Visibility(
+                visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      onPressed: () {
                         showDialog(
                           context: context,
                           child: ConfirmChoiceDialog(
-                            choice: 'really_leave',
+                            choice: 'really_kick',
                           )
                         ).then((value){
                           if(value!=null && value){
@@ -329,51 +300,114 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                 barrierDismissible: false,
                                 context: context,
                                 child: FutureSuccessDialog(
-                                  future: _removeMember(null),
-                                  dataTrueText: 'leave_scf',
+                                  future: _removeMember(widget.member.memberId),
+                                  dataTrueText: 'kick_member_scf',
                                   onDataTrue: (){
-                                    usersGroupIds.remove(currentGroupId);
-                                    usersGroups.remove(currentGroupName);
-                                    SharedPreferences.getInstance().then((prefs) {
-                                      prefs.setStringList('users_groups', usersGroups);
-                                      prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-                                    });
-                                    if(usersGroups.length>0){
-                                      currentGroupName=usersGroups[0];
-                                      currentGroupId=usersGroupIds[0];
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MainPage()),
-                                              (r) => false);
-                                    }else{
-                                      currentGroupName=null;
-                                      currentGroupId=null;
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => JoinGroup()),
-                                              (r) => false);
-                                    }
-
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MainPage()),
+                                            (r) => false);
                                   },
                                 )
                             );
                           }
                         });
 
-                      }
-                    },
-                    color: Theme.of(context).colorScheme.secondary,
-                    label: Text(
-                      'leave_group'.tr(),
-                      style: Theme.of(context).textTheme.button,
+                      },
+                      child:Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: Theme.of(context).textTheme.button.color,
+                          ),
+                          SizedBox(width: 3,),
+                          Text(
+                            'kick_member'.tr(),
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        ],
+                      ),
                     ),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).textTheme.button.color,
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: widget.member.memberId==currentUserId,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      onPressed: () {
+                        if(widget.member.balance<0){
+                          FlutterToast ft = FlutterToast(context);
+                          ft.showToast(
+                              child: errorToast('balance_at_least_0', context),
+                              toastDuration: Duration(seconds: 2),
+                              gravity: ToastGravity.BOTTOM);
+                          return;
+                        }else{
+                          showDialog(
+                            context: context,
+                            child: ConfirmChoiceDialog(
+                              choice: 'really_leave',
+                            )
+                          ).then((value){
+                            if(value!=null && value){
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future: _removeMember(null),
+                                    dataTrueText: 'leave_scf',
+                                    onDataTrue: (){
+                                      usersGroupIds.remove(currentGroupId);
+                                      usersGroups.remove(currentGroupName);
+                                      SharedPreferences.getInstance().then((prefs) {
+                                        prefs.setStringList('users_groups', usersGroups);
+                                        prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+                                      });
+                                      if(usersGroups.length>0){
+                                        currentGroupName=usersGroups[0];
+                                        currentGroupId=usersGroupIds[0];
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MainPage()),
+                                                (r) => false);
+                                      }else{
+                                        currentGroupName=null;
+                                        currentGroupId=null;
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => JoinGroup()),
+                                                (r) => false);
+                                      }
+
+                                    },
+                                  )
+                              );
+                            }
+                          });
+
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back,
+                            color: Theme.of(context).textTheme.button.color,
+                          ),
+                          SizedBox(width: 3,),
+                          Text(
+                            'leave_group'.tr(),
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               )
             ],

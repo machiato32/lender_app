@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -25,13 +26,11 @@ class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                RaisedButton(
-                    color: Theme.of(context).colorScheme.secondary,
+                GradientButton(
                     onPressed: (){ Navigator.pop(context, true); },
                     child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
                 ),
-                RaisedButton(
-                    color: Theme.of(context).colorScheme.secondary,
+                GradientButton(
                     onPressed: (){ Navigator.pop(context, false);},
                     child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
                 )

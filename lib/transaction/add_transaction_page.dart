@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,6 +12,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 Random random = Random();
 
@@ -136,7 +138,14 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(title: Text('expense'.tr())),
+        appBar: AppBar(
+          title: Text('expense'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -503,37 +512,47 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         SizedBox(
                           height: 15,
                         ),
-                        FlatButton.icon(
-                          icon: Icon(Icons.check,
-                              color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          label: Text(
-                            'okay'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          color: Theme.of(context).colorScheme.secondary,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              child:Row(
+                                children: [
+                                  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                  SizedBox(width: 3,),
+                                  Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                ],
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
                         ),
-                        FlatButton.icon(
-                          icon: Icon(Icons.add,
-                              color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            setState(() {
-                              amountController.text = '';
-                              noteController.text = '';
-                              for (Member key in checkboxBool.keys) {
-                                checkboxBool[key] = false;
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                          label: Text(
-                            'add_new'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          color: Theme.of(context).colorScheme.secondary,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              child:Row(
+                                children: [
+                                  Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                  SizedBox(width: 3,),
+                                  Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
+                                ],
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  amountController.text = '';
+                                  noteController.text = '';
+                                  for (Member key in checkboxBool.keys) {
+                                    checkboxBool[key] = false;
+                                  }
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),

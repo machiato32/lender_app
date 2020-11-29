@@ -268,10 +268,12 @@ class _MemberEntryState extends State<MemberEntry> {
                           Center(
                             child: Visibility(
                                 visible: widget.member.isAdmin,
-                                child: Text(
-                                  'Admin',
+                                child:
+                                Text(
+                                  '👑  ', //itt van egy korona emoji lol
                                   style: style,
-                                )),
+                                )
+                            ),
                           ),
                         ],
                       ),

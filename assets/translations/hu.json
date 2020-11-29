@@ -200,13 +200,13 @@
     "store": "Bolt",
     "store_scf": "Az értesítés sikeresen elküldve.",
 
-    "leave_group": "leave_group",
-    "leave_scf": "leave_scf",
-    "balance_at_least_0": "balance_at_least_0",
-    "kick_member": "kick_member",
-    "kick_member_scf": "kick_member_scf",
-    "really_kick": "really_kick",
-    "really_leave": "really_leave",
+    "leave_group": "Kilépés a csoportból",
+    "leave_scf": "A kilépés sikeres volt",
+    "balance_at_least_0": "A kilépéshez legalább 0-nak kell lennie az egyenlegednek",
+    "kick_member": "Tag kirúgása",
+    "kick_member_scf": "A kirúgás sikeres volt",
+    "really_kick": "Hogyha kirúgod a tagot, akkor a jelenlegi egyenlege hozzáadódik a te egyenlegedhez. Biztosan kirúgod?",
+    "really_leave": "Hogyha kilépsz, a jelenlegi egyenleged szét lesz osztva a csoport többi tagja között. Biztosan ki szeretnél lépni?",
 
-    "auto_payment": "auto_payment"
+    "auto_payment": "Automatikus fizetés"
 }

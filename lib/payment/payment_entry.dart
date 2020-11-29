@@ -75,15 +75,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
       style = Theme.of(context).textTheme.button;
       dateColor = Theme.of(context).textTheme.button.color;
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
-        // color: (Theme.of(context).brightness == Brightness.dark)
-        //     ? Colors.transparent
-        //     : Theme.of(context).colorScheme.secondary,
-        // border: Border.all(
-        //     color: (Theme.of(context).brightness == Brightness.dark)
-        //         ? Theme.of(context).colorScheme.secondary
-        //         : Colors.transparent,
-        //     width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
       );
       takerName = widget.data.takerNickname;

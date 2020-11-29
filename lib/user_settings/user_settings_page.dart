@@ -32,7 +32,7 @@ class _SettingsState extends State<Settings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: ListView(
-          children: <Widget>[ChangePassword(), ChangeUsername(), ColorPicker(), LanguagePicker(), ResetTutorial()],
+          children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial()],
         ),
       ),
     );
