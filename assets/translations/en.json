@@ -197,5 +197,7 @@
     "did_not_request_this": "did_not_request_this",
 
     "store": "Store",
-    "store_scf": "Notification sent successfully."
+    "store_scf": "Notification sent successfully.",
+
+    "auto_payment": "Automatic payment"
 }

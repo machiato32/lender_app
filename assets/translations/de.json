@@ -197,6 +197,8 @@
     "did_not_request_this": "did_not_request_this",
 
     "store": "Laden",
-    "store_scf": "Die Benachrichtigung wurde erfolgreich gesendet."
+    "store_scf": "Die Benachrichtigung wurde erfolgreich gesendet.",
+
+    "auto_payment": "Automatische Zahlung"
 
 }

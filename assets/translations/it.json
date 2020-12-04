@@ -183,5 +183,7 @@
     "no_connection": "Non hai connessione internet.",
 
     "store": "Negozio",
-    "store_scf": "La notifica è mandata con successo."
+    "store_scf": "La notifica è mandata con successo.",
+
+    "auto_payment": "Pagamento automatico"
 }
