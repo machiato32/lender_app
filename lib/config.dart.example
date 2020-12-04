@@ -1,4 +1,6 @@
-const String APPURL =  'http://www.examp.le';
+const String APP_URL =  'http://www.examp.le';
+const String TEST_URL = 'http://www.test.examp.le';
+bool useTest=true;
 String apiToken;
 String currentUsername;
 int currentUserId;
@@ -6,3 +8,5 @@ String currentGroupName;
 int currentGroupId;
 List<String> usersGroups;
 List<int> usersGroupIds;
+String guestApiToken;
+String guestNickname;

@@ -166,7 +166,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       "Content-Type": "application/json",
       "Authorization": "Bearer " + (apiToken==null?'':apiToken)
     };
-    http.Response response = await http.get(APPURL + uri, headers: header);
+    http.Response response = await http.get((useTest?TEST_URL:APP_URL) + uri, headers: header);
     if (response.statusCode<300 && response.statusCode>=200) {
       if(useCache) toCache(uri: uri, response: response);
       return response;
@@ -207,9 +207,9 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
     if(body!=null){
 
       String bodyEncoded = json.encode(body);
-      response = await http.post(APPURL + uri, headers: header, body: bodyEncoded);
+      response = await http.post((useTest?TEST_URL:APP_URL) + uri, headers: header, body: bodyEncoded);
     }else{
-      response = await http.post(APPURL + uri, headers: header);
+      response = await http.post((useTest?TEST_URL:APP_URL) + uri, headers: header);
     }
 
     if (response.statusCode<300 && response.statusCode>=200) {
@@ -249,9 +249,9 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
     http.Response response;
     if(body!=null){
       String bodyEncoded = json.encode(body);
-      response = await http.put(APPURL + uri, headers: header, body: bodyEncoded);
+      response = await http.put((useTest?TEST_URL:APP_URL) + uri, headers: header, body: bodyEncoded);
     }else{
-      response = await http.put(APPURL + uri, headers: header);
+      response = await http.put((useTest?TEST_URL:APP_URL) + uri, headers: header);
     }
 
     if (response.statusCode<300 && response.statusCode>=200) {
@@ -288,7 +288,7 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
       "Content-Type": "application/json",
       "Authorization": "Bearer " + apiToken
     };
-    http.Response response = await http.delete(APPURL + uri, headers: header);
+    http.Response response = await http.delete((useTest?TEST_URL:APP_URL) + uri, headers: header);
 
     if (response.statusCode<300 && response.statusCode>=200) {
       return response;

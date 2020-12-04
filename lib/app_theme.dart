@@ -127,7 +127,7 @@ class AppTheme {
             onPrimary: gradientColor, //nem hasznalom
             //history icon
             onSecondary: fontOnSecondaryColor, //szovegek szine
-            onBackground: Color.fromARGB(255, 25, 25, 25), //nem hasznalom
+            onBackground: Color.fromARGB(255, 50, 50, 50), //nem hasznalom
             //box decoration
             surface: Colors.grey[400],
             //history date

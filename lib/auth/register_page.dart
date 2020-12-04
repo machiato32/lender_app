@@ -294,7 +294,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
       };
 
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post(APPURL + '/register',
+      http.Response response = await http.post((useTest?TEST_URL:APP_URL) + '/register',
           headers: header, body: bodyEncoded);
       if (response.statusCode == 201) {
         Map<String, dynamic> decodedResponse = jsonDecode(response.body);

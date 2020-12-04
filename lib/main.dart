@@ -458,182 +458,185 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       drawer: Drawer(
         elevation: 16,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  DrawerHeader(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Image(
-                            image: AssetImage('assets/dodo_color.png'),
-                          ),
-                        ),
-                        Text(
-                          'LENDER',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              .copyWith(letterSpacing: 2.5),
-                        ),
-                        Text(
-                          'hi'.tr()+' '+currentUsername+'!',
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FutureBuilder(
-                    future: _groups,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              title: Text('groups'.tr(),
-                                  style: Theme.of(context).textTheme.bodyText1),
-                              leading: Icon(Icons.group,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              children: _generateListTiles(snapshot.data),
+        child: Container(
+          color: Color.fromARGB(255, 50, 50, 50),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    DrawerHeader(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: Image(
+                              image: AssetImage('assets/dodo_color.png'),
                             ),
-                          );
-                        } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
+                          ),
+                          Text(
+                            'LENDER',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                .copyWith(letterSpacing: 2.5),
+                          ),
+                          Text(
+                            'hi'.tr()+' '+currentUsername+'!',
+                            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    FutureBuilder(
+                      future: _groups,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                title: Text('groups'.tr(),
+                                    style: Theme.of(context).textTheme.bodyText1),
+                                leading: Icon(Icons.group,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color),
+                                children: _generateListTiles(snapshot.data),
                               ),
-                              onTap: () {
-                                setState(() {
-                                  _groups = null;
-                                  _groups = _getGroups();
+                            );
+                          } else {
+                            return InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(32.0),
+                                  child: Text(snapshot.error.toString()),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    _groups = null;
+                                    _groups = _getGroups();
+                                  });
                                 });
-                              });
+                          }
                         }
-                      }
-                      return LinearProgressIndicator();
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.group_add,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                        return LinearProgressIndicator();
+                      },
                     ),
-                    title: Text(
-                      'join_group'.tr(),
-                      style: Theme.of(context).textTheme.bodyText1,
+                    ListTile(
+                      leading: Icon(
+                        Icons.group_add,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
+                      title: Text(
+                        'join_group'.tr(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => JoinGroup()));
+                      },
                     ),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => JoinGroup()));
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.create,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ListTile(
+                      leading: Icon(
+                        Icons.create,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
+                      title: Text(
+                        'create_group'.tr(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateGroup()));
+                      },
                     ),
-                    title: Text(
-                      'create_group'.tr(),
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateGroup()));
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            FutureBuilder(
-              future: _getSumBalance(),
-              builder: (context, snapshot){
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    return Text(
-                        'Σ: '+snapshot.data.toString(),
-                        style: Theme.of(context).textTheme.bodyText1
-                    );
-                  }
-                }
-                return Text('Σ: ...',
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 16
-                  ),
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: DescribedFeatureOverlay(
-                tapTarget: Icon(Icons.settings, color: Colors.black),
-                featureId: 'settings',
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                overflowMode: OverflowMode.extendBackground,
-                allowShowingDuplicate: true,
-                contentLocation: ContentLocation.above,
-                title: Text('discovery_settings_title'.tr()),
-                description: Text('discovery_settings_description'.tr()),
-                child: Icon(
-                  Icons.settings,
-                  color: Theme.of(context).textTheme.bodyText1.color,
+                  ],
                 ),
               ),
-              title: Text(
-                'settings'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
+
+              FutureBuilder(
+                future: _getSumBalance(),
+                builder: (context, snapshot){
+                  if(snapshot.connectionState==ConnectionState.done){
+                    if(snapshot.hasData){
+                      return Text(
+                          'Σ: '+snapshot.data.toString(),
+                          style: Theme.of(context).textTheme.bodyText1
+                      );
+                    }
+                  }
+                  return Text('Σ: ...',
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 16
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Settings()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.exit_to_app,
-                color: Theme.of(context).textTheme.bodyText1.color,
+              Divider(),
+              ListTile(
+                leading: DescribedFeatureOverlay(
+                  tapTarget: Icon(Icons.settings, color: Colors.black),
+                  featureId: 'settings',
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  overflowMode: OverflowMode.extendBackground,
+                  allowShowingDuplicate: true,
+                  contentLocation: ContentLocation.above,
+                  title: Text('discovery_settings_title'.tr()),
+                  description: Text('discovery_settings_description'.tr()),
+                  child: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                ),
+                title: Text(
+                  'settings'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Settings()));
+                },
               ),
-              title: Text(
-                'logout'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
+              ListTile(
+                leading: Icon(
+                  Icons.exit_to_app,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
+                title: Text(
+                  'logout'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                onTap: () {
+                  _logout();
+                  clearCache();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginOrRegisterPage()),
+                          (r) => false);
+                },
               ),
-              onTap: () {
-                _logout();
-                clearCache();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginOrRegisterPage()),
-                        (r) => false);
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.bug_report,
-                color: Colors.red,
+              Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.bug_report,
+                  color: Colors.red,
+                ),
+                title: Text(
+                  'report_a_bug'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+                },
               ),
-              title: Text(
-                'report_a_bug'.tr(),
-                style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: Visibility(
