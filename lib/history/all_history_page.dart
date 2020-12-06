@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -113,12 +114,27 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
-                    return ListView(
-                        controller: _transactionScrollController,
-                        key: PageStorageKey('transactionList'),
-                        padding: EdgeInsets.all(10),
-                        shrinkWrap: true,
-                        children: _generateTransactions(snapshot.data));
+                    return Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.purple,
+                              Colors.blue,
+                              Colors.green,
+                              Colors.yellow,
+                              Colors.red
+                            ],
+                          ),
+                          border: Border.all(color: Colors.white, width: 10)
+                      ),
+                      child: ListView(
+                          controller: _transactionScrollController,
+                          key: PageStorageKey('transactionList'),
+                          shrinkWrap: true,
+                          children: _generateTransactions(snapshot.data)),
+                    );
                   } else {
                     return InkWell(
                         child: Padding(

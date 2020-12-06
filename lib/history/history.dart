@@ -145,8 +145,23 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                children: _generateTransactions(snapshot.data),
+                              Container(
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.purple,
+                                        Colors.blue,
+                                        Colors.green,
+                                        Colors.yellow,
+                                        Colors.red
+                                      ],
+                                    )
+                                ),
+                                child: Column(
+                                  children: _generateTransactions(snapshot.data),
+                                ),
                               ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
