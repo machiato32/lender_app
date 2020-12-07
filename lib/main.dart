@@ -459,7 +459,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       drawer: Drawer(
         elevation: 16,
         child: Container(
-          color: Color.fromARGB(255, 50, 50, 50),
+          color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
           child: Column(
             children: [
               Expanded(
