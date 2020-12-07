@@ -111,117 +111,120 @@ class _TransactionEntryState extends State<TransactionEntry> {
           .toString();
     }
 
-    /* Set style color */
-    if (bought) {
-      style = Theme.of(context).textTheme.button;
-      dateColor = Theme.of(context).textTheme.button.color;
-      boxDecoration = BoxDecoration(
-        // color: (Theme.of(context).brightness == Brightness.dark)
-        //     ? Colors.transparent
-        //     : Theme.of(context).colorScheme.secondary,
-        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
-        // border: Border.all(
-        //     color: (Theme.of(context).brightness == Brightness.dark)
-        //         ? Theme.of(context).colorScheme.secondary
-        //         : Colors.transparent,
-        //     width: 1.5),
-        borderRadius: BorderRadius.circular(15),
-      );
-    } else {
-      style = Theme.of(context).textTheme.bodyText1;
-      dateColor = Theme.of(context).colorScheme.surface;
-      boxDecoration = BoxDecoration();
-    }
+    style = bought ? Theme.of(context).textTheme.button : Theme.of(context).textTheme.bodyText1;
+    dateColor = bought ? Theme.of(context).textTheme.button.color : Theme.of(context).colorScheme.surface;
+    boxDecoration = BoxDecoration(color: (bought ? Colors.white : Colors.transparent), borderRadius: BorderRadius.circular(15));
 
-    return Container(
-      height: 80,
-      width: MediaQuery.of(context).size.width,
-      decoration: boxDecoration,
-      margin: EdgeInsets.only(bottom: 4, left: 4, right: 4),
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: () async {
-            showModalBottomSheetCustom(
-                context: context,
-                backgroundColor: Theme.of(context).cardTheme.color,
-                builder: (context) => SingleChildScrollView(
-                    child: TransactionAllInfo(widget.data))).then((val) {
-              if (val == 'deleted') widget.callback();
-            });
-          },
-          borderRadius: BorderRadius.circular(15),
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Flex(
-              direction: Axis.horizontal,
-              children: <Widget>[
-                Flexible(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: Row(
-                              children: <Widget>[
-                                icon,
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Flexible(
-                                          child: Text(
-                                        note,
-                                        style: style.copyWith(fontSize: 21),
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                      Flexible(
-                                          child: Text(
-                                        names,
-                                        style: TextStyle(
-                                            color: dateColor, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Text(
-                                amount,
-                                style: style,
-                              ),
-                              Visibility(
-                                  visible: received && bought,
-                                  child: Text(
-                                    selfAmount,
-                                    style: style,
-                                  )),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
-              ],
+    return Column(
+      children: [
+        Stack(
+          children: <Widget>[
+            ColorFiltered(
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcOut),
+              child: Container(
+                height: 80,
+                width: MediaQuery.of(context).size.width,
+                decoration: boxDecoration,
+              )
             ),
-          ),
+            Container(
+              color: Colors.transparent,
+              height: 80,
+              width: MediaQuery.of(context).size.width,
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  onTap: () async {
+                    showModalBottomSheetCustom(
+                        context: context,
+                        backgroundColor: Theme.of(context).cardTheme.color,
+                        builder: (context) => SingleChildScrollView(
+                            child: TransactionAllInfo(widget.data))).then((val) {
+                      if (val == 'deleted') widget.callback();
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(15),
+                  child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                              Flexible(
+                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Row(
+                                      children: <Widget>[
+                                        icon,
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Flexible(
+                                                  child: Text(
+                                                note,
+                                                style: style.copyWith(fontSize: 21),
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
+                                              Flexible(
+                                                  child: Text(
+                                                names,
+                                                style: TextStyle(
+                                                    color: dateColor, fontSize: 15),
+                                                overflow: TextOverflow.ellipsis,
+                                              ))
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                        amount,
+                                        style: style,
+                                      ),
+                                      Visibility(
+                                          visible: received && bought,
+                                          child: Text(
+                                            selfAmount,
+                                            style: style,
+                                          )),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          ]
         ),
-      ),
+        Container(
+          height: 5,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+        )
+      ],
     );
   }
 }
