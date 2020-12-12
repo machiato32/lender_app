@@ -14,6 +14,9 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
 import '../app_theme.dart';
+import 'package:csocsort_szamla/currencies.dart';
+
+import '../http_handler.dart';
 
 class RegisterRoute extends StatefulWidget {
   @override
@@ -28,6 +31,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
   TextEditingController _passwordReminderController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String _defaultValue = "CML";
 
 
   @override
@@ -209,6 +214,42 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 SizedBox(
                   height: 30,
                 ),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      'your_currency'.tr(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Flexible(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButton(
+                          isExpanded: true,
+                          onChanged: (value){
+                            setState(() {
+                              _defaultValue=value;
+                            });
+                          },
+                          value: _defaultValue,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          items: enumerateCurrencies().map((currency) => DropdownMenuItem(
+                            child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
+                            value: currency.split(';')[0].trim(),
+                            onTap: (){
+
+                            },
+                          )).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
               ],
             ),
           ),
@@ -224,7 +265,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     barrierDismissible: false,
                     context: context,
                     child: FutureSuccessDialog(
-                      future: _register(username, password, passwordReminder),
+                      future: _register(username, password, passwordReminder, _defaultValue),
                       dataTrueText: 'registration_scf',
                       onDataTrue: () {
                         Navigator.pushAndRemoveUntil(
@@ -278,12 +319,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
   }
 
   Future<bool> _register(
-      String username, String password, String reminder) async {
+      String username, String password, String reminder, String currency) async {
     try {
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
       Map<String, String> body = {
         "username": username,
-        "default_currency": "HUF",
+        "default_currency": currency,
         "password": password,
         "password_confirmation": password,
         "password_reminder": reminder,
@@ -317,7 +358,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
     } on SocketException {
       throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
-      throw _;
+      throw errorHandler(_);
     }
   }
 }

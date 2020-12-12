@@ -11,6 +11,7 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'http_handler.dart';
 import 'app_theme.dart';
 import 'gradient_button.dart';
+import 'currencies.dart';
 
 class Balances extends StatefulWidget {
   final Function callback;
@@ -41,7 +42,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount*1.0, 'Auto', payment.takerId)){
+      if(await _postPayment(payment.amount*1.0, 'auto_payment'.tr(), payment.takerId)){
         continue;
       }
     }
@@ -61,7 +62,7 @@ class _BalancesState extends State<Balances> {
       for (var member in decoded['data']['members']) {
         members.add(Member(
             nickname: member['nickname'],
-            balance: (member['balance'] * 1.0).round(),
+            balance: (member['balance'] * 1.0),
             username: member['username'],
             memberId: member['user_id']
           )
@@ -144,16 +145,20 @@ class _BalancesState extends State<Balances> {
                                                 height: 10,
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment: payments.length>0?MainAxisAlignment.spaceAround:MainAxisAlignment.center,
                                                 children: [
                                                   GradientButton(
                                                     onPressed: (){
                                                       Navigator.pop(context);
                                                     },
-                                                    // color: Theme.of(context).colorScheme.primary,
                                                     child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
                                                   ),
                                                   Visibility(
+                                                    maintainSize: false,
+                                                    maintainState: false,
+                                                    maintainAnimation: false,
+                                                    maintainSemantics: false,
+                                                    replacement: SizedBox(height: 0,),
                                                     visible: payments.length>0,
                                                     child: GradientButton(
                                                       onPressed: () async {
@@ -229,7 +234,7 @@ class _BalancesState extends State<Balances> {
             var style = Theme.of(context).textTheme.button;
             var dateColor = Theme.of(context).textTheme.button.color;
             var boxDecoration = BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+              gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
               borderRadius: BorderRadius.circular(15),
             );
             var amount = payment.amount.toString();
@@ -239,7 +244,7 @@ class _BalancesState extends State<Balances> {
               margin: EdgeInsets.only(bottom: 4),
               decoration: boxDecoration,
               child: Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(10),
                 child: Flex(
                   direction: Axis.horizontal,
                   children: <Widget>[
@@ -331,7 +336,7 @@ class _BalancesState extends State<Balances> {
                       style: style,
                     ),
                     Text(
-                      member.balance.toString(),
+                      member.balance.money(currentGroupCurrency),
                       style: style,
                     )
                   ],
@@ -354,7 +359,7 @@ class _BalancesState extends State<Balances> {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   Text(
-                    member.balance.toString(),
+                    member.balance.money(currentGroupCurrency),
                     style: Theme.of(context).textTheme.bodyText1,
                   )
                 ],

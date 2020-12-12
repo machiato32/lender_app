@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/currencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,7 @@ import 'main/report_a_bug_page.dart';
 import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
 import 'app_theme.dart';
+import 'currencies.dart';
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -67,6 +69,7 @@ void main() async {
   if (preferences.containsKey('current_group_name')) {
     currentGroupName = preferences.getString('current_group_name');
     currentGroupId = preferences.getInt('current_group_id');
+    currentGroupCurrency = preferences.getString('current_group_currency');
   }
   if(preferences.containsKey('users_groups')){
     usersGroups=preferences.getStringList('users_groups');
@@ -264,7 +267,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     List<Group> groups = [];
     for (var group in decoded['data']) {
       groups.add(Group(
-          groupName: group['group_name'], groupId: group['group_id']));
+          groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
     }
     return groups;
   }
@@ -279,11 +282,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return currentGroupName;
   }
 
-  Future<double> _getSumBalance() async {
+  Future<dynamic> _getSumBalance() async {
     try{
       http.Response response = await httpGet(context: context, uri: '/user');
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      return decoded['data']['total_balance']*1.0;
+      return decoded['data'];
     }catch(_){
       throw _;
     }
@@ -295,12 +298,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       currentUserId = null;
       currentGroupId = null;
       currentGroupName = null;
+      currentGroupCurrency=null;
       apiToken = null;
+      usersGroups=null;
+      usersGroupIds=null;
       SharedPreferences.getInstance().then((_prefs) {
         _prefs.remove('current_user_id');
         _prefs.remove('current_group_name');
         _prefs.remove('current_group_id');
         _prefs.remove('api_token');
+        _prefs.remove('current_group_currency');
+        _prefs.remove('users_groups');
+        _prefs.remove('users_group_ids');
       });
     } catch (_) {
       throw _;
@@ -322,9 +331,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         onTap: () {
           currentGroupName = group.groupName;
           currentGroupId = group.groupId;
+          currentGroupCurrency = group.groupCurrency;
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', group.groupName);
             _prefs.setInt('current_group_id', group.groupId);
+            _prefs.setString('current_group_currency', group.groupCurrency);
           });
           setState(() {
             _selectedIndex = 0;
@@ -444,14 +455,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               title: Text('shopping_list'.tr())
           ),
-          BottomNavigationBarItem(
+          BottomNavigationBarItem( //TODO: change user currency, group currency
               icon: DescribedFeatureOverlay(
                   featureId: 'group_settings',
-                  tapTarget: Icon(Icons.settings, color: Colors.black),
+                  tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
                   title: Text('discover_group_settings_title'.tr()),
                   description: Text('discover_group_settings_description'.tr()),
                   overflowMode: OverflowMode.extendBackground,
-                  child: Icon(Icons.settings)),
+                  child: Icon(Icons.supervisor_account)),
               title: Text('group'.tr())
           )
         ],
@@ -563,8 +574,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 builder: (context, snapshot){
                   if(snapshot.connectionState==ConnectionState.done){
                     if(snapshot.hasData){
+                      String currency = snapshot.data['default_currency'];
+                      double balance = snapshot.data['total_balance'];
                       return Text(
-                          'Σ: '+snapshot.data.toString(),
+                          'Σ: '+ balance.printMoney(currency),
                           style: Theme.of(context).textTheme.bodyText1
                       );
                     }

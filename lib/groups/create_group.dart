@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 
 import '../app_theme.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class CreateGroup extends StatefulWidget {
   @override
@@ -24,12 +26,13 @@ class _CreateGroupState extends State<CreateGroup> {
           currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
+  String _defaultValue = "CML";
 
-  Future<bool> _createGroup(String groupName, String nickname) async {
+  Future<bool> _createGroup(String groupName, String nickname, String currency) async {
     try {
       Map<String, dynamic> body = {
         'group_name': groupName,
-        'currency': 'HUF',
+        'currency': currency,
         'member_nickname': nickname
       };
       http.Response response =
@@ -162,35 +165,74 @@ class _CreateGroupState extends State<CreateGroup> {
                 ],
               ),
               SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    'currency_of_group'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Flexible(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton(
+                        isExpanded: true,
+                        onChanged: (value){
+                          setState(() {
+                            _defaultValue=value;
+                          });
+                        },
+                        value: _defaultValue,
+                        style: Theme.of(context).textTheme.bodyText1,
+                        items: enumerateCurrencies().map((currency) => DropdownMenuItem(
+                          child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
+                          value: currency.split(';')[0].trim(),
+                          onTap: (){
+
+                          },
+                        )).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
                 height: 10,
               ),
-              Center(
-                child: RaisedButton(
-                  child: Text('create_group'.tr(),
-                      style: Theme.of(context).textTheme.button),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      String token = _groupName.text;
-                      String nickname = _nicknameController.text;
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
-                            future: _createGroup(token, nickname),
-                            onDataTrue: () async {
-                              await clearCache();
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainPage()),
-                                  (r) => false);
-                            },
-                            dataTrueText: 'creation_scf',
-                          ));
-                    }
-                  },
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                    child: Text('create_group'.tr(),
+                        style: Theme.of(context).textTheme.button),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        String token = _groupName.text;
+                        String nickname = _nicknameController.text;
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child: FutureSuccessDialog(
+                              future: _createGroup(token, nickname, _defaultValue),
+                              onDataTrue: () async {
+                                await clearCache();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()),
+                                    (r) => false);
+                              },
+                              dataTrueText: 'creation_scf',
+                            ));
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),

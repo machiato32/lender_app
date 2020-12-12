@@ -208,5 +208,8 @@
     "really_kick": "Hogyha kirúgod a tagot, akkor a jelenlegi egyenlege hozzáadódik a te egyenlegedhez. Biztosan kirúgod?",
     "really_leave": "Hogyha kilépsz, a jelenlegi egyenleged szét lesz osztva a csoport többi tagja között. Biztosan ki szeretnél lépni?",
 
-    "auto_payment": "Automatikus fizetés"
+    "auto_payment": "Automatikus fizetés",
+
+    "your_currency": "your_currency",
+    "currency_of_group": "currency_of_group"
 }

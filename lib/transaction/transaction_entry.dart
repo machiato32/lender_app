@@ -7,13 +7,14 @@ import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class TransactionData {
   DateTime updatedAt;
   String buyerUsername, buyerNickname;
   int buyerId;
   List<Member> receivers;
-  int totalAmount;
+  double totalAmount;
   int transactionId;
   String name;
 
@@ -37,7 +38,7 @@ class TransactionData {
         buyerUsername: json['buyer_username'],
         buyerId: json['buyer_id'],
         buyerNickname: json['buyer_nickname'],
-        totalAmount: (json['total_amount'] * 1.0).round(),
+        totalAmount: (json['total_amount'] * 1.0),
         receivers: json['receivers']
             .map<Member>((element) => Member.fromJson(element))
             .toList());
@@ -82,11 +83,11 @@ class _TransactionEntryState extends State<TransactionEntry> {
     if (bought && received) {
       icon = Icon(Icons.swap_horiz,
           color: Theme.of(context).textTheme.button.color);
-      amount = widget.data.totalAmount.toString();
+      amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
       selfAmount = (-widget.data.receivers
               .firstWhere((member) => member.memberId == currentUserId)
               .balance)
-          .toString();
+          .printMoney(currentGroupCurrency);
       if (widget.data.receivers.length > 1) {
         names = widget.data.receivers.join(', ');
       } else {
@@ -95,7 +96,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
     } else if (bought) {
       icon = Icon(Icons.call_made,
           color: Theme.of(context).textTheme.button.color);
-      amount = widget.data.totalAmount.toString();
+      amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
       if (widget.data.receivers.length > 1) {
         names = widget.data.receivers.join(', ');
       } else {
@@ -108,7 +109,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       amount = (-widget.data.receivers
               .firstWhere((element) => element.memberId == currentUserId)
               .balance)
-          .toString();
+          .printMoney(currentGroupCurrency);
     }
 
     /* Set style color */
@@ -116,15 +117,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
       style = Theme.of(context).textTheme.button;
       dateColor = Theme.of(context).textTheme.button.color;
       boxDecoration = BoxDecoration(
-        // color: (Theme.of(context).brightness == Brightness.dark)
-        //     ? Colors.transparent
-        //     : Theme.of(context).colorScheme.secondary,
         gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
-        // border: Border.all(
-        //     color: (Theme.of(context).brightness == Brightness.dark)
-        //         ? Theme.of(context).colorScheme.secondary
-        //         : Colors.transparent,
-        //     width: 1.5),
         borderRadius: BorderRadius.circular(15),
       );
     } else {

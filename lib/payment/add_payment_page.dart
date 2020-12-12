@@ -12,11 +12,12 @@ import 'package:csocsort_szamla/http_handler.dart';
 
 import '../app_theme.dart';
 import '../gradient_button.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class SavedPayment{
   String note;
   int payerId, takerId;
-  int amount;
+  double amount;
   int paymentId;
   SavedPayment({this.note, this.payerId, this.takerId, this.amount, this.paymentId});
 }
@@ -48,7 +49,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         if(member['user_id']!=currentUserId){
           members.add(Member(
               nickname: member['nickname'],
-              balance: (member['balance'] * 1.0).round(),
+              balance: (member['balance'] * 1.0),
               memberId: member['user_id']
           )
           );
@@ -264,6 +265,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           controller: _amountController,
                           decoration: InputDecoration(
                             labelText: 'amount'.tr(),
+                            hintText: getSymbol(currentGroupCurrency),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                   color: Theme.of(context).colorScheme.onSurface),

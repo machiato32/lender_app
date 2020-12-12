@@ -10,6 +10,7 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class PaymentAllInfo extends StatefulWidget {
   final PaymentData data;
@@ -95,7 +96,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                   color: Theme.of(context).colorScheme.primary),
               Text(' - '),
               Flexible(
-                  child: Text(widget.data.amount.toString(),
+                  child: Text(widget.data.amount.printMoney(currentGroupCurrency),
                       style: Theme.of(context).textTheme.bodyText1)),
             ],
           ),
@@ -136,52 +137,6 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                               child: ConfirmChoiceDialog(
                                 choice: 'want_edit',
                               ),
-                              // Dialog(
-                              //   shape: RoundedRectangleBorder(
-                              //       borderRadius: BorderRadius.circular(5)),
-                              //   backgroundColor: Colors.transparent,
-                              //   elevation: 0,
-                              //   child: Container(
-                              //     padding: EdgeInsets.all(8),
-                              //     child: Column(
-                              //       crossAxisAlignment: CrossAxisAlignment.center,
-                              //       mainAxisSize: MainAxisSize.min,
-                              //       children: <Widget>[
-                              //         Text('want_edit'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
-                              //         SizedBox(height: 15,),
-                              //         Row(
-                              //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              //           children: <Widget>[
-                              //             RaisedButton(
-                              //                 color: Theme.of(context).colorScheme.secondary,
-                              //                 onPressed: (){
-                              //                   Navigator.pop(context);
-                              //                   Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                              //                       AddPaymentRoute(
-                              //                         payment: SavedPayment(
-                              //                           amount: widget.data.amount,
-                              //                           note: widget.data.note,
-                              //                           payerId: widget.data.payerId,
-                              //                           takerId: widget.data.takerId,
-                              //                           paymentId: widget.data.paymentId
-                              //                         ),
-                              //                       )
-                              //                     )
-                              //                   ).then((value) => Navigator.pop(context, 'deleted'));
-                              //                 },
-                              //                 child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
-                              //             ),
-                              //             RaisedButton(
-                              //                 color: Theme.of(context).colorScheme.secondary,
-                              //                 onPressed: (){ Navigator.pop(context);},
-                              //                 child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
-                              //             )
-                              //           ],
-                              //         )
-                              //       ],
-                              //     ),
-                              //   ),
-                              // )
                           ).then((value){
                             if(value!=null && value){
                               Navigator.push(context, MaterialPageRoute(builder: (context) =>

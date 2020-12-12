@@ -209,6 +209,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
+                    future: _login(username, password),
                     dataTrueText: 'login_scf',
                     dataFalse: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -246,7 +247,6 @@ class _LoginRouteState extends State<LoginRoute> {
                         )
                       ],
                     ),
-                    future: _login(username, password),
                     onDataTrue: () {
                       Navigator.pushAndRemoveUntil(
                           context,
@@ -270,7 +270,7 @@ class _LoginRouteState extends State<LoginRoute> {
       List<Group> groups = [];
       for (var group in decoded['data']) {
         groups.add(Group(
-            groupName: group['group_name'], groupId: group['group_id']));
+            groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
       }
       if (groups.length > 0) {
         usersGroups=groups.map<String>((group) => group.groupName).toList();
@@ -283,21 +283,27 @@ class _LoginRouteState extends State<LoginRoute> {
               .firstWhere((group) => group.groupId == lastActiveGroup)
               .groupName;
           currentGroupId = lastActiveGroup;
+          currentGroupCurrency = groups
+              .firstWhere((group) => group.groupId == lastActiveGroup)
+              .groupCurrency;
           SharedPreferences.getInstance().then((_prefs) {
             _prefs.setString('current_group_name', currentGroupName);
             _prefs.setInt('current_group_id', currentGroupId);
             _prefs.setStringList('users_groups', usersGroups);
             _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+            _prefs.setString('current_group_currency', currentGroupCurrency);
           });
           return true;
         }
         currentGroupName = groups[0].groupName;
         currentGroupId = groups[0].groupId;
+        currentGroupCurrency = groups[0].groupCurrency;
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_group_name', currentGroupName);
           _prefs.setInt('current_group_id', currentGroupId);
           _prefs.setStringList('users_groups', usersGroups);
           _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+          _prefs.setString('current_group_currency', currentGroupCurrency);
         });
         return true;
       }
@@ -340,7 +346,7 @@ class _LoginRouteState extends State<LoginRoute> {
     } on SocketException {
       throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
-      throw _;
+      throw errorHandler(_);
     }
   }
 }

@@ -1,5 +1,5 @@
 class Member{
-  int balance;
+  double balance;
   String nickname;
   String username;
   int memberId;
@@ -10,7 +10,7 @@ class Member{
       username: json['username'],
       memberId: json['user_id'],
       nickname: json['nickname'],
-      balance: (json['balance']*1.0).round(),
+      balance: json['balance']*1.0,
       isAdmin: json['is_admin']==1
     );
   }
@@ -28,7 +28,8 @@ class Member{
 
 }
 class Group{
+  String groupCurrency;
   String groupName;
   int groupId;
-  Group({this.groupName, this.groupId});
+  Group({this.groupName, this.groupId, this.groupCurrency});
 }

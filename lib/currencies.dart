@@ -1,0 +1,202 @@
+extension Money on double{
+  String money(String code){
+    return currencies[code]["subunit"]==1?
+      this.toStringAsFixed(2)
+      :
+      this.toStringAsFixed(0);
+  }
+
+  String printMoney(String code){
+    return currencies[code]["before"]==1?
+      this<0?
+        "-"+currencies[code]["symbol"]+""+this.abs().money(code)
+        :
+        currencies[code]["symbol"]+""+this.money(code)
+      :
+      this.money(code)+" "+currencies[code]["symbol"];
+  }
+}
+
+String getSymbol(String code){
+  return currencies[code]["symbol"];
+}
+
+List<String> enumerateCurrencies(){
+  return currencies.keys.map((key) => key+";"+currencies[key]["symbol"]).toList();
+}
+
+
+
+Map<String, Map<String, dynamic>> currencies =
+{
+  "CAD": {
+    "subunit": 1,
+    "symbol": "C\$",
+    "before": 1
+  },
+  "HKD": {
+    "subunit": 1,
+    "symbol": "HK\$",
+    "before": 1
+  },
+  "ISK": {
+    "subunit": 0,
+    "symbol": "Íkr.",
+    "before": 0
+  },
+  "PHP": {
+    "subunit": 0,
+    "symbol": "₱",
+    "before": 1
+  },
+  "DKK": {
+    "subunit": 1,
+    "symbol": "Kr.",
+    "before": 0
+  },
+  "HUF": {
+    "subunit": 0,
+    "symbol": "Ft",
+    "before": 0
+  },
+  "CZK": {
+    "subunit": 0,
+    "symbol": "Kč",
+    "before": 0
+  },
+  "AUD": {
+    "subunit": 1,
+    "symbol": "A\$",
+    "before": 1
+  },
+  "RON": {
+    "subunit": 1,
+    "symbol": "lei",
+    "before": 0
+  },
+  "SEK": {
+    "subunit": 1,
+    "symbol": "kr",
+    "before": 0
+  },
+  "IDR": {
+    "subunit": 0,
+    "symbol": "Rp",
+    "before": 1
+  },
+  "INR": {
+    "subunit": 1,
+    "symbol": "₹",
+    "before": 1
+  },
+  "BRL": {
+    "subunit": 1,
+    "symbol": "R\$",
+    "before": 1
+  },
+  "RUB": {
+    "subunit": 1,
+    "symbol": "₽",
+    "before": 0
+  },
+  "HRK": {
+    "subunit": 1,
+    "symbol": "kn",
+    "before": 0
+  },
+  "JPY": {
+    "subunit": 0,
+    "symbol": "JP¥",
+    "before": 1
+  },
+  "THB": {
+    "subunit": 0,
+    "symbol": "฿ ",
+    "before": 1
+  },
+  "CHF": {
+    "subunit": 1,
+    "symbol": "CHf",
+    "before": 0
+  },
+  "SGD": {
+    "subunit": 1,
+    "symbol": "S\$",
+    "before": 1
+  },
+  "PLN": {
+    "subunit": 1,
+    "symbol": "zł",
+    "before": 0
+  },
+  "BGN": {
+    "subunit": 1,
+    "symbol": "Лв",
+    "before": 0
+  },
+  "TRY": {
+    "subunit": 1,
+    "symbol": "₺",
+    "before": 1
+  },
+  "CNY": {
+    "subunit": 1,
+    "symbol": "¥",
+    "before": 1
+  },
+  "NOK": {
+    "subunit": 1,
+    "symbol": "kr",
+    "before": 0
+  },
+  "NZD": {
+    "subunit": 1,
+    "symbol": "\$",
+    "before": 1
+  },
+  "ZAR": {
+    "subunit": 1,
+    "symbol": "R",
+    "before": 1
+  },
+  "USD": {
+    "subunit": 1,
+    "symbol": "\$",
+    "before": 1
+  },
+  "MXN": {
+    "subunit": 1,
+    "symbol": "\$",
+    "before": 1
+  },
+  "ILS": {
+    "subunit": 1,
+    "symbol": "₪",
+    "before": 1
+  },
+  "GBP": {
+    "subunit": 1,
+    "symbol": "£",
+    "before": 1
+  },
+  "KRW": {
+    "subunit": 0,
+    "symbol": "₩",
+    "before": 1
+  },
+  "MYR": {
+    "subunit": 1,
+    "symbol": "RM",
+    "before": 1
+  },
+  "EUR": {
+    "subunit": 1,
+    "symbol": "€",
+    "before": 1
+  },
+  "CML": {
+    "subunit": 0,
+    "symbol": "🐪",
+    "before": 0
+  }
+};

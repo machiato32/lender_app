@@ -6,10 +6,11 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
 import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class PaymentData {
   int paymentId;
-  int amount;
+  double amount;
   DateTime updatedAt;
   String payerUsername, payerNickname, takerUsername, takerNickname, note;
   int payerId, takerId;
@@ -29,7 +30,7 @@ class PaymentData {
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
         paymentId: json['payment_id'],
-        amount: (json['amount'] * 1.0).round(),
+        amount: (json['amount'] * 1.0),
         updatedAt: json['updated_at'] == null
             ? DateTime.now()
             : DateTime.parse(json['updated_at']).toLocal(),
@@ -79,14 +80,14 @@ class _PaymentEntryState extends State<PaymentEntry> {
         borderRadius: BorderRadius.circular(15),
       );
       takerName = widget.data.takerNickname;
-      amount = widget.data.amount.toString();
+      amount = widget.data.amount.printMoney(currentGroupCurrency);
     } else {
       icon = Icon(Icons.call_received,
           color: Theme.of(context).textTheme.bodyText1.color);
       style = Theme.of(context).textTheme.bodyText1;
       dateColor = Theme.of(context).colorScheme.surface;
       takerName = widget.data.payerNickname;
-      amount = (-widget.data.amount).toString();
+      amount = (-widget.data.amount).printMoney(currentGroupCurrency);
       boxDecoration = BoxDecoration();
     }
     return Container(

@@ -7,6 +7,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/app_theme.dart';
 
 class AllHistoryRoute extends StatefulWidget {
   final int startingIndex;
@@ -86,7 +87,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('history'.tr()),
+        title: Text('history'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: AppTheme.gradientFromTheme(Theme.of(context))
+          ),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (_index) {

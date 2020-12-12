@@ -9,6 +9,7 @@ import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/currencies.dart';
 
 class TransactionAllInfo extends StatefulWidget {
   final TransactionData data;
@@ -93,7 +94,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                         color: Theme.of(context).colorScheme.primary),
                     Text(' - '),
                     Flexible(
-                        child: Text(widget.data.totalAmount.toString(),
+                        child: Text(widget.data.totalAmount.printMoney(currentGroupCurrency),
                             style: Theme.of(context).textTheme.bodyText1)),
                   ],
                 ),
