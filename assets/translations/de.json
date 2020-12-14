@@ -199,6 +199,14 @@
     "store": "Laden",
     "store_scf": "Die Benachrichtigung wurde erfolgreich gesendet.",
 
+    "leave_group": "leave_group",
+    "leave_scf": "leave_scf",
+    "balance_at_least_0": "balance_at_least_0",
+    "kick_member": "kick_member",
+    "kick_member_scf": "kick_member_scf",
+    "really_kick": "really_kick",
+    "really_leave": "really_leave",
+
     "auto_payment": "Automatische Zahlung"
 
 }

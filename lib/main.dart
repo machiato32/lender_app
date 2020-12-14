@@ -652,10 +652,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      floatingActionButton: Visibility(
-        visible: _selectedIndex == 0,
-        child: MainPageSpeedDial(callback: this.callback,),
-      ),
+      floatingActionButton: _selectedIndex==2?
+        FloatingActionButton(
+          onPressed: (){},
+          child: Icon(Icons.assessment),
+        )
+        :
+        Visibility(
+          visible: _selectedIndex == 0,
+          child: MainPageSpeedDial(callback: this.callback,),
+        ),
       body: ConnectivityWidget(
         offlineBanner: Container(
             padding: EdgeInsets.all(8),

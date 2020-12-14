@@ -86,6 +86,11 @@ class AppTheme {
             ),
             elevation: 1,
           ),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15)
+            ),
+          ),
           buttonTheme: ButtonThemeData(
               shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
@@ -136,6 +141,12 @@ class AppTheme {
             primaryVariant: thirdGradientColor??Colors.transparent,
             onError: fourthGradientColor??Colors.transparent,
             secondaryVariant: fifthGradientColor??Colors.transparent
+          ),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15)
+            ),
+            backgroundColor: Color.fromARGB(255, 50, 50, 50)
           ),
           cardTheme: CardTheme(
             color: Color.fromARGB(255, 25, 25, 25),

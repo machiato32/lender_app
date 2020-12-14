@@ -134,225 +134,227 @@ class _ShoppingListState extends State<ShoppingList> {
         },
         child: Form(
           key: _formKey,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                        child: Text(
-                      'shopping_list'.tr(),
-                      style: Theme.of(context).textTheme.headline6,
-                    )),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: Text(
-                        'shopping_list_explanation'.tr(),
-                        style: Theme.of(context).textTheme.subtitle2,
-                        textAlign: TextAlign.center,
+          child: Card(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                  child: Column(
+                    children: <Widget>[
+                      Center(
+                          child: Text(
+                        'shopping_list'.tr(),
+                        style: Theme.of(context).textTheme.headline6,
+                      )),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: TextFormField(
-                            validator: (value) {
-                              value=value.trim();
-                              if (value.isEmpty) {
-                                return 'field_empty'.tr();
-                              }
-                              if (value.length < 2) {
-                                return 'minimal_length'.tr(args: ['2']);
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'wish'.tr(),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface),
+                      Center(
+                        child: Text(
+                          'shopping_list_explanation'.tr(),
+                          style: Theme.of(context).textTheme.subtitle2,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: TextFormField(
+                              validator: (value) {
+                                value=value.trim();
+                                if (value.isEmpty) {
+                                  return 'field_empty'.tr();
+                                }
+                                if (value.length < 2) {
+                                  return 'minimal_length'.tr(args: ['2']);
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'wish'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color:
+                                          Theme.of(context).colorScheme.onSurface),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    width: 2),
-                              ),
+                              controller: _addRequestController,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color:
+                                      Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(50)
+                              ],
                             ),
-                            controller: _addRequestController,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color:
-                                    Theme.of(context).textTheme.bodyText1.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(50)
-                            ],
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        GradientButton(
-                          // color: Theme.of(context).colorScheme.secondary,
-                          child: Icon(Icons.add,
-                              color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
-                            if (_formKey.currentState.validate()) {
-                              String name = _addRequestController.text;
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child: FutureSuccessDialog(
-                                    future: _postShoppingRequest(name),
-                                    dataTrueText: 'add_scf',
-                                    onDataTrue: () {
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        _shoppingList = null;
-                                        _shoppingList = _getShoppingList(overwriteCache: true);
-                                        _addRequestController.text = '';
-                                      });
-                                    },
-                                    onDataFalse: () {
-                                      Navigator.pop(context);
-                                      setState(() {});
-                                    },
-                                  ));
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          onPressed: (){
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                TextEditingController controller = TextEditingController();
-                                GlobalKey<FormState> formKey = GlobalKey<FormState>();
-                                return Form(
-                                  key: formKey,
-                                  child: AlertDialog(
-                                    title: Text('where'.tr()),
-                                    content: TextFormField(
-                                      validator: (value){
-                                        value=value.trim();
-                                        if (value.isEmpty) {
-                                          return 'field_empty'.tr();
-                                        }
-                                        return null;
+                          SizedBox(
+                            width: 20,
+                          ),
+                          GradientButton(
+                            // color: Theme.of(context).colorScheme.secondary,
+                            child: Icon(Icons.add,
+                                color: Theme.of(context).colorScheme.onSecondary),
+                            onPressed: () {
+                              FocusScope.of(context).unfocus();
+                              if (_formKey.currentState.validate()) {
+                                String name = _addRequestController.text;
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _postShoppingRequest(name),
+                                      dataTrueText: 'add_scf',
+                                      onDataTrue: () {
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          _shoppingList = null;
+                                          _shoppingList = _getShoppingList(overwriteCache: true);
+                                          _addRequestController.text = '';
+                                        });
                                       },
-                                      decoration: InputDecoration(
-                                        labelText: 'store'.tr(),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color:
-                                              Theme.of(context).colorScheme.onSurface),
+                                      onDataFalse: () {
+                                        Navigator.pop(context);
+                                        setState(() {});
+                                      },
+                                    ));
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            onPressed: (){
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  TextEditingController controller = TextEditingController();
+                                  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                                  return Form(
+                                    key: formKey,
+                                    child: AlertDialog(
+                                      title: Text('where'.tr()),
+                                      content: TextFormField(
+                                        validator: (value){
+                                          value=value.trim();
+                                          if (value.isEmpty) {
+                                            return 'field_empty'.tr();
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: 'store'.tr(),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color:
+                                                Theme.of(context).colorScheme.onSurface),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).colorScheme.primary,
+                                                width: 2),
+                                          ),
                                         ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context).colorScheme.primary,
-                                              width: 2),
-                                        ),
+                                        controller: controller,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color:
+                                            Theme.of(context).textTheme.bodyText1.color),
+                                        cursorColor: Theme.of(context).colorScheme.secondary,
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(20)
+                                        ],
                                       ),
-                                      controller: controller,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color:
-                                          Theme.of(context).textTheme.bodyText1.color),
-                                      cursorColor: Theme.of(context).colorScheme.secondary,
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(20)
+                                      actions: [
+                                        RaisedButton(
+                                          onPressed: (){
+                                            if(formKey.currentState.validate()){
+                                              String store = controller.text;
+                                              showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                child: FutureSuccessDialog(
+                                                  future: _postImShopping(store),
+                                                  dataTrueText: 'store_scf',
+                                                  onDataTrue: () {
+                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);
+                                                  },
+                                                )
+
+                                              );
+
+                                            }
+
+                                          },
+                                          child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                                          color: Theme.of(context).colorScheme.secondary,
+                                        )
                                       ],
                                     ),
-                                    actions: [
-                                      RaisedButton(
-                                        onPressed: (){
-                                          if(formKey.currentState.validate()){
-                                            String store = controller.text;
-                                            showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              child: FutureSuccessDialog(
-                                                future: _postImShopping(store),
-                                                dataTrueText: 'store_scf',
-                                                onDataTrue: () {
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                },
-                                              )
+                                  );
+                                },
+                              );
+                            },
+                            child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                            // color: Theme.of(context).colorScheme.secondary,
 
-                                            );
-
-                                          }
-
-                                        },
-                                        child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: FutureBuilder(
+                    future: _shoppingList,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          if(snapshot.data.length==0){
+                            return ListView(
+                              padding: EdgeInsets.all(15),
+                              children: [
+                                Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                              ],
                             );
-                          },
-                          child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
-                          // color: Theme.of(context).colorScheme.secondary,
-
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: _shoppingList,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasData) {
-                        if(snapshot.data.length==0){
+                          }
                           return ListView(
-                            padding: EdgeInsets.all(15),
-                            children: [
-                              Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                            ],
-                          );
-                        }
-                        return ListView(
-                            padding: EdgeInsets.all(15),
-                            children: _generateShoppingList(snapshot.data));
-                      } else {
-                        return InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Text(snapshot.error.toString()),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                _shoppingList = null;
-                                _shoppingList = _getShoppingList();
+                              padding: EdgeInsets.all(15),
+                              children: _generateShoppingList(snapshot.data));
+                        } else {
+                          return InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Text(snapshot.error.toString()),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _shoppingList = null;
+                                  _shoppingList = _getShoppingList();
+                                });
                               });
-                            });
+                        }
                       }
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
+                      return Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -15,6 +15,7 @@ import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/app_theme.dart';
 import 'package:csocsort_szamla/currencies.dart';
 
+
 Random random = Random();
 
 class SavedTransaction {
@@ -276,7 +277,6 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                         SizedBox(
                           height: 20,
                         ),
-                        Divider(),
                         Center(
                           child: FutureBuilder(
                             future: _members,
@@ -456,7 +456,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                     ),
                   ),
                 ),
-//            Balances()
+                // Balances()
               ],
             ),
           ),

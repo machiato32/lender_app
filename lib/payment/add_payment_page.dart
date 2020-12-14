@@ -314,7 +314,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                         SizedBox(
                           height: 20,
                         ),
-                        Divider(),
                         Center(
                           child: FutureBuilder(
                             future: _members,
