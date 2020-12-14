@@ -328,7 +328,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
         "password": password,
         "password_confirmation": password,
         "password_reminder": reminder,
-        "fcm_token": await _firebaseMessaging.getToken()
+        "fcm_token": await _firebaseMessaging.getToken(),
+        "language":context.locale.languageCode,
       };
       Map<String, String> header = {
         "Content-Type": "application/json",

@@ -33,7 +33,7 @@ dependencies:
   feature_discovery: ^0.12.0+2
   connectivity_widget: 0.1.7
   path_provider: 1.6.22
-  gradient_widgets: 0.5.2
+  get_it: 5.0.3
   flutter:
     sdk: flutter
   flutter_localizations:

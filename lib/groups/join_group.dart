@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -62,12 +63,15 @@ class _JoinGroupState extends State<JoinGroup> {
       http.Response response =
       await httpPost(uri: '/join', context: context, body: body);
 
-      Map<String, dynamic> response2 = jsonDecode(response.body);
-      currentGroupName = response2['data']['group_name'];
-      currentGroupId = response2['data']['group_id'];
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      currentGroupName = decoded['data']['group_name'];
+      currentGroupId = decoded['data']['group_id'];
+      currentGroupCurrency = decoded['data']['currency'];
+
       SharedPreferences.getInstance().then((_prefs) {
         _prefs.setString('current_group_name', currentGroupName);
         _prefs.setInt('current_group_id', currentGroupId);
+        _prefs.setString('current_group_currency', currentGroupCurrency);
       });
 
       return response.statusCode == 200;
@@ -307,35 +311,38 @@ class _JoinGroupState extends State<JoinGroup> {
                       SizedBox(
                         height: 10,
                       ),
-                      Center(
-                        child: RaisedButton(
-                          child: Text('join_group'.tr(),
-                              style: Theme.of(context).textTheme.button),
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              String token = _tokenController.text;
-                              String nickname =
-                                  _nicknameController.text[0].toUpperCase() +
-                                      _nicknameController.text.substring(1);
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child: FutureSuccessDialog(
-                                    future: _joinGroup(token, nickname),
-                                    dataTrueText: 'join_scf',
-                                    onDataTrue: () async {
-                                      await clearCache();
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MainPage()),
-                                              (r) => false);
-                                    },
-                                  ));
-                            }
-                          },
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            child: Text('join_group'.tr(),
+                                style: Theme.of(context).textTheme.button),
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                String token = _tokenController.text;
+                                String nickname =
+                                    _nicknameController.text[0].toUpperCase() +
+                                        _nicknameController.text.substring(1);
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _joinGroup(token, nickname),
+                                      dataTrueText: 'join_scf',
+                                      onDataTrue: () async {
+                                        await clearCache();
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MainPage()),
+                                                (r) => false);
+                                      },
+                                    ));
+                              }
+                            },
+                            // color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -362,7 +369,7 @@ class _JoinGroupState extends State<JoinGroup> {
                         SizedBox(
                           height: 10,
                         ),
-                        RaisedButton(
+                        GradientButton(
                           child: Text('create_group'.tr(),
                               style: Theme.of(context)
                                   .textTheme
@@ -374,7 +381,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 MaterialPageRoute(
                                     builder: (context) => CreateGroup()));
                           },
-                          color: Theme.of(context).colorScheme.secondary,
+                          // color: Theme.of(context).colorScheme.secondary,
                         ),
                       ],
                     ),

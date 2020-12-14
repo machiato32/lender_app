@@ -13,6 +13,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
+import 'package:get_it/get_it.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -31,7 +32,13 @@ import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
 import 'app_theme.dart';
 import 'currencies.dart';
+import 'navigator_service.dart';
 
+final getIt = GetIt.instance;
+
+void setup(){
+  getIt.registerSingleton<NavigationService>(NavigationService());
+}
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -50,6 +57,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setup();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String themeName = '';
   if (!preferences.containsKey('theme')) {
@@ -87,7 +95,8 @@ void main() async {
         child: LenderApp(
           themeName: themeName,
           initURL: initURL,
-        )),
+        )
+    ),
     supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
     path: 'assets/translations',
     fallbackLocale: Locale('en'),
@@ -132,19 +141,21 @@ class _LenderAppState extends State<LenderApp> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 
-  Future<Null> initUniLinks() async {
+  void initUniLinks() {
     _sub = getLinksStream().listen((String link) {
+      _link = link;
+      print(context);
       setState(() {
-        _link = link;
+        getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: _link,)));
       });
     }, onError: (err) {
       log('asd');
     });
   }
 
-  initPlatformState() async {
-    await initUniLinks();
-  }
+  // initPlatformState() async {
+  //   await initUniLinks();
+  // }
 
   Future onSelectNotification(String payload) async {
     //TODO: this
@@ -160,7 +171,7 @@ class _LenderAppState extends State<LenderApp> {
 
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
-    initPlatformState();
+    initUniLinks();
     _link = widget.initURL;
     super.initState();
 
@@ -222,17 +233,18 @@ class _LenderAppState extends State<LenderApp> {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
+            navigatorKey: getIt.get<NavigationService>().navigatorKey,
             home: currentUserId == null
                 ? LoginOrRegisterPage()
                 : (_link != null)
                 ? JoinGroup(
-              inviteURL: _link,
-              fromAuth: (currentGroupId == null) ? true : false,
-            )
+                  inviteURL: _link,
+                  fromAuth: (currentGroupId == null) ? true : false,
+                )
                 : (currentGroupId == null)
                 ? JoinGroup(
-              fromAuth: true,
-            )
+                  fromAuth: true,
+                )
                 : MainPage(),
           ),
         );
@@ -575,7 +587,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   if(snapshot.connectionState==ConnectionState.done){
                     if(snapshot.hasData){
                       String currency = snapshot.data['default_currency'];
-                      double balance = snapshot.data['total_balance'];
+                      double balance = snapshot.data['total_balance']*1.0;
                       return Text(
                           'Σ: '+ balance.printMoney(currency),
                           style: Theme.of(context).textTheme.bodyText1

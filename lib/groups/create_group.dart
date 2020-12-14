@@ -40,9 +40,12 @@ class _CreateGroupState extends State<CreateGroup> {
       Map<String, dynamic> decoded = jsonDecode(response.body);
       currentGroupName = decoded['group_name'];
       currentGroupId = decoded['group_id'];
+      currentGroupCurrency = decoded['currency'];
+
       SharedPreferences.getInstance().then((_prefs) {
         _prefs.setString('current_group_name', currentGroupName);
         _prefs.setInt('current_group_id', currentGroupId);
+        _prefs.setString('current_group_currency', currentGroupCurrency);
       });
       return response.statusCode == 201;
     } catch (_) {

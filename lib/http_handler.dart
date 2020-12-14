@@ -124,14 +124,14 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
   if(!overwriteCache && (await file.exists() &&  DateTime.now().difference(await file.lastModified()).inMinutes<5)){
-    print('from cache');
+    // print('from cache');
     return http.Response(file.readAsStringSync(), 200);
   }
-  print('from API');
+  // print('from API');
   return null;
 }
 Future toCache({@required String uri, @required http.Response response}) async {
-  print('to cache');
+  // print('to cache');
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
@@ -143,7 +143,7 @@ Future deleteCache({@required String uri}) async {
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
   if(await file.exists()){
-    print('delete cache');
+    // print('delete cache');
     file.delete();
   }
 }
