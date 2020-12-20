@@ -106,23 +106,12 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             ),
             SizedBox(height: 15,),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                RaisedButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'back'.tr(),
-                    style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),
-                  ),
-                  color: Colors.grey[700],
-                ),
                 GradientButton(
                   onPressed: () {
                     if (_nicknameFormKey.currentState.validate()) {
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
                       FocusScope.of(context).unfocus();
                       String nickname =
                           _nicknameController.text[0].toUpperCase() +
@@ -137,15 +126,14 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                               _nicknameController.text = '';
                               Navigator.pop(context);
                               Navigator.pop(context, 'madeAdmin');
+                              clearAllCache();
                             },
                             dataTrueText: 'nickname_scf',
                           ));
                     }
                   },
-                  child: Text(
-                    'modify'.tr(),
-                    style: Theme.of(context).textTheme.button,
-                  ),
+                  child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
+
                 ),
               ],
             ),

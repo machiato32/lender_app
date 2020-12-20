@@ -88,6 +88,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                 onPressed: () {
                   widget.onDataTrue();
                 },
+                useShadow: false,
               ),
             ],
           )

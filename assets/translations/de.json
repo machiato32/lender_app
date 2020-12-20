@@ -175,8 +175,8 @@
     "forgot_password": "Vergessenes Passwort",
     "your_password_reminder": "Deine passworterinnerung:",
 
-    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.\nError code:",
-    "format_exception": "Fehler bei der Verarbeitung der Daten. Probiere es noch einmal.\nError code:",
+    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.",
+    "format_exception": "Fehler bei der Verarbeitung der Daten. Probiere es noch einmal.",
     "no_connection": "Keine Internetverbindung.",
 
     "input_error": "input_error",

@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:csocsort_szamla/app_theme.dart';
 import 'package:flutter/widgets.dart';
+import 'package:csocsort_szamla/http_handler.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override
@@ -11,6 +12,9 @@ class LanguagePicker extends StatefulWidget {
 }
 
 class _LanguagePickerState extends State<LanguagePicker> {
+
+
+
   List<Widget> _getLocales() {
     return context.supportedLocales.map((locale) {
       return LanguageElement(
@@ -56,14 +60,22 @@ class LanguageElement extends StatefulWidget {
 }
 
 class _LanguageElementState extends State<LanguageElement> {
+  Future<bool> _changeLanguage(String localeCode){
+    Map<String, dynamic> body = {
+      'language': localeCode
+    };
+    httpPost(context: context, uri: '/change_language', body: body);
+    return Future.value(true);
+  }
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: () {
         context.locale = Locale(widget.localeName);
+        _changeLanguage(widget.localeName);
       },
-      child: Container(
+      child: Ink(
         width: 50,
         height: 50,
         decoration: BoxDecoration(

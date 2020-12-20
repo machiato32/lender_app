@@ -17,6 +17,7 @@ import 'package:get_it/get_it.dart';
 
 import 'balances.dart';
 import 'config.dart';
+import 'error_message.dart';
 import 'group_objects.dart';
 import 'http_handler.dart';
 import 'app_state_notifier.dart';
@@ -531,17 +532,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               ),
                             );
                           } else {
-                            return InkWell(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(32.0),
-                                  child: Text(snapshot.error.toString()),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    _groups = null;
-                                    _groups = _getGroups();
-                                  });
+                            return ErrorMessage(
+                              error: snapshot.error.toString(),
+                              locationOfError: 'balances',
+                              callback: (){
+                                setState(() {
+                                  _groups = null;
+                                  _groups = _getGroups();
                                 });
+                              },
+                            );
                           }
                         }
                         return LinearProgressIndicator();

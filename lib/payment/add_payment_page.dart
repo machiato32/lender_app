@@ -11,6 +11,7 @@ import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
 import '../app_theme.dart';
+import '../error_message.dart';
 import '../gradient_button.dart';
 import 'package:csocsort_szamla/currencies.dart';
 
@@ -198,6 +199,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 },
+                                useShadow: false,
                               ),
                             ],
                           ),
@@ -218,6 +220,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   _dropdownValue = null;
                                   Navigator.pop(context);
                                 },
+                                useShadow: false,
                               ),
                             ],
                           ),
@@ -304,7 +307,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   width: 2),
                             ),
                           ),
-                          inputFormatters: [LengthLimitingTextInputFormatter(25)],
+                          inputFormatters: [LengthLimitingTextInputFormatter(50)],
                           controller: _noteController,
                           style: TextStyle(
                               fontSize: 20,
@@ -365,17 +368,16 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                         .toList(),
                                   );
                                 } else {
-                                  return InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(32.0),
-                                        child: Text(snapshot.error.toString()),
-                                      ),
-                                      onTap: () {
-                                        setState(() {
-                                          _members=null;
-                                          _members=_getMembers();
-                                        });
+                                  return ErrorMessage(
+                                    error: snapshot.error.toString(),
+                                    locationOfError: 'balances',
+                                    callback: (){
+                                      setState(() {
+                                        _members = null;
+                                        _members = _getMembers();
                                       });
+                                    },
+                                  );
                                 }
                               }
 

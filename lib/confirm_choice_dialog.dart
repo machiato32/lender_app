@@ -27,12 +27,14 @@ class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 GradientButton(
-                    onPressed: (){ Navigator.pop(context, true); },
-                    child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
+                  onPressed: (){ Navigator.pop(context, true); },
+                  child: Text('yes'.tr(), style: Theme.of(context).textTheme.button),
+                  useShadow: false,
                 ),
                 GradientButton(
-                    onPressed: (){ Navigator.pop(context, false);},
-                    child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
+                  onPressed: (){ Navigator.pop(context, false);},
+                  child: Text('no'.tr(), style: Theme.of(context).textTheme.button),
+                  useShadow: false,
                 )
               ],
             )

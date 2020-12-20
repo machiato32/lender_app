@@ -9,6 +9,7 @@ import 'package:share/share.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/http_handler.dart';
+import '../error_message.dart';
 import 'group_members.dart';
 
 class GroupSettings extends StatefulWidget {
@@ -213,19 +214,16 @@ class _GroupSettingState extends State<GroupSettings> {
                                             ),
                                           );
                                         } else {
-                                          return InkWell(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(32.0),
-                                                child: Text(
-                                                    snapshot.error.toString()),
-                                              ),
-                                              onTap: () {
-                                                setState(() {
-                                                  _invitation = null;
-                                                  _invitation = _getInvitation();
-                                                });
+                                          return ErrorMessage(
+                                            error: snapshot.error.toString(),
+                                            locationOfError: 'balances',
+                                            callback: (){
+                                              setState(() {
+                                                _invitation = null;
+                                                _invitation = _getInvitation();
                                               });
+                                            },
+                                          );
                                         }
                                       }
                                       return Center(
@@ -240,17 +238,16 @@ class _GroupSettingState extends State<GroupSettings> {
                         ],
                       );
                     } else {
-                      return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(snapshot.error.toString()),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _isUserAdmin = null;
-                              _isUserAdmin = _getIsUserAdmin();
-                            });
+                      return ErrorMessage(
+                        error: snapshot.error.toString(),
+                        locationOfError: 'balances',
+                        callback: (){
+                          setState(() {
+                            _isUserAdmin = null;
+                            _isUserAdmin = _getIsUserAdmin();
                           });
+                        },
+                      );
                     }
                   }
                   return LinearProgressIndicator();

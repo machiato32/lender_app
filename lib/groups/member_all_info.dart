@@ -138,7 +138,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         showDialog(
                             context: context,
                             child: ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,)
-                        );
+                        ).then((value) {if(value!=null && value=='madeAdmin') Navigator.pop(context, 'madeAdmin');});
                       },
                       child: Row(
                         children: [

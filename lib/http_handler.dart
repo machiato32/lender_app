@@ -189,9 +189,9 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       throw errorHandler(error['error']);
     }
   } on FormatException {
-    throw 'format_exception'.tr()+' F01';
+    throw 'format_exception'.tr();
   } on SocketException {
-    throw 'cannot_connect'.tr()+ ' F02';
+    throw 'cannot_connect';
   } catch (_) {
     throw _;
   }

@@ -139,7 +139,7 @@
 
     "report_a_bug": "Hiba jelentése",
     "bug": "Hiba",
-    "what_is_wrong": "Mi a hiba?",
+    "what_is_wrong": "A probléma",
     "bug_scf": "A hiba jelentése sikeres volt.",
 
     "want_edit": "Változtatni szeretnéd a tételt?",
@@ -176,8 +176,8 @@
     "forgot_password": "Elfelejtett jelszó",
     "your_password_reminder": "A te jelszóemlékeztetőd:",
 
-    "cannot_connect": "A szerverhez való csatlakozás sikertelen volt. Ellenőrizd az internetkapcsolatod, majd koppintással próbáld újra.\nHibakód:",
-    "format_exception": "Hiba az adatok feldolgozása közben. Koppintással próbáld meg újra.\nHibakód:",
+    "cannot_connect": "A szerverhez való csatlakozás sikertelen volt. Ellenőrizd az internetkapcsolatod, majd koppintással próbáld újra.",
+    "format_exception": "Hiba az adatok feldolgozása közben. Koppintással próbáld meg újra.",
     "no_connection": "Nincs internetkapcsolat.",
 
     "input_error": "input_error",
@@ -211,5 +211,14 @@
     "auto_payment": "Automatikus fizetés",
 
     "your_currency": "your_currency",
-    "currency_of_group": "currency_of_group"
+    "currency_of_group": "currency_of_group",
+    "language_change_scf": "language_change_scf",
+
+    "if_not_working": "Hogyha ez nem segít",
+    "report_this_error": "Jelezd a hibát",
+    "time_of_error": "Mikor történt?",
+    "where_did_happen": "Hol futottál bele?",
+    "location": "Az oldal neve",
+    "anything_else": "Egyéb megjegyzés",
+    "details": "Részletesebb leírás"
 }

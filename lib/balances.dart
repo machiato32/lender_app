@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -200,17 +201,16 @@ class _BalancesState extends State<Balances> {
                         ],
                       );
                     } else {
-                      return InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(snapshot.error.toString()),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _money = null;
-                              _money = _getMoney();
-                            });
+                      return ErrorMessage(
+                        error: snapshot.error.toString(),
+                        locationOfError: 'balances',
+                        callback: (){
+                          setState(() {
+                            _money = null;
+                            _money = _getMoney();
                           });
+                        },
+                      );
                     }
                   }
                   return CircularProgressIndicator();

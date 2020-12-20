@@ -9,6 +9,7 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 
+import '../error_message.dart';
 import '../gradient_button.dart';
 
 class History extends StatefulWidget {
@@ -186,17 +187,16 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                             ],
                           );
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _payments = null;
-                                  _payments = _getPayments();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'balances',
+                            callback: (){
+                              setState(() {
+                                _transactions = null;
+                                _transactions = _getTransactions();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(child: CircularProgressIndicator());
@@ -256,17 +256,16 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                             ],
                           );
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _payments = null;
-                                  _payments = _getPayments();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'balances',
+                            callback: (){
+                              setState(() {
+                                _payments = null;
+                                _payments = _getPayments();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(child: CircularProgressIndicator());

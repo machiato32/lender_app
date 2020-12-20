@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:csocsort_szamla/http_handler.dart';
 
 import '../app_theme.dart';
+import '../error_message.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   final String username;
@@ -46,14 +47,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 if(snapshot.hasData){
                   return Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,);
                 }else{
-                  return InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(snapshot.error.toString()),
-                      ),
-                      onTap: () {
-                        setState(() {});
+                  return ErrorMessage(
+                    error: snapshot.error.toString(),
+                    locationOfError: 'balances',
+                    callback: (){
+                      setState(() {
+
                       });
+                    },
+                  );
                 }
               }
               return Center(child: CircularProgressIndicator());

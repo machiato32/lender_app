@@ -177,9 +177,9 @@
     "forgot_password": "Password dimenticata",
     "your_password_reminder": "La tua promemoria della password:",
 
-    "cannot_connect": "La connessione al server non è stata di successo. Controlli la connessione internet e riprovi dopo.\nCodice di errore:",
+    "cannot_connect": "La connessione al server non è stata di successo. Controlli la connessione internet e riprovi dopo.",
 
-    "format_exception": "Errore mentre analizzare i dati. Cerca di riprovare!\nCodice di errore:",
+    "format_exception": "Errore mentre analizzare i dati. Cerca di riprovare!",
     "no_connection": "Non hai connessione internet.",
 
     "store": "Negozio",

@@ -15,6 +15,8 @@ import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/app_theme.dart';
 import 'package:csocsort_szamla/currencies.dart';
 
+import '../error_message.dart';
+
 
 Random random = Random();
 
@@ -259,7 +261,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                   ),
                                 ),
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30)
+                                  LengthLimitingTextInputFormatter(50)
                                 ],
                                 controller: noteController,
                                 style: TextStyle(
@@ -336,17 +338,16 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                         .toList(),
                                   );
                                 } else {
-                                  return InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(32.0),
-                                        child: Text(snapshot.error.toString()),
-                                      ),
-                                      onTap: () {
-                                        setState(() {
-                                          _members = null;
-                                          _members = _getMembers();
-                                        });
+                                  return ErrorMessage(
+                                    error: snapshot.error.toString(),
+                                    locationOfError: 'balances',
+                                    callback: (){
+                                      setState(() {
+                                        _members = null;
+                                        _members = _getMembers();
                                       });
+                                    },
+                                  );
                                 }
                               }
                               return CircularProgressIndicator();
@@ -541,6 +542,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },
+                              useShadow: false,
                             ),
                           ],
                         ),
@@ -565,6 +567,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                 });
                                 Navigator.pop(context);
                               },
+                              useShadow: false,
                             ),
                           ],
                         ),

@@ -6,7 +6,8 @@ import 'app_theme.dart';
 class GradientButton extends StatelessWidget {
   final Widget child;
   final Function onPressed;
-  GradientButton({this.child, this.onPressed});
+  final bool useShadow;
+  GradientButton({this.child, this.onPressed, this.useShadow=true});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +19,7 @@ class GradientButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
           borderRadius: BorderRadius.circular(15),
-          boxShadow: (Theme.of(context).brightness==Brightness.light)
+          boxShadow: (Theme.of(context).brightness==Brightness.light && useShadow)
           ?[ BoxShadow(
             color: Colors.grey[500],
             offset: Offset(0.0, 1.5),

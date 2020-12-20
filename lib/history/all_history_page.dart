@@ -61,6 +61,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   }
 
   void callback() {
+    clearAllCache();
     setState(() {
       _transactions = null;
       _transactions = _getTransactions();

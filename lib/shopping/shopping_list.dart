@@ -14,6 +14,8 @@ import 'package:csocsort_szamla/future_success_dialog.dart';
 import 'package:csocsort_szamla/http_handler.dart';
 import 'package:csocsort_szamla/app_theme.dart';
 
+import '../error_message.dart';
+
 class ShoppingRequestData {
   int requestId;
   String name;
@@ -336,17 +338,16 @@ class _ShoppingListState extends State<ShoppingList> {
                               padding: EdgeInsets.all(15),
                               children: _generateShoppingList(snapshot.data));
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _shoppingList = null;
-                                  _shoppingList = _getShoppingList();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'balances',
+                            callback: (){
+                              setState(() {
+                                _shoppingList = null;
+                                _shoppingList = _getShoppingList();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(child: CircularProgressIndicator());

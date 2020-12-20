@@ -175,8 +175,8 @@
     "forgot_password": "Forgotten password",
     "your_password_reminder": "Your password reminder:",
 
-    "cannot_connect": "Connecting to the server was unsuccessful. Check your internet connection and try again.\nError code:",
-    "format_exception": "An error occurred while parsing the data. Please try again.\nError code:",
+    "cannot_connect": "Connecting to the server was unsuccessful. Check your internet connection and try again.",
+    "format_exception": "An error occurred while parsing the data. Please try again.",
     "no_connection": "There is no internet connection.",
 
     "input_error": "input_error",
