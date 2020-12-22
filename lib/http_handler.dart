@@ -120,15 +120,24 @@ void memberNotInGroup(BuildContext context){
 
 }
 Future<http.Response> fromCache({@required String uri, @required bool overwriteCache}) async {
-  String fileName = uri.replaceAll('/', '-');
-  var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path+'/'+fileName);
-  if(!overwriteCache && (await file.exists() &&  DateTime.now().difference(await file.lastModified()).inMinutes<5)){
-    // print('from cache');
-    return http.Response(file.readAsStringSync(), 200);
+  try{
+    String fileName = uri.replaceAll('/', '-');
+    var cacheDir = await getTemporaryDirectory();
+    if(!cacheDir.existsSync()){
+      return null;
+    }
+    File file = File(cacheDir.path+'/'+fileName);
+    if(!overwriteCache && (file.existsSync() &&  DateTime.now().difference(await file.lastModified()).inMinutes<5)){
+      // print('from cache');
+      return http.Response(file.readAsStringSync(), 200);
+    }
+    // print('from API');
+    return null;
+  }catch(e){
+    print(e.toString());
+    return null;
   }
-  // print('from API');
-  return null;
+
 }
 Future toCache({@required String uri, @required http.Response response}) async {
   // print('to cache');
@@ -139,10 +148,11 @@ Future toCache({@required String uri, @required http.Response response}) async {
 }
 
 Future deleteCache({@required String uri}) async {
+  uri = uri.substring(1);
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
-  if(await file.exists()){
+  if(file.existsSync()){
     // print('delete cache');
     file.delete();
   }
@@ -150,13 +160,15 @@ Future deleteCache({@required String uri}) async {
 
 Future clearAllCache() async {
   var cacheDir = await getTemporaryDirectory();
-  cacheDir.delete(recursive: true);
+  if(cacheDir.existsSync()){
+    cacheDir.delete(recursive: true);
+  }
 }
 
 Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true}) async {
   try {
     if(useCache){
-      http.Response responseFromCache = await fromCache(uri: uri, overwriteCache: overwriteCache);
+      http.Response responseFromCache = await fromCache(uri: uri.substring(1), overwriteCache: overwriteCache);
       if(responseFromCache!=null){
         return responseFromCache;
       }
@@ -168,7 +180,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
     };
     http.Response response = await http.get((useTest?TEST_URL:APP_URL) + uri, headers: header);
     if (response.statusCode<300 && response.statusCode>=200) {
-      if(useCache) toCache(uri: uri, response: response);
+      if(useCache) toCache(uri: uri.substring(1), response: response);
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);

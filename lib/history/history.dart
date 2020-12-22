@@ -14,8 +14,8 @@ import '../gradient_button.dart';
 
 class History extends StatefulWidget {
   final Function callback;
-
-  History({this.callback});
+  final int selectedIndex;
+  History({this.callback, this.selectedIndex});
 
   @override
   _HistoryState createState() => _HistoryState();
@@ -70,7 +70,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _payments = null;
     _payments = _getPayments();
     _transactions = null;

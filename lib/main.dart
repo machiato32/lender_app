@@ -48,7 +48,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
   }
 
-  print(message);
+  print("background: "+message.toString());
 
   if (message.containsKey('notification')) {
   }
@@ -150,7 +150,7 @@ class _LenderAppState extends State<LenderApp> {
         getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: _link,)));
       });
     }, onError: (err) {
-      log('asd');
+      log(err);
     });
   }
 
@@ -159,11 +159,42 @@ class _LenderAppState extends State<LenderApp> {
   // }
 
   Future onSelectNotification(String payload) async {
-    //TODO: this
+    print("Payload: "+payload);
+    try{
+      Map<String, dynamic> decoded = jsonDecode(payload);
+      int groupId = decoded['group_id'];
+      String groupName = decoded['group_name'];
+      String page = decoded['screen'];
+      String details = decoded['details'];
+      if(usersGroupIds.contains(groupId)){
+        currentGroupId=groupId;
+        currentGroupName=groupName;
+      }
+      clearAllCache();
+      if(currentUserId!=null){
+        if(page=='home'){
+          int selectedIndex=0;
+          if(details=='payment'){
+            selectedIndex=1;
+          }
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedHistoryIndex:selectedIndex)));
+        }else if(page=='shopping'){
+          int selectedTab=1;
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
+        }else{
+          // getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage()));
+        }
+      }
+    }
+    catch(e)
+    {
+      print(e.toString());
+    }
   }
 
   @override
   void initState() {
+    super.initState();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@drawable/dodo_white');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -174,43 +205,45 @@ class _LenderAppState extends State<LenderApp> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
     initUniLinks();
     _link = widget.initURL;
-    super.initState();
 
-
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-            '1234',
-            'Lender',
-            'Lender',
-            playSound: false,
-            importance: Importance.High,
-            priority: Priority.Default,
-            styleInformation: BigTextStyleInformation('')
-        );
-        var iOSPlatformChannelSpecifics =
-        new IOSNotificationDetails(presentSound: false);
-        var platformChannelSpecifics = new NotificationDetails(
-            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-        flutterLocalNotificationsPlugin.show(
-          int.parse(message['data']['id'])??0,
-          message['notification']['title'],
-          message['notification']['body'],
-          platformChannelSpecifics,
-        );
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print(message);
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print(message);
-        print("onResume: $message");
-      },
-    );
+    Future.delayed(Duration(seconds: 1)).then((value){
+      _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+              '1234',
+              'Lender',
+              'Lender',
+              playSound: false,
+              importance: Importance.High,
+              priority: Priority.Default,
+              styleInformation: BigTextStyleInformation('')
+          );
+          var iOSPlatformChannelSpecifics =
+          new IOSNotificationDetails(presentSound: false);
+          var platformChannelSpecifics = new NotificationDetails(
+              androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+          flutterLocalNotificationsPlugin.show(
+              int.parse(message['data']['id'])??0,
+              message['notification']['title'],
+              message['notification']['body'],
+              platformChannelSpecifics,
+              payload: message['data']['payload']
+          );
+        },
+        onBackgroundMessage: myBackgroundMessageHandler,
+        onLaunch: (Map<String, dynamic> message) async {
+          // print(message);
+          print("onLaunch: $message");
+          onSelectNotification(message['data']['payload']);
+        },
+        onResume: (Map<String, dynamic> message) async {
+          // print(message);
+          print("onResume: $message");
+          onSelectNotification(message['data']['payload']);
+        },
+      );
+    });
   }
 
   @override
@@ -255,7 +288,9 @@ class _LenderAppState extends State<LenderApp> {
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({int drawerIndex=-1});
+  final int selectedHistoryIndex;
+  final int selectedIndex;
+  MainPage({this.selectedHistoryIndex=0, this.selectedIndex=0});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -362,7 +397,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _selectedIndex=widget.selectedIndex;
+    _tabController = TabController(length: 3, vsync: this, initialIndex: widget.selectedIndex);
     _groups = null;
     _groups = _getGroups();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -468,7 +504,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               title: Text('shopping_list'.tr())
           ),
-          BottomNavigationBarItem( //TODO: change user currency, group currency
+          BottomNavigationBarItem( //TODO: change user currency
               icon: DescribedFeatureOverlay(
                   featureId: 'group_settings',
                   tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
@@ -705,6 +741,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         callback: callback,
                       ),
                       History(
+                        selectedIndex: widget.selectedHistoryIndex,
                         callback: callback,
                       )
                     ],
