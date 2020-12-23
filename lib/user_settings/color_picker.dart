@@ -81,28 +81,36 @@ class _ColorElementState extends State<ColorElement> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(15),
-      onTap: () {
-        Provider.of<AppStateNotifier>(context, listen: false)
-            .updateTheme(widget.themeName);
-        _getPrefs().then((_prefs) {
-          _prefs.setString('theme', widget.themeName);
-        });
-      },
-      child: Ink(
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(
-            gradient: (widget.themeName ==
-                    Provider.of<AppStateNotifier>(context, listen: false)
-                        .themeName)
-                ? AppTheme.gradientFromTheme(widget.theme)
-                : LinearGradient(colors:[Colors.transparent, Colors.transparent]),
-            borderRadius: BorderRadius.circular(20)
-        ),
+    return Ink(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+
+          gradient: (widget.themeName ==
+                  Provider.of<AppStateNotifier>(context, listen: false)
+                      .themeName)
+              ? AppTheme.gradientFromTheme(widget.theme)
+              : LinearGradient(colors:[Colors.transparent, Colors.transparent]),
+          borderRadius: BorderRadius.circular(20)
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () {
+          Provider.of<AppStateNotifier>(context, listen: false)
+              .updateTheme(widget.themeName);
+          _getPrefs().then((_prefs) {
+            _prefs.setString('theme', widget.themeName);
+          });
+        },
         child: Ink(
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
+              boxShadow: ( Theme.of(context).brightness==Brightness.light)
+                  ?[ BoxShadow(
+                color: Colors.grey[500],
+                offset: Offset(1.5, 1.5),
+                blurRadius: 0.5,
+              )]
+              : [],
               gradient: AppTheme.gradientFromTheme(widget.theme),
               border: Border.all(
                   color: widget.theme.scaffoldBackgroundColor, 

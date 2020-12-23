@@ -219,5 +219,11 @@
     "where_did_happen": "Hol futottál bele?",
     "location": "Az oldal neve",
     "anything_else": "Egyéb megjegyzés",
-    "details": "Részletesebb leírás"
+    "details": "Részletesebb leírás",
+
+    "change_username_explanation": "Változtasd meg a felhasználóneved, amelyikkel belépsz az alkalmazásba",
+    "change_password_explanation": "Változtasd meg a jelszód, amivel belépsz az alkalmazásba",
+
+    "change_group_currency": "Csoport pénznemének megváltoztatása",
+    "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelnlegi tartozások nem lesznek átváltva!"
 }

@@ -88,10 +88,13 @@ class _GroupSettingState extends State<GroupSettings> {
                                 padding: const EdgeInsets.all(15),
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      'rename_group'.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
+                                    Center(
+                                      child: Text(
+                                        'rename_group'.tr(),
+                                        style:
+                                            Theme.of(context).textTheme.headline6,
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 10,
@@ -129,10 +132,13 @@ class _GroupSettingState extends State<GroupSettings> {
                                 padding: const EdgeInsets.all(15),
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      'change_group_currency'.tr(),
-                                      style:
-                                      Theme.of(context).textTheme.headline6,
+                                    Center(
+                                      child: Text(
+                                        'change_group_currency'.tr(),
+                                        style:
+                                        Theme.of(context).textTheme.headline6,
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 10,

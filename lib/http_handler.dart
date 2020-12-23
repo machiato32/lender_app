@@ -96,6 +96,7 @@ void memberNotInGroup(BuildContext context){
   });
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
+  ft.removeQueuedCustomToasts();
   ft.showToast(
       child: errorToast('not_in_group'.tr(), context),
       toastDuration: Duration(seconds: 2),
@@ -186,6 +187,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
+        ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
@@ -230,6 +232,7 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
+        ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
@@ -272,6 +275,7 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         FlutterToast ft = FlutterToast(context);
+        ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),

@@ -79,6 +79,13 @@ class _LanguageElementState extends State<LanguageElement> {
         width: 50,
         height: 50,
         decoration: BoxDecoration(
+            boxShadow: (Theme.of(context).brightness==Brightness.light)
+                ?[ BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(1.5, 1.5),
+              blurRadius: 0.5,
+            )]
+                : [],
           gradient: (widget.localeName == context.locale.languageCode)
               ? AppTheme.gradientFromTheme(Theme.of(context))
               : LinearGradient(colors: [Colors.white, Colors.white]),

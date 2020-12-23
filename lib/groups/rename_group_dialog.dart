@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../future_success_dialog.dart';
 import '../gradient_button.dart';
@@ -33,6 +34,9 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
       Map<String, dynamic> decoded = jsonDecode(response.body);
       currentGroupName = decoded['group_name'];
       currentGroupId = decoded['group_id'];
+      SharedPreferences.getInstance().then((prefs){
+        prefs.setString('current_group_name', currentGroupName);
+      });
       return true;
 
     } catch (_) {

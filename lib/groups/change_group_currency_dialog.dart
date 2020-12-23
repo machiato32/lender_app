@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/currencies.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../future_success_dialog.dart';
 import '../gradient_button.dart';
 import '../main.dart';
@@ -26,6 +27,9 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
           context: context,
           body: body);
       currentGroupCurrency=code;
+      SharedPreferences.getInstance().then((prefs){
+        prefs.setString('current_group_currency', currentGroupCurrency);
+      });
       return true;
 
     } catch (_) {

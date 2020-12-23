@@ -51,7 +51,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                   _tapped=false;
                   _doubleTapped=false;
                   FlutterToast ft = FlutterToast(context);
-                  ft.removeQueuedCustomToasts();
+                  // ft.removeQueuedCustomToasts();
                   ft.showToast(child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24.0, vertical: 12.0),

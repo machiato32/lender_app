@@ -112,88 +112,89 @@ class _BalancesState extends State<Balances> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
+                      Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==currentUserId, orElse: () => null);
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              GradientButton(
-                                onPressed: (){
-                                  List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    builder:(BuildContext context){
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15)
-                                        ),
-                                        
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text('payments_needed'.tr(),
-                                                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              _generatePaymentsNeeded(payments),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: payments.length>0?MainAxisAlignment.spaceAround:MainAxisAlignment.center,
-                                                children: [
-                                                  GradientButton(
-                                                    onPressed: (){
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
-                                                  ),
-                                                  Visibility(
-                                                    maintainSize: false,
-                                                    maintainState: false,
-                                                    maintainAnimation: false,
-                                                    maintainSemantics: false,
-                                                    replacement: SizedBox(height: 0,),
-                                                    visible: payments.length>0,
-                                                    child: GradientButton(
-                                                      onPressed: () async {
-                                                        showDialog(
-                                                            context: context,
-                                                            child: FutureSuccessDialog(
-                                                              future: _postPayments(payments),
-                                                              dataTrueText: 'payment_scf',
-                                                              onDataTrue: (){
-                                                                Navigator.pop(context);
-                                                                Navigator.pop(context);
-                                                                widget.callback();
-                                                              },
-                                                            )
-                                                        );
-                                                      },
-                                                      child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                              Visibility(
+                                visible: currentMember==null?false:currentMember.balance<0,
+                                child: GradientButton(
+                                  onPressed: (){
+                                    List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder:(BuildContext context){
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15)
                                           ),
-                                        ),
-                                      );
-                                    }
-                                  );
-                                },
 
-                                // text: 'who_to_pay'.tr(),
-                                // color: Theme.of(context).colorScheme.secondary,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text('who_to_pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('payments_needed'.tr(),
+                                                  style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                _generatePaymentsNeeded(payments),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: payments.length>0?MainAxisAlignment.spaceAround:MainAxisAlignment.center,
+                                                  children: [
+                                                    GradientButton(
+                                                      onPressed: (){
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
+                                                    ),
+                                                    Visibility(
+                                                      maintainSize: false,
+                                                      maintainState: false,
+                                                      maintainAnimation: false,
+                                                      maintainSemantics: false,
+                                                      replacement: SizedBox(height: 0,),
+                                                      visible: payments.length>0,
+                                                      child: GradientButton(
+                                                        onPressed: () async {
+                                                          showDialog(
+                                                              context: context,
+                                                              child: FutureSuccessDialog(
+                                                                future: _postPayments(payments),
+                                                                dataTrueText: 'payment_scf',
+                                                                onDataTrue: (){
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+                                                                  widget.callback();
+                                                                },
+                                                              )
+                                                          );
+                                                        },
+                                                        child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text('who_to_pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                  ),
                                 ),
                               ),
                             ],
@@ -237,9 +238,9 @@ class _BalancesState extends State<Balances> {
               gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
               borderRadius: BorderRadius.circular(15),
             );
-            var amount = payment.amount.toString();
+            var amount = payment.amount.money(currentGroupCurrency);
             return Container(
-              height: 55,
+              height: 65,
               width: MediaQuery.of(context).size.width,
               margin: EdgeInsets.only(bottom: 4),
               decoration: boxDecoration,
