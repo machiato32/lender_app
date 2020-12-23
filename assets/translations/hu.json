@@ -210,9 +210,8 @@
 
     "auto_payment": "Automatikus fizetés",
 
-    "your_currency": "your_currency",
-    "currency_of_group": "currency_of_group",
-    "language_change_scf": "language_change_scf",
+    "your_currency": "A pénznemed",
+    "currency_of_group": "A csoport pénzneme",
 
     "if_not_working": "Hogyha ez nem segít",
     "report_this_error": "Jelezd a hibát",
