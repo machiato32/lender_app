@@ -216,8 +216,14 @@
     "report_this_error": "Melde den Fehler",
     "time_of_error": "Wann ist es passiert?",
     "where_did_happen": "Wo ist es passiert?",
-    "location": "Der Name der Seite",
+    "location": "Name der Seite",
     "anything_else": "Sonstige Notiz",
-    "details": "Detaillierte Beschreibung"
+    "details": "Detaillierte Beschreibung",
+
+    "change_username_explanation": "Ändere deinen Benutzernamen mit dem du dich einlogst",
+    "change_password_explanation": "Ändere dein Passwort mit dem du dich einlogst",
+
+    "change_group_currency": "Ändere die Gruppenwährung",
+    "change_group_currency_explanation": "Ändere die Währung der Gruppe, aber achte darauf, dass die bisherigen Kontostände nicht umgerechnet werden!"
 
 }

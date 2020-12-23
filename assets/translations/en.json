@@ -210,5 +210,11 @@
     "where_did_happen": "Where did it happen?",
     "location": "Location",
     "anything_else": "Any notes",
-    "details": "More details"
+    "details": "More details",
+
+    "change_username_explanation": "Change the username which you use to log in to the app",
+    "change_password_explanation": "Change the password which you use to log in to the app",
+
+    "change_group_currency": "Change group currency",
+    "change_group_currency_explanation": "Change the currency of the group, but note that the balances will not be converted!"
 }

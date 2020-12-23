@@ -106,11 +106,11 @@ class _ColorElementState extends State<ColorElement> {
           decoration: BoxDecoration(
               boxShadow: ( Theme.of(context).brightness==Brightness.light)
                   ?[ BoxShadow(
-                color: Colors.grey[500],
-                offset: Offset(1.5, 1.5),
-                blurRadius: 0.5,
-              )]
-              : [],
+                    color: Colors.grey[500],
+                    offset: Offset(0.0, 1.5),
+                    blurRadius: 1.5,
+                  )]
+                  : [],
               gradient: AppTheme.gradientFromTheme(widget.theme),
               border: Border.all(
                   color: widget.theme.scaffoldBackgroundColor, 
