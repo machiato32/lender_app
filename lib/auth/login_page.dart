@@ -10,11 +10,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/group_objects.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import '../app_theme.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import '../essentials/app_theme.dart';
 import 'forgot_password_page.dart';
 
 class LoginRoute extends StatefulWidget {

@@ -225,5 +225,15 @@
     "change_password_explanation": "Változtasd meg a jelszód, amivel belépsz az alkalmazásba",
 
     "change_group_currency": "Csoport pénznemének megváltoztatása",
-    "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!"
+    "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!",
+
+    "manage_guests": "Vendégek kezelése",
+    "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
+    "add_guest": "Vendég hozzáadása",
+    "add_guest_explanation": "Adj hozzá új vendéget a csoporthoz",
+    "remove_guest": "Vendég eltávolítása",
+    "remove_guest_explanation": "Távolíts el egy vendéget a csoportból. Ilyenkor a jelenlegi egyenlege hozzá lesz rendelve a tiédhez.",
+    "merge_guest": "Vendég hozzárendelése",
+    "merge_guest_explanation": "Hogyha a tag, akit a vendég helyettesített, belépett a csoportba, akkor itt hozzárendelheted a vendég korábbi eseményeit.",
+    "add_guest_scf": "add_guest_scf"
 }

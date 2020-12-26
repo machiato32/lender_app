@@ -1,18 +1,18 @@
-import 'package:csocsort_szamla/error_message.dart';
+import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/payments_needed.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/payments_needed.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'group_objects.dart';
+import 'essentials/group_objects.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'http_handler.dart';
-import 'app_theme.dart';
-import 'gradient_button.dart';
-import 'currencies.dart';
+import 'essentials/http_handler.dart';
+import 'essentials/app_theme.dart';
+import 'essentials/widgets/gradient_button.dart';
+import 'essentials/currencies.dart';
 
 class Balances extends StatefulWidget {
   final Function callback;
@@ -26,7 +26,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
-
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
@@ -34,7 +34,7 @@ class _BalancesState extends State<Balances> {
         'taker_id': takerId
       };
 
-      await httpPost(uri: '/payments', body: body, context: context);
+      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -52,10 +52,11 @@ class _BalancesState extends State<Balances> {
 
   Future<List<Member>> _getMoney() async {
     try {
-
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context
+        uri: '/groups/' + currentGroupId.toString(),
+        context: context,
+        useGuest: useGuest
       );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
@@ -112,7 +113,8 @@ class _BalancesState extends State<Balances> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==currentUserId, orElse: () => null);
+                      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+                      Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==idToUse, orElse: () => null);
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
@@ -123,7 +125,7 @@ class _BalancesState extends State<Balances> {
                                 visible: currentMember==null?false:currentMember.balance<0,
                                 child: GradientButton(
                                   onPressed: (){
-                                    List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==currentUserId).toList();
+                                    List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==idToUse).toList();
                                     showDialog(
                                       context: context,
                                       barrierDismissible: true,
@@ -319,7 +321,8 @@ class _BalancesState extends State<Balances> {
 
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
-      if (member.memberId == currentUserId) {
+      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+      if (member.memberId == idToUse) {
         TextStyle style = Theme.of(context).textTheme.button;
         return Column(
           children: <Widget>[

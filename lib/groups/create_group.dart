@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -7,12 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 
-import '../app_theme.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import '../essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class CreateGroup extends StatefulWidget {
   @override

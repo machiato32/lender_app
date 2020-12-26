@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../app_theme.dart';
+import '../essentials/app_theme.dart';
 import 'change_password.dart';
 import 'color_picker.dart';
 import 'change_language.dart';

@@ -1,18 +1,18 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/change_nickname_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/group_objects.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import 'confirm_leave_dialog.dart';
 import 'join_group.dart';
-import 'package:csocsort_szamla/confirm_choice_dialog.dart';
 
 class MemberAllInfo extends StatefulWidget {
   final Member member;
@@ -166,7 +166,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          child: ConfirmChoiceDialog(
+                          child: ConfirmLeaveDialog(
+                            title: 'kick_member',
                             choice: 'really_kick',
                           )
                         ).then((value){
@@ -224,7 +225,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         }else{
                           showDialog(
                             context: context,
-                            child: ConfirmChoiceDialog(
+                            child: ConfirmLeaveDialog(
+                              title: 'leave_group',
                               choice: 'really_leave',
                             )
                           ).then((value){

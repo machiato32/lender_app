@@ -6,7 +6,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 
-import '../app_theme.dart';
+import '../essentials/app_theme.dart';
 
 class MainPageSpeedDial extends StatefulWidget {
   final Function callback;

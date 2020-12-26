@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'main/report_a_bug_page.dart';
+import '../../main/report_a_bug_page.dart';
 
 class ErrorMessage extends StatelessWidget {
   final String error;
@@ -15,7 +15,6 @@ class ErrorMessage extends StatelessWidget {
           child: Column(
             children: [
               Text(error.tr(), textAlign: TextAlign.center, style: TextStyle(color: Colors.red),),
-
               Visibility(
                 visible: error!='cannot_connect',
                 child: Column(

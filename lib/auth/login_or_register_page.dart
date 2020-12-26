@@ -1,6 +1,6 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/gradient_button.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'login_page.dart';

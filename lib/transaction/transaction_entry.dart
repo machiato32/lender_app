@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/group_objects.dart';
-import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/app_theme.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class TransactionData {
   DateTime updatedAt;
@@ -19,14 +19,17 @@ class TransactionData {
   String name;
 
   TransactionData(
-      {this.updatedAt,
+    {
+      this.updatedAt,
       this.buyerUsername,
       this.buyerNickname,
       this.buyerId,
       this.receivers,
       this.totalAmount,
       this.transactionId,
-      this.name});
+      this.name
+    }
+  );
 
   factory TransactionData.fromJson(Map<String, dynamic> json) {
     return TransactionData(
@@ -77,15 +80,16 @@ class _TransactionEntryState extends State<TransactionEntry> {
     note = (widget.data.name == '')
         ? 'no_note'.tr()
         : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
-    bool bought = widget.data.buyerId == currentUserId;
-    bool received = widget.data.receivers.where((element) => element.memberId == currentUserId).isNotEmpty;
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    bool bought = widget.data.buyerId == idToUse;
+    bool received = widget.data.receivers.where((element) => element.memberId == idToUse).isNotEmpty;
     /* Set icon, amount and names */
     if (bought && received) {
       icon = Icon(Icons.swap_horiz,
           color: Theme.of(context).textTheme.button.color);
       amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
       selfAmount = (-widget.data.receivers
-              .firstWhere((member) => member.memberId == currentUserId)
+              .firstWhere((member) => member.memberId == idToUse)
               .balance)
           .printMoney(currentGroupCurrency);
       if (widget.data.receivers.length > 1) {
@@ -107,7 +111,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
           color: Theme.of(context).textTheme.bodyText1.color);
       names = widget.data.buyerNickname;
       amount = (-widget.data.receivers
-              .firstWhere((element) => element.memberId == currentUserId)
+              .firstWhere((element) => element.memberId == idToUse)
               .balance)
           .printMoney(currentGroupCurrency);
     }

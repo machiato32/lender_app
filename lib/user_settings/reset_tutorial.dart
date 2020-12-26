@@ -3,7 +3,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../gradient_button.dart';
+import '../essentials/widgets/gradient_button.dart';
 
 class ResetTutorial extends StatefulWidget {
   @override

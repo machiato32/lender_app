@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,10 +17,10 @@ import 'package:get_it/get_it.dart';
 
 import 'balances.dart';
 import 'config.dart';
-import 'error_message.dart';
-import 'group_objects.dart';
-import 'http_handler.dart';
-import 'app_state_notifier.dart';
+import 'essentials/widgets/error_message.dart';
+import 'essentials/group_objects.dart';
+import 'essentials/http_handler.dart';
+import 'essentials/app_state_notifier.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
@@ -31,9 +31,10 @@ import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'main/report_a_bug_page.dart';
 import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
-import 'app_theme.dart';
-import 'currencies.dart';
-import 'navigator_service.dart';
+import 'essentials/app_theme.dart';
+import 'essentials/currencies.dart';
+import 'essentials/navigator_service.dart';
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
 
 final getIt = GetIt.instance;
 
@@ -67,59 +68,45 @@ void main() async {
   } else {
     themeName = preferences.getString('theme');
   }
-  if (preferences.containsKey('current_username')) {
-    currentUsername = preferences.getString('current_username');
-    currentUserId = preferences.getInt('current_user_id');
-    apiToken = preferences.getString('api_token');
-  }
-  if(preferences.containsKey('current_user')){
-    currentUsername=preferences.getString('current_user');
-  }
-  if (preferences.containsKey('current_group_name')) {
-    currentGroupName = preferences.getString('current_group_name');
-    currentGroupId = preferences.getInt('current_group_id');
-    currentGroupCurrency = preferences.getString('current_group_currency');
-  }
-  if(preferences.containsKey('users_groups')){
-    usersGroups=preferences.getStringList('users_groups');
-    usersGroupIds=preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
-  }
+  await loadAllPrefs();
 
   String initURL;
   try {
     initURL = await getInitialLink();
   } catch (_) {}
 
-  runApp(EasyLocalization(
-    child: ChangeNotifierProvider<AppStateNotifier>(
-        create: (context) => AppStateNotifier(),
-        child: LenderApp(
-          themeName: themeName,
-          initURL: initURL,
-        )
-    ),
-    supportedLocales: [Locale('en'), Locale('de'), Locale('hu'), Locale('it')],
-    path: 'assets/translations',
-    fallbackLocale: Locale('en'),
-    useOnlyLangCode: true,
-    saveLocale: true,
-    preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
-    preloaderWidget: MaterialApp(
-      home: Material(
-        type: MaterialType.transparency,
-        child: Center(
-          child: Text(
-            'LENDER',
-            style: TextStyle(
-                color:
-                (themeName.contains('Light')) ? Colors.black : Colors.white,
-                letterSpacing: 2.5,
-                fontSize: 35),
+  runApp(
+    EasyLocalization(
+      child: ChangeNotifierProvider<AppStateNotifier>(
+          create: (context) => AppStateNotifier(),
+          child: LenderApp(
+            themeName: themeName,
+            initURL: initURL,
+          )
+      ),
+      supportedLocales: [Locale('en'), Locale('de'), Locale('it'), Locale('hu')],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en'),
+      useOnlyLangCode: true,
+      saveLocale: true,
+      preloaderColor: (themeName.contains('Light')) ? Colors.white : Colors.black,
+      preloaderWidget: MaterialApp(
+        home: Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Text(
+              'LENDER',
+              style: TextStyle(
+                  color:
+                  (themeName.contains('Light')) ? Colors.black : Colors.white,
+                  letterSpacing: 2.5,
+                  fontSize: 35),
+            ),
           ),
         ),
       ),
-    ),
-  ));
+    )
+  );
 }
 
 class LenderApp extends StatefulWidget {
@@ -723,33 +710,41 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             )
         ),
         builder: (context, isOnline){
-          return TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _tabController,
-              children: [
-                RefreshIndicator(
-                  onRefresh: () async {
-                    await clearCache();
-                    setState(() {
+          GlobalKey<State> key = GlobalKey<State>();
+          return Column(
+            children: [
+              IsGuestBanner(key: key, callback: callback,),
+              Expanded(
+                child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: _tabController,
+                    children: [
+                      RefreshIndicator(
+                        onRefresh: () async {
+                          await clearCache();
+                          setState(() {
 
-                    });
-                  },
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Balances(
-                        callback: callback,
+                          });
+                        },
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            Balances(
+                              callback: callback,
+                            ),//TODO: remove guest, merge guest, switch guest, shopping list
+                            History(
+                              selectedIndex: widget.selectedHistoryIndex,
+                              callback: callback,
+                            )
+                          ],
+                        ),
                       ),
-                      History(
-                        selectedIndex: widget.selectedHistoryIndex,
-                        callback: callback,
-                      )
-                    ],
-                  ),
+                      ShoppingList(),
+                      GroupSettings(bannerKey: key),
+                    ]
                 ),
-                ShoppingList(),
-                GroupSettings(),
-              ]
+              ),
+            ],
           );
         }
       ),

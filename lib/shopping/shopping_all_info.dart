@@ -5,8 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
 class ShoppingAllInfo extends StatefulWidget {
   final ShoppingRequestData data;
@@ -20,7 +20,8 @@ class ShoppingAllInfo extends StatefulWidget {
 class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {});
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {}, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -30,7 +31,8 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
-      await httpDelete(uri: '/requests/' + id.toString(), context: context);
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -39,6 +41,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
 
   @override
   Widget build(BuildContext context) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(15),
@@ -90,7 +93,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
               height: 10,
             ),
             Visibility(
-              visible: widget.data.requesterId == currentUserId,
+              visible: widget.data.requesterId == idToUse,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +129,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
               ),
             ),
             Visibility(
-              visible: widget.data.requesterId != currentUserId,
+              visible: widget.data.requesterId != idToUse,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

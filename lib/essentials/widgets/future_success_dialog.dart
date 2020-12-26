@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -150,7 +150,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
           children: [
             Flexible(
                 child: Text(
-              snapshot.error.toString(),
+              snapshot.error.toString().tr(),
               style: Theme.of(context)
                   .textTheme
                   .bodyText1

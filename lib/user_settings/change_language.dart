@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:flutter/widgets.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override

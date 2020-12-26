@@ -11,12 +11,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 
-import '../app_theme.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import '../essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
-import '../http_handler.dart';
+import '../essentials/http_handler.dart';
 
 class RegisterRoute extends StatefulWidget {
   @override

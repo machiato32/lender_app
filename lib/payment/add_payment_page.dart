@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -6,14 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/group_objects.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
-import '../app_theme.dart';
-import '../error_message.dart';
-import '../gradient_button.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import '../essentials/app_theme.dart';
+import '../essentials/widgets/error_message.dart';
+import '../essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class SavedPayment{
   String note;
@@ -40,14 +41,19 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   Future<List<Member>> _getMembers({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/groups/' + currentGroupId.toString(),
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
+      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
       for (var member in decoded['data']['members']) {
-        if(member['user_id']!=currentUserId){
+        if(member['user_id']!=idToUse){
           members.add(Member(
               nickname: member['nickname'],
               balance: (member['balance'] * 1.0),
@@ -65,6 +71,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   Future<bool> _postPayment(double amount, String note, Member toMember) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
@@ -72,7 +79,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         'taker_id': toMember.memberId
       };
 
-      await httpPost(uri: '/payments', body: body, context: context);
+      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -81,15 +88,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   Future<bool> _updatePayment(double amount, String note, Member toMember, int paymentId) async {
     try {
-      print(toMember.memberId);
-
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {
         'amount': amount,
         'note': note,
         'taker_id': toMember.memberId
       };
 
-      await httpPut(uri: '/payments/'+paymentId.toString(), body: body, context: context);
+      await httpPut(uri: '/payments/'+paymentId.toString(), body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -113,138 +119,33 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('payment'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context))
-              ),
+        appBar: AppBar(
+          title: Text('payment'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
             ),
           ),
+        ),
 
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.send),
-            onPressed: () {
+
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              _members=_getMembers(overwriteCache: true);
+            });
+          },
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
               FocusScope.of(context).unfocus();
-              if (_formKey.currentState.validate()) {
-                if (_dropdownValue == null) {
-                  Widget toast = Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      color: Colors.red,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.clear,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 12.0,
-                        ),
-                        Flexible(
-                            child: Text(
-                          "person_not_chosen".tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        )),
-                      ],
-                    ),
-                  );
-                  FlutterToast ft = FlutterToast(context);
-                  ft.showToast(
-                      child: toast,
-                      toastDuration: Duration(seconds: 2),
-                      gravity: ToastGravity.BOTTOM);
-                  return;
-                }
-                double amount = double.parse(_amountController.text);
-                String note = _noteController.text;
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    child: FutureSuccessDialog(
-                      future: widget.payment!=null?_updatePayment(amount, note, _dropdownValue, widget.payment.paymentId):_postPayment(amount, note, _dropdownValue),
-                      dataTrue: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                              child: Text("payment_scf".tr(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .copyWith(color: Colors.white),
-                                  textAlign: TextAlign.center)),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GradientButton(
-                                child:Row(
-                                  children: [
-                                    Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                    SizedBox(width: 3,),
-                                    Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                  ],
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                },
-                                useShadow: false,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GradientButton(
-                                child:Row(
-                                  children: [
-                                    Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                                    SizedBox(width: 3,),
-                                    Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
-                                  ],
-                                ),
-                                onPressed: () {
-                                  _amountController.text = '';
-                                  _noteController.text = '';
-                                  _dropdownValue = null;
-                                  Navigator.pop(context);
-                                },
-                                useShadow: false,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ));
-              }
             },
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              setState(() {
-                _members=_getMembers(overwriteCache: true);
-              });
-            },
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Padding(
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                IsGuestBanner(callback: (){setState(() { _members=null; _members=_getMembers();});},),
+                Card(
+                  child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,11 +289,121 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                       ],
                     ),
                   ),
+                ),
 //              Balances()
-                ],
-              ),
+              ],
             ),
-          )),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.send),
+          onPressed: () {
+            FocusScope.of(context).unfocus();
+            if (_formKey.currentState.validate()) {
+              if (_dropdownValue == null) {
+                Widget toast = Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.0),
+                    color: Colors.red,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.clear,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 12.0,
+                      ),
+                      Flexible(
+                          child: Text(
+                            "person_not_chosen".tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                    ],
+                  ),
+                );
+                FlutterToast ft = FlutterToast(context);
+                ft.showToast(
+                    child: toast,
+                    toastDuration: Duration(seconds: 2),
+                    gravity: ToastGravity.BOTTOM);
+                return;
+              }
+              double amount = double.parse(_amountController.text);
+              String note = _noteController.text;
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  child: FutureSuccessDialog(
+                    future: widget.payment!=null?_updatePayment(amount, note, _dropdownValue, widget.payment.paymentId):_postPayment(amount, note, _dropdownValue),
+                    dataTrue: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                            child: Text("payment_scf".tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(color: Colors.white),
+                                textAlign: TextAlign.center)),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              child:Row(
+                                children: [
+                                  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                  SizedBox(width: 3,),
+                                  Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                                ],
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              useShadow: false,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              child:Row(
+                                children: [
+                                  Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                  SizedBox(width: 3,),
+                                  Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
+                                ],
+                              ),
+                              onPressed: () {
+                                _amountController.text = '';
+                                _noteController.text = '';
+                                _dropdownValue = null;
+                                Navigator.pop(context);
+                              },
+                              useShadow: false,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ));
+            }
+          },
+        ),
+      ),
     );
   }
 }

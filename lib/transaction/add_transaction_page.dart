@@ -1,4 +1,5 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,15 +8,15 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/group_objects.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/app_theme.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
-import '../error_message.dart';
+import '../essentials/widgets/error_message.dart';
 
 
 Random random = Random();
@@ -57,9 +58,13 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
 
   Future<List<Member>> _getMembers({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/groups/' + currentGroupId.toString(),
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -78,8 +83,8 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
-  Future<bool> _postTransaction(
-      List<Member> members, double amount, String name) async {
+  Future<bool> _postTransaction(List<Member> members, double amount, String name) async {
+    bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
     try {
       Map<String, dynamic> body = {
         "name": name,
@@ -88,8 +93,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPost(uri: '/transactions',
-          body: body, context: context);
+      await httpPost(uri: '/transactions', body: body, context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -97,17 +101,16 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
-  Future<bool> _updateTransaction(
-      List<Member> members, double amount, String name, int transactionId) async {
+  Future<bool> _updateTransaction(List<Member> members, double amount, String name, int transactionId) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {
         "name": name,
         "amount": amount,
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPut(uri: '/transactions/'+transactionId.toString(),
-          body: body, context: context);
+      await httpPut(uri: '/transactions/'+transactionId.toString(), body: body, context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -162,6 +165,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
             },
             child: ListView(
               children: <Widget>[
+                IsGuestBanner(callback: (){},),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(15),

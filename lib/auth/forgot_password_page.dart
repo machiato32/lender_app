@@ -3,10 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
-import '../app_theme.dart';
-import '../error_message.dart';
+import '../essentials/app_theme.dart';
+import '../essentials/widgets/error_message.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   final String username;

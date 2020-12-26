@@ -2,9 +2,10 @@ class Member{
   double balance;
   String nickname;
   String username;
+  String apiToken;
   int memberId;
   bool isAdmin;
-  Member({this.username, this.nickname, this.balance, this.isAdmin, this.memberId});
+  Member({this.username, this.nickname, this.balance, this.isAdmin, this.memberId, this.apiToken});
   factory Member.fromJson(Map<String, dynamic> json){
     return Member(
       username: json['username'],

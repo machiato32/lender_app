@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
-import 'package:csocsort_szamla/app_theme.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class PaymentData {
   int paymentId;
@@ -70,7 +70,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
     note = (widget.data.note == '' || widget.data.note == null)
         ? 'no_note'.tr()
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
-    if (widget.data.payerId == currentUserId) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    if (widget.data.payerId==idToUse) {
       icon = Icon(Icons.call_made,
           color: Theme.of(context).textTheme.button.color);
       style = Theme.of(context).textTheme.button;

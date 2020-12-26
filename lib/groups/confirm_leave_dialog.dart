@@ -1,28 +1,29 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class ConfirmChoiceDialog extends StatefulWidget {
+class ConfirmLeaveDialog extends StatefulWidget {
+  final String title;
   final String choice;
-  ConfirmChoiceDialog({@required this.choice});
+  ConfirmLeaveDialog({@required this.choice, @required this.title});
   @override
-  _ConfirmChoiceDialogState createState() => _ConfirmChoiceDialogState();
+  _ConfirmLeaveDialogState createState() => _ConfirmLeaveDialogState();
 }
 
-class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
+class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(widget.choice.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
-            SizedBox(height: 15,),
+            Text(widget.title.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+            SizedBox(height: 10,),
+            Text(widget.choice.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
+            SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[

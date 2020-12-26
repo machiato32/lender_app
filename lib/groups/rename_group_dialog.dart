@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../future_success_dialog.dart';
-import '../gradient_button.dart';
-import '../http_handler.dart';
+import '../essentials/widgets/future_success_dialog.dart';
+import '../essentials/widgets/gradient_button.dart';
+import '../essentials/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
 
 import '../main.dart';

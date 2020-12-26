@@ -9,10 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 
-import 'auth/login_or_register_page.dart';
-import 'config.dart';
-import 'groups/join_group.dart';
-import 'main.dart';
+import '../auth/login_or_register_page.dart';
+import '../config.dart';
+import '../groups/join_group.dart';
+import '../main.dart';
 
 
 bool needsLogin = false;
@@ -87,7 +87,6 @@ String errorHandler(String error){
 }
 
 void memberNotInGroup(BuildContext context){
-  print('asd');
   usersGroupIds.remove(currentGroupId);
   usersGroups.remove(currentGroupName);
   SharedPreferences.getInstance().then((prefs) {
@@ -166,7 +165,7 @@ Future clearAllCache() async {
   }
 }
 
-Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true}) async {
+Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true, bool useGuest=false}) async {
   try {
     if(useCache){
       http.Response responseFromCache = await fromCache(uri: uri.substring(1), overwriteCache: overwriteCache);
@@ -174,10 +173,9 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
         return responseFromCache;
       }
     }
-
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (apiToken==null?'':apiToken)
+      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
     };
     http.Response response = await http.get((useTest?TEST_URL:APP_URL) + uri, headers: header);
     if (response.statusCode<300 && response.statusCode>=200) {
@@ -203,7 +201,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       throw errorHandler(error['error']);
     }
   } on FormatException {
-    throw 'format_exception'.tr();
+    throw 'format_exception';
   } on SocketException {
     throw 'cannot_connect';
   } catch (_) {
@@ -211,11 +209,11 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   }
 }
 
-Future<http.Response> httpPost({@required BuildContext context, @required String uri, Map<String, dynamic> body}) async {
+Future<http.Response> httpPost({@required BuildContext context, @required String uri, Map<String, dynamic> body, bool useGuest=false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiToken
+      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
     };
     http.Response response;
     if(body!=null){
@@ -247,19 +245,19 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
       throw errorHandler(error['error']);
     }
   } on FormatException {
-    throw 'format_exception'.tr()+' F01';
+    throw 'format_exception';
   } on SocketException {
-    throw 'cannot_connect'.tr()+ ' F02';
+    throw 'cannot_connect';
   } catch (_) {
     throw _;
   }
 }
 
-Future<http.Response> httpPut({@required BuildContext context, @required String uri,  Map<String, dynamic> body}) async {
+Future<http.Response> httpPut({@required BuildContext context, @required String uri,  Map<String, dynamic> body, bool useGuest=false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiToken
+      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
     };
     http.Response response;
     if(body!=null){
@@ -290,19 +288,19 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
       throw errorHandler(error['error']);
     }
   } on FormatException {
-    throw 'format_exception'.tr()+' F01';
+    throw 'format_exception';
   } on SocketException {
-    throw 'cannot_connect'.tr()+ ' F02';
+    throw 'cannot_connect';
   } catch (_) {
     throw _;
   }
 }
 
-Future<http.Response> httpDelete({@required BuildContext context, @required String uri}) async {
+Future<http.Response> httpDelete({@required BuildContext context, @required String uri, bool useGuest=false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiToken
+      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
     };
     http.Response response = await http.delete((useTest?TEST_URL:APP_URL) + uri, headers: header);
 
@@ -326,9 +324,9 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
       throw errorHandler(error['error']);
     }
   } on FormatException {
-    throw 'format_exception'.tr()+' F01';
+    throw 'format_exception';
   } on SocketException {
-    throw 'cannot_connect'.tr()+ ' F02';
+    throw 'cannot_connect';
   } catch (_) {
     throw _;
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-import 'app_theme.dart';
+import '../app_theme.dart';
 
 class GradientButton extends StatelessWidget {
   final Widget child;

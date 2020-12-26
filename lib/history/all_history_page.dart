@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 
 class AllHistoryRoute extends StatefulWidget {
   final int startingIndex;
@@ -28,9 +28,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   Future<List<TransactionData>> _getTransactions() async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/transactions?group=' + currentGroupId.toString(),
-          context: context);
+        uri: '/transactions?group=' + currentGroupId.toString(),
+        context: context,
+        useGuest: useGuest
+      );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<TransactionData> transactionData = [];
       for (var data in decoded) {
@@ -45,9 +48,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   Future<List<PaymentData>> _getPayments() async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/payments?group=' + currentGroupId.toString(),
-          context: context);
+        uri: '/payments?group=' + currentGroupId.toString(),
+        context: context,
+        useGuest: useGuest
+      );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];

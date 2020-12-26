@@ -6,25 +6,25 @@ import '../config.dart';
 import '../essentials/widgets/future_success_dialog.dart';
 import '../essentials/widgets/gradient_button.dart';
 import '../essentials/http_handler.dart';
+import '../main.dart';
 
-class ChangeNicknameDialog extends StatefulWidget {
-  final String username;
-  final int memberId;
-  ChangeNicknameDialog({@required this.username, @required this.memberId});
+class AddGuestDialog extends StatefulWidget {
+  AddGuestDialog();
 
   @override
-  _ChangeNicknameDialogState createState() => _ChangeNicknameDialogState();
+  _AddGuestDialogState createState() => _AddGuestDialogState();
 }
 
-class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
-  Future<bool> _updateNickname(String nickname, int memberId) async {
+class _AddGuestDialogState extends State<AddGuestDialog> {
+  TextEditingController _nicknameController = TextEditingController();
+  Future<bool> _addGuest(String username) async {
     try {
       Map<String, dynamic> body = {
-        "member_id": memberId,
-        "nickname": nickname
+        "language":context.locale.languageCode,
+        "username": username
       };
-      await httpPut(
-          uri: '/groups/' + currentGroupId.toString() + '/members',
+      await httpPost(
+          uri: '/groups/' + currentGroupId.toString() + '/add_guest',
           context: context,
           body: body);
       return true;
@@ -36,7 +36,6 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _nicknameController = TextEditingController();
     var _nicknameFormKey = GlobalKey<FormState>();
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -49,7 +48,7 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
           children: [
             Center(
               child: Text(
-                'edit_nickname'.tr(),
+                'add_guest'.tr(),
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -69,12 +68,6 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                   },
                   controller: _nicknameController,
                   decoration: InputDecoration(
-                    hintText: widget.username
-                        .split('#')[0][0]
-                        .toUpperCase() +
-                            widget.username
-                            .split('#')[0]
-                            .substring(1),
                     labelText: 'nickname'.tr(),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -109,30 +102,28 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  onPressed: () {
-                    if (_nicknameFormKey.currentState.validate()) {
-                      // Navigator.pop(context);
-                      FocusScope.of(context).unfocus();
-                      String nickname =
-                          _nicknameController.text[0].toUpperCase() +
-                              _nicknameController.text.substring(1);
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
-                            future: _updateNickname(
-                                nickname, widget.memberId),
-                            onDataTrue: () {
-                              _nicknameController.text = '';
-                              Navigator.pop(context);
-                              Navigator.pop(context, 'madeAdmin');
-                              clearAllCache();
-                            },
-                            dataTrueText: 'nickname_scf',
-                          ));
-                    }
-                  },
-                  child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
+                    onPressed: () {
+                      if (_nicknameFormKey.currentState.validate()) {
+                        // Navigator.pop(context);
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child: FutureSuccessDialog(
+                              future: _addGuest(_nicknameController.text),
+                              onDataTrue: () {
+                                clearAllCache();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()),
+                                        (route) => false);
+                              },
+                              dataTrueText: 'add_guest_scf',
+                            ));
+                      }
+                    },
+                    child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
 
                 ),
               ],

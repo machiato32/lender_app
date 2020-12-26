@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,14 +7,14 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 
-import '../error_message.dart';
+import '../essentials/widgets/error_message.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -57,9 +57,13 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/requests?group=' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/requests?group=' + currentGroupId.toString(),
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
@@ -76,9 +80,9 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postShoppingRequest(String name) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      await httpPost(uri: '/requests',
-          context: context, body: body);
+      await httpPost(uri: '/requests', context: context, body: body, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -88,8 +92,9 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postImShopping(String store) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {'store':store};
-      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification');
+      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification', useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -398,7 +403,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     name = widget.data.name;
     user = widget.data.requesterUsername;
     date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
-    if (widget.data.requesterId == currentUserId) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    if (widget.data.requesterId == idToUse) {
       style = Theme.of(context).textTheme.button;
       dateColor = Theme.of(context).textTheme.button.color;
       icon = Icon(Icons.receipt, color: style.color);
@@ -420,7 +426,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       secondaryBackground: Container(
         child: Align(
           alignment: Alignment.centerRight,
-          child: Icon(widget.data.requesterId != currentUserId?Icons.done:Icons.delete,
+          child: Icon(widget.data.requesterId != idToUse?Icons.done:Icons.delete,
             size: 30, color: Theme.of(context).textTheme.bodyText1.color,
           )
         ),
@@ -428,12 +434,12 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
       background: Align(
           alignment: Alignment.centerLeft,
-          child: Icon(widget.data.requesterId != currentUserId?Icons.attach_money:Icons.delete,
+          child: Icon(widget.data.requesterId != idToUse?Icons.attach_money:Icons.delete,
             size: 30, color: Theme.of(context).textTheme.bodyText1.color,
           )
       ),
       onDismissed: (direction){
-        if(widget.data.requesterId != currentUserId){
+        if(widget.data.requesterId != idToUse){
           showDialog(
               barrierDismissible: false,
               context: context,
@@ -553,7 +559,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {});
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {}, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -563,7 +570,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
-      await httpDelete(uri: '/requests/' + id.toString(), context: context);
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {

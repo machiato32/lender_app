@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/app_theme.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:csocsort_szamla/app_state_notifier.dart';
+import 'package:csocsort_szamla/essentials/app_state_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 

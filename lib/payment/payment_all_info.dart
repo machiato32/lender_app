@@ -1,5 +1,5 @@
-import 'package:csocsort_szamla/confirm_choice_dialog.dart';
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +8,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class PaymentAllInfo extends StatefulWidget {
   final PaymentData data;
@@ -24,7 +24,8 @@ class PaymentAllInfo extends StatefulWidget {
 class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deletePayment(int id) async {
     try {
-      await httpDelete(uri: '/payments/' + id.toString(), context: context);
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -33,6 +34,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
 
   @override
   Widget build(BuildContext context) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     String note = '';
     if (widget.data.note == '' || widget.data.note == null) {
       note = 'no_note'.tr();
@@ -121,7 +123,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == currentUserId,
+            visible: widget.data.payerId == idToUse,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +132,6 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GradientButton(
-
                         onPressed: (){
                           showDialog(
                               context: context,

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/group_objects.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/bottom_sheet_custom.dart';
-import '../app_theme.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import '../essentials/app_theme.dart';
 import 'member_all_info.dart';
 
 class GroupMembers extends StatefulWidget {
@@ -208,11 +208,11 @@ class _MemberEntryState extends State<MemberEntry> {
                 context: context,
                 backgroundColor: Theme.of(context).cardTheme.color,
                 builder: (context) => SingleChildScrollView(
-                      child: MemberAllInfo(
-                        member: widget.member,
-                        isCurrentUserAdmin: widget.isCurrentUserAdmin,
-                      ),
-                    )).then((val) {
+                  child: MemberAllInfo(
+                    member: widget.member,
+                    isCurrentUserAdmin: widget.isCurrentUserAdmin,
+                  ),
+                )).then((val) {
               if (val == 'madeAdmin') widget.callback();
             });
           },

@@ -1,5 +1,5 @@
-import 'package:csocsort_szamla/confirm_choice_dialog.dart';
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,9 +7,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class TransactionAllInfo extends StatefulWidget {
   final TransactionData data;
@@ -23,7 +23,8 @@ class TransactionAllInfo extends StatefulWidget {
 class _TransactionAllInfoState extends State<TransactionAllInfo> {
   Future<bool> _deleteElement(int id) async {
     try {
-       await httpDelete(uri: '/transactions/' + id.toString(), context: context);
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpDelete(uri: '/transactions/' + id.toString(), context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -32,6 +33,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
 
   @override
   Widget build(BuildContext context) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     String note = '';
     if (widget.data.name == '') {
       note = 'no_note'.tr();
@@ -120,7 +122,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                 ),
                 Center(
                   child: Visibility(
-                    visible: widget.data.buyerId == currentUserId,
+                    visible: widget.data.buyerId == idToUse,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[

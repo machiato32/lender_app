@@ -1,4 +1,5 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/groups/manage_guests.dart';
 import 'package:csocsort_szamla/groups/change_group_currency_dialog.dart';
 import 'package:csocsort_szamla/groups/rename_group_dialog.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,14 @@ import 'dart:convert';
 import 'package:share/share.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import '../error_message.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import '../essentials/widgets/error_message.dart';
 import 'group_members.dart';
+import 'guest_switcher.dart';
 
 class GroupSettings extends StatefulWidget {
+  final GlobalKey<State> bannerKey;
+  GroupSettings({this.bannerKey});
   @override
   _GroupSettingState createState() => _GroupSettingState();
 }
@@ -239,6 +243,14 @@ class _GroupSettingState extends State<GroupSettings> {
                                 ],
                               ),
                             ),
+                          ),
+                          Visibility(
+                            visible: snapshot.data,
+                            child: GuestSwitcher(bannerKey: widget.bannerKey),
+                          ),
+                          Visibility(
+                            visible: snapshot.data,
+                            child: ManageGuests(),
                           ),
                           GroupMembers(),
                         ],

@@ -7,10 +7,10 @@ import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/transaction/transaction_entry.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
-import '../error_message.dart';
-import '../gradient_button.dart';
+import '../essentials/widgets/error_message.dart';
+import '../essentials/widgets/gradient_button.dart';
 
 class History extends StatefulWidget {
   final Function callback;
@@ -28,9 +28,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   Future<List<TransactionData>> _getTransactions({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/transactions?group=' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/transactions?group=' + currentGroupId.toString(),
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<TransactionData> transactionData = [];
@@ -46,9 +50,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/payments?group=' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/payments?group=' + currentGroupId.toString(),
+        context: context, overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
       for (var data in decoded) {

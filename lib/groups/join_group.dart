@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -8,12 +8,12 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/main.dart';
-import '../app_theme.dart';
+import '../essentials/app_theme.dart';
 import 'create_group.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
   final bool fromAuth;

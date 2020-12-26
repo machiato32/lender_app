@@ -1,12 +1,12 @@
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/currencies.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../future_success_dialog.dart';
-import '../gradient_button.dart';
+import '../essentials/widgets/future_success_dialog.dart';
+import '../essentials/widgets/gradient_button.dart';
 import '../main.dart';
 
 class ChangeGroupCurrencyDialog extends StatefulWidget {
