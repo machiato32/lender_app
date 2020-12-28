@@ -134,6 +134,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
     // print('from API');
     return null;
   }catch(e){
+    //TODO: this is wrong, shouldn't be this way
     print(e.toString());
     return null;
   }

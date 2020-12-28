@@ -5,6 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 class ConfirmLeaveDialog extends StatefulWidget {
   final String title;
   final String choice;
+  /// Confirms user choice. Has border and title.
+  /// Translates the required [title] and [choice] automatically.
   ConfirmLeaveDialog({@required this.choice, @required this.title});
   @override
   _ConfirmLeaveDialogState createState() => _ConfirmLeaveDialogState();

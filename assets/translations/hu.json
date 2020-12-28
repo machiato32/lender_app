@@ -232,8 +232,16 @@
     "add_guest": "Vendég hozzáadása",
     "add_guest_explanation": "Adj hozzá új vendéget a csoporthoz",
     "remove_guest": "Vendég eltávolítása",
-    "remove_guest_explanation": "Távolíts el egy vendéget a csoportból. Ilyenkor a jelenlegi egyenlege hozzá lesz rendelve a tiédhez.",
+    "remove_guest_explanation": "Távolítsd el a jelenleg kiválasztott vendéget a csoportból. Ilyenkor a jelenlegi egyenlege hozzá lesz rendelve a tiédhez.",
     "merge_guest": "Vendég hozzárendelése",
     "merge_guest_explanation": "Hogyha a tag, akit a vendég helyettesített, belépett a csoportba, akkor itt hozzárendelheted a vendég korábbi eseményeit.",
-    "add_guest_scf": "add_guest_scf"
+    "guest_switcher": "Vendég váltása",
+    "guest_switcher_explanation": "Válaszd ki a vendéget, akinek pénzügyeit kezelni szeretnéd",
+    "sure_remove_guest": "Biztosan el akarod távolítani a vendéget a csoportból?",
+    "needs_choose_guest": "Előbb válassz ki egy vendéget a vendégválasztó felületen",
+    "merge_scf": "merge_scf",
+    "sure_merge_guest": "sure_merge_guest",
+    "add_guest_scf": "add_guest_scf",
+    "remove_guest_scf": "remove_guest_scf",
+    "select_member": "select_member"
 }

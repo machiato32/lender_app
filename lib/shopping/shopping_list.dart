@@ -200,7 +200,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                       Theme.of(context).textTheme.bodyText1.color),
                               cursorColor: Theme.of(context).colorScheme.secondary,
                               inputFormatters: [
-                                LengthLimitingTextInputFormatter(50)
+                                LengthLimitingTextInputFormatter(255)
                               ],
                             ),
                           ),

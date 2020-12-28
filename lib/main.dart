@@ -731,7 +731,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           children: <Widget>[
                             Balances(
                               callback: callback,
-                            ),//TODO: remove guest, merge guest, switch guest, shopping list
+                            ),
                             History(
                               selectedIndex: widget.selectedHistoryIndex,
                               callback: callback,
