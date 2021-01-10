@@ -186,7 +186,7 @@ class _MemberEntryState extends State<MemberEntry> {
       nicknameColor = Theme.of(context).textTheme.button.color;
       iconColor = style.color;
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
       );
     } else {

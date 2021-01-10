@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,6 +40,15 @@ import 'package:csocsort_szamla/main/is_guest_banner.dart';
 
 final getIt = GetIt.instance;
 
+// Needed for HTTPS
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 void setup(){
   getIt.registerSingleton<NavigationService>(NavigationService());
 }
@@ -60,6 +71,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
+  HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String themeName = '';
   if (!preferences.containsKey('theme')) {
@@ -132,9 +144,12 @@ class _LenderAppState extends State<LenderApp> {
   void initUniLinks() {
     _sub = getLinksStream().listen((String link) {
       _link = link;
-      print(context);
       setState(() {
-        getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: _link,)));
+        if(currentUserId!=null){
+          getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: _link, fromAuth: (currentGroupId == null) ? true : false)));
+        }else{
+          getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(builder: (context) => LoginOrRegisterPage(inviteURL: _link,)));
+        }
       });
     }, onError: (err) {
       log(err);
@@ -154,8 +169,8 @@ class _LenderAppState extends State<LenderApp> {
       String page = decoded['screen'];
       String details = decoded['details'];
       if(usersGroupIds.contains(groupId)){
-        currentGroupId=groupId;
-        currentGroupName=groupName;
+        saveGroupId(groupId);
+        saveGroupName(groupName);
       }
       clearAllCache();
       if(currentUserId!=null){
@@ -249,6 +264,7 @@ class _LenderAppState extends State<LenderApp> {
         }
         return FeatureDiscovery(
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Lender',
             theme: appState.theme,
             localizationsDelegates: context.localizationDelegates,
@@ -256,7 +272,7 @@ class _LenderAppState extends State<LenderApp> {
             locale: context.locale,
             navigatorKey: getIt.get<NavigationService>().navigatorKey,
             home: currentUserId == null
-                ? LoginOrRegisterPage()
+                ? LoginOrRegisterPage(inviteURL: _link,)
                 : (_link != null)
                 ? JoinGroup(
                   inviteURL: _link,
@@ -330,19 +346,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Future _logout() async {
     try {
       await httpPost(uri: '/logout', context: context, body: {});
-      currentUserId = null;
-      currentGroupId = null;
-      currentGroupName = null;
-      currentGroupCurrency=null;
-      apiToken = null;
+      await clearAllCache();
+      deleteUserId();
+      deleteGroupId();
+      deleteGroupName();
+      deleteGroupCurrency();
+      deleteApiToken();
+      deleteGuestUserId();
+      deleteGuestNickname();
+      deleteGuestGroupId();
+      deleteGuestApiToken();
       usersGroups=null;
       usersGroupIds=null;
       SharedPreferences.getInstance().then((_prefs) {
-        _prefs.remove('current_user_id');
-        _prefs.remove('current_group_name');
-        _prefs.remove('current_group_id');
-        _prefs.remove('api_token');
-        _prefs.remove('current_group_currency');
         _prefs.remove('users_groups');
         _prefs.remove('users_group_ids');
       });
@@ -417,9 +433,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _groups = _getGroups();
   }
 
-  void callback() async {
-    await clearCache();
-    setState(() {});
+  Future<void> callback() async {
+    await clearAllCache();
+    setState(() {
+      _groups = null;
+      _groups = _getGroups();
+    });
   }
 
   @override
@@ -505,7 +524,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       drawer: Drawer(
         elevation: 16,
-        child: Container(
+        child: Ink(
           color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
           child: Column(
             children: [
@@ -567,7 +586,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                             );
                           }
                         }
-                        return LinearProgressIndicator();
+                        return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
                       },
                     ),
                     ListTile(
@@ -659,9 +678,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   'logout'.tr(),
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
-                onTap: () {
+                onTap: () async {
                   _logout();
-                  clearCache();
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -721,7 +739,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     children: [
                       RefreshIndicator(
                         onRefresh: () async {
-                          await clearCache();
+                          await callback();
                           setState(() {
 
                           });
@@ -749,12 +767,5 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         }
       ),
     );
-  }
-  Future clearCache() async {
-    await deleteCache(uri: '/groups/' + currentGroupId.toString());
-    await deleteCache(uri: '/groups');
-    await deleteCache(uri: '/user');
-    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
-    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

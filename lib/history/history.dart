@@ -30,7 +30,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/transactions?group=' + currentGroupId.toString(),
+        uri: '/transactions?group=' + currentGroupId.toString()+'&limit=6',
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -52,8 +52,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/payments?group=' + currentGroupId.toString(),
-        context: context, overwriteCache: overwriteCache,
+        uri: '/payments?group=' + currentGroupId.toString()+'&limit=6',
+        context: context,
+        overwriteCache: overwriteCache,
         useGuest: useGuest
       );
       List<dynamic> decoded = jsonDecode(response.body)['data'];

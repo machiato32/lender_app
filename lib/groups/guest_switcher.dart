@@ -31,16 +31,16 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
         uri: '/groups/' + currentGroupId.toString(),
         context: context,
         useCache: false
-        // useGuest: false
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
+      print(decoded['data']['guests']);
       for (var member in decoded['data']['guests']) {
         members.add(
           Member(
             apiToken: member['api_token'],
             nickname: member['username'],
-            memberId: member['id']
+            memberId: member['user_id']
           )
         );
 
@@ -108,6 +108,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                                 if(_selectedGuest!=member){
                                   _selectedGuest = member;
                                   saveGuestGroupId(currentGroupId);
+                                  print(member.apiToken);
                                   saveGuestApiToken(member.apiToken);
                                   saveGuestNickname(member.nickname);
                                   saveGuestUserId(member.memberId);
@@ -122,7 +123,6 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                                   widget.bannerKey.currentState.setState(() {
 
                                   });
-
                                 });
                               },
                               labelStyle: _selectedGuest ==

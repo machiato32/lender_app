@@ -217,21 +217,73 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   List<Widget> _generatePayments(List<PaymentData> data) {
     Function callback = this.callback;
-    return data.map((element) {
+    DateTime nowNow = DateTime.now();
+    DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
+    Widget initial =
+    Center(
+      child: Container(
+          padding: EdgeInsets.all(8),
+          child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+      ),
+    );
+    return [initial]..addAll(data.map((element) {
+      if(now.difference(element.updatedAt).inDays>7){
+        int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
+        now=now.subtract(Duration(days: toSubtract*7));
+        return
+        Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+            ),
+            PaymentEntry(
+              data: element,
+              callback: callback,
+            ),
+          ],
+        );
+      }
       return PaymentEntry(
         data: element,
         callback: callback,
       );
-    }).toList();
+    }).toList());
   }
 
   List<Widget> _generateTransactions(List<TransactionData> data) {
     Function callback = this.callback;
-    return data.map((element) {
+    DateTime nowNow = DateTime.now();
+    DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
+    Widget initial =
+    Center(
+      child: Container(
+          padding: EdgeInsets.all(8),
+          child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+      ),
+    );
+    return [initial]..addAll(data.map((element) {
+      if(now.difference(element.updatedAt).inDays>7){
+        int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
+        now=now.subtract(Duration(days: toSubtract*7));
+        return
+          Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.all(8),
+                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+              ),
+              TransactionEntry(
+                data: element,
+                callback: callback,
+              ),
+            ],
+          );
+      }
       return TransactionEntry(
         data: element,
         callback: callback,
       );
-    }).toList();
+    }).toList());
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../essentials/app_theme.dart';
+import 'about_us.dart';
 import 'change_password.dart';
 import 'color_picker.dart';
 import 'change_language.dart';
@@ -32,7 +33,7 @@ class _SettingsState extends State<Settings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: ListView(
-          children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial()],
+          children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), AboutUs()],
         ),
       ),
     );

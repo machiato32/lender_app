@@ -2,27 +2,47 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
-
-  LoginOrRegisterPage();
+  final String inviteURL;
+  LoginOrRegisterPage({this.inviteURL});
 
   @override
   _LoginOrRegisterPageState createState() => _LoginOrRegisterPageState();
 }
 
 class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _doubleTapped=false;
   bool _tapped=false;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      needsLogin=false;
+      if(useTest){
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              duration: Duration(hours: 10),
+              content: Text('Test Mode', style: Theme.of(context).textTheme.button,),
+              action: SnackBarAction(
+                label: 'Back to Normal Mode',
+                textColor: Theme.of(context).textTheme.button.color,
+                onPressed: () {
+                  setState(() {
+                    useTest=!useTest;
+                    _tapped=false;
+                    _doubleTapped=false;
+                  });
+                },
+              ),
+            )
+        );
+      }
+
     });
 
   }
@@ -30,6 +50,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,31 +67,34 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
               },
               onLongPress: (){
                 if(_tapped && _doubleTapped){
-                  clearAllCache();
-                  useTest=!useTest;
-                  _tapped=false;
-                  _doubleTapped=false;
-                  FlutterToast ft = FlutterToast(context);
-                  // ft.removeQueuedCustomToasts();
-                  ft.showToast(child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      color: Colors.grey[700],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                            child: Text(useTest?'Test Mode':'Normal Mode',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(color: Colors.white))),
-                      ],
-                    ),
-                  ));
+                  setState(() {
+                    if(!useTest){
+                      _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
+                            duration: Duration(hours: 10),
+                            content: Text('Test Mode', style: Theme.of(context).textTheme.button,),
+                            action: SnackBarAction(
+                              label: 'Back to Normal Mode',
+                              textColor: Theme.of(context).textTheme.button.color,
+                              onPressed: () {
+                                setState(() {
+                                  useTest=!useTest;
+                                  _tapped=false;
+                                  _doubleTapped=false;
+                                });
+                              },
+                            ),
+                          )
+                      );
+                    }else{
+                      _scaffoldKey.currentState.removeCurrentSnackBar();
+                    }
+                    clearAllCache();
+                    useTest=!useTest;
+                    _tapped=false;
+                    _doubleTapped=false;
+                  });
                 }
               },
               child: Image(
@@ -106,7 +130,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 GradientButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginRoute()));
+                        MaterialPageRoute(builder: (context) => LoginPage(inviteURL: widget.inviteURL,)));
                   },
                   child: Text(
                     'login'.tr(),
@@ -122,7 +146,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 GradientButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => RegisterRoute()));
+                        MaterialPageRoute(builder: (context) => RegisterPage(inviteURL: widget.inviteURL)));
                   },
                   child: Text('register'.tr(),
                       style: Theme.of(context).textTheme.button),

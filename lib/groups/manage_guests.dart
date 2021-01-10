@@ -13,7 +13,8 @@ import '../essentials/widgets/gradient_button.dart';
 import '../main.dart';
 
 class ManageGuests extends StatelessWidget {
-
+  final bool showRemove;
+  ManageGuests({this.showRemove});
   Future<bool> _removeGuest(BuildContext context) async {
     Map<String, dynamic> body ={
       "member_id":guestUserId
@@ -90,7 +91,8 @@ class ManageGuests extends StatelessWidget {
                   Theme.of(context).textTheme.subtitle2,
                   textAlign: TextAlign.center,
                 )
-            ),SizedBox(
+            ),
+            SizedBox(
               height: 10,
             ),
             Row(
@@ -104,122 +106,130 @@ class ManageGuests extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
+            Visibility(
+              visible: showRemove,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: Text(
+                        'remove_guest'.tr(),
+                        style:
+                        Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: Text(
+                        'remove_guest_explanation'.tr(),
+                        style:
+                        Theme.of(context).textTheme.subtitle2,
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        child: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.onSecondary,),
+                        onPressed: (){
+                          if(guestApiToken!=null){
+                            showDialog(
+                                context: context,
+                                child: ConfirmLeaveDialog(
+                                  title: 'remove_guest',
+                                  choice: 'sure_remove_guest',
+                                )
+                            ).then((value){
+                              if(value??false){
+                                showDialog(
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _removeGuest(context),
+                                      dataTrueText: 'remove_guest_scf',
+                                      onDataTrue: (){
+                                        clearAllCache();
+                                        deleteGuestApiToken();
+                                        deleteGuestGroupId();
+                                        deleteGuestNickname();
+                                        deleteGuestUserId();
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => MainPage()),
+                                                (r) => false);
+                                      },
+                                    )
+                                );
+                              }
+                            });
+                          }else{
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(
+                                child: toastMessage
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: Text(
+                        'merge_guest'.tr(),
+                        style:
+                        Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                      child: Text(
+                        'merge_guest_explanation'.tr(),
+                        style:
+                        Theme.of(context).textTheme.subtitle2,
+                        textAlign: TextAlign.center,
+                      )
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        child: Icon(Icons.call_merge, color: Theme.of(context).colorScheme.onSecondary,),
+                        onPressed: (){
+                          if(guestApiToken!=null){
+                            showDialog(
+                                context: context,
+                                child: MemberToMergeDialog()
+                            );
+                          }else{
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(
+                                child: toastMessage
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-            Center(
-                child: Text(
-                  'remove_guest'.tr(),
-                  style:
-                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
-                  textAlign: TextAlign.center,
-                )
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Center(
-                child: Text(
-                  'remove_guest_explanation'.tr(),
-                  style:
-                  Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                )
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  child: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.onSecondary,),
-                  onPressed: (){
-                    if(guestApiToken!=null){
-                      showDialog(
-                          context: context,
-                          child: ConfirmLeaveDialog(
-                            title: 'remove_guest',
-                            choice: 'sure_remove_guest',
-                          )
-                      ).then((value){
-                        if(value??false){
-                          showDialog(
-                            context: context,
-                            child: FutureSuccessDialog(
-                             future: _removeGuest(context),
-                             dataTrueText: 'remove_guest_scf',
-                             onDataTrue: (){
-                               clearAllCache();
-                               deleteGuestApiToken();
-                               deleteGuestGroupId();
-                               deleteGuestNickname();
-                               deleteGuestUserId();
-                               Navigator.pushAndRemoveUntil(
-                                   context,
-                                   MaterialPageRoute(builder: (context) => MainPage()),
-                                       (r) => false);
-                             },
-                            )
-                          );
-                        }
-                      });
-                    }else{
-                      FlutterToast ft = FlutterToast(context);
-                      ft.showToast(
-                        child: toastMessage
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Center(
-                child: Text(
-                  'merge_guest'.tr(),
-                  style:
-                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
-                  textAlign: TextAlign.center,
-                )
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Center(
-                child: Text(
-                  'merge_guest_explanation'.tr(),
-                  style:
-                  Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                )
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  child: Icon(Icons.call_merge, color: Theme.of(context).colorScheme.onSecondary,),
-                  onPressed: (){
-                    if(guestApiToken!=null){
-                      showDialog(
-                          context: context,
-                          child: MemberToMergeDialog()
-                      );
-                    }else{
-                      FlutterToast ft = FlutterToast(context);
-                      ft.showToast(
-                          child: toastMessage
-                      );
-                    }
-                  },
-                ),
-              ],
-            )
+
           ],
         ),
       ),

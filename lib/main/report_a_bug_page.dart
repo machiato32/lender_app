@@ -51,7 +51,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
                       SizedBox(height: 5,),
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(DateFormat('yyyy/MM/dd - kk:mm').format(widget.date==null?now:widget.date), style: Theme.of(context).textTheme.bodyText1,),
+                        child: Text(DateFormat('yyyy/MM/dd - HH:mm').format(widget.date==null?now:widget.date), style: Theme.of(context).textTheme.bodyText1,),
                       ),
                       SizedBox(height: 15,),
                       Text('what_is_wrong'.tr(), style: Theme.of(context).textTheme.headline6,),
@@ -196,10 +196,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
   Future<bool> _postBug(String bugText, DateTime date, String location, String details) async {
     try {
       Map<String, dynamic> body = {
-        "error":bugText,
-        "date":date,
-        "location":location,
-        "details":details
+        "description":bugText+"\nTime: "+DateFormat('yyyy/MM/dd - HH:mm').format(date)+"\nLocation: "+location+"\nDetails: "+details,
       };
 
       await httpPost(uri: '/bug', body: body, context: context);

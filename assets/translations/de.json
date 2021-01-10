@@ -100,7 +100,7 @@
 
     "add_scf":"Das Hinzufügen war erfolgreich!",
 
-    "per_person": " Ft/Person",
+    "per_person": " {}/Person",
     "no_amount": "Du hast keine Summe angegeben!",
     "amount_not_negative": "Die Summe darf nicht negativ sein!",
     "transaction_scf": "Die Transaktion wurde erfolgreich gebucht!",

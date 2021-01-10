@@ -49,7 +49,9 @@ class _ColorPickerState extends State<ColorPicker> {
                 children: _getSolidColors(),
               ),
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 7,),
+            Divider(),
+            SizedBox(height: 7,),
             Center(
               child: Wrap(
                 runSpacing: 5,

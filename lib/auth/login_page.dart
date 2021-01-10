@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -17,12 +18,14 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import '../essentials/app_theme.dart';
 import 'forgot_password_page.dart';
 
-class LoginRoute extends StatefulWidget {
+class LoginPage extends StatefulWidget {
+  final String inviteURL;
+  LoginPage({this.inviteURL});
   @override
-  _LoginRouteState createState() => _LoginRouteState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginRouteState extends State<LoginRoute> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController(
       text: currentUsername ?? '');
   TextEditingController _passwordController = TextEditingController();
@@ -235,6 +238,7 @@ class _LoginRouteState extends State<LoginRoute> {
                                 MaterialPageRoute(
                                     builder: (context) => JoinGroup(
                                       fromAuth: true,
+                                      inviteURL: widget.inviteURL,
                                     )),
                                     (r) => false
                             );
@@ -248,10 +252,20 @@ class _LoginRouteState extends State<LoginRoute> {
                       ],
                     ),
                     onDataTrue: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
-                              (r) => false);
+                      if(widget.inviteURL==null){
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainPage()),
+                            (r) => false
+                        );
+                      }else{
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: widget.inviteURL,)),
+                            (r) => false
+                        );
+                      }
+
                     },
                   ));
             }
@@ -279,31 +293,22 @@ class _LoginRouteState extends State<LoginRoute> {
             .where((group) => group.groupId == lastActiveGroup)
             .toList()
             .length !=0) {
-          currentGroupName = groups
-              .firstWhere((group) => group.groupId == lastActiveGroup)
-              .groupName;
-          currentGroupId = lastActiveGroup;
-          currentGroupCurrency = groups
-              .firstWhere((group) => group.groupId == lastActiveGroup)
-              .groupCurrency;
+          Group currentGroup=groups.firstWhere((group) => group.groupId == lastActiveGroup);
+          saveGroupName(currentGroup.groupName);
+          saveGroupId(lastActiveGroup);
+          saveGroupCurrency(currentGroup.groupCurrency);
           SharedPreferences.getInstance().then((_prefs) {
-            _prefs.setString('current_group_name', currentGroupName);
-            _prefs.setInt('current_group_id', currentGroupId);
             _prefs.setStringList('users_groups', usersGroups);
             _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-            _prefs.setString('current_group_currency', currentGroupCurrency);
           });
           return true;
         }
-        currentGroupName = groups[0].groupName;
-        currentGroupId = groups[0].groupId;
-        currentGroupCurrency = groups[0].groupCurrency;
+        saveGroupName(groups[0].groupName);
+        saveGroupId(groups[0].groupId);
+        saveGroupCurrency(groups[0].groupCurrency);
         SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-          _prefs.setInt('current_group_id', currentGroupId);
           _prefs.setStringList('users_groups', usersGroups);
           _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-          _prefs.setString('current_group_currency', currentGroupCurrency);
         });
         return true;
       }

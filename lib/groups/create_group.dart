@@ -1,9 +1,9 @@
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/main.dart';
@@ -26,7 +26,7 @@ class _CreateGroupState extends State<CreateGroup> {
           currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
-  String _defaultValue = "CML";
+  String _defaultValue = "EUR";
 
   Future<bool> _createGroup(String groupName, String nickname, String currency) async {
     try {
@@ -38,15 +38,9 @@ class _CreateGroupState extends State<CreateGroup> {
       http.Response response =
           await httpPost(uri: '/groups', body: body, context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      currentGroupName = decoded['group_name'];
-      currentGroupId = decoded['group_id'];
-      currentGroupCurrency = decoded['currency'];
-
-      SharedPreferences.getInstance().then((_prefs) {
-        _prefs.setString('current_group_name', currentGroupName);
-        _prefs.setInt('current_group_id', currentGroupId);
-        _prefs.setString('current_group_currency', currentGroupCurrency);
-      });
+      saveGroupName(decoded['group_name']);
+      saveGroupId(decoded['group_id']);
+      saveGroupCurrency(decoded['currency']);
       return response.statusCode == 201;
     } catch (_) {
       throw _;

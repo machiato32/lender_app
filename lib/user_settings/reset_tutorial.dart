@@ -42,13 +42,7 @@ class _ResetTutorialState extends State<ResetTutorial> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Row(
-                    children: [
-                      Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                      SizedBox(width: 3,),
-                      Text('okay'.tr(), style: Theme.of(context).textTheme.button),
-                    ],
-                  ),
+                  child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
                   onPressed: () {
                     FeatureDiscovery.clearPreferences(context, ['drawer', 'shopping_list', 'group_settings', 'add_payment_expense', 'settings']);
                     SharedPreferences.getInstance().then((value) => value.setBool('show_tutorial', true));

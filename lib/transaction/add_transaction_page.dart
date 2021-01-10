@@ -420,7 +420,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                                         .toList()
                                                         .length)
                                                 .toStringAsFixed(2) +
-                                            'per_person'.tr()
+                                            'per_person'.tr(args: [currencies[currentGroupCurrency]['symbol']])
                                         : '',
                                     style: Theme.of(context).textTheme.bodyText2,
                                   ),

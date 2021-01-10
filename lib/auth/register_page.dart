@@ -18,12 +18,14 @@ import 'package:csocsort_szamla/essentials/currencies.dart';
 
 import '../essentials/http_handler.dart';
 
-class RegisterRoute extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
+  final String inviteURL;
+  RegisterPage({this.inviteURL});
   @override
-  _RegisterRouteState createState() => _RegisterRouteState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterRouteState extends State<RegisterRoute> {
+class _RegisterPageState extends State<RegisterPage> {
 
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -32,7 +34,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _defaultValue = "CML";
+  String _defaultValue = "EUR";
 
 
   @override
@@ -118,7 +120,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.onSurface,
                           width: 2),
-                      //  when the TextFormField in unfocused
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -238,9 +239,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
                           items: enumerateCurrencies().map((currency) => DropdownMenuItem(
                             child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
                             value: currency.split(';')[0].trim(),
-                            onTap: (){
-
-                            },
                           )).toList(),
                         ),
                       ),
@@ -273,6 +271,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                             MaterialPageRoute(
                                 builder: (context) => JoinGroup(
                                       fromAuth: true,
+                                      inviteURL: widget.inviteURL,
                                     )),
                             (r) => false);
                       },

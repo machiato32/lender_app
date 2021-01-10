@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 extension Money on double{
   String money(String code){
     return currencies[code]["subunit"]==1?
@@ -25,9 +27,9 @@ List<String> enumerateCurrencies(){
   return currencies.keys.map((key) => key+";"+currencies[key]["symbol"]).toList();
 }
 
+Map<String, Map<String,dynamic>> currencies = SplayTreeMap.from(unorderedCurrencies, (a,b) => a.compareTo(b));
 
-
-Map<String, Map<String, dynamic>> currencies =
+Map<String, Map<String, dynamic>> unorderedCurrencies =
 {
   "CAD": {
     "subunit": 1,

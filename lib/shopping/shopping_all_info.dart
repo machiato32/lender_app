@@ -1,3 +1,5 @@
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/shopping/edit_request_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -98,32 +100,70 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    FlatButton.icon(
-                        onPressed: () {
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
-                                future:
-                                _deleteShoppingRequest(
-                                    widget
-                                        .data.requestId),
-                                dataTrueText: 'delete_scf',
-                                onDataTrue: () {
-                                  Navigator.pop(context);
-                                  Navigator.pop(
-                                      context, 'deleted');
-                                },
-                              )
-                          );
-                        },
-                        color: Theme.of(context).colorScheme.secondary,
-                        label: Text(
-                          'delete'.tr(),
-                          style: Theme.of(context).textTheme.button,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                            onPressed: () {
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future:
+                                    _deleteShoppingRequest(
+                                        widget
+                                            .data.requestId),
+                                    dataTrueText: 'delete_scf',
+                                    onDataTrue: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(
+                                          context, 'deleted');
+                                    },
+                                  )
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete,
+                                    color: Theme.of(context).textTheme.button.color),
+                                SizedBox(width: 5,),
+                                Text(
+                                  'delete'.tr(),
+                                  style: Theme.of(context).textTheme.button,
+                                ),
+                              ],
+                            ),
                         ),
-                        icon: Icon(Icons.delete,
-                            color: Theme.of(context).textTheme.button.color)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                child: EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,)
+                            ).then((value){
+                              if(value??false){
+                                Navigator.pop(context, 'deleted');
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit,
+                                  color: Theme.of(context).textTheme.button.color),
+                              SizedBox(width: 5,),
+                              Text(
+                                'modify'.tr(),
+                                style: Theme.of(context).textTheme.button,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -134,61 +174,79 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    FlatButton.icon(
-                      onPressed: () {
-                        showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
-                              future: _fulfillShoppingRequest(widget.data.requestId),
-                              dataTrueText: 'fulfill_scf',
-                              onDataTrue: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context, 'deleted');
-                              },
-                            )
-                        );
-                      },
-                      color: Theme.of(context).colorScheme.secondary,
-                      label: Text('remove_from_list'.tr(),
-                          style: Theme.of(context).textTheme.button),
-                      icon: Icon(Icons.check,
-                          color: Theme.of(context).textTheme.button.color),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child: FutureSuccessDialog(
+                                  future: _fulfillShoppingRequest(widget.data.requestId),
+                                  dataTrueText: 'fulfill_scf',
+                                  onDataTrue: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context, 'deleted');
+                                  },
+                                )
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.check,
+                                  color: Theme.of(context).textTheme.button.color),
+                              SizedBox(width: 5,),
+                              Text('remove_from_list'.tr(),
+                                  style: Theme.of(context).textTheme.button),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    FlatButton.icon(
-                      onPressed: () {
-                        showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
-                              future: _fulfillShoppingRequest(widget.data.requestId),
-                              dataTrueText: 'fulfill_scf',
-                              onDataTrue: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context, 'deleted');
-                              },
-                            )
-                        ).then((value) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddTransactionRoute(
-                                        type: TransactionType
-                                            .fromShopping,
-                                        shoppingData:
-                                        widget
-                                            .data,
-                                      )
-                              )
-                          );
-                        });
-                      },
-                      color: Theme.of(context).colorScheme.secondary,
-                      label: Text('add_as_expense'.tr(),
-                          style: Theme.of(context).textTheme.button),
-                      icon: Icon(Icons.attach_money,
-                          color: Theme.of(context).textTheme.button.color),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child: FutureSuccessDialog(
+                                  future: _fulfillShoppingRequest(widget.data.requestId),
+                                  dataTrueText: 'fulfill_scf',
+                                  onDataTrue: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context, 'deleted');
+                                  },
+                                )
+                            ).then((value) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddTransactionRoute(
+                                            type: TransactionType
+                                                .fromShopping,
+                                            shoppingData:
+                                            widget
+                                                .data,
+                                          )
+                                  )
+                              );
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.attach_money,
+                                  color: Theme.of(context).textTheme.button.color),
+                              SizedBox(width: 5,),
+                              Text('add_as_expense'.tr(),
+                                  style: Theme.of(context).textTheme.button),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

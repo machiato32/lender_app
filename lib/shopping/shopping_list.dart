@@ -15,6 +15,7 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 
 import '../essentials/widgets/error_message.dart';
+import 'edit_request_dialog.dart';
 
 class ShoppingRequestData {
   int requestId;
@@ -317,8 +318,6 @@ class _ShoppingListState extends State<ShoppingList> {
                               );
                             },
                             child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
-                            // color: Theme.of(context).colorScheme.secondary,
-
                           ),
                         ],
                       ),
@@ -409,7 +408,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       dateColor = Theme.of(context).textTheme.button.color;
       icon = Icon(Icons.receipt, color: style.color);
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
       );
     } else {
@@ -434,7 +433,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
       background: Align(
           alignment: Alignment.centerLeft,
-          child: Icon(widget.data.requesterId != idToUse?Icons.attach_money:Icons.delete,
+          child: Icon(widget.data.requesterId != idToUse?Icons.attach_money:Icons.edit,
             size: 30, color: Theme.of(context).textTheme.bodyText1.color,
           )
       ),
@@ -470,20 +469,34 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           });
 
         }else{
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: FutureSuccessDialog(
-                future:
-                _deleteShoppingRequest(
-                    widget
-                        .data.requestId),
-                dataTrueText: 'delete_scf',
-                onDataTrue: () {
-                  Navigator.pop(context);
-                },
-              )
-          ).then((value) => widget.callback());
+          if(direction == DismissDirection.endToStart){
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                child: FutureSuccessDialog(
+                  future:
+                  _deleteShoppingRequest(
+                      widget
+                          .data.requestId),
+                  dataTrueText: 'delete_scf',
+                  onDataTrue: () {
+                    Navigator.pop(context, true);
+                  },
+                )
+            ).then((value) {
+              if (value ?? false) widget.callback();
+            });
+          }else if(direction==DismissDirection.startToEnd){
+            showDialog(
+                context: context,
+                child: EditRequestDialog(textBefore: widget.data.name, requestId: widget.data.requestId,),
+            ).then((value){
+              if(value??false){
+                widget.callback();
+              }
+            });
+          }
+
         }
       },
       child: Container(

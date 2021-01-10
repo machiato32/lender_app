@@ -100,7 +100,7 @@
 
     "add_scf": "A hozzáadás sikeres volt!",
 
-    "per_person": " Ft/fő",
+    "per_person": " {}/fő",
     "no_amount": "Nem adtál meg összeget!",
     "amount_not_negative": "A végösszeg nem lehet negatív!",
     "transaction_scf": "A bevásárlást sikeresen könyveltük!",
@@ -226,6 +226,7 @@
 
     "change_group_currency": "Csoport pénznemének megváltoztatása",
     "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!",
+    "currency_scf": "currency_scf",
 
     "manage_guests": "Vendégek kezelése",
     "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
@@ -243,5 +244,12 @@
     "sure_merge_guest": "sure_merge_guest",
     "add_guest_scf": "add_guest_scf",
     "remove_guest_scf": "remove_guest_scf",
-    "select_member": "select_member"
+    "select_member": "select_member",
+
+    "edit_request": "Elem szerkesztése",
+    "edited_request": "Szerkesztett elem",
+
+    "about_us": "Rólunk",
+    "about_us_explanation": "Az alkalmazás névjegye",
+    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, not only your life gets better, but you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs"
 }

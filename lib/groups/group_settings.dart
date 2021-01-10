@@ -24,6 +24,7 @@ class GroupSettings extends StatefulWidget {
 class _GroupSettingState extends State<GroupSettings> {
   Future<String> _invitation;
   Future<bool> _isUserAdmin;
+  Future<bool> _hasGuests;
 
   Future<String> _getInvitation() async {
     try {
@@ -32,6 +33,19 @@ class _GroupSettingState extends State<GroupSettings> {
           context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['invitation'];
+
+    } catch (_) {
+      throw _;
+    }
+  }
+  Future<bool> _getHasGuests() async {
+    try {
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString()+'/has_guests',
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      print(decoded);
+      return decoded['data']==1;
 
     } catch (_) {
       throw _;
@@ -55,6 +69,8 @@ class _GroupSettingState extends State<GroupSettings> {
     _invitation = _getInvitation();
     _isUserAdmin = null;
     _isUserAdmin = _getIsUserAdmin();
+    _hasGuests=null;
+    _hasGuests=_getHasGuests();
     super.initState();
   }
 
@@ -207,7 +223,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                                 GradientButton(
                                                   onPressed: () {
                                                     Share.share(
-                                                        'http://www.lenderapp.net/join/' +
+                                                        'https://www.lenderapp.net/join/' +
                                                             snapshot.data,
                                                         subject:
                                                             'invitation_to_lender'
@@ -246,11 +262,35 @@ class _GroupSettingState extends State<GroupSettings> {
                           ),
                           Visibility(
                             visible: snapshot.data,
-                            child: GuestSwitcher(bannerKey: widget.bannerKey),
-                          ),
-                          Visibility(
-                            visible: snapshot.data,
-                            child: ManageGuests(),
+                            child: FutureBuilder(
+                              future: _hasGuests,
+                              builder: (context, hasGuestsSnapshot){
+                                if(hasGuestsSnapshot.connectionState==ConnectionState.done){
+                                  if(snapshot.hasData){
+                                    return Column(
+                                      children: [
+                                        Visibility(
+                                          visible: hasGuestsSnapshot.data,
+                                          child: GuestSwitcher(bannerKey: widget.bannerKey),
+                                        ),
+                                        ManageGuests(showRemove: hasGuestsSnapshot.data),
+                                      ],
+
+                                    );
+                                  }else{
+                                    return ErrorMessage(
+                                      error: hasGuestsSnapshot.error,
+                                      locationOfError: 'has_guests',
+                                      callback: (){
+                                        _hasGuests=null;
+                                        _hasGuests=_getHasGuests();
+                                      },
+                                    );
+                                  }
+                                }
+                                return LinearProgressIndicator();
+                              },
+                            ),
                           ),
                           GroupMembers(),
                         ],
