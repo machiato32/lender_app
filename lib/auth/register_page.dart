@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:expandable/expandable.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
@@ -36,6 +38,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String _defaultValue = "EUR";
 
+  ExpandableController _reminderExplanationController = ExpandableController();
+  ExpandableController _usernameExplanationController = ExpandableController();
+
+  bool _privacyPolicy = false;
 
   @override
   void initState() {
@@ -65,43 +71,75 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: EdgeInsets.only(left:20, right: 20),
               shrinkWrap: true,
               children: <Widget>[
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 3) {
-                      return 'minimal_length'.tr(args: ['3']);
-                    }
-                    return null;
-                  },
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    hintText: 'example_name'.tr(),
-                    labelText: 'username'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
+                Stack(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'field_empty'.tr();
+                        }
+                        if (value.length < 3) {
+                          return 'minimal_length'.tr(args: ['3']);
+                        }
+                        return null;
+                      },
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        hintText: 'example_name'.tr(),
+                        labelText: 'username'.tr(),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              width: 2),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                    LengthLimitingTextInputFormatter(15),
+                    Container(
+                      margin: EdgeInsets.only(top:20),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              _usernameExplanationController.expanded=!_usernameExplanationController.expanded;
+                            });
+                          },
+                          icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.secondary,)
+                        )
+                      ),
+                    )
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
-
                 SizedBox(
-                  height: 30,
+                  height: 10,
+                ),
+                Expandable(
+                  controller: _usernameExplanationController,
+                  collapsed: Container(),
+                  expanded: Container(
+                    constraints: BoxConstraints(maxHeight: 80),
+                    child: Row(
+                      children: [
+                        Flexible(child: Text('username_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2,)),
+                      ],
+                    )
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 TextFormField(
                   validator: (value) {
@@ -177,43 +215,76 @@ class _RegisterPageState extends State<RegisterPage> {
                   cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 3) {
-                      return 'minimal_length'.tr(args: ['3']);
-                    }
-                    return null;
-                  },
-                  controller: _passwordReminderController,
-                  decoration: InputDecoration(
-                    labelText: 'password_reminder'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
+                Stack(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'field_empty'.tr();
+                        }
+                        if (value.length < 3) {
+                          return 'minimal_length'.tr(args: ['3']);
+                        }
+                        return null;
+                      },
+                      controller: _passwordReminderController,
+                      decoration: InputDecoration(
+                        labelText: 'password_reminder'.tr(),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              width: 2),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                        ),
+                      ),
+                      inputFormatters: [
+                        // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                        LengthLimitingTextInputFormatter(50),
+                      ],
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyText1.color),
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
-                  ),
-                  inputFormatters: [
-                    // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                    LengthLimitingTextInputFormatter(50),
+                    Container(
+                      margin: EdgeInsets.only(top:20),
+                      child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  _reminderExplanationController.expanded=!_reminderExplanationController.expanded;
+                                });
+                              },
+                              icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.secondary,)
+                          )
+                      ),
+                    )
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 10,
+                ),
+                Expandable(
+                  controller: _reminderExplanationController,
+                  collapsed: Container(),
+                  expanded: Container(
+                      constraints: BoxConstraints(maxHeight: 80),
+                      child: Row(
+                        children: [
+                          Flexible(child: Text('reminder_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2,)),
+                        ],
+                      )
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Row(
                   children: <Widget>[
@@ -248,6 +319,29 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(
                   height: 30,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: InkWell(
+                          onTap: (){
+                            launch('https://lenderapp.net/privacy-policy');
+                          },
+                          child: Text('accept_privacy_policy'.tr(),
+                            style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline), )
+                      ),
+                    ),
+                    Checkbox(
+                      value: _privacyPolicy,
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      onChanged: (value){
+                        setState(() {
+                          _privacyPolicy=value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -258,8 +352,9 @@ class _RegisterPageState extends State<RegisterPage> {
               String username = _usernameController.text;
               String passwordReminder = _passwordReminderController.text;
               if (_passwordController.text == _passwordConfirmController.text) {
-                String password = _passwordConfirmController.text;
-                showDialog(
+                if(_privacyPolicy){
+                  String password = _passwordConfirmController.text;
+                  showDialog(
                     barrierDismissible: false,
                     context: context,
                     child: FutureSuccessDialog(
@@ -270,12 +365,48 @@ class _RegisterPageState extends State<RegisterPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => JoinGroup(
-                                      fromAuth: true,
-                                      inviteURL: widget.inviteURL,
-                                    )),
-                            (r) => false);
+                                  fromAuth: true,
+                                  inviteURL: widget.inviteURL,
+                                )),
+                                (r) => false);
                       },
-                    ));
+                    )
+                  );
+                }else{
+                  Widget toast = Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 12.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: Colors.red,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 12.0,
+                        ),
+                        Flexible(
+                            child: Text("must_accept_privacy_policy".tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(color: Colors.white))),
+                      ],
+                    ),
+                  );
+                  FlutterToast ft = FlutterToast(context);
+                  ft.showToast(
+                      child: toast,
+                      toastDuration: Duration(seconds: 2),
+                      gravity: ToastGravity.BOTTOM
+                  );
+                }
+
               } else {
                 Widget toast = Container(
                   padding: const EdgeInsets.symmetric(

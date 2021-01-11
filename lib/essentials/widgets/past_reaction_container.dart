@@ -57,19 +57,24 @@ class PastReactionContainer extends StatelessWidget {
                   padding: EdgeInsets.only(top:4, bottom: 4, left: 6, right: 6),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                      color: Colors.grey[300],
+                      color: (Theme.of(context).brightness==Brightness.light)?Colors.grey[300]:Colors.grey[800],
                       boxShadow:  (Theme.of(context).brightness==Brightness.light && !isSecondaryColor)
                           ?[
-                        BoxShadow(
-                          color: Colors.grey[500],
-                          offset: Offset(0.0, 1.5),
-                          blurRadius: 1.5,
-                        )
-                      ]
+                            BoxShadow(
+                              color: Colors.grey[500],
+                              offset: Offset(0.0, 1.5),
+                              blurRadius: 1.5,
+                            )
+                          ]
                           : []
                   ),
                   child: Row(
-                      children: orderedReactions.map((e) => Text(e)).toList()
+                      children: orderedReactions.map((e) {
+                        if(e!=null && double.tryParse(e)!=null){
+                          return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20));
+                        }
+                        return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 15),);
+                      }).toList()
                   )
               ),
             ),

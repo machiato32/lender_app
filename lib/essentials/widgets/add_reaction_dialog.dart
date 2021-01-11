@@ -41,8 +41,8 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
           :Theme.of(context).textTheme.bodyText1;
       return Container(
 
-        padding: EdgeInsets.fromLTRB(6, 4, 6, 4),
-        margin: EdgeInsets.only(bottom: 4),
+        padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+        margin: EdgeInsets.fromLTRB(4,0,4,4),
         decoration: BoxDecoration(
           gradient: e.userId==idToUse?AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true):LinearGradient(colors: [Colors.transparent, Colors.transparent]),
           borderRadius: BorderRadius.circular(15),
@@ -71,15 +71,6 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
               'reactions'.tr(),
               style:
               Theme.of(context).textTheme.headline6,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'add_reaction'.tr(),
-              style:
-              Theme.of(context).textTheme.bodyText2,
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -121,8 +112,8 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(50)),
                                     color: widget.reactions.firstWhere((el) => el.userId==idToUse && el.reaction==e, orElse: ()=>null)!=null?
-                                    Colors.grey[300]:
-                                    Colors.white,
+                                    (Theme.of(context).brightness==Brightness.light)?Colors.grey[300]:Colors.grey[700]:
+                                    (Theme.of(context).brightness==Brightness.light)?Colors.white:Colors.transparent,
 
                                   ),
                                   child: Text(e, style: TextStyle(fontSize: 25),)
@@ -138,15 +129,6 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
               visible: widget.reactions.length!=0,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'all_reactions'.tr(),
-                    style:
-                    Theme.of(context).textTheme.bodyText2,
-                    textAlign: TextAlign.center,
-                  ),
                   SizedBox(
                     height: 10,
                   ),

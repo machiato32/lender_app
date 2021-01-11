@@ -50,8 +50,8 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
           children: <Widget>[
             Text(
               'change_group_currency'.tr(),
-              style:
-              Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline6,
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 10,

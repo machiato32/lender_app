@@ -1,5 +1,6 @@
 const String APP_URL =  'http://www.examp.le';
-const String TEST_URL = 'http://www.test.examp.le';
+const String TEST_URL = 'http://www.examp.le';
+int currentVersion=YOUR_CURRENT_VERSION;
 bool useTest=true;
 String apiToken;
 String currentUsername;

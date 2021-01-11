@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -112,78 +113,88 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              title: Text('transactions'.tr())),
+              label: 'transactions'.tr(),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money), title: Text('payments'.tr()))
+              icon: Icon(Icons.attach_money),
+              label: 'payments'.tr()
+          )
         ],
       ),
-      body: TabBarView(
-          controller: _tabController,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            FutureBuilder(
-              future: _transactions,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    return ListView(
-                        controller: _transactionScrollController,
-                        key: PageStorageKey('transactionList'),
-                        padding: EdgeInsets.all(10),
-                        shrinkWrap: true,
-                        children: _generateTransactions(snapshot.data));
-                  } else {
-                    return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Text(snapshot.error.toString()),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _transactions = null;
-                            _transactions = _getTransactions();
-                          });
-                        });
-                  }
-                }
-                return Center(
-                  child: CircularProgressIndicator(),
-                  heightFactor: 2,
-                );
-              },
-            ),
-            FutureBuilder(
-              future: _payments,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    return ListView(
-                        controller: _paymentScrollController,
-                        key: PageStorageKey('paymentList'),
-                        padding: EdgeInsets.all(10),
-                        shrinkWrap: true,
-                        children: _generatePayments(snapshot.data));
-                  } else {
-                    return InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Text(snapshot.error.toString()),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _payments = null;
-                            _payments = _getPayments();
-                          });
-                        });
-                  }
-                }
-                return Center(
-                  child: CircularProgressIndicator(),
-                  heightFactor: 2,
-                );
-              },
-            ),
-          ]),
+      body: Column(
+        children: [
+          IsGuestBanner(callback: callback,),
+          Expanded(
+            child: TabBarView(
+                controller: _tabController,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  FutureBuilder(
+                    future: _transactions,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          return ListView(
+                              controller: _transactionScrollController,
+                              key: PageStorageKey('transactionList'),
+                              padding: EdgeInsets.all(10),
+                              shrinkWrap: true,
+                              children: _generateTransactions(snapshot.data));
+                        } else {
+                          return InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Text(snapshot.error.toString()),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _transactions = null;
+                                  _transactions = _getTransactions();
+                                });
+                              });
+                        }
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                        heightFactor: 2,
+                      );
+                    },
+                  ),
+                  FutureBuilder(
+                    future: _payments,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          return ListView(
+                              controller: _paymentScrollController,
+                              key: PageStorageKey('paymentList'),
+                              padding: EdgeInsets.all(10),
+                              shrinkWrap: true,
+                              children: _generatePayments(snapshot.data));
+                        } else {
+                          return InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Text(snapshot.error.toString()),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _payments = null;
+                                  _payments = _getPayments();
+                                });
+                              });
+                        }
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                        heightFactor: 2,
+                      );
+                    },
+                  ),
+                ]),
+          ),
+        ],
+      ),
       //TODO:hide on top
       floatingActionButton: Visibility(
         visible: true,

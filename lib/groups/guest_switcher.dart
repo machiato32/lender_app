@@ -34,7 +34,6 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      print(decoded['data']['guests']);
       for (var member in decoded['data']['guests']) {
         members.add(
           Member(
@@ -108,7 +107,6 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                                 if(_selectedGuest!=member){
                                   _selectedGuest = member;
                                   saveGuestGroupId(currentGroupId);
-                                  print(member.apiToken);
                                   saveGuestApiToken(member.apiToken);
                                   saveGuestNickname(member.nickname);
                                   saveGuestUserId(member.memberId);

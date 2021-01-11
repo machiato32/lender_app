@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:csocsort_szamla/essentials/widgets/version_not_supported.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -156,10 +157,6 @@ class _LenderAppState extends State<LenderApp> {
     });
   }
 
-  // initPlatformState() async {
-  //   await initUniLinks();
-  // }
-
   Future onSelectNotification(String payload) async {
     print("Payload: "+payload);
     try{
@@ -245,7 +242,23 @@ class _LenderAppState extends State<LenderApp> {
           onSelectNotification(message['data']['payload']);
         },
       );
+      _supportedVersion()
+      .then((value){
+        if(!(value??true)){
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => VersionNotSupportedPage(),));
+        }
+      });
     });
+  }
+
+  Future<bool> _supportedVersion() async {
+    try{
+      http.Response response = await httpGet(context: context, uri: '/supported?version='+currentVersion.toString());
+      bool decoded = jsonDecode(response.body);
+      return decoded;
+    }catch(_){
+      throw _;
+    }
   }
 
   @override
@@ -308,6 +321,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  GlobalKey<State> _isGuestBannerKey = GlobalKey<State>();
   Future<SharedPreferences> getPrefs() async {
     return await SharedPreferences.getInstance();
   }
@@ -317,8 +331,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
     for (var group in decoded['data']) {
-      groups.add(Group(
-          groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
+      groups.add(
+        Group(
+          groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']
+        )
+      );
+    }
+    if(groups.any((element) => element.groupId==currentGroupId)){
+      var group = groups.firstWhere((element) => element.groupId==currentGroupId);
+      saveGroupName(group.groupName);
+      saveGroupCurrency(group.groupCurrency);
     }
     return groups;
   }
@@ -498,7 +520,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         currentIndex: _selectedIndex,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home), title: Text('home'.tr())),
+              icon: Icon(Icons.home), label: 'home'.tr()
+          ),
           BottomNavigationBarItem(
               icon: DescribedFeatureOverlay(
                   featureId: 'shopping_list',
@@ -508,7 +531,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   overflowMode: OverflowMode.extendBackground,
                   child: Icon(Icons.add_shopping_cart)
               ),
-              title: Text('shopping_list'.tr())
+              label: 'shopping_list'.tr()
           ),
           BottomNavigationBarItem( //TODO: change user currency
               icon: DescribedFeatureOverlay(
@@ -517,8 +540,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   title: Text('discover_group_settings_title'.tr()),
                   description: Text('discover_group_settings_description'.tr()),
                   overflowMode: OverflowMode.extendBackground,
-                  child: Icon(Icons.supervisor_account)),
-              title: Text('group'.tr())
+                  child: Icon(Icons.supervisor_account)
+              ),
+              label: 'group'.tr()
           )
         ],
       ),
@@ -728,10 +752,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             )
         ),
         builder: (context, isOnline){
-          GlobalKey<State> key = GlobalKey<State>();
           return Column(
             children: [
-              IsGuestBanner(key: key, callback: callback,),
+              IsGuestBanner(key: _isGuestBannerKey, callback: callback,),
               Expanded(
                 child: TabBarView(
                     physics: NeverScrollableScrollPhysics(),
@@ -758,7 +781,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ),
                       ),
                       ShoppingList(),
-                      GroupSettings(bannerKey: key),
+                      GroupSettings(bannerKey: _isGuestBannerKey),
                     ]
                 ),
               ),

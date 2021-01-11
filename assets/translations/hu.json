@@ -226,7 +226,7 @@
 
     "change_group_currency": "Csoport pénznemének megváltoztatása",
     "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!",
-    "currency_scf": "currency_scf",
+    "currency_scf": "A pénznem megváltoztatása sikeres volt",
 
     "manage_guests": "Vendégek kezelése",
     "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
@@ -240,21 +240,26 @@
     "guest_switcher_explanation": "Válaszd ki a vendéget, akinek pénzügyeit kezelni szeretnéd",
     "sure_remove_guest": "Biztosan el akarod távolítani a vendéget a csoportból?",
     "needs_choose_guest": "Előbb válassz ki egy vendéget a vendégválasztó felületen",
-    "merge_scf": "merge_scf",
-    "sure_merge_guest": "sure_merge_guest",
-    "add_guest_scf": "add_guest_scf",
-    "remove_guest_scf": "remove_guest_scf",
-    "select_member": "select_member",
+    "merge_scf": "A hozzárendelés sikeres volt",
+    "sure_merge_guest": "Biztosan hozzá szeretnéd rendelni a vendéget?",
+    "add_guest_scf": "A vendég hozzáadása sikeres volt",
+    "remove_guest_scf": "A vendég eltávolítása sikeres volt",
+    "select_member": "Válassz egy tagot",
 
     "edit_request": "Elem szerkesztése",
     "edited_request": "Szerkesztett elem",
 
     "about_us": "Rólunk",
     "about_us_explanation": "Az alkalmazás névjegye",
-    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, not only your life gets better, but you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs",
+    "about_us_text": "Két srác, aki unalmában ilyen appokat fejleszt.\n\nHa megveszed a pro verziót, nem csak az életed lesz jobb, de még két egyetemistának is segíesz fenntartani az appot \uD83D\uDE09\n\nMinden jót, a fejlesztők",
 
     "reactions": "Reakciók",
     "add_reaction": "Reakció hozzáadása",
-    "all_reactions": "Eddigi reakciók"
+    "all_reactions": "Eddigi reakciók",
 
+    "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit és számokat használhatsz. Később a csoportban megadhatsz becenevet.",
+    "reminder_explanation": "Nem tároljuk e-mail címed, így amennyiben elfelejtenéd jelszavad, ezt az emlékeztetőt mutatjuk meg neked.",
+
+    "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
+    "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!"
 }
