@@ -135,7 +135,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
               ],
             ),
             Container(
-              height: 500,
+              height: 550,
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[

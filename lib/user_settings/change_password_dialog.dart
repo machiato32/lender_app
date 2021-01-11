@@ -39,7 +39,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     }
   }
 
-  void initTextFileds() {
+  void initTextFields() {
     textFields = [
       TextFormField(
         validator: (value) {
@@ -173,7 +173,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    initTextFileds();
+    initTextFields();
     return
       Form(
         key: _formKey,
