@@ -320,8 +320,8 @@ class _BalancesState extends State<Balances> {
   }
 
   List<Widget> _generateBalances(List<Member> members) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     return members.map<Widget>((Member member) {
-      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
       if (member.memberId == idToUse) {
         TextStyle style = Theme.of(context).textTheme.button;
         return Column(

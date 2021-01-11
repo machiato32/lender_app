@@ -1,4 +1,7 @@
+import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -23,6 +26,7 @@ class ShoppingRequestData {
   String requesterUsername, requesterNickname;
   int requesterId;
   DateTime updatedAt;
+  List<Reaction> reactions;
 
   ShoppingRequestData(
       {this.updatedAt,
@@ -30,7 +34,8 @@ class ShoppingRequestData {
       this.requesterUsername,
       this.name,
       this.requestId,
-      this.requesterNickname});
+      this.requesterNickname,
+      this.reactions});
 
   factory ShoppingRequestData.fromJson(Map<String, dynamic> json) {
     return ShoppingRequestData(
@@ -40,6 +45,9 @@ class ShoppingRequestData {
       requesterNickname: json['requester_nickname'],
       name: json['name'],
       updatedAt: DateTime.parse(json['updated_at']).toLocal(),
+      reactions: json['reactions']
+          .map<Reaction>((reaction) => Reaction.fromJson(reaction))
+          .toList()
     );
   }
 }
@@ -499,73 +507,81 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
         }
       },
-      child: Container(
-        height: 65,
-        width: MediaQuery.of(context).size.width,
-        decoration: boxDecoration,
-        margin: EdgeInsets.only(
-          bottom: 4,
-        ),
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () async {
-              showModalBottomSheetCustom(
-                  context: context,
-                  backgroundColor: Theme.of(context).cardTheme.color,
-                  builder: (context) => SingleChildScrollView(
-                      child: ShoppingAllInfo(widget.data))).then((val) {
-                if (val == 'deleted') widget.callback();
-              });
-            },
-            borderRadius: BorderRadius.circular(15),
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Flexible(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        children: [
+          Container(
+            height: 65,
+            width: MediaQuery.of(context).size.width,
+            decoration: boxDecoration,
+            margin: EdgeInsets.only(top: widget.data.reactions.length==0?0:14,bottom: 4,),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onLongPress: (){
+                  showDialog(context: context, child: AddReactionDialog(type: 'requests', reactions: widget.data.reactions, reactToId: widget.data.requestId, callback: widget.callback,));
+                },
+                onTap: () async {
+                  showModalBottomSheetCustom(
+                      context: context,
+                      backgroundColor: Theme.of(context).cardTheme.color,
+                      builder: (context) => SingleChildScrollView(
+                          child: ShoppingAllInfo(widget.data)
+                      )
+                  ).then((val) {
+                    if (val == 'deleted') widget.callback();
+                  });
+                },
+                borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Flex(
+                    direction: Axis.horizontal,
                     children: <Widget>[
                       Flexible(
-                        child: Row(
-                          children: <Widget>[
-                            icon,
-                            SizedBox(
-                              width: 20,
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Flexible(
+                            child: Row(
+                              children: <Widget>[
+                                icon,
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Flexible(
+                                          child: Text(
+                                        name,
+                                        style: style.copyWith(fontSize: 22),
+                                        overflow: TextOverflow.ellipsis,
+                                      )),
+                                      Flexible(
+                                          child: Text(
+                                        widget.data.requesterNickname,
+                                        style:
+                                            TextStyle(color: dateColor, fontSize: 15),
+                                        overflow: TextOverflow.ellipsis,
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Flexible(
-                                      child: Text(
-                                    name,
-                                    style: style.copyWith(fontSize: 22),
-                                    overflow: TextOverflow.ellipsis,
-                                  )),
-                                  Flexible(
-                                      child: Text(
-                                    widget.data.requesterNickname,
-                                    style:
-                                        TextStyle(color: dateColor, fontSize: 15),
-                                    overflow: TextOverflow.ellipsis,
-                                  ))
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        ],
+                      )),
                     ],
-                  )),
-                ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+          PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.requestId, isSecondaryColor:widget.data.requesterId == idToUse),
+        ],
       ),
     );
   }

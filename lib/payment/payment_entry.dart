@@ -1,3 +1,6 @@
+import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -14,6 +17,7 @@ class PaymentData {
   DateTime updatedAt;
   String payerUsername, payerNickname, takerUsername, takerNickname, note;
   int payerId, takerId;
+  List<Reaction> reactions;
 
   PaymentData(
       {this.paymentId,
@@ -25,7 +29,8 @@ class PaymentData {
       this.takerUsername,
       this.takerId,
       this.takerNickname,
-      this.note});
+      this.note,
+      this.reactions});
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
@@ -40,7 +45,11 @@ class PaymentData {
         takerId: json['taker_id'],
         takerUsername: json['taker_username'],
         takerNickname: json['taker_nickname'],
-        note: json['note']);
+        note: json['note'],
+        reactions: json['reactions']
+            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
+            .toList()
+    );
   }
 }
 
@@ -91,83 +100,91 @@ class _PaymentEntryState extends State<PaymentEntry> {
       amount = (-widget.data.amount).printMoney(currentGroupCurrency);
       boxDecoration = BoxDecoration();
     }
-    return Container(
-      height: 80,
-      width: MediaQuery.of(context).size.width,
-      decoration: boxDecoration,
-      margin: EdgeInsets.only(bottom: 4),
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: () async {
-            showModalBottomSheetCustom(
-                context: context,
-                backgroundColor: Theme.of(context).cardTheme.color,
-                builder: (context) => SingleChildScrollView(
-                    child: PaymentAllInfo(widget.data))).then((val) {
-              if (val == 'deleted') widget.callback();
-            });
-          },
-          borderRadius: BorderRadius.circular(15),
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Flex(
-              direction: Axis.horizontal,
-              children: <Widget>[
-                Flexible(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      children: [
+        Container(
+          height: 80,
+          width: MediaQuery.of(context).size.width,
+          decoration: boxDecoration,
+          margin: EdgeInsets.only(bottom: 4),
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onLongPress: (){
+                showDialog(context: context, child: AddReactionDialog(type: 'payments', reactions: widget.data.reactions, reactToId: widget.data.paymentId, callback: widget.callback,));
+              },
+              onTap: () async {
+                showModalBottomSheetCustom(
+                    context: context,
+                    backgroundColor: Theme.of(context).cardTheme.color,
+                    builder: (context) => SingleChildScrollView(
+                        child: PaymentAllInfo(widget.data))).then((val) {
+                  if (val == 'deleted') widget.callback();
+                });
+              },
+              borderRadius: BorderRadius.circular(15),
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Flex(
+                  direction: Axis.horizontal,
                   children: <Widget>[
                     Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: Row(
-                              children: <Widget>[
-                                icon,
-                                SizedBox(
-                                  width: 20,
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Row(
+                                  children: <Widget>[
+                                    icon,
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Flexible(
+                                              child: Text(
+                                            takerName,
+                                            style: style.copyWith(fontSize: 21),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                          Flexible(
+                                              child: Text(
+                                            note,
+                                            style: TextStyle(
+                                                color: dateColor, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Flexible(
-                                          child: Text(
-                                        takerName,
-                                        style: style.copyWith(fontSize: 21),
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                      Flexible(
-                                          child: Text(
-                                        note,
-                                        style: TextStyle(
-                                            color: dateColor, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                              Text(
+                                amount,
+                                style: style,
+                              ),
+                            ],
                           ),
-                          Text(
-                            amount,
-                            style: style,
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      ],
+                    )),
                   ],
-                )),
-              ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        PastReactionContainer(reactedToId: widget.data.paymentId, reactions: widget.data.reactions, callback: widget.callback, isSecondaryColor: widget.data.payerId==idToUse,)
+      ],
     );
   }
 }

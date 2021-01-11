@@ -251,5 +251,10 @@
 
     "about_us": "Rólunk",
     "about_us_explanation": "Az alkalmazás névjegye",
-    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, not only your life gets better, but you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs"
+    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, not only your life gets better, but you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs",
+
+    "reactions": "Reakciók",
+    "add_reaction": "Reakció hozzáadása",
+    "all_reactions": "Eddigi reakciók"
+
 }
