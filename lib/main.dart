@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
-import 'package:csocsort_szamla/essentials/widgets/version_not_supported.dart';
+import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';

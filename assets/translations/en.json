@@ -217,31 +217,51 @@
 
     "change_group_currency": "Change group currency",
     "change_group_currency_explanation": "Change the currency of the group, but note that the balances will not be converted!",
-
-    "currency_scf": "currency_scf",
+    "currency_scf": "Currency changed successfully!",
 
     "manage_guests": "Manage guests",
     "manage_guests_explanation": "The guests are members controlled by the admins. They are not registered on their own.",
     "add_guest": "Add guest",
     "add_guest_explanation": "Add a new guest to the group",
     "remove_guest": "Remove guest",
-    "remove_guest_explanation": "Remove the chosen guest from the group. In this case the current balance of the guest will be added to yours.",
-    "merge_guest": "Merge guest",
+    "remove_guest_explanation": "Remove the chosen guest from the group. In this case the current balance of the guest will be assigned you.",
+    "merge_guest": "Assign guest",
     "merge_guest_explanation": "Remove the chosen guest and assign their past transactions to a real member in the group.",
     "guest_switcher": "Switch guest",
     "guest_switcher_explanation": "Choose the guest whose finances you want to manage.",
     "sure_remove_guest": "Are you sure you want to remove them from the group?",
     "needs_choose_guest": "A guest needs to be chosen",
-    "merge_scf": "merge_scf",
-    "sure_merge_guest": "sure_merge_guest",
-    "add_guest_scf": "add_guest_scf",
-    "remove_guest_scf": "remove_guest_scf",
-    "select_member": "select_member",
+    "merge_scf": "Assignment successful",
+    "sure_merge_guest": "Are you sure you want to assign the guest to the chosen member?",
+    "add_guest_scf": "Guest added successfully",
+    "remove_guest_scf": "Guest removed successfully",
+    "select_member": "Select member",
 
-    "edit_request": "Elem szerkesztése",
-    "edited_request": "Szerkesztett elem",
+    "edit_request": "Edit shopping request",
+    "edited_request": "Edited request",
 
-    "about_us": "Rólunk",
-    "about_us_explanation": "Az alkalmazás névjegye",
-    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, not only your life gets better, but you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs"
+    "about_us": "About us",
+    "about_us_explanation": "Informations about us and the app",
+    "about_us_text": "Two guys bored and making apps like this.\n\nIf you buy the pro version, you help out two uni students maintain the app \uD83D\uDE09\n\nTake care, your devs",
+
+    "reactions": "Reactions",
+    "add_reaction": "Add reaction",
+    "all_reactions": "Past reactions",
+    "reaction_scf": "Reaction added successfully!",
+
+    "username_explanation": "You're going to use the username for logging into the app. Only the english lowecase letters and numbers are allowed. Later you will be able to assign yourself a nickname for each group.",
+    "reminder_explanation": "We aren't storing you e-mail, so if you forget your password, we will show you this reminder.",
+
+    "accept_privacy_policy": "I accept the privacy policy",
+    "must_accept_privacy_policy": "You have to accept the privacy policy!",
+
+    "system_notification": "System notification",
+    "system_notification_explanation": "Messages about the app",
+    "free_trial_ended": "The free trial period has ended",
+    "free_trial_ended_explanation": "From now on you are going to see ads in the app, and you won't be able to use the gradient themes.\nYou can buy these through the app.",
+    "gradient_available_in_paid_version": "You can buy the gradient themes through the app.",
+
+    "version_not_supported": "The version is not supported",
+    "version_not_supported_explanation": "We updated Lender to a new version. With this change some of the features in your versions will not work.",
+    "download_new_version": "Download the new version"
 }

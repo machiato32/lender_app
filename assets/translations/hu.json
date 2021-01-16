@@ -235,7 +235,7 @@
     "remove_guest": "Vendég eltávolítása",
     "remove_guest_explanation": "Távolítsd el a jelenleg kiválasztott vendéget a csoportból. Ilyenkor a jelenlegi egyenlege hozzá lesz rendelve a tiédhez.",
     "merge_guest": "Vendég hozzárendelése",
-    "merge_guest_explanation": "Hogyha a tag, akit a vendég helyettesített, belépett a csoportba, akkor itt hozzárendelheted a vendég korábbi eseményeit.",
+    "merge_guest_explanation": "Távolítsd el a vendéget, és rendeld hozzá a korábbi eseményeit a csoport egy tagjához.",
     "guest_switcher": "Vendég váltása",
     "guest_switcher_explanation": "Válaszd ki a vendéget, akinek pénzügyeit kezelni szeretnéd",
     "sure_remove_guest": "Biztosan el akarod távolítani a vendéget a csoportból?",
@@ -264,9 +264,13 @@
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
     "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!",
 
-    "system_notification": "system_notification",
-    "system_notification_explanation": "system_notification_explanation",
-    "free_trial_ended": "free_trial_ended",
-    "free_trial_ended_explanation": "free_trial_ended_explanation",
-    "available_in_paid_version": "available_in_paid_version"
+    "system_notification": "Rendszerüzenet",
+    "system_notification_explanation": "Az alkalmazás működésével kapcsolatos üzenet",
+    "free_trial_ended": "Az ingyenes próbaidőszak véget ért",
+    "free_trial_ended_explanation": "Mostantól megjelennek az alkalmazásban reklámok, valamint nem használhatók a színátmenetes témák.\nEzeket megveheted az alkalmazáson belül.",
+    "gradient_available_in_paid_version": "A gradienses színeket megveheted az alkalmazáson belül",
+
+    "version_not_supported": "A verzió nem támogatott",
+    "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
+    "download_new_version": "Töltsd le az új verziót"
 }

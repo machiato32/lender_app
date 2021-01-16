@@ -56,7 +56,7 @@ class _ColorPickerState extends State<ColorPicker> {
             SizedBox(height: 7,),
             Visibility(
               visible: !useGradients,
-              child: Text('available_in_paid_version'.tr(), style: Theme.of(context).textTheme.subtitle2,),
+              child: Text('gradient_available_in_paid_version'.tr(), style: Theme.of(context).textTheme.subtitle2,),
             ),
             Center(
               child: Wrap(

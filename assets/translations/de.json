@@ -224,6 +224,54 @@
     "change_password_explanation": "Ändere dein Passwort mit dem du dich einlogst",
 
     "change_group_currency": "Ändere die Gruppenwährung",
-    "change_group_currency_explanation": "Ändere die Währung der Gruppe, aber achte darauf, dass die bisherigen Kontostände nicht umgerechnet werden!"
+    "change_group_currency_explanation": "Ändere die Währung der Gruppe, aber achte darauf, dass die bisherigen Kontostände nicht umgerechnet werden!",
+    "currency_scf": "Die Änderung der Währung war erfolgreich!",
+
+    "manage_guests": "Gäste verwalten",
+    "manage_guests_explanation": "Gäste sind Mitglieder die von den Administratoren verwaltet werden. Sie haben sich nicht registriert.",
+    "add_guest": "Gast hinzufügen",
+    "add_guest_explanation": "Einen neuen Gast in die Gruppe aufnehmen",
+    "remove_guest": "Gast entfernen",
+    "remove_guest_explanation": "Entferne den oben ausgewählten Gast aus der Gruppe. Der jetzige Kontostand des Gastes wird dir zugewiesen.",
+    "merge_guest": "Gast zuweisen",
+    "merge_guest_explanation": "Entferne den Gast und weise seine vorherigen Transaktionen einem echten Midglied zu.",
+    "guest_switcher": "Gast wechseln",
+    "guest_switcher_explanation": "Wähle den Gast wessen Finanzen du verwalten möchtest.",
+    "sure_remove_guest": "Bist du sicher, dass du den Gast von der Gruppe entfernen möchtest?",
+    "needs_choose_guest": "Zuerst musst du einen Gast auswählen",
+    "merge_scf": "Das Zuweisen war erfolgreich",
+    "sure_merge_guest": "Bist du sicher, dass du den Gast jemanden zuweisen möchtest?",
+    "add_guest_scf": "Gast erfolgreich hinzugefügt",
+    "remove_guest_scf": "Gast erfolgreich entfernt",
+    "select_member": "Mitglied auswählen",
+
+    "edit_request": "Element ändern",
+    "edited_request": "Geändertes Element",
+
+    "about_us": "Über uns",
+    "about_us_explanation": "Infos über die Entwickler und die App",
+    "about_us_text": "Zwei Jungs die in Langeweile Apps entwickeln.\n\nFalls du die pro Version kaufst, hilfst du zwei Uni Studenten die App aufrechtzuhalten\uD83D\uDE09\n\nAlles gute, deine Entwickler",
+
+    "reactions": "Reaktionen",
+    "add_reaction": "Reaktion hinzufügen",
+    "all_reactions": "Vorherige Reaktionen",
+    "reaction_scf": "Reaktion erfolgreich hinzugefügt!",
+
+    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
+    "reminder_explanation": "Wir kennen deine e-mail nicht, deshalb zeigen wir dir diese Erinnerung, falls du dein Passwort vergisst.",
+
+    "accept_privacy_policy": "Ich akzeptiere die Datenschutzbestimmungen",
+    "must_accept_privacy_policy": "Du musst die Datenschutzbestimmungen akzeptieren!",
+
+    "system_notification": "System Benachrichtigungen",
+    "system_notification_explanation": "Benachrichtigungen über die App",
+    "free_trial_ended": "Die kostenlose Probezeit ist zuende",
+
+    "free_trial_ended_explanation": "Von jetzt an wirst du in der App Anzeigen sehen und keine Farbübergängigen Themen benutzen können.\nFalls du möchtest, kannst du diese in der App kaufen.",
+     "gradient_available_in_paid_version": "Du kannst dir die Farbübergängigen Themen in der App kaufen.",
+
+    "version_not_supported": "Diese Version ist nicht unterstüzt",
+    "version_not_supported_explanation": "Wir haben eine neue Lender Version eingeführt. Mit dieser Änderung werden ein Paar Funktionen in deiner Version nicht Funktionieren.",
+    "download_new_version": "Die neue Version herunterladen"
 
 }
