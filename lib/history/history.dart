@@ -213,7 +213,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
-                            locationOfError: 'balances',
+                            locationOfError: 'purchase_history',
                             callback: (){
                               setState(() {
                                 _transactions = null;
@@ -282,7 +282,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
-                            locationOfError: 'balances',
+                            locationOfError: 'payment_history',
                             callback: (){
                               setState(() {
                                 _payments = null;

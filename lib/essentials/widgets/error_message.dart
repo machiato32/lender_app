@@ -24,8 +24,10 @@ class ErrorMessage extends StatelessWidget {
                     FlatButton.icon(
                       onPressed: (){
                         DateTime now = DateTime.now();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => ReportABugPage(error: error, date: now, location: locationOfError,)));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReportABugPage(error: error, date: now, location: locationOfError,))
+                        );
                       },
                       icon: Icon(Icons.error, color: Theme.of(context).brightness==Brightness.dark?Colors.black:Colors.white,),
                       label: Text('report_this_error'.tr(), style: TextStyle(color: Theme.of(context).brightness==Brightness.dark?Colors.black:Colors.white),),

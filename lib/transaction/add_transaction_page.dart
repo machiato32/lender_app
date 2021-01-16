@@ -349,7 +349,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                       } else {
                                         return ErrorMessage(
                                           error: snapshot.error.toString(),
-                                          locationOfError: 'balances',
+                                          locationOfError: 'add_transaction',
                                           callback: (){
                                             setState(() {
                                               _members = null;

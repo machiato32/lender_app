@@ -242,7 +242,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                         } else {
                                           return ErrorMessage(
                                             error: snapshot.error.toString(),
-                                            locationOfError: 'balances',
+                                            locationOfError: 'invitation',
                                             callback: (){
                                               setState(() {
                                                 _invitation = null;
@@ -298,7 +298,7 @@ class _GroupSettingState extends State<GroupSettings> {
                     } else {
                       return ErrorMessage(
                         error: snapshot.error.toString(),
-                        locationOfError: 'balances',
+                        locationOfError: 'is_user_admin',
                         callback: (){
                           setState(() {
                             _isUserAdmin = null;

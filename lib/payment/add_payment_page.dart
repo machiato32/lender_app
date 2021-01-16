@@ -275,7 +275,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       } else {
                                         return ErrorMessage(
                                           error: snapshot.error.toString(),
-                                          locationOfError: 'balances',
+                                          locationOfError: 'add_payment',
                                           callback: (){
                                             setState(() {
                                               _members = null;

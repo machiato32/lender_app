@@ -49,7 +49,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 }else{
                   return ErrorMessage(
                     error: snapshot.error.toString(),
-                    locationOfError: 'balances',
+                    locationOfError: 'password_reminder',
                     callback: (){
                       setState(() {
 

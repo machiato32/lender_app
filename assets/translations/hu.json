@@ -213,12 +213,7 @@
     "your_currency": "A pénznemed",
     "currency_of_group": "A csoport pénzneme",
 
-    "if_not_working": "Hogyha ez nem segít",
-    "report_this_error": "Jelezd a hibát",
-    "time_of_error": "Mikor történt?",
-    "where_did_happen": "Hol futottál bele?",
     "location": "Az oldal neve",
-    "anything_else": "Egyéb megjegyzés",
     "details": "Részletesebb leírás",
 
     "change_username_explanation": "Változtasd meg a felhasználóneved, amelyikkel belépsz az alkalmazásba",

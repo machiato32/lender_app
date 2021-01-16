@@ -352,7 +352,7 @@ class _ShoppingListState extends State<ShoppingList> {
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
-                            locationOfError: 'balances',
+                            locationOfError: 'shopping_list',
                             callback: (){
                               setState(() {
                                 _shoppingList = null;

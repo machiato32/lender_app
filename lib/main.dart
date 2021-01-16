@@ -655,7 +655,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           } else {
                             return ErrorMessage(
                               error: snapshot.error.toString(),
-                              locationOfError: 'balances',
+                              locationOfError: 'home_groups',
                               callback: (){
                                 setState(() {
                                   _groups = null;
