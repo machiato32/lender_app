@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/change_nickname_dialog.dart';
 import 'package:flutter/material.dart';
@@ -245,16 +246,17 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                         prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
                                       });
                                       if(usersGroups.length>0){
-                                        currentGroupName=usersGroups[0];
-                                        currentGroupId=usersGroupIds[0];
+                                        saveGroupId(usersGroupIds[0]);
+                                        saveGroupName(usersGroups[0]);
+                                        //TODO: group currency
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => MainPage()),
                                                 (r) => false);
                                       }else{
-                                        currentGroupName=null;
-                                        currentGroupId=null;
+                                        deleteGroupId();
+                                        deleteGroupCurrency();
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(

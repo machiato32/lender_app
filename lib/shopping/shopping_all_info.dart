@@ -104,6 +104,34 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                child: EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,)
+                            ).then((value){
+                              if(value??false){
+                                Navigator.pop(context, 'deleted');
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit,
+                                  color: Theme.of(context).textTheme.button.color),
+                              SizedBox(width: 5,),
+                              Text(
+                                'modify'.tr(),
+                                style: Theme.of(context).textTheme.button,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
                             onPressed: () {
                               showDialog(
                                   barrierDismissible: false,
@@ -136,34 +164,6 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                child: EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,)
-                            ).then((value){
-                              if(value??false){
-                                Navigator.pop(context, 'deleted');
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit,
-                                  color: Theme.of(context).textTheme.button.color),
-                              SizedBox(width: 5,),
-                              Text(
-                                'modify'.tr(),
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
               ),

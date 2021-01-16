@@ -133,27 +133,18 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     children: [
                       GradientButton(
                         onPressed: (){
-                          showDialog(
-                              context: context,
-                              child: ConfirmChoiceDialog(
-                                choice: 'want_edit',
-                              ),
-                          ).then((value){
-                            if(value!=null && value){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                  AddPaymentRoute(
-                                    payment: SavedPayment(
-                                        amount: widget.data.amount,
-                                        note: widget.data.note,
-                                        payerId: widget.data.payerId,
-                                        takerId: widget.data.takerId,
-                                        paymentId: widget.data.paymentId
-                                    ),
-                                  )
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              AddPaymentRoute(
+                                payment: SavedPayment(
+                                    amount: widget.data.amount,
+                                    note: widget.data.note,
+                                    payerId: widget.data.payerId,
+                                    takerId: widget.data.takerId,
+                                    paymentId: widget.data.paymentId
+                                ),
                               )
-                              ).then((value) => Navigator.pop(context, 'deleted'));
-                            }
-                          });
+                          )
+                          ).then((value) => Navigator.pop(context, 'deleted'));
                         },
                         child: Row(
                           children: [

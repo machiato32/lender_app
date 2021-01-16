@@ -221,7 +221,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
               );
             }
           },
-//          child: ImageIcon(AssetImage('assets/dodo_color.png')),
           child: Icon(
             Icons.keyboard_arrow_up,
             color: Theme.of(context).textTheme.button.color,

@@ -281,10 +281,8 @@ class _LenderAppState extends State<LenderApp> {
       };
       http.Response response = await http.get(useTest?TEST_URL:APP_URL+'/user', headers: header);
       var decoded = jsonDecode(response.body);
-      print(decoded);
       showAds=decoded['data']['ad_free']==0;
       useGradients=decoded['data']['gradients_enabled']==1;
-      print(decoded['data']);
       SharedPreferences preferences = await SharedPreferences.getInstance();
       bool trial=false;
       if(preferences.containsKey('trial')){
@@ -396,10 +394,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Future<String> _getCurrentGroup() async {
     http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
     Map<String, dynamic> decoded = jsonDecode(response.body);
-    currentGroupName = decoded['data']['group_name'];
-    SharedPreferences.getInstance().then((_prefs) {
-      _prefs.setString('current_group_name', currentGroupName);
-    });
+    await saveGroupName(decoded['data']['group_name']);
     return currentGroupName;
   }
 
@@ -540,7 +535,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               }
             }
             return Text(
-              currentGroupName ?? 'asd',
+              currentGroupName ?? 'error'.tr(),
               style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
             );
           },
@@ -724,7 +719,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 },
               ),
               Divider(),
+              // ListTile(
+              //   dense: true,
+              //   leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
+              //   title: Text('in_app_purchase'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+              // ),
               ListTile(
+                dense: true,
                 leading: DescribedFeatureOverlay(
                   tapTarget: Icon(Icons.settings, color: Colors.black),
                   featureId: 'settings',
@@ -750,9 +751,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.bug_report,
+                  color: Colors.red,
+                ),
+                dense: true,
+                title: Text(
+                  'report_a_bug'.tr(),
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
+                },
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(
                   Icons.exit_to_app,
                   color: Theme.of(context).textTheme.bodyText1.color,
                 ),
+                dense: true,
                 title: Text(
                   'logout'.tr(),
                   style: Theme.of(context).textTheme.bodyText1,
@@ -766,20 +783,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           (r) => false);
                 },
               ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.bug_report,
-                  color: Colors.red,
-                ),
-                title: Text(
-                  'report_a_bug'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ReportABugPage()));
-                },
-              ),
+
             ],
           ),
         ),

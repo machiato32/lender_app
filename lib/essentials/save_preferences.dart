@@ -28,104 +28,104 @@ Future _delete(String key) async {
   });
 }
 
-void saveApiToken(String newApiToken) async {
+void saveApiToken(String newApiToken) {
   apiToken=newApiToken;
-  await _saveString('api_token', newApiToken);
+  _saveString('api_token', newApiToken);
 }
 
-void saveUsername(String newUsername) async {
+void saveUsername(String newUsername) {
   currentUsername=newUsername;
-  await _saveString('current_username', newUsername);
+  _saveString('current_username', newUsername);
 }
 
-void saveUserId(int newUserId) async {
+void saveUserId(int newUserId) {
   currentUserId=newUserId;
-  await _saveInt('current_user_id', newUserId);
+  _saveInt('current_user_id', newUserId);
 }
 
-void saveGroupName(String groupName) async {
+void saveGroupName(String groupName) {
   currentGroupName=groupName;
-  await _saveString('current_group_name', groupName);
+  _saveString('current_group_name', groupName);
 }
 
-void saveGroupId(int groupId) async {
+void saveGroupId(int groupId) {
   currentGroupId=groupId;
-  await _saveInt('current_group_id', groupId);
+  _saveInt('current_group_id', groupId);
 }
 
-void saveGroupCurrency(String groupCurrency) async {
+void saveGroupCurrency(String groupCurrency) {
   currentGroupCurrency=groupCurrency;
-  await _saveString('current_group_currency', groupCurrency);
+  _saveString('current_group_currency', groupCurrency);
 }
 
-void saveGuestApiToken(String newGuestApiToken) async {
+void saveGuestApiToken(String newGuestApiToken) {
   guestApiToken=newGuestApiToken;
-  await _saveString('guest_api_token', newGuestApiToken);
+  _saveString('guest_api_token', newGuestApiToken);
 }
 
-void saveGuestGroupId(int newGuestGroupId) async {
+void saveGuestGroupId(int newGuestGroupId) {
   guestGroupId=newGuestGroupId;
-  await _saveInt('guest_group_id', newGuestGroupId);
+  _saveInt('guest_group_id', newGuestGroupId);
 }
 
-void saveGuestUserId(int newUserId) async {
+void saveGuestUserId(int newUserId) {
   guestUserId=newUserId;
-  await _saveInt('guest_user_id', newUserId);
+  _saveInt('guest_user_id', newUserId);
 }
 
-void saveGuestNickname(String newGuestNickname) async {
+void saveGuestNickname(String newGuestNickname) {
   guestNickname=newGuestNickname;
-  await _saveString('guest_nickname', newGuestNickname);
+  _saveString('guest_nickname', newGuestNickname);
 }
 //-------------------------------------------------------//
-void deleteApiToken() async {
+void deleteApiToken() {
   apiToken=null;
-  await _delete('api_token');
+  _delete('api_token');
 }
 
-void deleteUsername() async {
+void deleteUsername() {
   currentUsername=null;
-  await _delete('current_username');
+  _delete('current_username');
 }
 
-void deleteUserId() async {
+void deleteUserId() {
   currentUserId=null;
-  await _delete('current_user_id');
+  _delete('current_user_id');
 }
 
-void deleteGroupName() async {
+void deleteGroupName() {
   currentGroupName=null;
-  await _delete('current_group_name');
+  _delete('current_group_name');
 }
 
-void deleteGroupId() async {
+void deleteGroupId() {
   currentGroupId=null;
-  await _delete('current_group_id');
+  _delete('current_group_id');
 }
 
-void deleteGroupCurrency() async {
+void deleteGroupCurrency() {
   currentGroupCurrency=null;
-  await _delete('current_group_currency');
+  _delete('current_group_currency');
 }
 
-void deleteGuestApiToken() async {
+void deleteGuestApiToken() {
   guestApiToken=null;
-  await _delete('guest_api_token');
+  _delete('guest_api_token');
 }
 
-void deleteGuestGroupId() async {
+void deleteGuestGroupId() {
   guestGroupId=null;
-  await _delete('guest_group_id');
+  _delete('guest_group_id');
 }
 
-void deleteGuestUserId() async {
+void deleteGuestUserId() {
   guestUserId=null;
-  await _delete('guest_user_id');
+  _delete('guest_user_id');
 }
 
-void deleteGuestNickname() async {
+void deleteGuestNickname() {
   guestNickname=null;
-  await _delete('guest_nickname');
+  _delete('guest_nickname');
 }
 
 Future loadAllPrefs() async {

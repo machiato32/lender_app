@@ -267,5 +267,7 @@
 
     "version_not_supported": "A verzió nem támogatott",
     "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
-    "download_new_version": "Töltsd le az új verziót"
+    "download_new_version": "Töltsd le az új verziót",
+
+    "in_app_purchase": "Pro verzió"
 }

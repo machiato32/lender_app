@@ -20,38 +20,6 @@ import 'package:csocsort_szamla/essentials/app_theme.dart';
 import '../essentials/widgets/error_message.dart';
 import 'edit_request_dialog.dart';
 
-class ShoppingRequestData {
-  int requestId;
-  String name;
-  String requesterUsername, requesterNickname;
-  int requesterId;
-  DateTime updatedAt;
-  List<Reaction> reactions;
-
-  ShoppingRequestData(
-      {this.updatedAt,
-      this.requesterId,
-      this.requesterUsername,
-      this.name,
-      this.requestId,
-      this.requesterNickname,
-      this.reactions});
-
-  factory ShoppingRequestData.fromJson(Map<String, dynamic> json) {
-    return ShoppingRequestData(
-      requestId: json['request_id'],
-      requesterId: json['requester_id'],
-      requesterUsername: json['requester_username'],
-      requesterNickname: json['requester_nickname'],
-      name: json['name'],
-      updatedAt: DateTime.parse(json['updated_at']).toLocal(),
-      reactions: json['reactions']
-          .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-          .toList()
-    );
-  }
-}
-
 class ShoppingList extends StatefulWidget {
   @override
   _ShoppingListState createState() => _ShoppingListState();
@@ -61,6 +29,8 @@ class _ShoppingListState extends State<ShoppingList> {
   Future<List<ShoppingRequestData>> _shoppingList;
 
   TextEditingController _addRequestController = TextEditingController();
+
+  ScrollController _scrollController;
 
   var _formKey = GlobalKey<FormState>();
 
@@ -295,7 +265,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                         ],
                                       ),
                                       actions: [
-                                        RaisedButton(
+                                        GradientButton(
                                           onPressed: (){
                                             if(formKey.currentState.validate()){
                                               String store = controller.text;
@@ -310,20 +280,16 @@ class _ShoppingListState extends State<ShoppingList> {
                                                     Navigator.pop(context);
                                                   },
                                                 )
-
                                               );
-
                                             }
-
                                           },
                                           child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
-                                          color: Theme.of(context).colorScheme.secondary,
                                         )
                                       ],
                                     ),
                                   );
                                 },
-                              );
+                              );//TODO: dialog in own file
                             },
                             child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
                           ),
@@ -340,6 +306,8 @@ class _ShoppingListState extends State<ShoppingList> {
                         if (snapshot.hasData) {
                           if(snapshot.data.length==0){
                             return ListView(
+                              controller: _scrollController,
+                              key: PageStorageKey('shoppingList'),
                               padding: EdgeInsets.all(15),
                               children: [
                                 Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
@@ -381,6 +349,38 @@ class _ShoppingListState extends State<ShoppingList> {
         callback: this.callback,
       );
     }).toList();
+  }
+}
+
+class ShoppingRequestData {
+  int requestId;
+  String name;
+  String requesterUsername, requesterNickname;
+  int requesterId;
+  DateTime updatedAt;
+  List<Reaction> reactions;
+
+  ShoppingRequestData(
+      {this.updatedAt,
+        this.requesterId,
+        this.requesterUsername,
+        this.name,
+        this.requestId,
+        this.requesterNickname,
+        this.reactions});
+
+  factory ShoppingRequestData.fromJson(Map<String, dynamic> json) {
+    return ShoppingRequestData(
+        requestId: json['request_id'],
+        requesterId: json['requester_id'],
+        requesterUsername: json['requester_username'],
+        requesterNickname: json['requester_nickname'],
+        name: json['name'],
+        updatedAt: DateTime.parse(json['updated_at']).toLocal(),
+        reactions: json['reactions']
+            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
+            .toList()
+    );
   }
 }
 
