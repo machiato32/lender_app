@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,126 +40,132 @@ class _ReportABugPageState extends State<ReportABugPage> {
         ),
         body: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('time_of_error'.tr(), style: Theme.of(context).textTheme.headline6),
-                      SizedBox(height: 5,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(DateFormat('yyyy/MM/dd - HH:mm').format(widget.date==null?now:widget.date), style: Theme.of(context).textTheme.bodyText1,),
-                      ),
-                      SizedBox(height: 15,),
-                      Text('what_is_wrong'.tr(), style: Theme.of(context).textTheme.headline6,),
-                      widget.error==null?
-                      TextFormField(
-                        validator: (text){
-                          if(text.trim().length==0){
-                            return 'field_empty'.tr();
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 10,
-                        controller: _bugController,
-                        decoration: InputDecoration(
-                          labelText: 'bug'.tr(),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                width: 2),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2),
-                          ),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 5,),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(DateFormat('yyyy/MM/dd - HH:mm').format(widget.date==null?now:widget.date), style: Theme.of(context).textTheme.bodyText1,),
+                            ),
+                            SizedBox(height: 15,),
+                            widget.error==null?
+                            TextFormField(
+                              validator: (text){
+                                if(text.trim().length==0){
+                                  return 'field_empty'.tr();
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 10,
+                              controller: _bugController,
+                              decoration: InputDecoration(
+                                labelText: 'bug'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      width: 2),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
+                              ),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                            )
+                                :
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(widget.error.tr(), style: Theme.of(context).textTheme.bodyText1,),
+                            ),
+                            SizedBox(height: 15,),
+                            widget.location==null?
+                            TextFormField(
+                              validator: (text){
+                                if(text.trim().length==0){
+                                  return 'field_empty'.tr();
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 10,
+                              controller: _locationController,
+                              decoration: InputDecoration(
+                                labelText: 'location'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      width: 2),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
+                              ),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                            )
+                                :
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(widget.location, style: Theme.of(context).textTheme.bodyText1,),
+                            ),
+                            SizedBox(height: 15,),
+                            TextFormField(
+                              validator: (text){
+                                return null;
+                              },
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 10,
+                              controller: _detailsController,
+                              decoration: InputDecoration(
+                                labelText: 'details'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      width: 2),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
+                              ),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                            ),
+                            SizedBox(height: 15,),
+                          ],
                         ),
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                      )
-                          :
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(widget.error.tr(), style: Theme.of(context).textTheme.bodyText1,),
                       ),
-                      SizedBox(height: 15,),
-                      Text('where_did_happen'.tr(), style: Theme.of(context).textTheme.headline6,),
-                      widget.location==null?
-                      TextFormField(
-                        validator: (text){
-                          if(text.trim().length==0){
-                            return 'field_empty'.tr();
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 10,
-                        controller: _locationController,
-                        decoration: InputDecoration(
-                          labelText: 'location'.tr(),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                width: 2),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2),
-                          ),
-                        ),
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                      )
-                          :
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(widget.location, style: Theme.of(context).textTheme.bodyText1,),
-                      ),
-                      SizedBox(height: 15,),
-                      Text('anything_else'.tr(), style: Theme.of(context).textTheme.headline6,),
-                      TextFormField(
-                        validator: (text){
-                          return null;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 10,
-                        controller: _detailsController,
-                        decoration: InputDecoration(
-                          labelText: 'details'.tr(),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                width: 2),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2),
-                          ),
-                        ),
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      SizedBox(height: 15,),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
+              Visibility(
+                visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                child: adUnitForSite('report_bug'),
               ),
             ],
           ),

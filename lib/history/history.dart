@@ -30,7 +30,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/transactions?group=' + currentGroupId.toString()+'&limit=6',
+        uri: '/purchases?group=' + currentGroupId.toString()+'&limit=6',
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -68,12 +68,27 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  void callback() {
-    widget.callback();
-    _payments = null;
-    _payments = _getPayments(overwriteCache: true);
-    _transactions = null;
-    _transactions = _getTransactions(overwriteCache: true);
+  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
+    if(!reaction){
+      widget.callback();
+      _payments = null;
+      _payments = _getPayments(overwriteCache: true);
+      _transactions = null;
+      _transactions = _getTransactions(overwriteCache: true);
+    }else{
+      setState(() {
+        if(payment){
+          _payments = null;
+          _payments = _getPayments(overwriteCache: true);
+        }
+        if(purchase){
+          _transactions = null;
+          _transactions = _getTransactions(overwriteCache: true);
+        }
+      });
+
+    }
+
   }
 
   @override

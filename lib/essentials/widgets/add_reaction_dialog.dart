@@ -37,8 +37,8 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
     int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     return widget.reactions.map((e){
         TextStyle style = e.userId==idToUse?
-          Theme.of(context).textTheme.button
-          :Theme.of(context).textTheme.bodyText1;
+        Theme.of(context).textTheme.button
+        :Theme.of(context).textTheme.bodyText1;
       return Container(
 
         padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
@@ -102,7 +102,17 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                       onDataTrue: (){
                                         Navigator.pop(context);
                                         Navigator.pop(context);
-                                        widget.callback();
+                                        switch(widget.type){
+                                          case 'purchases':
+                                            widget.callback(purchase: true, reaction:true);
+                                            break;
+                                          case 'payments':
+                                            widget.callback(payment: true, reaction:true);
+                                            break;
+                                          case 'requests':
+                                            widget.callback();
+                                            break;
+                                        }
                                       },
                                     )
                                 );
@@ -116,7 +126,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                     (Theme.of(context).brightness==Brightness.light)?Colors.white:Colors.transparent,
 
                                   ),
-                                  child: Text(e, style: TextStyle(fontSize: 25),)
+                                  child: Text(e, style: TextStyle(fontSize: MediaQuery.of(context).size.width/13),)
                               ),
                             ),
                           )).toList()

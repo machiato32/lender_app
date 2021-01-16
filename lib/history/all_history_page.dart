@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/transactions?group=' + currentGroupId.toString(),
+        uri: '/purchases?group=' + currentGroupId.toString(),
         context: context,
         useGuest: useGuest
       );
@@ -192,6 +193,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                     },
                   ),
                 ]),
+          ),
+          Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0,
+              child: adUnitForSite('history')
           ),
         ],
       ),

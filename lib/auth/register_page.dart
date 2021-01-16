@@ -478,6 +478,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
+          _prefs.setBool('trial', true);
         });
         return true;
       } else {

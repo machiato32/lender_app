@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
@@ -341,38 +342,43 @@ class _JoinGroupState extends State<JoinGroup> {
 //              SizedBox(height: 40,),
                 Visibility(
                   visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Center(
-                            child: Text(
-                              'no_group_yet'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(fontSize: 12),
-                            )),
-                        SizedBox(
-                          height: 10,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Center(
+                                child: Text(
+                                  'no_group_yet'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .copyWith(fontSize: 12),
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GradientButton(
+                              child: Text('create_group'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .copyWith(fontSize: 12)),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CreateGroup()));
+                              },
+                              // color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ],
                         ),
-                        GradientButton(
-                          child: Text('create_group'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .button
-                                  .copyWith(fontSize: 12)),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateGroup()));
-                          },
-                          // color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ],
-                    ),
+                      ),
+                      adUnitForSite('join_group'),
+                    ],
                   ),
                 ),
               ],

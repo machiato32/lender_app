@@ -13,3 +13,5 @@ String guestApiToken;
 String guestNickname;
 String guestApiToken;
 int guestGroup;
+bool showAds=false;
+bool useGradients=true;

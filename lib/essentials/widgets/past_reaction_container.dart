@@ -8,11 +8,12 @@ class PastReactionContainer extends StatelessWidget {
   final int reactedToId;
   final Function callback;
   final bool isSecondaryColor;
-  PastReactionContainer({this.reactions, this.reactedToId, this.callback, this.isSecondaryColor});
+  final String type;
+  PastReactionContainer({this.reactions, this.reactedToId, this.callback, this.isSecondaryColor, this.type});
   @override
   Widget build(BuildContext context) {
     Map<String, int> numberOfReaction ={
-      '❤':0, '❓':0, '💸':0, '👍':0, '😥':0, '🐶':0
+      '👍':0, '❤':0, '😲':0, '😥':0, '❗':0, '❓':0
     };
     for(Reaction reaction in reactions){
       if(numberOfReaction.keys.contains(reaction.reaction))
@@ -50,14 +51,14 @@ class PastReactionContainer extends StatelessWidget {
           children: [
             InkWell(
               onTap: (){
-                showDialog(context: context, child: AddReactionDialog(type: 'purchases', reactions: reactions, reactToId: reactedToId, callback: callback,));
+                showDialog(context: context, child: AddReactionDialog(type: type, reactions: reactions, reactToId: reactedToId, callback: callback,));
               },
               borderRadius: BorderRadius.circular(15),
               child: Container(
                   padding: EdgeInsets.only(top:4, bottom: 4, left: 6, right: 6),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                      color: (Theme.of(context).brightness==Brightness.light)?Colors.grey[300]:Colors.grey[800],
+                      color: (Theme.of(context).brightness==Brightness.light)?Colors.grey[200]:Colors.grey[800],
                       boxShadow:  (Theme.of(context).brightness==Brightness.light && !isSecondaryColor)
                           ?[
                             BoxShadow(
@@ -71,9 +72,9 @@ class PastReactionContainer extends StatelessWidget {
                   child: Row(
                       children: orderedReactions.map((e) {
                         if(e!=null && double.tryParse(e)!=null){
-                          return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20));
+                          return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 22));
                         }
-                        return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 15),);
+                        return Text(e, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 18),);
                       }).toList()
                   )
               ),

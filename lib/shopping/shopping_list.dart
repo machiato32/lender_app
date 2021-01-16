@@ -580,7 +580,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
               ),
             ),
           ),
-          PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.requestId, isSecondaryColor:widget.data.requesterId == idToUse),
+          PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.requestId, isSecondaryColor:widget.data.requesterId == idToUse, type: 'requests', callback: widget.callback,),
         ],
       ),
     );

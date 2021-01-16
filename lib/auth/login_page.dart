@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -333,14 +334,32 @@ class _LoginPageState extends State<LoginPage> {
         apiToken = decoded['data']['api_token'];
         currentUserId = decoded['data']['id'];
         currentUsername = decoded['data']['username'];
-
+        showAds=decoded['data']['ad_free']==0;
+        useGradients=decoded['data']['gradients_enabled']==1;
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
         });
-
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        bool trial=false;
+        if(preferences.containsKey('trial')){
+          trial=preferences.getBool('trial');
+        }
+        if(trial && !useGradients){
+          preferences.setString('theme', 'greenLightTheme');
+          AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+            '1234',
+            'system_notification'.tr(),
+            'system_notification_explanation'.tr(),
+          );
+          NotificationDetails details = NotificationDetails(
+              androidNotificationDetails, IOSNotificationDetails(presentSound: false)
+          );
+          preferences.setBool('trial', false);
+          flutterLocalNotificationsPlugin.show(1234, 'free_trial_ended'.tr(), 'free_trial_ended_explanation'.tr(), details);
+        }
         return await _selectGroup(decoded['data']['last_active_group']);
       } else {
         Map<String, dynamic> error = jsonDecode(response.body);

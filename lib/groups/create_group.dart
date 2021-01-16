@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
@@ -68,168 +69,178 @@ class _CreateGroupState extends State<CreateGroup> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: ListView(
-            padding: const EdgeInsets.all(15),
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    'group_name'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'field_empty'.tr();
-                        }
-                        if (value.length < 1) {
-                          return 'minimal_length'.tr(args: ['1']);
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.onSurface),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(15),
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'group_name'.tr(),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2),
+                        SizedBox(
+                          width: 20,
                         ),
-                      ),
-                      controller: _groupName,
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(20),
+                        Flexible(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'field_empty'.tr();
+                              }
+                              if (value.length < 1) {
+                                return 'minimal_length'.tr(args: ['1']);
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.onSurface),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                              ),
+                            ),
+                            controller: _groupName,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(20),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    'nickname_in_group'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'field_empty'.tr();
-                        }
-                        if (value.length < 1) {
-                          return 'minimal_length'.tr(args: ['1']);
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'example_nickname'.tr(),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.onSurface),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'nickname_in_group'.tr(),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2),
+                        SizedBox(
+                          width: 20,
                         ),
-                      ),
-                      controller: _nicknameController,
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(15),
+                        Flexible(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'field_empty'.tr();
+                              }
+                              if (value.length < 1) {
+                                return 'minimal_length'.tr(args: ['1']);
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'example_nickname'.tr(),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.onSurface),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                              ),
+                            ),
+                            controller: _nicknameController,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).textTheme.bodyText1.color),
+                            cursorColor: Theme.of(context).colorScheme.secondary,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    'currency_of_group'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton(
-                        isExpanded: true,
-                        onChanged: (value){
-                          setState(() {
-                            _defaultValue=value;
-                          });
-                        },
-                        value: _defaultValue,
-                        style: Theme.of(context).textTheme.bodyText1,
-                        items: enumerateCurrencies().map((currency) => DropdownMenuItem(
-                          child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
-                          value: currency.split(';')[0].trim(),
-                          onTap: (){
-
-                          },
-                        )).toList(),
-                      ),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                ],
-              ),
-
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GradientButton(
-                    child: Text('create_group'.tr(),
-                        style: Theme.of(context).textTheme.button),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        String token = _groupName.text;
-                        String nickname = _nicknameController.text;
-                        showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
-                              future: _createGroup(token, nickname, _defaultValue),
-                              onDataTrue: () async {
-                                await clearCache();
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MainPage()),
-                                    (r) => false);
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'currency_of_group'.tr(),
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Flexible(
+                          child: ButtonTheme(
+                            alignedDropdown: true,
+                            child: DropdownButton(
+                              isExpanded: true,
+                              onChanged: (value){
+                                setState(() {
+                                  _defaultValue=value;
+                                });
                               },
-                              dataTrueText: 'creation_scf',
-                            ));
-                      }
-                    },
-                  ),
-                ],
+                              value: _defaultValue,
+                              style: Theme.of(context).textTheme.bodyText1,
+                              items: enumerateCurrencies().map((currency) => DropdownMenuItem(
+                                child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
+                                value: currency.split(';')[0].trim(),
+                                onTap: (){
+
+                                },
+                              )).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          child: Text('create_group'.tr(),
+                              style: Theme.of(context).textTheme.button),
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              String token = _groupName.text;
+                              String nickname = _nicknameController.text;
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future: _createGroup(token, nickname, _defaultValue),
+                                    onDataTrue: () async {
+                                      await clearCache();
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MainPage()),
+                                          (r) => false);
+                                    },
+                                    dataTrueText: 'creation_scf',
+                                  ));
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                child: adUnitForSite('create_group'),
               ),
             ],
           ),

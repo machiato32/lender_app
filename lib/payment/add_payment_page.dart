@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -140,157 +141,167 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             onTap: () {
               FocusScope.of(context).unfocus();
             },
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
+            child: Column(
+              children: [
                 IsGuestBanner(callback: (){setState(() { _members=null; _members=_getMembers();});},),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'field_empty'.tr();
-                            }
-                            if (double.tryParse(value) == null) {
-                              return 'not_valid_num'.tr();
-                            }
-                            if (double.parse(value) < 0) {
-                              return 'not_valid_num'.tr();
-                            }
-                            return null;
-                          },
-                          controller: _amountController,
-                          decoration: InputDecoration(
-                            labelText: 'amount'.tr(),
-                            hintText: getSymbol(currentGroupCurrency),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.onSurface),
-                              //  when the TextFormField in unfocused
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2),
-                            ),
-                          ),
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'note'.tr(),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.onSurface),
-                              //  when the TextFormField in unfocused
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2),
-                            ),
-                          ),
-                          inputFormatters: [LengthLimitingTextInputFormatter(50)],
-                          controller: _noteController,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).textTheme.bodyText1.color),
-                          cursorColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: FutureBuilder(
-                            future: _members,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                if (snapshot.hasData) {
-                                  if(widget.payment!=null && widget.payment.takerId!=-1){
-                                    Member selectMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==widget.payment.takerId, orElse: null);
-                                    if(selectMember!=null)
-                                      _dropdownValue=selectMember;
-                                    widget.payment.takerId=-1;
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                decoration: InputDecoration(
+                                  labelText: 'note'.tr(),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.onSurface),
+                                    //  when the TextFormField in unfocused
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        width: 2),
+                                  ),
+                                ),
+                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                controller: _noteController,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).textTheme.bodyText1.color),
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
                                   }
-                                  return Wrap(
-                                    spacing: 10,
-                                    children: snapshot.data
-                                        .map<ChoiceChip>((Member member) =>
-                                            ChoiceChip(
-                                              label: Text(member.nickname),
-                                              pressElevation: 30,
-                                              selected: _dropdownValue ==
-                                                  member,
-                                              onSelected: (bool newValue) {
-                                                FocusScope.of(context).unfocus();
-                                                setState(() {
-                                                  _dropdownValue = member;
-                                                  // _selectedMember = member;
-                                                });
-                                              },
-                                              labelStyle: _dropdownValue ==
-                                                      member
-                                                  ? Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSecondary)
-                                                  : Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                              selectedColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            ))
-                                        .toList(),
-                                  );
-                                } else {
-                                  return ErrorMessage(
-                                    error: snapshot.error.toString(),
-                                    locationOfError: 'balances',
-                                    callback: (){
-                                      setState(() {
-                                        _members = null;
-                                        _members = _getMembers();
-                                      });
-                                    },
-                                  );
-                                }
-                              }
+                                  if (double.tryParse(value) == null) {
+                                    return 'not_valid_num'.tr();
+                                  }
+                                  if (double.parse(value) < 0) {
+                                    return 'not_valid_num'.tr();
+                                  }
+                                  return null;
+                                },
+                                controller: _amountController,
+                                decoration: InputDecoration(
+                                  labelText: 'amount'.tr(),
+                                  hintText: getSymbol(currentGroupCurrency),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.onSurface),
+                                    //  when the TextFormField in unfocused
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        width: 2),
+                                  ),
+                                ),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).textTheme.bodyText1.color),
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Center(
+                                child: FutureBuilder(
+                                  future: _members,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasData) {
+                                        if(widget.payment!=null && widget.payment.takerId!=-1){
+                                          Member selectMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==widget.payment.takerId, orElse: null);
+                                          if(selectMember!=null)
+                                            _dropdownValue=selectMember;
+                                          widget.payment.takerId=-1;
+                                        }
+                                        return Wrap(
+                                          spacing: 10,
+                                          children: snapshot.data
+                                              .map<ChoiceChip>((Member member) =>
+                                                  ChoiceChip(
+                                                    label: Text(member.nickname),
+                                                    pressElevation: 30,
+                                                    selected: _dropdownValue ==
+                                                        member,
+                                                    onSelected: (bool newValue) {
+                                                      FocusScope.of(context).unfocus();
+                                                      setState(() {
+                                                        _dropdownValue = member;
+                                                        // _selectedMember = member;
+                                                      });
+                                                    },
+                                                    labelStyle: _dropdownValue ==
+                                                            member
+                                                        ? Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1
+                                                            .copyWith(
+                                                                color: Theme.of(context)
+                                                                    .colorScheme
+                                                                    .onSecondary)
+                                                        : Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1,
+                                                    backgroundColor: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                    selectedColor: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                  ))
+                                              .toList(),
+                                        );
+                                      } else {
+                                        return ErrorMessage(
+                                          error: snapshot.error.toString(),
+                                          locationOfError: 'balances',
+                                          callback: (){
+                                            setState(() {
+                                              _members = null;
+                                              _members = _getMembers();
+                                            });
+                                          },
+                                        );
+                                      }
+                                    }
 
-                              return Center(child: CircularProgressIndicator());
-                            },
+                                    return Center(child: CircularProgressIndicator());
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+//              Balances()
+                    ],
                   ),
                 ),
-//              Balances()
+                Visibility(
+                    visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                    child: adUnitForSite('payment'),
+                ),
               ],
             ),
           ),

@@ -106,7 +106,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
           height: 80,
           width: MediaQuery.of(context).size.width,
           decoration: boxDecoration,
-          margin: EdgeInsets.only(bottom: 4),
+          margin: EdgeInsets.only(top: widget.data.reactions.length==0?0:14, bottom: 4, left: 4, right: 4),
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
@@ -119,7 +119,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
                         child: PaymentAllInfo(widget.data))).then((val) {
-                  if (val == 'deleted') widget.callback();
+                  if (val == 'deleted') widget.callback(payment:true);
                 });
               },
               borderRadius: BorderRadius.circular(15),
@@ -183,7 +183,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
             ),
           ),
         ),
-        PastReactionContainer(reactedToId: widget.data.paymentId, reactions: widget.data.reactions, callback: widget.callback, isSecondaryColor: widget.data.payerId==idToUse,)
+        PastReactionContainer(reactedToId: widget.data.paymentId, reactions: widget.data.reactions, callback: widget.callback, isSecondaryColor: widget.data.payerId==idToUse, type:'payments')
       ],
     );
   }

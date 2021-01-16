@@ -131,30 +131,21 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                            children: [
                              GradientButton(
                                onPressed: (){
-                                 showDialog(
-                                     context: context,
-                                     child: ConfirmChoiceDialog(
-                                       choice: 'want_edit',
-                                     ),
-                                 ).then((value){
-                                   if(value!=null && value){
-                                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                          AddTransactionRoute(
-                                            type: TransactionType.fromModifyExpense,
-                                            expense: SavedTransaction(
-                                             buyerNickname: widget.data.buyerNickname,
-                                             buyerId: widget.data.buyerId,
-                                             buyerUsername: widget.data.buyerUsername,
-                                             receivers: widget.data.receivers,
-                                             totalAmount: widget.data.totalAmount,
-                                             name: widget.data.name,
-                                             transactionId: widget.data.transactionId
-                                            ),
-                                          )
-                                        )
-                                      ).then((value) => Navigator.pop(context, 'deleted'));
-                                   }
-                                 });
+                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                      AddTransactionRoute(
+                                        type: TransactionType.fromModifyExpense,
+                                        expense: SavedTransaction(
+                                         buyerNickname: widget.data.buyerNickname,
+                                         buyerId: widget.data.buyerId,
+                                         buyerUsername: widget.data.buyerUsername,
+                                         receivers: widget.data.receivers,
+                                         totalAmount: widget.data.totalAmount,
+                                         name: widget.data.name,
+                                         transactionId: widget.data.transactionId
+                                        ),
+                                      )
+                                    )
+                                  ).then((value) => Navigator.pop(context, 'deleted'));
                                },
                                child: Row(
                                  children: [

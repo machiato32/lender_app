@@ -2,6 +2,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,6 +22,10 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if(useTest){
         _scaffoldKey.currentState.showSnackBar(
@@ -45,6 +50,17 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
 
     });
 
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 
   @override

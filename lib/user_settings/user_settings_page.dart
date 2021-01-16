@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -32,8 +33,16 @@ class _SettingsState extends State<Settings> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: ListView(
-          children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), AboutUs()],
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), AboutUs()],
+              ),
+            ),
+            adUnitForSite('settings'),
+          ],
         ),
       ),
     );

@@ -256,10 +256,17 @@
     "reactions": "Reakciók",
     "add_reaction": "Reakció hozzáadása",
     "all_reactions": "Eddigi reakciók",
+    "reaction_scf": "Reakció sikersen hozzáadva!",
 
     "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit és számokat használhatsz. Később a csoportban megadhatsz becenevet.",
     "reminder_explanation": "Nem tároljuk e-mail címed, így amennyiben elfelejtenéd jelszavad, ezt az emlékeztetőt mutatjuk meg neked.",
 
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
-    "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!"
+    "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!",
+
+    "system_notification": "system_notification",
+    "system_notification_explanation": "system_notification_explanation",
+    "free_trial_ended": "free_trial_ended",
+    "free_trial_ended_explanation": "free_trial_ended_explanation",
+    "available_in_paid_version": "available_in_paid_version"
 }

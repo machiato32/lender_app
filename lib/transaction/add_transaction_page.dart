@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPost(uri: '/transactions', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/purchases', body: body, context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -110,7 +111,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPut(uri: '/transactions/'+transactionId.toString(), body: body, context: context, useGuest: useGuest);
+      await httpPut(uri: '/purchases/'+transactionId.toString(), body: body, context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -163,305 +164,316 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
               _members=null;
               _members=_getMembers(overwriteCache: true);
             },
-            child: ListView(
-              children: <Widget>[
+            child: Column(
+              children: [
                 IsGuestBanner(callback: (){},),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     Icon(Icons.person, size: 40,),
-                        //     // Icon(Icons.attach_money, size: 40),
-                        //     Icon(Icons.shopping_cart, size: 40),
-                        //     Icon(Icons.people, size: 50)
-                        //   ],
-                        // ),
-                        // Center(child: Text("Elutod a bevasarlokocsival a barataidat")),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
+                Expanded(
+                  child: ListView(
+                    children: <Widget>[
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'not_valid_num'.tr();
-                                  }
-                                  if (double.parse(value) < 0) {
-                                    return 'not_valid_num'.tr();
-                                  }
-                                  return null;
-                                },
-                                focusNode: _focusNode,
-                                decoration: InputDecoration(
-                                  labelText: 'full_amount'.tr(),
-                                  hintText: getSymbol(currentGroupCurrency),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface),
-                                    //  when the TextFormField in unfocused
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                            Theme.of(context).colorScheme.primary,
-                                        width: 2),
-                                  ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     Icon(Icons.person, size: 40,),
+                              //     // Icon(Icons.attach_money, size: 40),
+                              //     Icon(Icons.shopping_cart, size: 40),
+                              //     Icon(Icons.people, size: 50)
+                              //   ],
+                              // ),
+                              // Center(child: Text("Elutod a bevasarlokocsival a barataidat")),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  children: <Widget>[
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'field_empty'.tr();
+                                        }
+                                        if (value.length < 3) {
+                                          return 'minimal_length'.tr(args: ['3']);
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: 'note'.tr(),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                              Theme.of(context).colorScheme.primary,
+                                              width: 2),
+                                        ),
+                                      ),
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(50)
+                                      ],
+                                      controller: noteController,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .color),
+                                      cursorColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'field_empty'.tr();
+                                        }
+                                        if (double.tryParse(value) == null) {
+                                          return 'not_valid_num'.tr();
+                                        }
+                                        if (double.parse(value) < 0) {
+                                          return 'not_valid_num'.tr();
+                                        }
+                                        return null;
+                                      },
+                                      focusNode: _focusNode,
+                                      decoration: InputDecoration(
+                                        labelText: 'full_amount'.tr(),
+                                        hintText: getSymbol(currentGroupCurrency),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                          //  when the TextFormField in unfocused
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                              Theme.of(context).colorScheme.primary,
+                                              width: 2),
+                                        ),
+                                      ),
+                                      controller: amountController,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .color),
+                                      cursorColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                      keyboardType:
+                                      TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9\\.]'))
+                                      ],
+                                    ),
+
+                                  ],
                                 ),
-                                controller: amountController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                keyboardType:
-                                    TextInputType.numberWithOptions(decimal: true),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp('[0-9\\.]'))
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Center(
+                                child: FutureBuilder(
+                                  future: _members,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.done) {
+                                      if (snapshot.hasData) {
+                                        List<Member> snapshotMembers = snapshot.data;
+                                        for (Member member in snapshot.data) {
+                                          checkboxBool.putIfAbsent(member, () => false);
+                                        }
+                                       if(widget.type==TransactionType.fromModifyExpense && widget.expense.receivers!=null){
+                                         for(Member member in widget.expense.receivers){
+                                           Member memberInCheckbox = snapshotMembers.firstWhere((element) => element.memberId==member.memberId, orElse: null);
+                                           if(memberInCheckbox!=null)
+                                             checkboxBool[memberInCheckbox]=true;
+                                         }
+                                         widget.expense.receivers=null;
+                                       }else if (widget.type == TransactionType.fromShopping) {
+                                          checkboxBool[(snapshot.data as List<Member>)
+                                                  .firstWhere((member) =>
+                                                      member.memberId ==
+                                                      widget.shoppingData.requesterId)] =
+                                              true;
+                                        }
+                                        return Wrap(
+                                          spacing: 10,
+                                          children: snapshot.data
+                                              .map<ChoiceChip>((Member member) =>
+                                                  ChoiceChip(
+                                                    label: Text(member.nickname),
+                                                    pressElevation: 30,
+                                                    selected: checkboxBool[member],
+                                                    onSelected: (bool newValue) {
+                                                      FocusScope.of(context).unfocus();
+                                                      setState(() {
+                                                        checkboxBool[member] = newValue;
+                                                      });
+                                                    },
+                                                    labelStyle: checkboxBool[member]
+                                                        ? Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1
+                                                            .copyWith(
+                                                                color: Theme.of(context)
+                                                                    .colorScheme
+                                                                    .onSecondary)
+                                                        : Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1,
+                                                    backgroundColor: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                    selectedColor: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                  ))
+                                              .toList(),
+                                        );
+                                      } else {
+                                        return ErrorMessage(
+                                          error: snapshot.error.toString(),
+                                          locationOfError: 'balances',
+                                          callback: (){
+                                            setState(() {
+                                              _members = null;
+                                              _members = _getMembers();
+                                            });
+                                          },
+                                        );
+                                      }
+                                    }
+                                    return CircularProgressIndicator();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Material(
+                                      type: MaterialType.transparency,
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(1000.0),
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            for (Member member in checkboxBool.keys) {
+                                              checkboxBool[member] =
+                                                  !checkboxBool[member];
+                                            }
+                                            setState(() {});
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Icon(Icons.swap_horiz,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                          ),
+                                        ),
+                                      )),
+                                  Flexible(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Text(
+                                          amountController.text != '' &&
+                                                  checkboxBool.values
+                                                          .where((element) =>
+                                                              element == true)
+                                                          .toList()
+                                                          .length >
+                                                      0
+                                              ? ((double.tryParse(amountController
+                                                                  .text) ??
+                                                              0) /
+                                                          checkboxBool.values
+                                                              .where((element) =>
+                                                                  element == true)
+                                                              .toList()
+                                                              .length)
+                                                      .toStringAsFixed(2) +
+                                                  'per_person'.tr(args: [currencies[currentGroupCurrency]['symbol']])
+                                              : '',
+                                          style: Theme.of(context).textTheme.bodyText2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Material(
+                                      type: MaterialType.transparency,
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(1000.0),
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            for (Member member in checkboxBool.keys) {
+                                              checkboxBool[member] = false;
+                                            }
+                                            setState(() {});
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Icon(Icons.clear, color: Colors.red),
+                                          ),
+                                        ),
+                                      )),
                                 ],
                               ),
                               SizedBox(
                                 height: 20,
                               ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 3) {
-                                    return 'minimal_length'.tr(args: ['3']);
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'note'.tr(),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                            Theme.of(context).colorScheme.primary,
-                                        width: 2),
-                                  ),
-                                ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50)
-                                ],
-                                controller: noteController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
-                              ),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: FutureBuilder(
-                            future: _members,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done) {
-                                if (snapshot.hasData) {
-                                  List<Member> snapshotMembers = snapshot.data;
-                                  for (Member member in snapshot.data) {
-                                    checkboxBool.putIfAbsent(member, () => false);
-                                  }
-                                 if(widget.type==TransactionType.fromModifyExpense && widget.expense.receivers!=null){
-                                   for(Member member in widget.expense.receivers){
-                                     Member memberInCheckbox = snapshotMembers.firstWhere((element) => element.memberId==member.memberId, orElse: null);
-                                     if(memberInCheckbox!=null)
-                                       checkboxBool[memberInCheckbox]=true;
-                                   }
-                                   widget.expense.receivers=null;
-                                 }else if (widget.type == TransactionType.fromShopping) {
-                                    checkboxBool[(snapshot.data as List<Member>)
-                                            .firstWhere((member) =>
-                                                member.memberId ==
-                                                widget.shoppingData.requesterId)] =
-                                        true;
-                                  }
-                                  return Wrap(
-                                    spacing: 10,
-                                    children: snapshot.data
-                                        .map<ChoiceChip>((Member member) =>
-                                            ChoiceChip(
-                                              label: Text(member.nickname),
-                                              pressElevation: 30,
-                                              selected: checkboxBool[member],
-                                              onSelected: (bool newValue) {
-                                                FocusScope.of(context).unfocus();
-                                                setState(() {
-                                                  checkboxBool[member] = newValue;
-                                                });
-                                              },
-                                              labelStyle: checkboxBool[member]
-                                                  ? Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSecondary)
-                                                  : Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                              selectedColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            ))
-                                        .toList(),
-                                  );
-                                } else {
-                                  return ErrorMessage(
-                                    error: snapshot.error.toString(),
-                                    locationOfError: 'balances',
-                                    callback: (){
-                                      setState(() {
-                                        _members = null;
-                                        _members = _getMembers();
-                                      });
-                                    },
-                                  );
-                                }
-                              }
-                              return CircularProgressIndicator();
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Material(
-                                type: MaterialType.transparency,
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(1000.0),
-                                    onTap: () {
-                                      FocusScope.of(context).unfocus();
-                                      for (Member member in checkboxBool.keys) {
-                                        checkboxBool[member] =
-                                            !checkboxBool[member];
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Icon(Icons.swap_horiz,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                    ),
-                                  ),
-                                )),
-                            Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: Text(
-                                    amountController.text != '' &&
-                                            checkboxBool.values
-                                                    .where((element) =>
-                                                        element == true)
-                                                    .toList()
-                                                    .length >
-                                                0
-                                        ? ((double.tryParse(amountController
-                                                            .text) ??
-                                                        0) /
-                                                    checkboxBool.values
-                                                        .where((element) =>
-                                                            element == true)
-                                                        .toList()
-                                                        .length)
-                                                .toStringAsFixed(2) +
-                                            'per_person'.tr(args: [currencies[currentGroupCurrency]['symbol']])
-                                        : '',
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Material(
-                                type: MaterialType.transparency,
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(1000.0),
-                                    onTap: () {
-                                      FocusScope.of(context).unfocus();
-                                      for (Member member in checkboxBool.keys) {
-                                        checkboxBool[member] = false;
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Icon(Icons.clear, color: Colors.red),
-                                    ),
-                                  ),
-                                )),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
+                      ),
+                      // Balances()
+                    ],
                   ),
                 ),
-                // Balances()
+                Visibility(
+                    visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                    child: adUnitForSite('purchase'),
+                ),
               ],
             ),
           ),

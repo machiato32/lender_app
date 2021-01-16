@@ -17,9 +17,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
+import 'package:admob_flutter/admob_flutter.dart';
+
 
 import 'balances.dart';
 import 'config.dart';
+import 'essentials/ad_management.dart';
 import 'essentials/widgets/error_message.dart';
 import 'essentials/group_objects.dart';
 import 'essentials/http_handler.dart';
@@ -40,6 +43,8 @@ import 'essentials/navigator_service.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 
 final getIt = GetIt.instance;
+
+
 
 // Needed for HTTPS
 class MyHttpOverrides extends HttpOverrides{
@@ -194,6 +199,7 @@ class _LenderAppState extends State<LenderApp> {
   @override
   void initState() {
     super.initState();
+    Admob.initialize();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@drawable/dodo_white');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -242,6 +248,9 @@ class _LenderAppState extends State<LenderApp> {
           onSelectNotification(message['data']['payload']);
         },
       );
+      if(currentUserId!=null){
+        _getUserData();
+      }
       _supportedVersion()
       .then((value){
         if(!(value??true)){
@@ -253,12 +262,51 @@ class _LenderAppState extends State<LenderApp> {
 
   Future<bool> _supportedVersion() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/supported?version='+currentVersion.toString());
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+      };
+      http.Response response = await http.get(useTest?TEST_URL:APP_URL+'/supported?version='+currentVersion.toString(), headers: header);
       bool decoded = jsonDecode(response.body);
       return decoded;
     }catch(_){
       throw _;
     }
+  }
+
+  Future<void> _getUserData() async {
+    try{
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + (apiToken==null?'':apiToken)
+      };
+      http.Response response = await http.get(useTest?TEST_URL:APP_URL+'/user', headers: header);
+      var decoded = jsonDecode(response.body);
+      print(decoded);
+      showAds=decoded['data']['ad_free']==0;
+      useGradients=decoded['data']['gradients_enabled']==1;
+      print(decoded['data']);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      bool trial=false;
+      if(preferences.containsKey('trial')){
+        trial=preferences.getBool('trial');
+      }
+      if(trial && !useGradients){
+        preferences.setString('theme', 'greenLightTheme');
+        AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+          '1234',
+          'system_notification'.tr(),
+          'system_notification_explanation'.tr(),
+        );
+        NotificationDetails details = NotificationDetails(
+            androidNotificationDetails, IOSNotificationDetails(presentSound: false)
+        );
+        preferences.setBool('trial', false);
+        flutterLocalNotificationsPlugin.show(1234, 'free_trial_ended'.tr(), 'free_trial_ended_explanation'.tr(), details);
+      }
+    }catch(_){
+
+    }
+
   }
 
   @override
@@ -320,8 +368,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   int _selectedIndex = 0;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   GlobalKey<State> _isGuestBannerKey = GlobalKey<State>();
+
   Future<SharedPreferences> getPrefs() async {
     return await SharedPreferences.getInstance();
   }
@@ -426,6 +474,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this, initialIndex: widget.selectedIndex);
     _groups = null;
     _groups = _getGroups();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       bool showTutorial=true;
       await SharedPreferences.getInstance().then((prefs) {
@@ -446,8 +495,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       }
 
     });
-  }
 
+  }
+  @override
+  void dispose() {
+    super.dispose();
+
+  }
   void _handleDrawer() {
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
     _scaffoldKey.currentState.openDrawer();
@@ -546,6 +600,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           )
         ],
       ),
+
       drawer: Drawer(
         elevation: 16,
         child: Ink(
@@ -785,6 +840,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ]
                 ),
               ),
+              adUnitForSite('home_screen'),
             ],
           );
         }

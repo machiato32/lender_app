@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/config.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -19,11 +20,12 @@ class _ColorPickerState extends State<ColorPicker> {
       );
     }).toList();
   }
-  List<Widget> _getGradientColors() {
+  List<Widget> _getGradientColors({bool enabled}) {
     return AppTheme.themes.entries.where((element) => element.key.contains('Gradient')).map((entry) {
       return ColorElement(
         theme: entry.value,
         themeName: entry.key,
+        enabled: enabled
       );
     }).toList();
   }
@@ -52,11 +54,15 @@ class _ColorPickerState extends State<ColorPicker> {
             SizedBox(height: 7,),
             Divider(),
             SizedBox(height: 7,),
+            Visibility(
+              visible: !useGradients,
+              child: Text('available_in_paid_version'.tr(), style: Theme.of(context).textTheme.subtitle2,),
+            ),
             Center(
               child: Wrap(
                 runSpacing: 5,
                 spacing: 5,
-                children: _getGradientColors(),
+                children: _getGradientColors(enabled: useGradients),
               ),
             )
           ],
@@ -69,8 +75,8 @@ class _ColorPickerState extends State<ColorPicker> {
 class ColorElement extends StatefulWidget {
   final ThemeData theme;
   final String themeName;
-
-  const ColorElement({this.theme, this.themeName});
+  final bool enabled;
+  const ColorElement({this.theme, this.themeName, this.enabled});
 
   @override
   _ColorElementState createState() => _ColorElementState();
@@ -86,7 +92,6 @@ class _ColorElementState extends State<ColorElement> {
     return Ink(
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-
           gradient: (widget.themeName ==
                   Provider.of<AppStateNotifier>(context, listen: false)
                       .themeName)
@@ -97,11 +102,13 @@ class _ColorElementState extends State<ColorElement> {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
-          Provider.of<AppStateNotifier>(context, listen: false)
-              .updateTheme(widget.themeName);
-          _getPrefs().then((_prefs) {
-            _prefs.setString('theme', widget.themeName);
-          });
+          if(widget.enabled){
+            Provider.of<AppStateNotifier>(context, listen: false)
+                .updateTheme(widget.themeName);
+            _getPrefs().then((_prefs) {
+              _prefs.setString('theme', widget.themeName);
+            });
+          }
         },
         child: Ink(
           padding: EdgeInsets.all(4),

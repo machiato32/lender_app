@@ -40,7 +40,7 @@ class Reaction{
   int reactionId;
   String nickname;
   int userId;
-  static List<String> possibleReactions = ['❤', '❓', '💸', '👍', '😥', '🐶'];
+  static List<String> possibleReactions = ['👍', '❤', '😲', '😥', '❗', '❓'];
   Reaction({this.reaction, this.reactionId, this.nickname, this.userId});
   factory Reaction.fromJson(Map<String, dynamic> reaction){
     return Reaction(

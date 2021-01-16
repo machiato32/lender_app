@@ -159,7 +159,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
                         child: TransactionAllInfo(widget.data))
                 )
                 .then((val) {
-                  if (val == 'deleted') widget.callback();
+                  if (val == 'deleted') widget.callback(purchase: true);
                 });
               },
               borderRadius: BorderRadius.circular(15),
@@ -235,7 +235,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
             ),
           ),
         ),
-        PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.transactionId, isSecondaryColor:bought),
+        PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.transactionId, isSecondaryColor:bought, type: 'purchases', callback: widget.callback,),
       ]
     );
   }
