@@ -20,7 +20,7 @@ class AllHistoryRoute extends StatefulWidget {
 
 class _AllHistoryRouteState extends State<AllHistoryRoute>
     with TickerProviderStateMixin {
-  Future<List<TransactionData>> _transactions;
+  Future<List<PurchaseData>> _transactions;
   Future<List<PaymentData>> _payments;
 
   ScrollController _transactionScrollController = ScrollController();
@@ -28,7 +28,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<TransactionData>> _getTransactions() async {
+  Future<List<PurchaseData>> _getTransactions() async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
@@ -37,9 +37,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         useGuest: useGuest
       );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<TransactionData> transactionData = [];
+      List<PurchaseData> transactionData = [];
       for (var data in decoded) {
-        transactionData.add(TransactionData.fromJson(data));
+        transactionData.add(PurchaseData.fromJson(data));
       }
       return transactionData;
 
@@ -266,7 +266,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }).toList());
   }
 
-  List<Widget> _generateTransactions(List<TransactionData> data) {
+  List<Widget> _generateTransactions(List<PurchaseData> data) {
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
@@ -288,14 +288,14 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   padding: EdgeInsets.all(8),
                   child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
               ),
-              TransactionEntry(
+              PurchaseEntry(
                 data: element,
                 callback: callback,
               ),
             ],
           );
       }
-      return TransactionEntry(
+      return PurchaseEntry(
         data: element,
         callback: callback,
       );

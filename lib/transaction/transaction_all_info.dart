@@ -11,20 +11,20 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
-class TransactionAllInfo extends StatefulWidget {
-  final TransactionData data;
+class Purchase extends StatefulWidget {
+  final PurchaseData data;
 
-  TransactionAllInfo(this.data);
+  Purchase(this.data);
 
   @override
-  _TransactionAllInfoState createState() => _TransactionAllInfoState();
+  _PurchaseState createState() => _PurchaseState();
 }
 
-class _TransactionAllInfoState extends State<TransactionAllInfo> {
+class _PurchaseState extends State<Purchase> {
   Future<bool> _deleteElement(int id) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/transactions/' + id.toString(), context: context, useGuest: useGuest);
+      await httpDelete(uri: '/purchases/' + id.toString(), context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -132,16 +132,16 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                              GradientButton(
                                onPressed: (){
                                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                      AddTransactionRoute(
-                                        type: TransactionType.fromModifyExpense,
-                                        expense: SavedTransaction(
+                                      AddPurchaseRoute(
+                                        type: PurchaseType.fromModifyExpense,
+                                        expense: SavedPurchase(
                                          buyerNickname: widget.data.buyerNickname,
                                          buyerId: widget.data.buyerId,
                                          buyerUsername: widget.data.buyerUsername,
                                          receivers: widget.data.receivers,
                                          totalAmount: widget.data.totalAmount,
                                          name: widget.data.name,
-                                         transactionId: widget.data.transactionId
+                                         purchaseId: widget.data.purchaseId
                                         ),
                                       )
                                     )
@@ -174,7 +174,7 @@ class _TransactionAllInfoState extends State<TransactionAllInfo> {
                                         context: context,
                                         child: FutureSuccessDialog(
                                           future: _deleteElement(widget
-                                              .data.transactionId),
+                                              .data.purchaseId),
                                           dataTrueText: 'delete_scf',
                                           onDataTrue: () {
                                             Navigator.pop(context);

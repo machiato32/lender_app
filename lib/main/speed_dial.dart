@@ -110,7 +110,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddTransactionRoute(type: null,)
+                        builder: (context) => AddPurchaseRoute(type: null,)
                     )
                 ).then((value) {widget.callback();});
               },
@@ -167,8 +167,8 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddTransactionRoute(
-                        type: TransactionType.newExpense,
+                      builder: (context) => AddPurchaseRoute(
+                        type: PurchaseType.newExpense,
                       )
                   )).then((value) {widget.callback();});
             }),

@@ -16,6 +16,9 @@ class FutureSuccessDialog extends StatefulWidget {
   final String dataTrueText;
   final String dataFalseText;
 
+  ///Dialog for http requests. Translates all text given.
+  ///[onDataFalse], [dataFalseText] and [onNoData] have default values.
+  ///Fully customizable with [dataTrue], [dataFalse] and [noData]
   FutureSuccessDialog(
       {this.dataTrue,
       this.dataFalse,

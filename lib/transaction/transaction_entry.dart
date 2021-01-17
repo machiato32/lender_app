@@ -11,17 +11,17 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
-class TransactionData {
+class PurchaseData {
   DateTime updatedAt;
   String buyerUsername, buyerNickname;
   int buyerId;
   List<Member> receivers;
   double totalAmount;
-  int transactionId;
+  int purchaseId;
   String name;
   List<Reaction> reactions;
 
-  TransactionData(
+  PurchaseData(
     {
       this.updatedAt,
       this.buyerUsername,
@@ -29,15 +29,15 @@ class TransactionData {
       this.buyerId,
       this.receivers,
       this.totalAmount,
-      this.transactionId,
+      this.purchaseId,
       this.name,
       this.reactions
     }
   );
 
-  factory TransactionData.fromJson(Map<String, dynamic> json) {
-    return TransactionData(
-        transactionId: json['transaction_id'],
+  factory PurchaseData.fromJson(Map<String, dynamic> json) {
+    return PurchaseData(
+        purchaseId: json['transaction_id'],
         name: json['name'],
         updatedAt: json['updated_at'] == null
             ? DateTime.now()
@@ -56,17 +56,17 @@ class TransactionData {
   }
 }
 
-class TransactionEntry extends StatefulWidget {
-  final TransactionData data;
+class PurchaseEntry extends StatefulWidget {
+  final PurchaseData data;
   final Function callback;
 
-  const TransactionEntry({this.data, this.callback});
+  const PurchaseEntry({this.data, this.callback});
 
   @override
-  _TransactionEntryState createState() => _TransactionEntryState();
+  _PurchaseEntryState createState() => _PurchaseEntryState();
 }
 
-class _TransactionEntryState extends State<TransactionEntry> {
+class _PurchaseEntryState extends State<PurchaseEntry> {
   Color dateColor;
   Icon icon;
   TextStyle style;
@@ -149,14 +149,14 @@ class _TransactionEntryState extends State<TransactionEntry> {
             type: MaterialType.transparency,
             child: InkWell(
               onLongPress: (){
-                showDialog(context: context, child: AddReactionDialog(type: 'purchases', reactions: widget.data.reactions, reactToId: widget.data.transactionId, callback: widget.callback,));
+                showDialog(context: context, child: AddReactionDialog(type: 'purchases', reactions: widget.data.reactions, reactToId: widget.data.purchaseId, callback: widget.callback,));
               },
               onTap: () async {
                 showModalBottomSheetCustom(
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
-                        child: TransactionAllInfo(widget.data))
+                        child: Purchase(widget.data))
                 )
                 .then((val) {
                   if (val == 'deleted') widget.callback(purchase: true);
@@ -235,7 +235,7 @@ class _TransactionEntryState extends State<TransactionEntry> {
             ),
           ),
         ),
-        PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.transactionId, isSecondaryColor:bought, type: 'purchases', callback: widget.callback,),
+        PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.purchaseId, isSecondaryColor:bought, type: 'purchases', callback: widget.callback,),
       ]
     );
   }

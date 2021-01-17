@@ -464,8 +464,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AddTransactionRoute(
-                            type: TransactionType
+                          AddPurchaseRoute(
+                            type: PurchaseType
                                 .fromShopping,
                             shoppingData:
                             widget

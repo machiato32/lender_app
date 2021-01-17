@@ -11,6 +11,7 @@ import 'package:share/share.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
+import 'boost_group.dart';
 import 'group_members.dart';
 import 'guest_switcher.dart';
 
@@ -145,50 +146,6 @@ class _GroupSettingState extends State<GroupSettings> {
                               ),
                             ),
                           ),
-                          Visibility(
-                            visible: snapshot.data,
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  children: <Widget>[
-                                    Center(
-                                      child: Text(
-                                        'change_group_currency'.tr(),
-                                        style:
-                                        Theme.of(context).textTheme.headline6,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Center(
-                                        child: Text(
-                                          'change_group_currency_explanation'.tr(),
-                                          style:
-                                          Theme.of(context).textTheme.subtitle2,
-                                          textAlign: TextAlign.center,
-                                        )),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        GradientButton(
-                                          child: Icon(Icons.monetization_on, color: Theme.of(context).colorScheme.onSecondary,),
-                                          onPressed: (){
-                                            showDialog(context: context, child: ChangeGroupCurrencyDialog());
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                           Card(
                             child: Padding(
                               padding: const EdgeInsets.all(15),
@@ -260,6 +217,7 @@ class _GroupSettingState extends State<GroupSettings> {
                               ),
                             ),
                           ),
+                          BoostGroup(),
                           Visibility(
                             visible: snapshot.data,
                             child: FutureBuilder(
@@ -290,6 +248,50 @@ class _GroupSettingState extends State<GroupSettings> {
                                 }
                                 return LinearProgressIndicator();
                               },
+                            ),
+                          ),
+                          Visibility(
+                            visible: snapshot.data,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: <Widget>[
+                                    Center(
+                                      child: Text(
+                                        'change_group_currency'.tr(),
+                                        style:
+                                        Theme.of(context).textTheme.headline6,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Center(
+                                        child: Text(
+                                          'change_group_currency_explanation'.tr(),
+                                          style:
+                                          Theme.of(context).textTheme.subtitle2,
+                                          textAlign: TextAlign.center,
+                                        )),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        GradientButton(
+                                          child: Icon(Icons.monetization_on, color: Theme.of(context).colorScheme.onSecondary,),
+                                          onPressed: (){
+                                            showDialog(context: context, child: ChangeGroupCurrencyDialog());
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           GroupMembers(),

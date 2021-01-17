@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -92,12 +93,12 @@ class _ColorElementState extends State<ColorElement> {
     return Ink(
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-          gradient: (widget.themeName ==
-                  Provider.of<AppStateNotifier>(context, listen: false)
-                      .themeName)
-              ? AppTheme.gradientFromTheme(widget.theme)
-              : LinearGradient(colors:[Colors.transparent, Colors.transparent]),
-          borderRadius: BorderRadius.circular(20)
+        gradient: (widget.themeName ==
+                Provider.of<AppStateNotifier>(context, listen: false)
+                    .themeName)
+            ? AppTheme.gradientFromTheme(widget.theme)
+            : LinearGradient(colors:[Colors.transparent, Colors.transparent]),
+        borderRadius: BorderRadius.circular(20)
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -108,6 +109,10 @@ class _ColorElementState extends State<ColorElement> {
             _getPrefs().then((_prefs) {
               _prefs.setString('theme', widget.themeName);
             });
+          }else{
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InAppPurchasePage())
+            );
           }
         },
         child: Ink(

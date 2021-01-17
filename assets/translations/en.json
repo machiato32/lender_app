@@ -258,5 +258,32 @@
 
     "version_not_supported": "The version is not supported",
     "version_not_supported_explanation": "We updated Lender to a new version. With this change some of the features in your versions will not work.",
-    "download_new_version": "Download the new version"
+    "download_new_version": "Download the new version",
+
+    "in_app_purchase": "Dodo Store",
+
+    "if_not_working": "If this does't help",
+    "report_this_error": "Report the bug",
+
+    "remove_ads": "Ad-free Lender",
+    "remove_ads_explanation": "Enjoy Lender in its full reality.\nRemove the ads.",
+    "group_boost": "Group-boosting Dodos",
+    "group_boost_explanation": "Boost the group member limit to 30 and unlock its statistics.\nThe bundle contains Dodos enough for 2 groups.",
+    "ad_gradient_bundle": "Small Lender bundle",
+    "ad_gradient_bundle_explanation":"Enjoy Lender in its full beauty.\nRemove ads, unlock gradient themes.",
+    "gradients": "Gradient themes",
+    "gradients_explanation": "Enjoy Lender in all of its colors.\nUnlock the gradient themes. (Our favorite is the orange one 😉)",
+    "big_lender_bundle": "Big Lender Bundle",
+    "big_lender_bundle_explanation": "This is the small Lender bundle, but we added group-boosting Dodos enough for 1 group.",
+
+    "price": "Price: ",
+    "buy": "Buy",
+
+    "boost_group": "Boost group",
+    "boost_group_explanation": "Increase the group member limit to 30 and keep track of its statistics.",
+    "available": "Number of group-boosting Dodos: {}",
+
+    "sure_boost": "Are you sure you want to boost the group?",
+    "boost_scf": "The group was successfully boosted.",
+    "already_boosted": "This group has already been boosted!"
 }

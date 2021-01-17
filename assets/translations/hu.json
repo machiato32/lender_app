@@ -269,5 +269,30 @@
     "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
     "download_new_version": "Töltsd le az új verziót",
 
-    "in_app_purchase": "Pro verzió"
+    "in_app_purchase": "Dodó Bolt",
+
+    "if_not_working": "Hogyha ez nem segít",
+    "report_this_error": "Jelentsd a hibát",
+
+    "remove_ads": "Reklámmentes Lender",
+    "remove_ads_explanation": "Élvezd a Lendert teljes valójában.\nTávolítsd el a reklámokat.",
+    "group_boost": "Csoportfejlesztő Dodók",
+    "group_boost_explanation": "Növeld meg a csoport létszámát 30 főre, és kövessétek nyomon a statisztikáit.\nA csomag 2 csoporthoz elegendő Dodót tartalmaz.",
+    "ad_gradient_bundle": "Kis Lender csomag",
+    "ad_gradient_bundle_explanation":"Élvezd a Lendert teljes szépségében.\nTávolítsd el a reklámokat, engedélyezd a színátmenetes témákat.",
+    "gradients": "Gradienses témák",
+    "gradients_explanation": "Élvezd a Lendert minden színben.\nEngedélyezd a színátmenetes témákat. (A mi kedvencünk a narancssárga 😉)",
+    "big_lender_bundle": "Nagy Lender csomag",
+    "big_lender_bundle_explanation": "A kis Lender csomaghoz hozzácsaptunk 1 csoport fejlesztéséhez elegendő Dodót.",
+
+    "price": "Ár: ",
+    "buy": "Vétel",
+
+    "boost_group": "Csoport fejlesztése",
+    "boost_group_explanation": "Növeld meg a csoport létszámát 30 főre, és kövessétek nyomon a statisztikáit.",
+    "available": "Csoportfejlesztő Dodóid száma: {}",
+
+    "sure_boost": "Biztosan fejleszteni szeretnéd a csoportot?",
+    "boost_scf": "A csoportot sikeresen felfejlesztettük.",
+    "already_boosted": "A csoportot már felfejlesztették!"
 }

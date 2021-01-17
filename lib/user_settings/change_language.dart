@@ -64,7 +64,7 @@ class _LanguageElementState extends State<LanguageElement> {
     Map<String, dynamic> body = {
       'language': localeCode
     };
-    httpPost(context: context, uri: '/change_language', body: body);
+    httpPut(context: context, uri: '/user', body: body);
     return Future.value(true);
   }
   @override

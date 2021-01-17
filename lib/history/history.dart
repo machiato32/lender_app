@@ -23,10 +23,10 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
-  Future<List<TransactionData>> _transactions;
+  Future<List<PurchaseData>> _transactions;
   TabController _tabController;
 
-  Future<List<TransactionData>> _getTransactions({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getTransactions({bool overwriteCache=false}) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
@@ -37,9 +37,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
       );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<TransactionData> transactionData = [];
+      List<PurchaseData> transactionData = [];
       for (var data in decoded) {
-        transactionData.add(TransactionData.fromJson(data));
+        transactionData.add(PurchaseData.fromJson(data));
       }
       return transactionData;
 
@@ -317,13 +317,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }).toList();
   }
 
-  List<Widget> _generateTransactions(List<TransactionData> data) {
+  List<Widget> _generateTransactions(List<PurchaseData> data) {
     if (data.length > 5) {
       data = data.take(5).toList();
     }
     Function callback = this.callback;
     return data.map((element) {
-      return TransactionEntry(
+      return PurchaseEntry(
         data: element,
         callback: callback,
       );

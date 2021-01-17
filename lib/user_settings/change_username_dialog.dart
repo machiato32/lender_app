@@ -22,10 +22,10 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
   Future<bool> _updateUsername(String newUsername) async {
     try {
       Map<String, dynamic> body = {
-        'new_username': newUsername
+        'username': newUsername
       };
 
-      await httpPost(uri: '/change_username',
+      await httpPut(uri: '/user',
           context: context, body: body);
       SharedPreferences.getInstance().then((prefs){
         prefs.setString('current_username', newUsername);

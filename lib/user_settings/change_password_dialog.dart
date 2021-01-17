@@ -31,7 +31,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         "password_reminder": reminder,
       };
 
-      await httpPost(uri: '/change_password',
+      await httpPut(uri: '/user',
           context: context, body: body);
       return true;
     } catch (_) {

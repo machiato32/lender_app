@@ -267,6 +267,33 @@
 
     "version_not_supported": "Diese Version ist nicht unterstüzt",
     "version_not_supported_explanation": "Wir haben eine neue Lender Version eingeführt. Mit dieser Änderung werden ein Paar Funktionen in deiner Version nicht Funktionieren.",
-    "download_new_version": "Die neue Version herunterladen"
+    "download_new_version": "Die neue Version herunterladen",
+
+    "in_app_purchase": "Dodo Laden",
+
+    "if_not_working": "Falls das nicht hilft",
+    "report_this_error": "Melde den Fehler",
+
+    "remove_ads": "Lender ohne Anzeigen",
+    "remove_ads_explanation": "Erlebe Lender in seiner ganzen Realität.\nEntferne die Anzeigen.",
+    "group_boost": "Gruppenboostende Dodos",
+    "group_boost_explanation": "Booste den Limit für Gruppenmitglieder auf 30 und schalte die Statistiken für die Gruppe frei.\nDas Paket enthält genug Dodos für 2 Gruppen.",
+    "ad_gradient_bundle": "Kleines Lender Paket",
+    "ad_gradient_bundle_explanation":"Erlebe Lender in seiner vollen Schönheit.\nEntferne Anzeigen und Schalte Farbübergängige Themen frei.",
+    "gradients": "Farbübergängige Themen",
+    "gradients_explanation": "Erlebe Lender in all seinen Farben.\nSchalte die Farbübergändigen Themen frei. (Unser Liebling ist Orange 😉)",
+    "big_lender_bundle": "Großes Lender Paket",
+    "big_lender_bundle_explanation": "Das ist ein Kleines Lender Paket, nur geben wir Gruppenboostende Dodos genug für eine Gruppe dazu.",
+
+    "price": "Preis: ",
+    "buy": "Kaufen",
+
+    "boost_group": "Booste die Gruppe",
+    "boost_group_explanation": "Booste den Limit für Gruppenmitglieder auf 30 und sehe dir die Statistiken an.",
+    "available": "Anzahl der Gruppenboostenden Dodos: {}",
+
+    "sure_boost": "Bist du sicher, dass du die Gruppe boosten möchtest?",
+    "boost_scf": "Die Grupper wurde erfolgreich geboostet.",
+    "already_boosted": "Diese Gruppe wurde schon geboostet!"
 
 }

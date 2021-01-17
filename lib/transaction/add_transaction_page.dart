@@ -22,32 +22,32 @@ import '../essentials/widgets/error_message.dart';
 
 Random random = Random();
 
-class SavedTransaction {
+class SavedPurchase {
   String buyerNickname, buyerUsername;
   int buyerId;
   String name;  
   List<Member> receivers;
   double totalAmount;
-  int transactionId;
+  int purchaseId;
 
-  SavedTransaction({this.buyerId, this.buyerUsername, this.buyerNickname,
-    this.receivers, this.totalAmount, this.name, this.transactionId});
+  SavedPurchase({this.buyerId, this.buyerUsername, this.buyerNickname,
+    this.receivers, this.totalAmount, this.name, this.purchaseId});
 }
 
-enum TransactionType { fromShopping, fromModifyExpense, newExpense }
+enum PurchaseType { fromShopping, fromModifyExpense, newExpense }
 
-class AddTransactionRoute extends StatefulWidget {
-  final TransactionType type;
-  final SavedTransaction expense;
+class AddPurchaseRoute extends StatefulWidget {
+  final PurchaseType type;
+  final SavedPurchase expense;
   final ShoppingRequestData shoppingData;
 
-  AddTransactionRoute({@required this.type, this.expense, this.shoppingData});
+  AddPurchaseRoute({@required this.type, this.expense, this.shoppingData});
 
   @override
-  _AddTransactionRouteState createState() => _AddTransactionRouteState();
+  _AddPurchaseRouteState createState() => _AddPurchaseRouteState();
 }
 
-class _AddTransactionRouteState extends State<AddTransactionRoute> {
+class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   Future<List<Member>> _members;
@@ -84,7 +84,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
-  Future<bool> _postTransaction(List<Member> members, double amount, String name) async {
+  Future<bool> _postPurchase(List<Member> members, double amount, String name) async {
     bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
     try {
       Map<String, dynamic> body = {
@@ -102,7 +102,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
     }
   }
 
-  Future<bool> _updateTransaction(List<Member> members, double amount, String name, int transactionId) async {
+  Future<bool> _updatePurchase(List<Member> members, double amount, String name, int purchaseId) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {
@@ -111,7 +111,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPut(uri: '/purchases/'+transactionId.toString(), body: body, context: context, useGuest: useGuest);
+      await httpPut(uri: '/purchases/'+purchaseId.toString(), body: body, context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {
@@ -120,7 +120,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   }
 
   void setInitialValues() {
-    if (widget.type == TransactionType.fromModifyExpense) {
+    if (widget.type == PurchaseType.fromModifyExpense) {
       noteController.text = widget.expense.name;
       amountController.text = widget.expense.totalAmount.toString();
     } else {
@@ -131,8 +131,8 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
   @override
   void initState() {
     super.initState();
-    if (widget.type == TransactionType.fromModifyExpense ||
-        widget.type == TransactionType.fromShopping) {
+    if (widget.type == PurchaseType.fromModifyExpense ||
+        widget.type == PurchaseType.fromShopping) {
       setInitialValues();
     }
     _members = _getMembers();
@@ -298,14 +298,14 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                         for (Member member in snapshot.data) {
                                           checkboxBool.putIfAbsent(member, () => false);
                                         }
-                                       if(widget.type==TransactionType.fromModifyExpense && widget.expense.receivers!=null){
+                                       if(widget.type==PurchaseType.fromModifyExpense && widget.expense.receivers!=null){
                                          for(Member member in widget.expense.receivers){
                                            Member memberInCheckbox = snapshotMembers.firstWhere((element) => element.memberId==member.memberId, orElse: null);
                                            if(memberInCheckbox!=null)
                                              checkboxBool[memberInCheckbox]=true;
                                          }
                                          widget.expense.receivers=null;
-                                       }else if (widget.type == TransactionType.fromShopping) {
+                                       }else if (widget.type == PurchaseType.fromShopping) {
                                           checkboxBool[(snapshot.data as List<Member>)
                                                   .firstWhere((member) =>
                                                       member.memberId ==
@@ -349,7 +349,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                                       } else {
                                         return ErrorMessage(
                                           error: snapshot.error.toString(),
-                                          locationOfError: 'add_transaction',
+                                          locationOfError: 'add_purchase',
                                           callback: (){
                                             setState(() {
                                               _members = null;
@@ -527,7 +527,7 @@ class _AddTransactionRouteState extends State<AddTransactionRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    future: widget.type==TransactionType.fromModifyExpense?_updateTransaction(members, amount, name, widget.expense.transactionId):_postTransaction(members, amount, name),
+                    future: widget.type==PurchaseType.fromModifyExpense?_updatePurchase(members, amount, name, widget.expense.purchaseId):_postPurchase(members, amount, name),
                     dataTrue: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

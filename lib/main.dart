@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
+import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
 import 'package:admob_flutter/admob_flutter.dart';
-
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -76,6 +77,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  InAppPurchaseConnection.enablePendingPurchases();
   setup();
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -139,10 +141,11 @@ class LenderApp extends StatefulWidget {
 
 class _LenderAppState extends State<LenderApp> {
   bool _first = true;
-
+  //deeplink
   StreamSubscription _sub;
   String _link;
-
+  //in-app purchase
+  StreamSubscription<List<PurchaseDetails>> _subscription;
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -199,6 +202,55 @@ class _LenderAppState extends State<LenderApp> {
   @override
   void initState() {
     super.initState();
+    final Stream purchaseUpdates =
+        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdates.listen((purchases) {
+      // List<PurchaseDetails> purchasesList = purchases as List<PurchaseDetails>;
+      for(PurchaseDetails details in purchases){
+        if(details.status==PurchaseStatus.purchased){
+          String url = (!useTest)?APP_URL:TEST_URL+'/user';
+          Map<String, String> header = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + (apiToken==null?'':apiToken)
+          };
+          Map<String,dynamic> body = {};
+          switch(details.productID){
+            case 'remove_ads':
+              showAds=false;
+              body['ad_free']=1;
+              break;
+            case 'gradients':
+              useGradients=true;
+              body['gradients_enabled']=1;
+              break;
+            case 'ad_gradient_bundle':
+              showAds=false;
+              body['ad_free']=1;
+              useGradients=true;
+              body['gradients_enabled']=1;
+              break;
+            case 'group_boost':
+              body['boosts']=2;
+              break;
+            case 'big_lender_bundle':
+              showAds=false;
+              body['ad_free']=1;
+              useGradients=true;
+              body['gradients_enabled']=1;
+              body['boosts']=1;
+              break;
+
+          }
+          try{
+            http.put(url, headers: header, body: jsonEncode(body));
+          }catch(_){
+            throw _;
+          }
+          InAppPurchaseConnection.instance.completePurchase(details);
+        }
+      }
+      // _handlePurchaseUpdates(purchases);
+    });
     Admob.initialize();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@drawable/dodo_white');
@@ -310,6 +362,7 @@ class _LenderAppState extends State<LenderApp> {
   @override
   dispose() {
     if (_sub != null) _sub.cancel();
+    _subscription.cancel();
     super.dispose();
   }
 
@@ -394,7 +447,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Future<String> _getCurrentGroup() async {
     http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
     Map<String, dynamic> decoded = jsonDecode(response.body);
-    await saveGroupName(decoded['data']['group_name']);
+    saveGroupName(decoded['data']['group_name']);
     return currentGroupName;
   }
 
@@ -719,11 +772,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 },
               ),
               Divider(),
-              // ListTile(
-              //   dense: true,
-              //   leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
-              //   title: Text('in_app_purchase'.tr(), style: Theme.of(context).textTheme.bodyText1,),
-              // ),
+              ListTile(
+                dense: true,
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InAppPurchasePage())
+                  );
+                },
+                leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
+                title: Text('in_app_purchase'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+              ),
               ListTile(
                 dense: true,
                 leading: DescribedFeatureOverlay(
