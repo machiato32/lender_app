@@ -77,7 +77,7 @@ class ColorElement extends StatefulWidget {
   final ThemeData theme;
   final String themeName;
   final bool enabled;
-  const ColorElement({this.theme, this.themeName, this.enabled});
+  const ColorElement({this.theme, this.themeName, this.enabled=true});
 
   @override
   _ColorElementState createState() => _ColorElementState();

@@ -23,7 +23,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpPut(uri: '/requests/' + id.toString(), context: context, body: {}, useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {

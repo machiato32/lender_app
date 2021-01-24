@@ -18,7 +18,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+// import 'package:mopub_flutter/mopub.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'balances.dart';
@@ -208,7 +208,7 @@ class _LenderAppState extends State<LenderApp> {
       // List<PurchaseDetails> purchasesList = purchases as List<PurchaseDetails>;
       for(PurchaseDetails details in purchases){
         if(details.status==PurchaseStatus.purchased){
-          String url = (!useTest)?APP_URL:TEST_URL+'/user';
+          String url = (!useTest?APP_URL:TEST_URL)+'/user';
           Map<String, String> header = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + (apiToken==null?'':apiToken)
@@ -251,7 +251,6 @@ class _LenderAppState extends State<LenderApp> {
       }
       // _handlePurchaseUpdates(purchases);
     });
-    Admob.initialize();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@drawable/dodo_white');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -317,7 +316,7 @@ class _LenderAppState extends State<LenderApp> {
       Map<String, String> header = {
         "Content-Type": "application/json",
       };
-      http.Response response = await http.get(useTest?TEST_URL:APP_URL+'/supported?version='+currentVersion.toString(), headers: header);
+      http.Response response = await http.get((useTest?TEST_URL:APP_URL)+'/supported?version='+currentVersion.toString(), headers: header);
       bool decoded = jsonDecode(response.body);
       return decoded;
     }catch(_){
@@ -325,16 +324,17 @@ class _LenderAppState extends State<LenderApp> {
     }
   }
 
-  Future<void> _getUserData() async {
+  Future<void> _getUserData() async { //TODO: needs testing
     try{
       Map<String, String> header = {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + (apiToken==null?'':apiToken)
       };
-      http.Response response = await http.get(useTest?TEST_URL:APP_URL+'/user', headers: header);
+      http.Response response = await http.get((useTest?TEST_URL:APP_URL)+'/user', headers: header);
       var decoded = jsonDecode(response.body);
       showAds=decoded['data']['ad_free']==0;
       useGradients=decoded['data']['gradients_enabled']==1;
+      print(decoded);
       SharedPreferences preferences = await SharedPreferences.getInstance();
       bool trial=false;
       if(preferences.containsKey('trial')){
