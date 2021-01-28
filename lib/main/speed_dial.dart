@@ -96,7 +96,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                 ),
               ),
             ),
-            child: Icon(Icons.attach_money),
+            child: Icon(Icons.payments),
             onTap: () {
               Navigator.push(
                   context,

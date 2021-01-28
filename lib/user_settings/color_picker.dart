@@ -40,13 +40,14 @@ class _ColorPickerState extends State<ColorPicker> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-                child: Text(
-              'change_theme'.tr(),
-              style: Theme.of(context).textTheme.headline6,
-            )),
+              child: Text('change_theme'.tr(),
+                style: Theme.of(context).textTheme.headline6,
+              )
+            ),
             SizedBox(height: 10),
             Center(
               child: Wrap(
+                alignment: WrapAlignment.center,
                 runSpacing: 5,
                 spacing: 5,
                 children: _getSolidColors(),
@@ -61,6 +62,7 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
             Center(
               child: Wrap(
+                alignment: WrapAlignment.center,
                 runSpacing: 5,
                 spacing: 5,
                 children: _getGradientColors(enabled: useGradients),

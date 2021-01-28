@@ -13,7 +13,6 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
 import 'boost_group.dart';
 import 'group_members.dart';
-import 'guest_switcher.dart';
 
 class GroupSettings extends StatefulWidget {
   final GlobalKey<State> bannerKey;
@@ -227,11 +226,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   if(snapshot.hasData){
                                     return Column(
                                       children: [
-                                        Visibility(
-                                          visible: hasGuestsSnapshot.data,
-                                          child: GuestSwitcher(bannerKey: widget.bannerKey),
-                                        ),
-                                        ManageGuests(showRemove: hasGuestsSnapshot.data),
+                                        ManageGuests(showRemove: hasGuestsSnapshot.data, bannerKey: widget.bannerKey),
                                       ],
 
                                     );

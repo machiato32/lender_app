@@ -15,7 +15,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
 
   Future<bool> _deleteAllData() async {
     try{
-      await httpDelete(context: context, uri: '/delete_user');
+      await httpDelete(context: context, uri: '/user');
       return true;
     }catch(_){
       throw _;
@@ -34,6 +34,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
                 child: Text(
                   'delete_all_data'.tr(),
                   style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
                 )
             ),
             SizedBox(
@@ -59,7 +60,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
                       context: context,
                       child: FutureSuccessDialog(
                         future: _deleteAllData(),
-                        dataTrueText: 'delete_scf',
+                        dataTrueText: 'user_delete_scf',
                         onDataTrue: (){
                           Navigator.pushAndRemoveUntil(
                               context,

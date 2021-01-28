@@ -188,8 +188,8 @@ class _LenderAppState extends State<LenderApp> {
         }else if(page=='shopping'){
           int selectedTab=1;
           getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
-        }else{
-          // getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage()));
+        }else if(page=='store'){
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
         }
       }
     }
@@ -334,27 +334,12 @@ class _LenderAppState extends State<LenderApp> {
       var decoded = jsonDecode(response.body);
       showAds=decoded['data']['ad_free']==0;
       useGradients=decoded['data']['gradients_enabled']==1;
-      print(decoded);
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      bool trial=false;
-      if(preferences.containsKey('trial')){
-        trial=preferences.getBool('trial');
-      }
-      if(trial && !useGradients){
+      if(!useGradients && preferences.getString('theme').toLowerCase().contains('Gradient')){
         preferences.setString('theme', 'greenLightTheme');
-        AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-          '1234',
-          'system_notification'.tr(),
-          'system_notification_explanation'.tr(),
-        );
-        NotificationDetails details = NotificationDetails(
-            androidNotificationDetails, IOSNotificationDetails(presentSound: false)
-        );
-        preferences.setBool('trial', false);
-        flutterLocalNotificationsPlugin.show(1234, 'free_trial_ended'.tr(), 'free_trial_ended_explanation'.tr(), details);
       }
     }catch(_){
-
+      throw _;
     }
 
   }
@@ -453,9 +438,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<dynamic> _getSumBalance() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/user');
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      return decoded['data'];
+      http.Response response = await httpGet(context: context, uri: '/balance');
+      // Map<String, dynamic> decoded = jsonDecode(response.body);
+      return jsonDecode(response.body);
     }catch(_){
       throw _;
     }
@@ -627,11 +612,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           BottomNavigationBarItem(
               icon: DescribedFeatureOverlay(
                   featureId: 'shopping_list',
-                  tapTarget: Icon(Icons.add_shopping_cart, color: Colors.black),
+                  tapTarget: Icon(Icons.receipt_long, color: Colors.black),
                   title: Text('discover_shopping_title'.tr()),
                   description: Text('discover_shopping_description'.tr()),
                   overflowMode: OverflowMode.extendBackground,
-                  child: Icon(Icons.add_shopping_cart)
+                  child: Icon(Icons.receipt_long)
               ),
               label: 'shopping_list'.tr()
           ),
@@ -880,7 +865,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     children: [
                       RefreshIndicator(
                         onRefresh: () async {
-                          await callback();
+                          if(isOnline) await callback();
                           setState(() {
 
                           });
@@ -898,7 +883,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           ],
                         ),
                       ),
-                      ShoppingList(),
+                      ShoppingList(isOnline: isOnline,),
                       GroupSettings(bannerKey: _isGuestBannerKey),
                     ]
                 ),

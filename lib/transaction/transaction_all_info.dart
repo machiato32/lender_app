@@ -11,16 +11,16 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
-class Purchase extends StatefulWidget {
+class PurchaseAllInfo extends StatefulWidget {
   final PurchaseData data;
 
-  Purchase(this.data);
+  PurchaseAllInfo(this.data);
 
   @override
-  _PurchaseState createState() => _PurchaseState();
+  _PurchaseAllInfoState createState() => _PurchaseAllInfoState();
 }
 
-class _PurchaseState extends State<Purchase> {
+class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
   Future<bool> _deleteElement(int id) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;

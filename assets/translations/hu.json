@@ -294,5 +294,14 @@
 
     "sure_boost": "Biztosan fejleszteni szeretnéd a csoportot?",
     "boost_scf": "A csoportot sikeresen felfejlesztettük.",
-    "already_boosted": "A csoportot már felfejlesztették!"
+    "already_boosted": "A csoportot már felfejlesztették!",
+
+    "delete_all_data": "Összes felhasználói adat törlése",
+    "delete_all_data_explanation": "Ekkor semmilyen adatod nem marad meg a szervereinken sem.\n❗Ezzel visszavonhatatlanul letörlöd a felhasználói profilod❗",
+    "user_delete_scf": "A felhasználói fiók törlése sikeres volt!",
+
+    "you_seem_lonely": "Egyedül vagy?",
+    "invite_friends": "Hívd meg a barátaid",
+    "add_guests_offline": "Vagy adj hozzá vendégeket a csoporthoz",
+    "you_seem_lonely_explanation": "Később ezeket a csoport beállítasai között tudod elvégezni"
 }

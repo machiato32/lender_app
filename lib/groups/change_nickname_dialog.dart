@@ -111,8 +111,7 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                 GradientButton(
                   onPressed: () {
                     if (_nicknameFormKey.currentState.validate()) {
-                      // Navigator.pop(context);
-                      FocusScope.of(context).unfocus();
+                      FocusScope.of(context).requestFocus(FocusNode());
                       String nickname =
                           _nicknameController.text[0].toUpperCase() +
                               _nicknameController.text.substring(1);

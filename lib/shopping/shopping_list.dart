@@ -21,6 +21,8 @@ import '../essentials/widgets/error_message.dart';
 import 'edit_request_dialog.dart';
 
 class ShoppingList extends StatefulWidget {
+  final bool isOnline;
+  ShoppingList({this.isOnline});
   @override
   _ShoppingListState createState() => _ShoppingListState();
 }
@@ -106,7 +108,7 @@ class _ShoppingListState extends State<ShoppingList> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        await deleteCache(uri: '/groups');
+        if(widget.isOnline) await deleteCache(uri: '/groups');
         setState(() {
           _shoppingList = null;
           _shoppingList = _getShoppingList(overwriteCache: true);
@@ -224,71 +226,85 @@ class _ShoppingListState extends State<ShoppingList> {
                         children: [
                           GradientButton(
                             onPressed: (){
+                              TextEditingController controller = TextEditingController();
+                              GlobalKey<FormState> formKey = GlobalKey<FormState>();
                               showDialog(
                                 context: context,
-                                builder: (context) {
-                                  TextEditingController controller = TextEditingController();
-                                  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-                                  return Form(
+                                child:
+                                  Form(
                                     key: formKey,
-                                    child: AlertDialog(
-                                      title: Text('where'.tr()),
-                                      content: TextFormField(
-                                        validator: (value){
-                                          value=value.trim();
-                                          if (value.isEmpty) {
-                                            return 'field_empty'.tr();
-                                          }
-                                          return null;
-                                        },
-                                        decoration: InputDecoration(
-                                          labelText: 'store'.tr(),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color:
-                                                Theme.of(context).colorScheme.onSurface),
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context).colorScheme.primary,
-                                                width: 2),
-                                          ),
-                                        ),
-                                        controller: controller,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            color:
-                                            Theme.of(context).textTheme.bodyText1.color),
-                                        cursorColor: Theme.of(context).colorScheme.secondary,
-                                        inputFormatters: [
-                                          LengthLimitingTextInputFormatter(20)
-                                        ],
-                                      ),
-                                      actions: [
-                                        GradientButton(
-                                          onPressed: (){
-                                            if(formKey.currentState.validate()){
-                                              String store = controller.text;
-                                              showDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                child: FutureSuccessDialog(
-                                                  future: _postImShopping(store),
-                                                  dataTrueText: 'store_scf',
-                                                  onDataTrue: () {
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
+                                    child: Dialog(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('where'.tr()),
+                                            TextFormField(
+                                              validator: (value){
+                                                value=value.trim();
+                                                if (value.isEmpty) {
+                                                  return 'field_empty'.tr();
+                                                }
+                                                return null;
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: 'store'.tr(),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                      Theme.of(context).colorScheme.onSurface),
+                                                ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Theme.of(context).colorScheme.primary,
+                                                      width: 2),
+                                                ),
+                                              ),
+                                              controller: controller,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color:
+                                                  Theme.of(context).textTheme.bodyText1.color),
+                                              cursorColor: Theme.of(context).colorScheme.secondary,
+                                              inputFormatters: [
+                                                LengthLimitingTextInputFormatter(20)
+                                              ],
+                                            ),
+                                            SizedBox(height: 10,),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                GradientButton(
+                                                  onPressed: (){
+                                                    if(formKey.currentState.validate()){
+                                                      String store = controller.text;
+                                                      showDialog(
+                                                          context: context,
+                                                          barrierDismissible: false,
+                                                          child: FutureSuccessDialog(
+                                                            future: _postImShopping(store),
+                                                            dataTrueText: 'store_scf',
+                                                            onDataTrue: () {
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
+                                                            },
+                                                          )
+                                                      );
+                                                    }
                                                   },
-                                                )
-                                              );
-                                            }
-                                          },
-                                          child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
-                                        )
-                                      ],
+                                                  child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+
+                                        ),
+                                      ),
+
+
                                     ),
-                                  );
-                                },
+                                  )
                               );//TODO: dialog in own file
                             },
                             child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
@@ -343,6 +359,7 @@ class _ShoppingListState extends State<ShoppingList> {
   }
 
   List<Widget> _generateShoppingList(List<ShoppingRequestData> data) {
+    data.sort((e1, e2) => e1.reactions.where((reaction) => reaction.reaction=='❗').length>=e2.reactions.where((element) => element.reaction=='❗').length?-1:1);
     return data.map((element) {
       return ShoppingListEntry(
         data: element,
@@ -414,8 +431,15 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     if (widget.data.requesterId == idToUse) {
       style = Theme.of(context).textTheme.button;
       dateColor = Theme.of(context).textTheme.button.color;
-      icon = Icon(Icons.receipt, color: style.color);
+      icon = Icon(Icons.receipt_long, color: style.color, size: 30,);
       boxDecoration = BoxDecoration(
+        boxShadow: (Theme.of(context).brightness==Brightness.light)
+            ?[ BoxShadow(
+                color: Colors.grey[500],
+                offset: Offset(0.0, 1.5),
+                blurRadius: 1.5,
+              )]
+            : [],
         gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
       );
@@ -423,8 +447,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       style = Theme.of(context).textTheme.bodyText1;
       dateColor = Theme.of(context).colorScheme.surface;
       icon = Icon(
-        Icons.receipt,
+        Icons.receipt_long_outlined,
         color: style.color,
+        size: 30
       );
       boxDecoration = BoxDecoration();
     }
@@ -454,22 +479,19 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                 future: _fulfillShoppingRequest(widget.data.requestId),
                 dataTrueText: 'fulfill_scf',
                 onDataTrue: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, true);
                 },
               )
           ).then((value) {
             widget.callback();
-            if(direction==DismissDirection.startToEnd){
+            if(direction==DismissDirection.startToEnd && value==true){
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
                           AddPurchaseRoute(
-                            type: PurchaseType
-                                .fromShopping,
-                            shoppingData:
-                            widget
-                                .data,
+                            type: PurchaseType.fromShopping,
+                            shoppingData:widget.data,
                           )
                   )
               );
@@ -484,8 +506,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                 child: FutureSuccessDialog(
                   future:
                   _deleteShoppingRequest(
-                      widget
-                          .data.requestId),
+                      widget.data.requestId),
                   dataTrueText: 'delete_scf',
                   onDataTrue: () {
                     Navigator.pop(context, true);

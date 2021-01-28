@@ -199,13 +199,13 @@
     "store": "Laden",
     "store_scf": "Die Benachrichtigung wurde erfolgreich gesendet.",
 
-    "leave_group": "leave_group",
-    "leave_scf": "leave_scf",
-    "balance_at_least_0": "balance_at_least_0",
-    "kick_member": "kick_member",
-    "kick_member_scf": "kick_member_scf",
-    "really_kick": "really_kick",
-    "really_leave": "really_leave",
+    "leave_group": "Die Gruppe verlassen",
+    "leave_scf": "Du hast die Gruppe erfolgreich verlassen",
+    "balance_at_least_0": "Dein Konto muss positiv sein",
+    "kick_member": "Mitglied rausschmeisen",
+    "kick_member_scf": "Das Mitglied wurde erfolgreich rausgescmissen",
+    "really_kick": "Möchtest du das Mitglied wirklich rausschmeisen?",
+    "really_leave": "Möchtest du die Gruppe wirklich verlassen?",
 
     "auto_payment": "Automatische Zahlung",
 

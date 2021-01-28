@@ -88,6 +88,13 @@ class _PaymentEntryState extends State<PaymentEntry> {
       boxDecoration = BoxDecoration(
         gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
+        boxShadow: ( Theme.of(context).brightness==Brightness.light)
+            ?[ BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(0.0, 1.5),
+              blurRadius: 1.5,
+            )]
+            : [],
       );
       takerName = widget.data.takerNickname;
       amount = widget.data.amount.printMoney(currentGroupCurrency);

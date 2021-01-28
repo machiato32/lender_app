@@ -66,8 +66,9 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
               height: 5,
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(Icons.receipt, color: Theme.of(context).colorScheme.primary),
+                Icon(Icons.receipt_long, color: Theme.of(context).colorScheme.primary),
                 Text(' - '),
                 Flexible(
                     child: Text(widget.data.name,
@@ -216,24 +217,27 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                   future: _fulfillShoppingRequest(widget.data.requestId),
                                   dataTrueText: 'fulfill_scf',
                                   onDataTrue: () {
-                                    Navigator.pop(context);
+                                    Navigator.pop(context, true);
                                     Navigator.pop(context, 'deleted');
                                   },
                                 )
                             ).then((value) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddPurchaseRoute(
-                                            type: PurchaseType
-                                                .fromShopping,
-                                            shoppingData:
-                                            widget
-                                                .data,
-                                          )
-                                  )
-                              );
+                              if(value==true){
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AddPurchaseRoute(
+                                              type: PurchaseType
+                                                  .fromShopping,
+                                              shoppingData:
+                                              widget
+                                                  .data,
+                                            )
+                                    )
+                                );
+                              }
+
                             });
                           },
                           child: Row(

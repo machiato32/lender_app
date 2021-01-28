@@ -249,6 +249,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                         saveGroupId(usersGroupIds[0]);
                                         saveGroupName(usersGroups[0]);
                                         //TODO: group currency
+                                        //TODO: server mast ad vissza
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
@@ -260,7 +261,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => JoinGroup()),
+                                                builder: (context) => JoinGroup(fromAuth: true,)),
                                                 (r) => false);
                                       }
 

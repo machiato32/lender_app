@@ -28,12 +28,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<PurchaseData>> _getTransactions() async {
+  Future<List<PurchaseData>> _getTransactions({bool overwriteCache=false}) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
         uri: '/purchases?group=' + currentGroupId.toString(),
         context: context,
+        overwriteCache: overwriteCache,
         useGuest: useGuest
       );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
@@ -48,12 +49,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }
   }
 
-  Future<List<PaymentData>> _getPayments() async {
+  Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
         uri: '/payments?group=' + currentGroupId.toString(),
         context: context,
+          overwriteCache: overwriteCache,
         useGuest: useGuest
       );
 
@@ -68,15 +70,29 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }
   }
 
-  void callback() {
-    clearAllCache();
-    setState(() {
-      _transactions = null;
-      _transactions = _getTransactions();
+  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
+    if(!reaction){
+      clearAllCache();
+      setState(() {
+        _payments = null;
+        _payments = _getPayments(overwriteCache: true);
+        _transactions = null;
+        _transactions = _getTransactions(overwriteCache: true);
+      });
+    }else{
+      setState(() {
+        if(payment){
+          _payments = null;
+          _payments = _getPayments(overwriteCache: true);
+        }
+        if(purchase){
+          _transactions = null;
+          _transactions = _getTransactions(overwriteCache: true);
+        }
+      });
 
-      _payments = null;
-      _payments = _getPayments();
-    });
+    }
+
   }
 
   @override

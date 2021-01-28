@@ -1,6 +1,7 @@
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 import 'dart:convert';
 
 import 'config.dart';
@@ -13,6 +14,7 @@ import 'essentials/http_handler.dart';
 import 'essentials/app_theme.dart';
 import 'essentials/widgets/gradient_button.dart';
 import 'essentials/currencies.dart';
+import 'main.dart';
 
 class Balances extends StatefulWidget {
   final Function callback;
@@ -239,6 +241,13 @@ class _BalancesState extends State<Balances> {
             var boxDecoration = BoxDecoration(
               gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
               borderRadius: BorderRadius.circular(15),
+              boxShadow: ( Theme.of(context).brightness==Brightness.light)
+                  ?[ BoxShadow(
+                    color: Colors.grey[500],
+                    offset: Offset(0.0, 1.5),
+                    blurRadius: 1.5,
+                  )]
+                  : [],
             );
             var amount = payment.amount.money(currentGroupCurrency);
             return Container(
@@ -319,9 +328,22 @@ class _BalancesState extends State<Balances> {
     }
   }
 
+  Future<String> _getInvitation() async {
+    try {
+      http.Response response = await httpGet(
+          uri: '/groups/' + currentGroupId.toString(),
+          context: context);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['invitation'];
+
+    } catch (_) {
+      throw _;
+    }
+  }
+
   List<Widget> _generateBalances(List<Member> members) {
     int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
-    return members.map<Widget>((Member member) {
+    List<Widget> widgets = members.map<Widget>((Member member) {
       if (member.memberId == idToUse) {
         TextStyle style = Theme.of(context).textTheme.button;
         return Column(
@@ -331,6 +353,13 @@ class _BalancesState extends State<Balances> {
                 decoration: BoxDecoration(
                   gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
                   borderRadius: BorderRadius.circular(15),
+                  boxShadow: ( Theme.of(context).brightness==Brightness.light)
+                      ?[ BoxShadow(
+                    color: Colors.grey[500],
+                    offset: Offset(0.0, 1.5),
+                    blurRadius: 1.5,
+                  )]
+                      : [],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -374,5 +403,78 @@ class _BalancesState extends State<Balances> {
         ],
       );
     }).toList();
+    if(members.length==1){
+      widgets.add(
+        Column(
+          children: [
+            SizedBox(height:10),
+            Text('you_seem_lonely'.tr(), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
+
+            SizedBox(height:5),
+            Text('invite_friends'.tr(), style: Theme.of(context).textTheme.bodyText1),
+            FutureBuilder(
+              future: _getInvitation(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState ==
+                    ConnectionState.done) {
+                  if (snapshot.hasData) {
+                    return Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            onPressed: () {
+                              Share.share(
+                                  'https://www.lenderapp.net/join/' +
+                                      snapshot.data,
+                                  subject:
+                                  'invitation_to_lender'
+                                      .tr());
+                            },
+                            child: Icon(
+                              Icons.share,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return ErrorMessage(
+                      error: snapshot.error.toString(),
+                      locationOfError: 'invitation',
+                      callback: (){
+                        setState(() {
+                          // _invitation = null;
+                          // _invitation = _getInvitation();
+                        });
+                      },
+                    );
+                  }
+                }
+                return Center(
+                    child: CircularProgressIndicator());
+              },
+            ),
+            Text('add_guests_offline'.tr(), style: Theme.of(context).textTheme.bodyText1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  child: Icon(Icons.person_add, color: Theme.of(context).colorScheme.onSecondary,),
+                  onPressed: (){
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage(selectedIndex:2)), (route) => false);
+                  },
+                ),
+              ],
+            ),
+            Text('you_seem_lonely_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)
+          ],
+        )
+      );
+    }
+    return widgets;
   }
 }

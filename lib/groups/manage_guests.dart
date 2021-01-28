@@ -11,10 +11,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../essentials/widgets/gradient_button.dart';
 import '../main.dart';
+import 'guest_switcher.dart';
 
 class ManageGuests extends StatelessWidget {
   final bool showRemove;
-  ManageGuests({this.showRemove});
+  final GlobalKey<State> bannerKey;
+  ManageGuests({this.showRemove, this.bannerKey});
   Future<bool> _removeGuest(BuildContext context) async {
     Map<String, dynamic> body ={
       "member_id":guestUserId
@@ -73,6 +75,7 @@ class ManageGuests extends StatelessWidget {
               height: 10,
             ),
             Divider(),
+            GuestSwitcher(bannerKey: bannerKey),
             Center(
                 child: Text(
                   'add_guest'.tr(),

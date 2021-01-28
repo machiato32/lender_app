@@ -144,7 +144,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                 ),
                 Tab(
                     icon: Icon(
-                  Icons.attach_money,
+                  Icons.payments,
                   color: Theme.of(context).colorScheme.secondary,
                 )),
               ],

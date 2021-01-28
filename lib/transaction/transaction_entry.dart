@@ -37,7 +37,7 @@ class PurchaseData {
 
   factory PurchaseData.fromJson(Map<String, dynamic> json) {
     return PurchaseData(
-        purchaseId: json['transaction_id'],
+        purchaseId: json['purchase_id'],
         name: json['name'],
         updatedAt: json['updated_at'] == null
             ? DateTime.now()
@@ -129,6 +129,13 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       style = Theme.of(context).textTheme.button;
       dateColor = Theme.of(context).textTheme.button.color;
       boxDecoration = BoxDecoration(
+        boxShadow: ( Theme.of(context).brightness==Brightness.light)
+            ?[ BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(0.0, 1.5),
+              blurRadius: 1.5,
+            )]
+            : [],
         gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
       );
@@ -156,7 +163,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
-                        child: Purchase(widget.data))
+                        child: PurchaseAllInfo(widget.data))
                 )
                 .then((val) {
                   if (val == 'deleted') widget.callback(purchase: true);

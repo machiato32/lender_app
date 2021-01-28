@@ -92,14 +92,15 @@ void memberNotInGroup(BuildContext context){
   SharedPreferences.getInstance().then((prefs) {
     prefs.setStringList('users_groups', usersGroups);
     prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-  });
+  });//TODO:currency
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.removeQueuedCustomToasts();
   ft.showToast(
       child: errorToast('not_in_group'.tr(), context),
       toastDuration: Duration(seconds: 2),
-      gravity: ToastGravity.BOTTOM);
+      gravity: ToastGravity.BOTTOM
+  );
   if(usersGroups.length>0){
     currentGroupName=usersGroups[0];
     currentGroupId=usersGroupIds[0];
@@ -119,7 +120,7 @@ void memberNotInGroup(BuildContext context){
   }
 
 }
-Future<http.Response> fromCache({@required String uri, @required bool overwriteCache}) async {
+Future<http.Response> fromCache({@required String uri, @required bool overwriteCache, bool alwaysReturnCache=false}) async {
   try{
     String fileName = uri.replaceAll('/', '-');
     var cacheDir = await getTemporaryDirectory();
@@ -127,7 +128,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
       return null;
     }
     File file = File(cacheDir.path+'/'+fileName);
-    if(!overwriteCache && (file.existsSync() &&  DateTime.now().difference(await file.lastModified()).inMinutes<5)){
+    if(alwaysReturnCache || (!overwriteCache && (file.existsSync() && DateTime.now().difference(await file.lastModified()).inMinutes<5))){
       // print('from cache');
       return http.Response(file.readAsStringSync(), 200);
     }
@@ -196,7 +197,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
 
-      }else if(error['error']=='1'){
+      }else if(error['error']=='1'){//TODO
         memberNotInGroup(context);
       }
       throw errorHandler(error['error']);
@@ -204,6 +205,10 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   } on FormatException {
     throw 'format_exception';
   } on SocketException {
+    http.Response response = await fromCache(uri: uri.substring(1), overwriteCache: false, alwaysReturnCache: true);
+    if(response!=null){
+      return response;
+    }
     throw 'cannot_connect';
   } catch (_) {
     throw _;
