@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/change_nickname_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -35,7 +38,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
       await httpPut(
           uri: '/groups/' + currentGroupId.toString() + '/admins',
           context: context,
-          body: body);
+          body: body
+      );
       return true;
 
     } catch (_) {
@@ -238,33 +242,31 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                   child: FutureSuccessDialog(
                                     future: _removeMember(null),
                                     dataTrueText: 'leave_scf',
-                                    onDataTrue: (){
-                                      usersGroupIds.remove(currentGroupId);
-                                      usersGroups.remove(currentGroupName);
-                                      SharedPreferences.getInstance().then((prefs) {
-                                        prefs.setStringList('users_groups', usersGroups);
-                                        prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-                                      });
-                                      if(usersGroups.length>0){
-                                        saveGroupId(usersGroupIds[0]);
-                                        saveGroupName(usersGroups[0]);
-                                        //TODO: group currency
-                                        //TODO: server mast ad vissza
+                                    onDataTrue: () async {
+                                      await clearAllCache();
+                                      if(currentGroupId!=null){
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => MainPage()),
-                                                (r) => false);
+                                                builder: (context) => MainPage()
+                                            ),
+                                            (r) => false
+                                        );
                                       }else{
-                                        deleteGroupId();
-                                        deleteGroupCurrency();
+                                        usersGroupIds.remove(currentGroupId);
+                                        usersGroups.remove(currentGroupName);
+                                        SharedPreferences.getInstance().then((prefs) {
+                                          prefs.setStringList('users_groups', usersGroups);
+                                          prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+                                        });
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => JoinGroup(fromAuth: true,)),
-                                                (r) => false);
+                                                builder: (context) => JoinGroup(fromAuth: true,)
+                                            ),
+                                            (r) => false
+                                        );
                                       }
-
                                     },
                                   )
                               );
@@ -300,6 +302,20 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
       "member_id":memberId??currentUserId
     };
     clearAllCache();
-    return (await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body)).statusCode==204;
+    http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
+    if(memberId==null){
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      if(decoded!=null){
+        saveGroupName(decoded['data']['group_name']);
+        saveGroupId(decoded['data']['group_id']);
+        saveGroupCurrency(decoded['data']['currency']);
+      }else{
+        deleteGroupCurrency();
+        deleteGroupId();
+        deleteGroupName();
+      }
+    }
+
+    return true;
   }
 }

@@ -246,7 +246,7 @@
 
     "about_us": "Rólunk",
     "about_us_explanation": "Az alkalmazás névjegye",
-    "about_us_text": "Két srác, aki unalmában ilyen appokat fejleszt.\n\nHa megveszed a pro verziót, nem csak az életed lesz jobb, de még két egyetemistának is segíesz fenntartani az appot \uD83D\uDE09\n\nMinden jót, a fejlesztők",
+    "about_us_text": "Ezt az alkalmazást két egyetemista fejlesztette unalmában.\n\nKülön köszönet Hegyi Annának, Kocsis Ábelnek, és Kovács Sára Katának, emellett mindenkinek, aki tesztelte, és visszajelzést küldött az alkalmazásról.\n\nMinden jót, a fejlesztők",
 
     "reactions": "Reakciók",
     "add_reaction": "Reakció hozzáadása",
@@ -297,11 +297,18 @@
     "already_boosted": "A csoportot már felfejlesztették!",
 
     "delete_all_data": "Összes felhasználói adat törlése",
-    "delete_all_data_explanation": "Ekkor semmilyen adatod nem marad meg a szervereinken sem.\n❗Ezzel visszavonhatatlanul letörlöd a felhasználói profilod❗",
+    "delete_all_data_explanation": "Ekkor semmilyen hozzád köthető adat nem marad meg a szervereinken.",
     "user_delete_scf": "A felhasználói fiók törlése sikeres volt!",
 
     "you_seem_lonely": "Egyedül vagy?",
     "invite_friends": "Hívd meg a barátaid",
     "add_guests_offline": "Vagy adj hozzá vendégeket a csoporthoz",
-    "you_seem_lonely_explanation": "Később ezeket a csoport beállítasai között tudod elvégezni"
+    "you_seem_lonely_explanation": "Később ezeket a csoport beállítasai között tudod elvégezni",
+
+    "undo": "Visszavonás",
+    "undo_scf": "A visszavonás sikeres volt!",
+    "request_deleted": "Törölve!",
+
+    "sure_user_delete": "Ezzel visszavonhatatlanul letörlöd a felhasználói profilod"
+
 }

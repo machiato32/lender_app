@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
@@ -90,6 +91,13 @@ class _ColorElementState extends State<ColorElement> {
     return await SharedPreferences.getInstance();
   }
 
+  Future _postColor(String name) async {
+    Map<String, String> body = {
+      'theme':name
+    };
+    await httpPut(context: context, uri: '/user', body: body);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Ink(
@@ -111,6 +119,7 @@ class _ColorElementState extends State<ColorElement> {
             _getPrefs().then((_prefs) {
               _prefs.setString('theme', widget.themeName);
             });
+            _postColor(widget.themeName);
           }else{
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => InAppPurchasePage())

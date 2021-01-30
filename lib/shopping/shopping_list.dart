@@ -82,12 +82,63 @@ class _ShoppingListState extends State<ShoppingList> {
       throw _;
     }
   }
+  Future<bool> _undoDeleteRequest(int id) async {
+    try{
+      await httpPost(context: context, uri: '/requests/restore/'+id.toString());
+      return true;
+    }catch(_){
+      throw _;
+    }
+  }
 
-  void callback() {
+  void callback({int restoreId}) {
     setState(() {
       _shoppingList = null;
       _shoppingList = _getShoppingList(overwriteCache: true);
     });
+    if(restoreId!=null){
+      Scaffold.of(context).removeCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 5),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('request_deleted'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),),
+                InkWell(
+                  onTap: (){
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        child: FutureSuccessDialog(
+                          future: _undoDeleteRequest(restoreId),
+                          dataTrueText: 'undo_scf',
+                          onDataTrue: (){
+                            Scaffold.of(context).removeCurrentSnackBar();
+                            Navigator.pop(context, true);
+                          },
+                        )
+                    ).then((value) {
+                      if (value ?? false) callback();
+                    });
+                  },
+                  child: Container(
+                      padding: EdgeInsets.all(5),
+                      child: Row(
+                        children: [
+                          Icon(Icons.undo, color: Theme.of(context).textTheme.button.color,),
+                          SizedBox(width: 3),
+                          Text('undo'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),),
+                        ],
+                      )
+                  ),
+                )
+              ],
+            ),
+          )
+      );
+    }
   }
 
   @override
@@ -421,7 +472,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   String name;
   String user;
 
-
   @override
   Widget build(BuildContext context) {
     name = widget.data.name;
@@ -476,14 +526,14 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
               barrierDismissible: false,
               context: context,
               child: FutureSuccessDialog(
-                future: _fulfillShoppingRequest(widget.data.requestId),
+                future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                 dataTrueText: 'fulfill_scf',
                 onDataTrue: () {
                   Navigator.pop(context, true);
                 },
               )
           ).then((value) {
-            widget.callback();
+            widget.callback(restoreId: widget.data.requestId);
             if(direction==DismissDirection.startToEnd && value==true){
               Navigator.push(
                   context,
@@ -504,16 +554,16 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                 barrierDismissible: false,
                 context: context,
                 child: FutureSuccessDialog(
-                  future:
-                  _deleteShoppingRequest(
-                      widget.data.requestId),
+                  future: _deleteFulfillShoppingRequest(
+                      widget.data.requestId, context),
                   dataTrueText: 'delete_scf',
                   onDataTrue: () {
                     Navigator.pop(context, true);
                   },
                 )
             ).then((value) {
-              if (value ?? false) widget.callback();
+              if (value ?? false)
+                widget.callback(restoreId: widget.data.requestId);
             });
           }else if(direction==DismissDirection.startToEnd){
             showDialog(
@@ -549,7 +599,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                           child: ShoppingAllInfo(widget.data)
                       )
                   ).then((val) {
-                    if (val == 'deleted') widget.callback();
+                    if (val == 'deleted') widget.callback(restoreId: widget.data.requestId);
                   });
                 },
                 borderRadius: BorderRadius.circular(15),
@@ -607,21 +657,15 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     );
   }
 
-  Future<bool> _fulfillShoppingRequest(int id) async {
+
+
+
+
+  Future<bool> _deleteFulfillShoppingRequest(int id, var buildContext) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
-      return true;
 
-    } catch (_) {
-      throw _;
-    }
-  }
-
-  Future<bool> _deleteShoppingRequest(int id) async {
-    try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       return true;
 
     } catch (_) {

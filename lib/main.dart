@@ -439,8 +439,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Future<dynamic> _getSumBalance() async {
     try{
       http.Response response = await httpGet(context: context, uri: '/balance');
-      // Map<String, dynamic> decoded = jsonDecode(response.body);
-      return jsonDecode(response.body);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data'];
     }catch(_){
       throw _;
     }
@@ -597,6 +597,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           setState(() {
             _selectedIndex = _index;
             _tabController.animateTo(_index);
+            _scaffoldKey.currentState.removeCurrentSnackBar();
           });
           if(_selectedIndex==1){
             FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
@@ -740,8 +741,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 builder: (context, snapshot){
                   if(snapshot.connectionState==ConnectionState.done){
                     if(snapshot.hasData){
-                      String currency = snapshot.data['default_currency'];
-                      double balance = snapshot.data['total_balance']*1.0;
+                      String currency = snapshot.data['currency'];
+                      double balance = snapshot.data['balance']*1.0;
                       return Text(
                           'Σ: '+ balance.printMoney(currency),
                           style: Theme.of(context).textTheme.bodyText1

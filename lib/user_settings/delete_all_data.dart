@@ -1,5 +1,6 @@
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -58,20 +59,29 @@ class _DeleteAllDataState extends State<DeleteAllData> {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      child: FutureSuccessDialog(
-                        future: _deleteAllData(),
-                        dataTrueText: 'user_delete_scf',
-                        onDataTrue: (){
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginOrRegisterPage()
-                              ),
-                              (r) => false
-                          );
-                        },
+                      child: ConfirmChoiceDialog(
+                        choice: 'sure_user_delete',
                       )
-                    );
+                    ).then((value){
+                      if(value??false){
+                        showDialog(
+                          context: context,
+                          child: FutureSuccessDialog(
+                            future: _deleteAllData(),
+                            dataTrueText: 'user_delete_scf',
+                            onDataTrue: (){
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginOrRegisterPage()
+                                  ),
+                                  (r) => false
+                              );
+                            },
+                          )
+                        );
+                      }
+                    });
                   },
                 ),
               ],

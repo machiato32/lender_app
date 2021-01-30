@@ -45,7 +45,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
     for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount*1.0, 'auto_payment'.tr(), payment.takerId)){
+      if(await _postPayment(payment.amount*1.0, '\$\$auto_payment\$\$'.tr(), payment.takerId)){
         continue;
       }
     }
@@ -455,7 +455,8 @@ class _BalancesState extends State<Balances> {
                   }
                 }
                 return Center(
-                    child: CircularProgressIndicator());
+                    child: CircularProgressIndicator()
+                );
               },
             ),
             Text('add_guests_offline'.tr(), style: Theme.of(context).textTheme.bodyText1),

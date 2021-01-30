@@ -4,6 +4,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 class ConfirmChoiceDialog extends StatefulWidget {
   final String choice;
+  ///A dialog to ask the user if they really want to do what they just clicked.
+  ///Automatically translates the [choice] string given.
+  ///Use with .then to get the value chosen by the user: true for confirmed, false for doesn't confirm, null when dismissed.
   ConfirmChoiceDialog({@required this.choice});
   @override
   _ConfirmChoiceDialogState createState() => _ConfirmChoiceDialogState();

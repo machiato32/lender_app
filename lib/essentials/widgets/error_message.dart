@@ -6,6 +6,10 @@ class ErrorMessage extends StatelessWidget {
   final String error;
   final Function callback;
   final String locationOfError;
+  ///Displays an error message with the given [error].
+  ///When tapped on, the [callback] method is called.
+  ///If the error isn't 'no internet', the user can decide to report the error.
+  ///Then the 'report a bug' is navigated to with the given [locationOfError] as the location.
   ErrorMessage({@required this.error, @required this.callback, this.locationOfError});
   @override
   Widget build(BuildContext context) {
