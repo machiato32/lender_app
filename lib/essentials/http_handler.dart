@@ -47,44 +47,6 @@ Widget errorToast(String msg, BuildContext context){
   );
 }
 
-String errorHandler(String error){
-  switch(error){
-    case '0':
-      return 'input_error'.tr();
-    case '1':
-      return 'user_not_member'.tr();
-    case '2':
-      return 'guest_cannot_be_added'.tr();
-    case '3':
-      return 'group_limit_reached'.tr();
-    case '4':
-      return 'user_already_member'.tr();
-    case '5':
-      return 'nickname_taken'.tr();
-    case '6':
-      return 'guests_cannot_be_admins'.tr();
-    case '7':
-      return 'cannot_leave_until_payed'.tr();
-    case '8':
-      return 'choose_guest'.tr();
-    case '9':
-      return 'request_already_fulfilled'.tr();
-    case '10':
-      return 'request_cannot_fulfilled_requester'.tr();
-    case '11':
-      return 'check_old_password'.tr();
-    case '12':
-      return 'new_password_cannot_same'.tr();
-    case '13':
-      return 'not_buyer_of_transaction'.tr();
-    case '14':
-      return 'not_payer_of_transaction'.tr();
-    case '15':
-      return 'did_not_request_this'.tr();
-    default:
-      return error;
-  }
-}
 
 void memberNotInGroup(BuildContext context){
   usersGroupIds.remove(currentGroupId);
@@ -197,10 +159,10 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
 
-      }else if(error['error']=='1'){//TODO
+      }else if(error['error']=='user_not_member'){
         memberNotInGroup(context);
       }
-      throw errorHandler(error['error']);
+      throw error['error'];
     }
   } on FormatException {
     throw 'format_exception';
@@ -245,10 +207,10 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
-      }else if(error['error']=='1'){
+      }else if(error['error']=='user_not_member'){
         memberNotInGroup(context);
       }
-      throw errorHandler(error['error']);
+      throw error['error'];
     }
   } on FormatException {
     throw 'format_exception';
@@ -288,10 +250,10 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
-      }else if(error['error']=='1'){
+      }else if(error['error']=='user_not_member'){
         memberNotInGroup(context);
       }
-      throw errorHandler(error['error']);
+      throw error['error'];
     }
   } on FormatException {
     throw 'format_exception';
@@ -324,10 +286,10 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
                 (r) => false);
-      }else if(error['error']=='1'){
+      }else if(error['error']=='user_not_member'){
         memberNotInGroup(context);
       }
-      throw errorHandler(error['error']);
+      throw error['error'];
     }
   } on FormatException {
     throw 'format_exception';

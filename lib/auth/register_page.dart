@@ -18,8 +18,6 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import '../essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
-import '../essentials/http_handler.dart';
-
 class RegisterPage extends StatefulWidget {
   final String inviteURL;
   RegisterPage({this.inviteURL});
@@ -489,7 +487,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } on SocketException {
       throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
-      throw errorHandler(_);
+      throw _;
     }
   }
 }

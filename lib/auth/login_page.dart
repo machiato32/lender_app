@@ -351,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
     } on SocketException {
       throw 'cannot_connect'.tr()+ ' F02';
     } catch (_) {
-      throw errorHandler(_);
+      throw _;
     }
   }
 }
