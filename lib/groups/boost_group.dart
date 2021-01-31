@@ -72,10 +72,14 @@ class _BoostGroupState extends State<BoostGroup> {
                               GradientButton(
                                 child: Icon(Icons.insights, color: Theme.of(context).colorScheme.onSecondary),
                                 onPressed: (){
-                                  if(snapshot.data==0){
+                                  if(snapshot.data['available_boosts']==0){
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) => InAppPurchasePage())
-                                    );
+                                    ).then((value){
+                                      setState(() {
+
+                                      });
+                                    });
                                   }else{
                                     showDialog(
                                       context: context,

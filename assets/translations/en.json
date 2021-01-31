@@ -179,25 +179,16 @@
     "format_exception": "An error occurred while parsing the data. Please try again.",
     "no_connection": "There is no internet connection.",
 
-    "input_error": "input_error",
-    "user_not_member": "user_not_member_error",
-    "guest_cannot_be_added": "guest_cannot_be_added",
-    "group_limit_reached": "group_limit_reached",
-    "user_already_member": "user_already_member",
-    "nickname_taken": "nickname_taken",
-    "guests_cannot_be_admins": "guests_cannot_be_admins",
-    "cannot_leave_until_payed": "cannot_leave_until_payed",
-    "choose_guest": "choose_guest",
-    "request_already_fulfilled": "request_already_fulfilled",
-    "request_cannot_fulfilled_requester": "request_cannot_fulfilled_requester",
-    "check_old_password": "check_old_password",
-    "new_password_cannot_same": "new_password_cannot_same",
-    "not_buyer_of_transaction": "not_buyer_of_transaction",
-    "not_payer_of_transaction": "not_payer_of_transaction",
-    "did_not_request_this": "did_not_request_this",
-
     "store": "Store",
     "store_scf": "Notification sent successfully.",
+
+    "leave_group": "Leave group",
+    "leave_scf": "The leaving was successful",
+    "balance_at_least_0": "Your balance needs to be at least 0 to leave the group!",
+    "kick_member": "Kick member",
+    "kick_member_scf": "Member kicked successfully",
+    "really_kick": "If you kick this member, his current balance will be added to your balance. Are you sure you want to kick him?",
+    "really_leave": "If you leave, your current balance will be split between everyone else. Are you sure you want to leave?",
 
     "auto_payment": "Automatic payment",
 

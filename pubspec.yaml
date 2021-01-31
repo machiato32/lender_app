@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^5.7.5
   mopub_flutter: ^1.2.2+1
   in_app_purchase: ^0.3.5+1
+  fl_chart: ^0.12.2
   flutter:
     sdk: flutter
   flutter_localizations:

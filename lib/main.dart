@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
+import 'package:csocsort_szamla/main/statistics_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +36,7 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'essentials/widgets/gradient_button.dart';
 import 'main/report_a_bug_page.dart';
 import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
@@ -500,6 +502,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     }).toList();
   }
 
+  Future<bool> _isGroupBoosted() async {
+    try{
+      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded['data']['is_boosted']==1;
+    }catch(_){
+      throw _;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -834,10 +846,75 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButton: _selectedIndex==2?
-        FloatingActionButton(
-          onPressed: (){},
-          child: Icon(Icons.assessment),
+        FutureBuilder(
+          future: _isGroupBoosted(),
+          builder: (context, snapshot){
+            if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
+               if(snapshot.data){
+                 return FloatingActionButton(
+                   onPressed: (){
+                     Navigator.push(
+                         context,
+                         MaterialPageRoute(
+                             builder: (context) => StatisticsPage()
+                         )
+                     );
+                   },
+                   child: Icon(Icons.assessment)
+                 );
+               }else{
+                 return FloatingActionButton(
+                   onPressed: (){
+                     showDialog(
+                       context: context,
+                       child: Dialog(
+                         child: Padding(
+                           padding: const EdgeInsets.all(15),
+                           child: Column(
+                             mainAxisSize: MainAxisSize.min,
+                             children: [
+                               Text('statistics_not_available', style: Theme.of(context).textTheme.headline6,),
+                               SizedBox(height: 10),
+                               Text('statistics_not_available_explanation', style: Theme.of(context).textTheme.subtitle2,),
+                               SizedBox(height: 15),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                   GradientButton(
+                                     child: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
+                                     onPressed: (){
+                                       Navigator.push(
+                                           context,
+                                           MaterialPageRoute(
+                                               builder: (context) => InAppPurchasePage()
+                                           )
+                                       );
+                                     },
+                                   ),
+                                 ],
+                               )
+                             ],
+                           ),
+                         ),
+                       )
+                     );
+                   },
+                   backgroundColor: Colors.grey[400],
+                   child: Stack(
+                     children: [
+                       Align(
+                           alignment: Alignment.center,
+                           child: Icon(Icons.assessment,)
+                       ),
+                     ],
+                   ),
+                 );
+               }
+            }
+            return Container();
+          }
         )
+
         :
         Visibility(
           visible: _selectedIndex == 0,

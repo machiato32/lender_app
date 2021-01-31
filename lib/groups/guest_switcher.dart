@@ -92,6 +92,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                   }
                    return Wrap(
                     spacing: 10,
+                    alignment: WrapAlignment.center,
                     children: snapshot.data
                         .map<ChoiceChip>((Member member) =>
                         ChoiceChip(
