@@ -277,6 +277,57 @@
 
     "sure_boost": "Bist du sicher, dass du die Gruppe boosten möchtest?",
     "boost_scf": "Die Grupper wurde erfolgreich geboostet.",
-    "already_boosted": "Diese Gruppe wurde schon geboostet!"
+    "already_boosted": "Diese Gruppe wurde schon geboostet!",
+
+    "delete_all_data": "Lösche alle Benutzerdaten",
+    "delete_all_data_explanation": "Keine Daten, die mit dir in Verbindung gebracht werden können werden auf unseren Servern bleiben.",
+    "user_delete_scf": "Die Nutzerdaten wurden erfolgreich gelöscht!",
+
+    "you_seem_lonely": "Bist du einsam?",
+    "invite_friends": "Lade deine Freunde ein",
+    "add_guests_offline": "Oder füge neue Gäste hinzu",
+    "you_seem_lonely_explanation": "Nachher wirst du diese Optionen in den Gruppeneinstellungen erreichen können",
+
+    "undo": "Rückgängig",
+    "undo_scf": "Element wurde erfolgreich wiederhergestellt!",
+    "request_deleted": "Gelöscht!",
+
+    "sure_user_delete": "Später wirst du dein Account nicht mehr wiederherstellen können! Möchtest du fortfahren?",
+
+    "statistics": "Statistiken",
+    "payments_stats": "Zahlungen",
+    "payments_stats_explanation": "Hier siehst du deine Zahlungsstatistiken",
+    "payed": "Gezahlt:",
+    "taken": "Bekommen:",
+    "you_payed": "Du zahltest",
+    "you_took": "Du bekamst",
+
+    "purchases_stats": "Einkäufe",
+    "purchases_stats_explanation": "Hier siehst du deine Einkaufsstatistiken",
+    "stat_bought": "Gekauft:",
+    "received": "Bekommen:",
+    "you_bought": "Du kauftest",
+    "you_received": "Du bekamst",
+
+    "group_stats": "Statistiken der Gruppe",
+    "group_stats_explanation": "Hier siehst du alle ",
+    "stats_purchases": "Einkäufe:",
+    "stats_payments": "Zahlungen:",
+    "purchases": "Einkäufe",
+
+    "sum_you_payed": "Summe der gezahlten Zahlungen:",
+    "sum_you_took": "Summe der bekommenen Zahlungen:",
+    "sum_you_bought": "Summe der gekauften Einkäufe:",
+    "sum_you_received": "Summe der bekommenen Einkäufe:",
+    "sum_purchases": "Summe der Einkäufe:",
+    "sum_payments": "Summe der Zahlungen:",
+
+    "select_date": "Wähle ein Datum",
+    "select_date_explanation": "Wähle ein Bereich in dem du die Statistiken sehen möchtest",
+
+    "personalised_ads": "Ich möchte personalisierte Anzeigen sehen",
+
+    "statistics_not_available": "Statistiken nicht verfügbar",
+    "statistics_not_available_explanation": "Diese Gruppe ist noch nicht geboostet, deshalb sind die Statistiken nicht verfügbar. Booste die Gruppe oder kaufe Gruppenboostende Dodos im Laden!"
 
 }

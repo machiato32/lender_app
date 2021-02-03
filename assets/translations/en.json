@@ -276,5 +276,56 @@
 
     "sure_boost": "Are you sure you want to boost the group?",
     "boost_scf": "The group was successfully boosted.",
-    "already_boosted": "This group has already been boosted!"
+    "already_boosted": "This group has already been boosted!",
+
+    "delete_all_data": "Delete all user data",
+    "delete_all_data_explanation": "Using this there won't be any remaining data on our servers, which could be bond to you",
+    "user_delete_scf": "The user data was removed successfully",
+
+    "you_seem_lonely": "You seem lonely",
+    "invite_friends": "Invite your friends",
+    "add_guests_offline": "Or add offline guests to the group",
+    "you_seem_lonely_explanation": "You will be able to do these in the group settings",
+
+    "undo": "Undo",
+    "undo_scf": "Request restored successfully",
+    "request_deleted": "Deleted!",
+
+    "sure_user_delete": "You won't be able to restore your account! Do you want to continue?",
+
+    "statistics": "Statistics",
+    "payments_stats": "Payments",
+    "payments_stats_explanation": "Below are your payment statistics",
+    "payed": "Paid:",
+    "taken": "Received:",
+    "you_payed": "You paid",
+    "you_took": "You received",
+
+    "purchases_stats": "Purchases",
+    "purchases_stats_explanation": "Below are your purchase statistics",
+    "stat_bought": "Bought:",
+    "received": "Received:",
+    "you_bought": "You bought",
+    "you_received": "You received",
+
+    "group_stats": "The group's statistics",
+    "group_stats_explanation": "Below are all the payments and purchases of the group",
+    "stats_purchases": "Purchases:",
+    "stats_payments": "Payments:",
+    "purchases": "Purchases",
+
+    "sum_you_payed": "Sum of the paid payments:",
+    "sum_you_took": "Sum of the received payments:",
+    "sum_you_bought": "Sum of the made purchases:",
+    "sum_you_received": "Sum of the received purchases:",
+    "sum_purchases": "Sum of the purchases:",
+    "sum_payments": "Sum of the payments:",
+
+    "select_date": "Pick date",
+    "select_date_explanation": "Pick the range in which you want to see the statistics",
+
+    "personalised_ads": "I want to see personalised ads",
+
+    "statistics_not_available": "Statistics not available",
+    "statistics_not_available_explanation": "This group is not boosted, so the statistics aren't available. Boost the group or buy Groupboosting Dodos in the store!"
 }

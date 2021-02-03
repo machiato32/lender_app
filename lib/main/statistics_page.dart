@@ -72,7 +72,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
       http.Response response = await httpGet(useCache: false, context: context, uri: '/groups/'+currentGroupId.toString()+'/statistics/all?from_date='+startDate+'&until_date='+endDate);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
-      // print(decoded);
       Map<DateTime, double> purchases = (decoded['data']['purchases'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));
       Map<DateTime, double> payments = (decoded['data']['payments'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));
       return [purchases, payments, ({DateTime.now(): decoded['data']['sum']['purchases']*1.0} ), ({DateTime.now(): decoded['data']['sum']['payments']*1.0})];

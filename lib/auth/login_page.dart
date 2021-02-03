@@ -341,6 +341,7 @@ class _LoginPageState extends State<LoginPage> {
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
         });
+        await clearAllCache();
         return await _selectGroup(decoded['data']['last_active_group']);
       } else {
         Map<String, dynamic> error = jsonDecode(response.body);

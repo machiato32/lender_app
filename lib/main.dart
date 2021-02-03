@@ -19,7 +19,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
-// import 'package:mopub_flutter/mopub.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'balances.dart';
@@ -873,9 +872,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                            child: Column(
                              mainAxisSize: MainAxisSize.min,
                              children: [
-                               Text('statistics_not_available', style: Theme.of(context).textTheme.headline6,),
+                               Text('statistics_not_available'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
                                SizedBox(height: 10),
-                               Text('statistics_not_available_explanation', style: Theme.of(context).textTheme.subtitle2,),
+                               Text('statistics_not_available_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center),
                                SizedBox(height: 15),
                                Row(
                                  mainAxisAlignment: MainAxisAlignment.center,

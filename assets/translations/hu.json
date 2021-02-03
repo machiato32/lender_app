@@ -292,7 +292,7 @@
     "undo_scf": "A visszavonás sikeres volt!",
     "request_deleted": "Törölve!",
 
-    "sure_user_delete": "Ezzel visszavonhatatlanul letörlöd a felhasználói profilod",
+    "sure_user_delete": "Ezzel visszavonhatatlanul letörlöd a felhasználói profilod. Biztosan folytatni szeretnéd?",
 
     "statistics": "Statisztikák",
     "payments_stats": "Fizetések",
@@ -323,9 +323,10 @@
     "sum_payments": "A fizetések összege:",
 
     "select_date": "Dátum kiválasztása",
-    "select_date_explanation": "Választ ki az időtartományt, amelyben szeretnéd látni a statisztikákat"
+    "select_date_explanation": "Választ ki az időtartományt, amelyben szeretnéd látni a statisztikákat",
 
+    "personalised_ads": "Szeretnék látni személyreszabott reklámokat",
 
-
-
+    "statistics_not_available": "A statiszták nem elérhetőek",
+    "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!"
 }

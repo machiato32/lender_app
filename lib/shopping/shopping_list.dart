@@ -100,7 +100,12 @@ class _ShoppingListState extends State<ShoppingList> {
       Scaffold.of(context).removeCurrentSnackBar();
       Scaffold.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+            ),
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+            duration: Duration(seconds: 3),
             backgroundColor: Theme.of(context).colorScheme.primary,
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,7 +129,7 @@ class _ShoppingListState extends State<ShoppingList> {
                     });
                   },
                   child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(3),
                       child: Row(
                         children: [
                           Icon(Icons.undo, color: Theme.of(context).textTheme.button.color,),

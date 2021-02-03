@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
   ExpandableController _usernameExplanationController = ExpandableController();
 
   bool _privacyPolicy = false;
+  bool _personalisedAds = false;
 
   @override
   void initState() {
@@ -325,8 +327,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           onTap: (){
                             launch('https://lenderapp.net/privacy-policy');
                           },
-                          child: Text('accept_privacy_policy'.tr(),
-                            style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline), )
+                          child: Text('accept_privacy_policy'.tr()+'*',
+                            style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline),
+                            textAlign: TextAlign.center,
+                          )
                       ),
                     ),
                     Checkbox(
@@ -335,6 +339,31 @@ class _RegisterPageState extends State<RegisterPage> {
                       onChanged: (value){
                         setState(() {
                           _privacyPolicy=value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: InkWell(
+                          onTap: (){
+                            launch('https://www.mopub.com/en/legal/privacy');
+                          },
+                          child: Text('personalised_ads'.tr(),
+                            style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline),
+                            textAlign: TextAlign.center,
+                          )
+                      ),
+                    ),
+                    Checkbox(
+                      value: _personalisedAds,
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      onChanged: (value){
+                        setState(() {
+                          _personalisedAds=value;
                         });
                       },
                     ),
@@ -450,7 +479,7 @@ class _RegisterPageState extends State<RegisterPage> {
       String username, String password, String reminder, String currency) async {
     try {
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-      Map<String, String> body = {
+      Map<String, dynamic> body = {
         "username": username,
         "default_currency": currency,
         "password": password,
@@ -458,6 +487,7 @@ class _RegisterPageState extends State<RegisterPage> {
         "password_reminder": reminder,
         "fcm_token": await _firebaseMessaging.getToken(),
         "language":context.locale.languageCode,
+        "personalised_ads":_personalisedAds?1:0
       };
       Map<String, String> header = {
         "Content-Type": "application/json",
@@ -477,6 +507,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
         });
+        await clearAllCache();
         return true;
       } else {
         Map<String, dynamic> error = jsonDecode(response.body);
