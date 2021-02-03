@@ -1,7 +1,6 @@
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/essentials/group_objects.dart';
@@ -71,7 +70,6 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
   Icon icon;
   TextStyle style;
   BoxDecoration boxDecoration;
-  String date;
   String note;
   String names;
   String amount;
@@ -84,7 +82,6 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
 
   @override
   Widget build(BuildContext context) {
-    date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
     note = (widget.data.name == '')
         ? 'no_note'.tr()
         : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);

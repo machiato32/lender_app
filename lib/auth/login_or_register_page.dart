@@ -114,7 +114,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 }
               },
               child: Image(
-                image: AssetImage('assets/dodo_color.png'),
+                image: AssetImage('assets/dodo_color_glow3.png'),
                 height: MediaQuery.of(context).size.width / 3,
               ),
             ),

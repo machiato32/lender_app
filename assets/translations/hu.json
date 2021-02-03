@@ -315,12 +315,7 @@
     "stats_payments": "Fizetések:",
     "purchases": "Bevásrálások",
 
-    "sum_you_payed": "A fizetéseid összege:",
-    "sum_you_took": "A neked fizetettek összege:",
-    "sum_you_bought": "A vásárlásaid összege:",
-    "sum_you_received": "A neked vásároltak összege:",
-    "sum_purchases": "A bevásárlások összege:",
-    "sum_payments": "A fizetések összege:",
+    "sum_of": "Σ",
 
     "select_date": "Dátum kiválasztása",
     "select_date_explanation": "Választ ki az időtartományt, amelyben szeretnéd látni a statisztikákat",
@@ -328,5 +323,11 @@
     "personalised_ads": "Szeretnék látni személyreszabott reklámokat",
 
     "statistics_not_available": "A statiszták nem elérhetőek",
-    "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!"
+    "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!",
+
+    "use_personalised_ads": "use_personalised_ads",
+    "use_personalised_ads_explanation": "use_personalised_ads_explanation",
+    "update_personalised_ads_scf": "update_personalised_ads_scf",
+
+    "trial_time": "trial"
 }

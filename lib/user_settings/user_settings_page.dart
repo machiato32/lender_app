@@ -10,6 +10,7 @@ import 'color_picker.dart';
 import 'change_language.dart';
 import 'change_username.dart';
 import 'reset_tutorial.dart';
+import 'personalised_ads.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _SettingsState extends State<Settings> {
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), AboutUs(), DeleteAllData()],
+                children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), PersonalisedAds(), AboutUs(), DeleteAllData()],
               ),
             ),
             adUnitForSite('settings'),

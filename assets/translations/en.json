@@ -314,12 +314,7 @@
     "stats_payments": "Payments:",
     "purchases": "Purchases",
 
-    "sum_you_payed": "Sum of the paid payments:",
-    "sum_you_took": "Sum of the received payments:",
-    "sum_you_bought": "Sum of the made purchases:",
-    "sum_you_received": "Sum of the received purchases:",
-    "sum_purchases": "Sum of the purchases:",
-    "sum_payments": "Sum of the payments:",
+    "sum_of": "Sum of",
 
     "select_date": "Pick date",
     "select_date_explanation": "Pick the range in which you want to see the statistics",

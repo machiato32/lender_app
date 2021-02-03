@@ -407,11 +407,11 @@ class _BalancesState extends State<Balances> {
       widgets.add(
         Column(
           children: [
+            SizedBox(height:20),
+            Text('you_seem_lonely'.tr(), style: Theme.of(context).textTheme.headline6,),
             SizedBox(height:10),
-            Text('you_seem_lonely'.tr(), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
-
+            Text('invite_friends'.tr(), style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
             SizedBox(height:5),
-            Text('invite_friends'.tr(), style: Theme.of(context).textTheme.bodyText1),
             FutureBuilder(
               future: _getInvitation(),
               builder: (context, snapshot) {
@@ -459,7 +459,9 @@ class _BalancesState extends State<Balances> {
                 );
               },
             ),
-            Text('add_guests_offline'.tr(), style: Theme.of(context).textTheme.bodyText1),
+            SizedBox(height:10),
+            Text('add_guests_offline'.tr(), style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
+            SizedBox(height:5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -471,6 +473,7 @@ class _BalancesState extends State<Balances> {
                 ),
               ],
             ),
+            SizedBox(height:10),
             Text('you_seem_lonely_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)
           ],
         )

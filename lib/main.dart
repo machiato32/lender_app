@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
@@ -79,6 +80,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   InAppPurchaseConnection.enablePendingPurchases();
+  Admob.initialize();
   setup();
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -335,6 +337,8 @@ class _LenderAppState extends State<LenderApp> {
       var decoded = jsonDecode(response.body);
       showAds=decoded['data']['ad_free']==0;
       useGradients=decoded['data']['gradients_enabled']==1;
+      personalisedAds=decoded['data']['personalised_ads']==1;
+      trialVersion=decoded['data']['trial']==1;
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if(!useGradients && preferences.getString('theme').toLowerCase().contains('Gradient')){
         preferences.setString('theme', 'greenLightTheme');
@@ -501,11 +505,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     }).toList();
   }
 
-  Future<bool> _isGroupBoosted() async {
+  Future<dynamic> _isGroupBoosted() async {
     try{
       http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      return decoded['data']['is_boosted']==1;
+      return decoded['data'];
     }catch(_){
       throw _;
     }
@@ -661,7 +665,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         children: <Widget>[
                           Expanded(
                             child: Image(
-                              image: AssetImage('assets/dodo_color.png'),
+                              image: AssetImage('assets/dodo_color_glow3.png'),
                             ),
                           ),
                           Text(
@@ -772,12 +776,21 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ListTile(
                 dense: true,
                 onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InAppPurchasePage())
-                  );
+                  if(trialVersion){
+                    //TODO
+                  }else{
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InAppPurchasePage())
+                    );
+                  }
                 },
                 leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
+                subtitle: trialVersion?
+                  Text('trial_time'.tr().toUpperCase(),
+                    style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).colorScheme.primary),
+                  ):
+                  null,
                 title: Text('in_app_purchase'.tr(), style: Theme.of(context).textTheme.bodyText1,),
               ),
               ListTile(
@@ -849,13 +862,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           future: _isGroupBoosted(),
           builder: (context, snapshot){
             if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
-               if(snapshot.data){
+              print(snapshot.data);//TODO: DOMINIK
+               if(snapshot.data['is_boosted']==1 || snapshot.data['trial']==1){
                  return FloatingActionButton(
                    onPressed: (){
                      Navigator.push(
                          context,
                          MaterialPageRoute(
-                             builder: (context) => StatisticsPage()
+                             builder: (context) => StatisticsPage(groupCreation: snapshot.data['created_at']==null?DateTime.parse('2020-01-17'):DateTime.parse(snapshot.data['created_at']).toLocal(),)
                          )
                      );
                    },

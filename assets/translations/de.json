@@ -315,12 +315,7 @@
     "stats_payments": "Zahlungen:",
     "purchases": "Einkäufe",
 
-    "sum_you_payed": "Summe der gezahlten Zahlungen:",
-    "sum_you_took": "Summe der bekommenen Zahlungen:",
-    "sum_you_bought": "Summe der gekauften Einkäufe:",
-    "sum_you_received": "Summe der bekommenen Einkäufe:",
-    "sum_purchases": "Summe der Einkäufe:",
-    "sum_payments": "Summe der Zahlungen:",
+    "sum_of": "Summe von",
 
     "select_date": "Wähle ein Datum",
     "select_date_explanation": "Wähle ein Bereich in dem du die Statistiken sehen möchtest",

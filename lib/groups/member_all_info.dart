@@ -110,7 +110,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 height: 10,
               ),
               Visibility(
-                  visible: widget.isCurrentUserAdmin,
+                  visible: widget.isCurrentUserAdmin, //TODO: Dominik guest
                   child: SwitchListTile(
                     value: widget.member.isAdmin,
                     title: Text(
@@ -199,7 +199,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       child:Row(
                         children: [
                           Icon(
-                            Icons.delete,
+                            Icons.person_outline,
                             color: Theme.of(context).textTheme.button.color,
                           ),
                           SizedBox(width: 3,),

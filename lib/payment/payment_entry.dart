@@ -75,7 +75,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
 
   @override
   Widget build(BuildContext context) {
-    date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
+    date = DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt);
     note = (widget.data.note == '' || widget.data.note == null)
         ? 'no_note'.tr()
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);

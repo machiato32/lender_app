@@ -36,7 +36,7 @@ dependencies:
   get_it: 5.0.3
   expandable: 4.1.4
   url_launcher: ^5.7.5
-  mopub_flutter: ^1.2.2+1
+  admob_flutter: ^1.0.1
   in_app_purchase: ^0.3.5+1
   fl_chart: ^0.12.2
   flutter:

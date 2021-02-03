@@ -497,10 +497,13 @@ class _RegisterPageState extends State<RegisterPage> {
       http.Response response = await http.post((useTest?TEST_URL:APP_URL) + '/register',
           headers: header, body: bodyEncoded);
       if (response.statusCode == 201) {
-        Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-        apiToken = decodedResponse['api_token'];
-        currentUsername = decodedResponse['username'];
-        currentUserId = decodedResponse['id'];
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        apiToken = decoded['api_token'];
+        currentUsername = decoded['username'];
+        currentUserId = decoded['id'];
+        showAds=decoded['data']['ad_free']==0;
+        useGradients=decoded['data']['gradients_enabled']==1;
+        trialVersion=decoded['data']['trial']==1;
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);

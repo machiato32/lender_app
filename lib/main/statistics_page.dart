@@ -13,6 +13,8 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class StatisticsPage extends StatefulWidget {
+  final DateTime groupCreation;
+  StatisticsPage({this.groupCreation});
   @override
   _StatisticsPageState createState() => _StatisticsPageState();
 }
@@ -29,9 +31,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
   @override
   void initState(){
     super.initState();
+    if(widget.groupCreation!=null && _startDate.isBefore(widget.groupCreation)){
+      _startDate=widget.groupCreation;
+    }
     _paymentStats=_getPaymentStats();
     _purchaseStats=_getPurchaseStats();
     _groupStats=_getGroupStats();
+
   }
 
   Future<List<Map<DateTime, double>>> _getPaymentStats() async {
@@ -79,6 +85,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       throw _;
     }
   }
+
   LineChartBarData _generateLineChartBarData(Map<DateTime, double> map, int index){
     return LineChartBarData(
       spots: (map.keys.map<FlSpot>((DateTime key){
@@ -215,6 +222,28 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
+  Widget _sumOf(double amount, int type){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text('sum_of'.tr()+' ', style: Theme.of(context).textTheme.bodyText1,),
+            Container(
+              width: 15,
+              height: 15,
+              decoration: BoxDecoration(
+                  color: type==1?Theme.of(context).colorScheme.primary:Theme.of(context).colorScheme.secondary,
+                  borderRadius: BorderRadius.circular(15)
+              ),
+            ),
+          ],
+        ),
+        Flexible(child: Text(amount.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1,))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,20 +266,20 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   SizedBox(height: 10,),
                   Text('select_date_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
                   SizedBox(height: 10,),
+                  Text(DateFormat.yMMMd().format(_startDate)+' - '+DateFormat.yMMMd().format(_endDate), style: Theme.of(context).textTheme.bodyText1,),
+                  SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GradientButton(
-                        child: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.onSecondary),
+                        child: Icon(Icons.date_range, color: Theme.of(context).colorScheme.onSecondary),
                         onPressed: () async {
                           DateTimeRange range = await showDateRangePicker(
                             context: context,
-                            firstDate: DateTime.parse('2020-01-17'),
+                            firstDate: widget.groupCreation,
                             lastDate: DateTime.now(),
                             currentDate: DateTime.now(),
                             initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
-
-                            // initialEntryMode: DatePickerEntryMode.input,
                             builder: (context, child){
                               return Theme(
                                 data: Theme.of(context).copyWith(
@@ -354,8 +383,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text('sum_you_payed'.tr()+' '+snapshot.data[2].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1,),
-                              Text('sum_you_took'.tr()+' '+snapshot.data[3].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1)
+                              _sumOf(snapshot.data[2].values.first, 1),
+                              _sumOf(snapshot.data[3].values.first, 2),
                             ],
                           );
                         }
@@ -432,9 +461,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ],
                                 ),
                                 SizedBox(height: 10,),
-                                Text('sum_you_bought'.tr()+' '+snapshot.data[2].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1,),
-                                Text('sum_you_received'.tr()+' '+snapshot.data[3].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1)
-
+                                _sumOf(snapshot.data[2].values.first, 1),
+                                _sumOf(snapshot.data[3].values.first, 2),
                               ],
                             );
                           }
@@ -509,9 +537,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ],
                                 ),
                                 SizedBox(height: 10,),
-                                Text('sum_purchases'.tr()+' '+snapshot.data[2].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1,),
-                                Text('sum_payments'.tr()+' '+snapshot.data[3].values.first.printMoney(currentGroupCurrency), style: Theme.of(context).textTheme.bodyText1)
-
+                                _sumOf(snapshot.data[2].values.first, 1),
+                                _sumOf(snapshot.data[3].values.first, 2),
                               ],
                             );
                           }

@@ -114,7 +114,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
               Text(' - '),
               Flexible(
                   child: Text(
-                      DateFormat('yyyy/MM/dd - kk:mm')
+                      DateFormat('yyyy/MM/dd - HH:mm')
                           .format(widget.data.updatedAt),
                       style: Theme.of(context).textTheme.bodyText1)),
             ],

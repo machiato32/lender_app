@@ -335,6 +335,7 @@ class _LoginPageState extends State<LoginPage> {
         currentUsername = decoded['data']['username'];
         showAds=decoded['data']['ad_free']==0;
         useGradients=decoded['data']['gradients_enabled']==1;
+        trialVersion=decoded['data']['trial']==1;
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);

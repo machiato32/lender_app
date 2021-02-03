@@ -27,7 +27,11 @@ class AboutUs extends StatelessWidget {
                   style:
                   Theme.of(context).textTheme.subtitle2,
                   textAlign: TextAlign.center,
-                )),
+                )
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

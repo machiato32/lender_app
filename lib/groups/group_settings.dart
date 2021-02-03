@@ -226,7 +226,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   if(snapshot.hasData){
                                     return Column(
                                       children: [
-                                        ManageGuests(showRemove: hasGuestsSnapshot.data, bannerKey: widget.bannerKey),
+                                        ManageGuests(hasGuests: hasGuestsSnapshot.data, bannerKey: widget.bannerKey),
                                       ],
 
                                     );

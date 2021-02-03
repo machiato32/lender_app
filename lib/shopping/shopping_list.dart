@@ -8,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/config.dart';
@@ -473,7 +472,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   TextStyle style;
   BoxDecoration boxDecoration;
 
-  String date;
   String name;
   String user;
 
@@ -481,7 +479,6 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   Widget build(BuildContext context) {
     name = widget.data.name;
     user = widget.data.requesterUsername;
-    date = DateFormat('yyyy/MM/dd - kk:mm').format(widget.data.updatedAt);
     int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     if (widget.data.requesterId == idToUse) {
       style = Theme.of(context).textTheme.button;
