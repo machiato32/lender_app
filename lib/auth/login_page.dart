@@ -214,58 +214,37 @@ class _LoginPageState extends State<LoginPage> {
                   child: FutureSuccessDialog(
                     future: _login(username, password),
                     dataTrueText: 'login_scf',
-                    dataFalse: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                            child: Text(
-                              'login_scf'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            )),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        FlatButton.icon(
-                          icon: Icon(Icons.check,
-                              color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => JoinGroup(
-                                      fromAuth: true,
-                                      inviteURL: widget.inviteURL,
-                                    )),
-                                    (r) => false
-                            );
-                          },
-                          label: Text(
-                            'okay'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          color: Theme.of(context).colorScheme.secondary,
-                        )
-                      ],
-                    ),
+                    // dataFalse: Column(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Flexible(
+                    //         child: Text(
+                    //           'login_scf'.tr(),
+                    //           style: Theme.of(context)
+                    //               .textTheme
+                    //               .bodyText1
+                    //               .copyWith(color: Colors.white),
+                    //           textAlign: TextAlign.center,
+                    //         )),
+                    //     SizedBox(
+                    //       height: 15,
+                    //     ),
+                    //     FlatButton.icon(
+                    //       icon: Icon(Icons.check,
+                    //           color: Theme.of(context).colorScheme.onSecondary),
+                    //       onPressed: () {
+                    //         _onSelectGroupFalse();
+                    //       },
+                    //       label: Text(
+                    //         'okay'.tr(),
+                    //         style: Theme.of(context).textTheme.button,
+                    //       ),
+                    //       color: Theme.of(context).colorScheme.secondary,
+                    //     )
+                    //   ],
+                    // ),
                     onDataTrue: () {
-                      if(widget.inviteURL==null){
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainPage()),
-                            (r) => false
-                        );
-                      }else{
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: widget.inviteURL,)),
-                            (r) => false
-                        );
-                      }
-
+                      _onSelectGroupTrue();
                     },
                   ));
             }
@@ -301,6 +280,7 @@ class _LoginPageState extends State<LoginPage> {
             _prefs.setStringList('users_groups', usersGroups);
             _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
           });
+          Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
           return true;
         }
         saveGroupName(groups[0].groupName);
@@ -310,13 +290,44 @@ class _LoginPageState extends State<LoginPage> {
           _prefs.setStringList('users_groups', usersGroups);
           _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
         });
+        Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
         return true;
       }
-      return false;
+      Future.delayed(delayTime()).then((value) => _onSelectGroupFalse());
+      return true;
 
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onSelectGroupTrue(){
+    if(widget.inviteURL==null){
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+              (r) => false
+      );
+    }else{
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: widget.inviteURL,)),
+              (r) => false
+      );
+    }
+  }
+
+  void _onSelectGroupFalse(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => JoinGroup(
+              fromAuth: true,
+              inviteURL: widget.inviteURL,
+            )
+        ),
+            (r) => false
+    );
   }
 
   Future<bool> _login(String username, String password) async {

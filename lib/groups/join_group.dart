@@ -61,11 +61,20 @@ class _JoinGroupState extends State<JoinGroup> {
       saveGroupName(decoded['data']['group_name']);
       saveGroupId(decoded['data']['group_id']);
       saveGroupCurrency(decoded['data']['currency']);
-
-      return response.statusCode == 200;
+      Future.delayed(delayTime()).then((value) => _onJoinGroup());
+      return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onJoinGroup() async {
+    await clearCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()),
+            (r) => false);
   }
 
   @override
@@ -318,13 +327,8 @@ class _JoinGroupState extends State<JoinGroup> {
                                     child: FutureSuccessDialog(
                                       future: _joinGroup(token, nickname),
                                       dataTrueText: 'join_scf',
-                                      onDataTrue: () async {
-                                        await clearCache();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MainPage()),
-                                                (r) => false);
+                                      onDataTrue: () {
+                                        _onJoinGroup();
                                       },
                                     ));
                               }

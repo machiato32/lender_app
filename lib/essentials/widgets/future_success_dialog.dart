@@ -1,4 +1,3 @@
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -59,42 +58,46 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
 
   Widget _buildDataTrue() {
     if (widget.dataTrue == null) {
+      // if(true){
+      //   return Container();
+      // }
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(
-              child: Text(
-            widget.dataTrueText.tr(),
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1
-                .copyWith(color: Colors.white),
-            textAlign: TextAlign.center,
-          )),
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.check,
-                        color: Theme.of(context).colorScheme.onSecondary),
-                    SizedBox(width: 3,),
-                    Text('okay'.tr(),
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                  ],
-                ),
-                onPressed: () {
-                  widget.onDataTrue();
-                },
-                useShadow: false,
-              ),
-            ],
-          )
+          Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.primary, size: 50,),
+          // Flexible(
+          //     child: Text(
+          //   widget.dataTrueText.tr(),
+          //   style: Theme.of(context)
+          //       .textTheme
+          //       .bodyText1
+          //       .copyWith(color: Colors.white),
+          //   textAlign: TextAlign.center,
+          // )),
+          // SizedBox(
+          //   height: 15,
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     GradientButton(
+          //       child: Row(
+          //         children: [
+          //           Icon(Icons.check,
+          //               color: Theme.of(context).colorScheme.onSecondary),
+          //           SizedBox(width: 3,),
+          //           Text('okay'.tr(),
+          //             style: Theme.of(context).textTheme.button,
+          //           ),
+          //         ],
+          //       ),
+          //       onPressed: () {
+          //         widget.onDataTrue();
+          //       },
+          //       useShadow: false,
+          //     ),
+          //   ],
+          // )
         ],
       );
     }

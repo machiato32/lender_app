@@ -26,10 +26,16 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onDeletePayment());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onDeletePayment(){
+    Navigator.pop(context);
+    Navigator.pop(context, 'deleted');
   }
 
   @override
@@ -175,9 +181,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                     future: _deletePayment(widget.data.paymentId),
                                     dataTrueText: 'delete_scf',
                                     onDataTrue: () {
-                                      Navigator.pop(context);
-                                      Navigator.pop(
-                                          context, 'deleted');
+                                      _onDeletePayment();
                                     },
                                   )
                                 );

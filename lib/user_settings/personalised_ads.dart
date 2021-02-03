@@ -22,6 +22,7 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
         };
         await httpPut(context: context, uri: '/user', body: body);
         personalisedAds=_personalisedAds;
+        Future.delayed(delayTime()).then((value) => _onUpdatePersonalisedAds());
         return true;
       }else{
         return Future.value(true);
@@ -30,6 +31,11 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
     } catch(_){
       throw _;
     }
+  }
+
+  void _onUpdatePersonalisedAds(){
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -62,6 +68,7 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
             SwitchListTile(
               value: _personalisedAds,
               secondary: Icon(Icons.update, color: Theme.of(context).colorScheme.primary,),
+              activeColor: Theme.of(context).colorScheme.primary,
               onChanged: (value){
                 setState(() {
                   _personalisedAds=value;
@@ -72,8 +79,7 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
                     child: FutureSuccessDialog(
                       future: _updatePersonalisedAds(),
                       onDataTrue: (){
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        _onUpdatePersonalisedAds();
                       },
                       onDataFalse: (){
                         Navigator.pop(context);

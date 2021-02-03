@@ -36,16 +36,27 @@ class _CreateGroupState extends State<CreateGroup> {
         'currency': currency,
         'member_nickname': nickname
       };
-      http.Response response =
-          await httpPost(uri: '/groups', body: body, context: context);
+      http.Response response = await httpPost(uri: '/groups', body: body, context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       saveGroupName(decoded['group_name']);
       saveGroupId(decoded['group_id']);
       saveGroupCurrency(decoded['currency']);
-      return response.statusCode == 201;
+      Future.delayed(delayTime()).then((value) => _onCreateGroup());
+      return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onCreateGroup() async {
+    await clearCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()
+        ),
+            (r) => false
+    );
   }
 
   @override
@@ -220,13 +231,8 @@ class _CreateGroupState extends State<CreateGroup> {
                                   context: context,
                                   child: FutureSuccessDialog(
                                     future: _createGroup(token, nickname, _defaultValue),
-                                    onDataTrue: () async {
-                                      await clearCache();
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MainPage()),
-                                          (r) => false);
+                                    onDataTrue: () {
+                                      _onCreateGroup();
                                     },
                                     dataTrueText: 'creation_scf',
                                   ));

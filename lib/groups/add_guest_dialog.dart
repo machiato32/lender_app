@@ -27,11 +27,23 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
           uri: '/groups/' + currentGroupId.toString() + '/add_guest',
           context: context,
           body: body);
+      Future.delayed(delayTime()).then((value) => _onAddGuest());
       return true;
 
     } catch (_) {
       throw _;
     }
+  }
+
+  Future<void> _onAddGuest() async {
+    await clearAllCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()
+        ),
+            (route) => false
+    );
   }
 
   @override
@@ -111,13 +123,8 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                             context: context,
                             child: FutureSuccessDialog(
                               future: _addGuest(_nicknameController.text),
-                              onDataTrue: () {
-                                clearAllCache();
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MainPage()),
-                                        (route) => false);
+                              onDataTrue: () async {
+                                _onAddGuest();
                               },
                               dataTrueText: 'add_guest_scf',
                             ));

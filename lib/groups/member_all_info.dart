@@ -40,6 +40,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
           context: context,
           body: body
       );
+      Future.delayed(delayTime()).then((value) => _onChangeAdmin());
       return true;
 
     } catch (_) {
@@ -47,7 +48,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     }
   }
 
-
+  void _onChangeAdmin(){
+    Navigator.pop(context);
+    Navigator.pop(context, 'madeAdmin');
+  }
 
   @override
   void initState() {
@@ -126,8 +130,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                             future: _changeAdmin(widget.member.memberId, value),
                             dataTrueText: 'admin_scf',
                             onDataTrue: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context, 'madeAdmin');
+                              _onChangeAdmin();
                             },
                           ));
                     },
@@ -184,11 +187,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                   future: _removeMember(widget.member.memberId),
                                   dataTrueText: 'kick_member_scf',
                                   onDataTrue: (){
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MainPage()),
-                                            (r) => false);
+                                    _onRemoveMember();
                                   },
                                 )
                             );
@@ -243,30 +242,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                                     future: _removeMember(null),
                                     dataTrueText: 'leave_scf',
                                     onDataTrue: () async {
-                                      await clearAllCache();
-                                      if(currentGroupId!=null){
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MainPage()
-                                            ),
-                                            (r) => false
-                                        );
-                                      }else{
-                                        usersGroupIds.remove(currentGroupId);
-                                        usersGroups.remove(currentGroupName);
-                                        SharedPreferences.getInstance().then((prefs) {
-                                          prefs.setStringList('users_groups', usersGroups);
-                                          prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-                                        });
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => JoinGroup(fromAuth: true,)
-                                            ),
-                                            (r) => false
-                                        );
-                                      }
+                                      _onRemoveMemberNull();
                                     },
                                   )
                               );
@@ -314,8 +290,46 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
         deleteGroupId();
         deleteGroupName();
       }
+      Future.delayed(delayTime()).then((value) => _onRemoveMemberNull());
+    }else{
+      Future.delayed(delayTime()).then((value) => _onRemoveMember());
     }
-
     return true;
   }
+
+  void _onRemoveMember() async {
+    await clearAllCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()),
+            (r) => false);
+  }
+  void _onRemoveMemberNull() async {
+    await clearAllCache();
+    if(currentGroupId!=null){
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MainPage()
+          ),
+          (r) => false
+      );
+    }else{
+      usersGroupIds.remove(currentGroupId);
+      usersGroups.remove(currentGroupName);
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList('users_groups', usersGroups);
+        prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
+      });
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => JoinGroup(fromAuth: true,)
+          ),
+          (r) => false
+      );
+    }
+  }
 }
+

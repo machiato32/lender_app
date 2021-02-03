@@ -37,11 +37,23 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
       SharedPreferences.getInstance().then((prefs){
         prefs.setString('current_group_name', currentGroupName);
       });
+      Future.delayed(delayTime()).then((value) => _onUpdateGroupName());
       return true;
-
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onUpdateGroupName(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MainPage()),
+            (r) => false);
+    _groupNameController.text =
+    '';
+    clearAllCache();
   }
 
   @override
@@ -123,25 +135,16 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                       if (_groupNameFormKey.currentState
                           .validate()) {
                         FocusScope.of(context).unfocus();
-                        String _groupName =
+                        String groupName =
                             _groupNameController.text;
                         showDialog(
                             barrierDismissible: false,
                             context: context,
                             child: FutureSuccessDialog(
-                              future: _updateGroupName(
-                                  _groupName),
+                              future: _updateGroupName(groupName),
                               dataTrueText: 'nickname_scf',
                               onDataTrue: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MainPage()),
-                                    (r) => false);
-                                _groupNameController.text =
-                                    '';
-                                clearAllCache();
+                                _onUpdateGroupName();
                               },
                             ));
                       }

@@ -17,6 +17,10 @@ class ChangeNicknameDialog extends StatefulWidget {
 }
 
 class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
+
+  TextEditingController _nicknameController = TextEditingController();
+  var _nicknameFormKey = GlobalKey<FormState>();
+
   Future<bool> _updateNickname(String nickname, int memberId) async {
     try {
       Map<String, dynamic> body = {
@@ -27,17 +31,22 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
           uri: '/groups/' + currentGroupId.toString() + '/members',
           context: context,
           body: body);
+      Future.delayed(delayTime()).then((value) => _onUpdateNickname());
       return true;
-
     } catch (_) {
       throw _;
     }
   }
 
+  void _onUpdateNickname(){
+    _nicknameController.text = '';
+    Navigator.pop(context);
+    Navigator.pop(context, 'madeAdmin');
+    clearAllCache();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController _nicknameController = TextEditingController();
-    var _nicknameFormKey = GlobalKey<FormState>();
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15)
@@ -119,13 +128,9 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                           barrierDismissible: false,
                           context: context,
                           child: FutureSuccessDialog(
-                            future: _updateNickname(
-                                nickname, widget.memberId),
+                            future: _updateNickname(nickname, widget.memberId),
                             onDataTrue: () {
-                              _nicknameController.text = '';
-                              Navigator.pop(context);
-                              Navigator.pop(context, 'madeAdmin');
-                              clearAllCache();
+                              _onUpdateNickname();
                             },
                             dataTrueText: 'nickname_scf',
                           ));

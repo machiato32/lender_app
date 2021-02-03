@@ -28,10 +28,17 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
         'name':newRequest
       };
       await httpPut(uri: '/requests/' + widget.requestId.toString(), context: context, body: body, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onUpdateRequest());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onUpdateRequest(){
+    clearAllCache();
+    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   @override
@@ -108,9 +115,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                             child: FutureSuccessDialog(
                               future: _updateRequest(newRequest),
                               onDataTrue: () {
-                                clearAllCache();
-                                Navigator.pop(context);
-                                Navigator.pop(context, true);
+                                _onUpdateRequest();
                               },
                               dataTrueText: 'request_edit_scf',
                             ));

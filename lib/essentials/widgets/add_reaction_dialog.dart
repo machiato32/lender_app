@@ -19,6 +19,22 @@ class AddReactionDialog extends StatefulWidget {
 
 class _AddReactionDialogState extends State<AddReactionDialog> {
 
+
+  void _onSendReaction(){
+    Navigator.pop(context);
+    Navigator.pop(context);
+    switch(widget.type){
+      case 'purchases':
+        widget.callback(purchase: true, reaction:true);
+        break;
+      case 'payments':
+        widget.callback(payment: true, reaction:true);
+        break;
+      case 'requests':
+        widget.callback();
+        break;
+    }
+  }
   Future<bool> _sendReaction (String reaction) async {
     try{
       print(widget.type.substring(0, widget.type.length-1));
@@ -27,6 +43,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         "reaction":reaction
       };
       await httpPost(context: context, uri: '/'+widget.type+'/reaction', body: body);
+      Future.delayed(delayTime()).then((value) => _onSendReaction());
       return true;
     }catch(_){
       throw _;
@@ -100,19 +117,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                       future: _sendReaction(e),
                                       dataTrueText: 'reaction_scf',
                                       onDataTrue: (){
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                        switch(widget.type){
-                                          case 'purchases':
-                                            widget.callback(purchase: true, reaction:true);
-                                            break;
-                                          case 'payments':
-                                            widget.callback(payment: true, reaction:true);
-                                            break;
-                                          case 'requests':
-                                            widget.callback();
-                                            break;
-                                        }
+                                        _onSendReaction();
                                       },
                                     )
                                 );

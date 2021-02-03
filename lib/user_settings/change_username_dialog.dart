@@ -31,11 +31,23 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
         prefs.setString('current_username', newUsername);
       });
       currentUsername=newUsername;
+      Future.delayed(delayTime()).then((value) => _onUpdateUsername());
       return true;
-
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onUpdateUsername(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MainPage()),
+            (r) => false);
+    _usernameController.text =
+    '';
+    clearAllCache();
   }
 
   @override
@@ -128,15 +140,7 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
                                     username),
                                 dataTrueText: 'nickname_scf',
                                 onDataTrue: () {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MainPage()),
-                                          (r) => false);
-                                  _usernameController.text =
-                                  '';
-                                  clearAllCache();
+                                  _onUpdateUsername();
                                 },
                               ));
                         }

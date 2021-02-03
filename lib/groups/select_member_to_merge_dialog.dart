@@ -29,9 +29,20 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
       'guest_id':guestUserId
     };
     await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/merge_guest', body: body);
+    Future.delayed(delayTime()).then((value) => _onMergeGuest());
     return true;
   }
-
+  void _onMergeGuest(){
+    clearAllCache();
+    deleteGuestApiToken();
+    deleteGuestGroupId();
+    deleteGuestNickname();
+    deleteGuestUserId();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+            (r) => false);
+  }
   Future<List<Member>> _getMembers() async {
     try {
 
@@ -137,15 +148,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                             future: _mergeGuest(_dropdownValue.memberId),
                             dataTrueText: 'merge_scf',
                             onDataTrue: (){
-                              clearAllCache();
-                              deleteGuestApiToken();
-                              deleteGuestGroupId();
-                              deleteGuestNickname();
-                              deleteGuestUserId();
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => MainPage()),
-                                      (r) => false);
+                              _onMergeGuest();
                             },
                           )
                         );

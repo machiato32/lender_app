@@ -17,10 +17,21 @@ class _DeleteAllDataState extends State<DeleteAllData> {
   Future<bool> _deleteAllData() async {
     try{
       await httpDelete(context: context, uri: '/user');
+      Future.delayed(delayTime()).then((value) => _onDeleteAllData());
       return true;
     }catch(_){
       throw _;
     }
+  }
+
+  void _onDeleteAllData(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginOrRegisterPage()
+        ),
+            (r) => false
+    );
   }
 
   @override
@@ -70,13 +81,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
                             future: _deleteAllData(),
                             dataTrueText: 'user_delete_scf',
                             onDataTrue: (){
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginOrRegisterPage()
-                                  ),
-                                  (r) => false
-                              );
+                              _onDeleteAllData();
                             },
                           )
                         );

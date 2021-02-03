@@ -49,8 +49,16 @@ class _BalancesState extends State<Balances> {
         continue;
       }
     }
+    Future.delayed(delayTime()).then((value) => _onPostPayments());
     return true;
   }
+
+  void _onPostPayments() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+    widget.callback();
+  }
+
 
   Future<List<Member>> _getMoney() async {
     try {
@@ -172,13 +180,12 @@ class _BalancesState extends State<Balances> {
                                                         onPressed: () async {
                                                           showDialog(
                                                               context: context,
+                                                              barrierDismissible: true,
                                                               child: FutureSuccessDialog(
                                                                 future: _postPayments(payments),
                                                                 dataTrueText: 'payment_scf',
                                                                 onDataTrue: (){
-                                                                  Navigator.pop(context);
-                                                                  Navigator.pop(context);
-                                                                  widget.callback();
+                                                                  _onPostPayments();
                                                                 },
                                                               )
                                                           );
@@ -227,6 +234,7 @@ class _BalancesState extends State<Balances> {
       ),
     );
   }
+
 
   Widget _generatePaymentsNeeded(List<PaymentData> payments){
     if(payments.length!=0){

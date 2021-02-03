@@ -33,10 +33,23 @@ class _BoostGroupState extends State<BoostGroup> {
   Future<bool> _postBoost() async {
     try{
       await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost');
+      Future.delayed(delayTime()).then((value) => _onPostBoost());
       return true;
     }catch(_){
       throw _;
     }
+  }
+
+  Future<void> _onPostBoost() async {
+    await clearAllCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MainPage()
+        ),
+        (r) => false
+    );
   }
 
   @override
@@ -90,18 +103,13 @@ class _BoostGroupState extends State<BoostGroup> {
                                     .then((value){
                                       if(value??false){
                                         showDialog(
+                                          barrierDismissible: false,
                                           context: context,
                                           child: FutureSuccessDialog(
                                             future: _postBoost(),
                                             dataTrueText: 'boost_scf',
                                             onDataTrue: (){
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          MainPage()),
-                                                      (r) => false);
-                                              clearAllCache();
+                                              _onPostBoost();
                                             },
                                           )
                                         );

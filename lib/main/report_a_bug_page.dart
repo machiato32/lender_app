@@ -184,8 +184,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
                   future: _postBug(error, date, location, details),
                   dataTrueText: 'bug_scf',
                   onDataTrue: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    _onPostBug();
                   },
                 )
               );
@@ -207,9 +206,15 @@ class _ReportABugPageState extends State<ReportABugPage> {
       };
 
       await httpPost(uri: '/bug', body: body, context: context);
+      Future.delayed(delayTime()).then((value) => _onPostBug());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onPostBug(){
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

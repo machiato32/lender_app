@@ -58,13 +58,22 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
+  _onPostShoppingRequest(){
+    Navigator.pop(context);
+    setState(() {
+      _shoppingList = null;
+      _shoppingList = _getShoppingList(overwriteCache: true);
+      _addRequestController.text = '';
+    });
+  }
+
   Future<bool> _postShoppingRequest(String name) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
       await httpPost(uri: '/requests', context: context, body: body, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onPostShoppingRequest());
       return true;
-
     } catch (_) {
       throw _;
     }
@@ -75,19 +84,31 @@ class _ShoppingListState extends State<ShoppingList> {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       Map<String, dynamic> body = {'store':store};
       await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification', useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onPostImShopping());
       return true;
-
     } catch (_) {
       throw _;
     }
   }
+
+  void _onPostImShopping(){
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
   Future<bool> _undoDeleteRequest(int id) async {
     try{
       await httpPost(context: context, uri: '/requests/restore/'+id.toString());
+      Future.delayed(delayTime()).then((value) => _onUndoDeleteRequest());
       return true;
     }catch(_){
       throw _;
     }
+  }
+
+  void _onUndoDeleteRequest(){
+    Scaffold.of(context).removeCurrentSnackBar();
+    Navigator.pop(context, true);
   }
 
   void callback({int restoreId}) {
@@ -119,8 +140,7 @@ class _ShoppingListState extends State<ShoppingList> {
                           future: _undoDeleteRequest(restoreId),
                           dataTrueText: 'undo_scf',
                           onDataTrue: (){
-                            Scaffold.of(context).removeCurrentSnackBar();
-                            Navigator.pop(context, true);
+                            _onUndoDeleteRequest();
                           },
                         )
                     ).then((value) {
@@ -258,12 +278,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                       future: _postShoppingRequest(name),
                                       dataTrueText: 'add_scf',
                                       onDataTrue: () {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          _shoppingList = null;
-                                          _shoppingList = _getShoppingList(overwriteCache: true);
-                                          _addRequestController.text = '';
-                                        });
+                                        _onPostShoppingRequest();
                                       },
                                       onDataFalse: () {
                                         Navigator.pop(context);
@@ -341,8 +356,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                                             future: _postImShopping(store),
                                                             dataTrueText: 'store_scf',
                                                             onDataTrue: () {
-                                                              Navigator.pop(context);
-                                                              Navigator.pop(context);
+                                                              _onPostImShopping();
                                                             },
                                                           )
                                                       );
@@ -531,7 +545,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                 future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                 dataTrueText: 'fulfill_scf',
                 onDataTrue: () {
-                  Navigator.pop(context, true);
+                  _onDeleteFulfillShoppingRequest();
                 },
               )
           ).then((value) {
@@ -556,11 +570,10 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                 barrierDismissible: false,
                 context: context,
                 child: FutureSuccessDialog(
-                  future: _deleteFulfillShoppingRequest(
-                      widget.data.requestId, context),
+                  future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                   dataTrueText: 'delete_scf',
                   onDataTrue: () {
-                    Navigator.pop(context, true);
+                    _onDeleteFulfillShoppingRequest();
                   },
                 )
             ).then((value) {
@@ -667,11 +680,15 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
-
+      Future.delayed(delayTime()).then((value) => _onDeleteFulfillShoppingRequest());
       return true;
 
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onDeleteFulfillShoppingRequest(){
+    Navigator.pop(context, true);
   }
 }

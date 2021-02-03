@@ -129,6 +129,10 @@ Future clearAllCache() async {
   }
 }
 
+Duration delayTime(){
+  return Duration(milliseconds: 500);
+}
+
 Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true, bool useGuest=false}) async {
   try {
     if(useCache){
@@ -185,7 +189,6 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
     };
     http.Response response;
     if(body!=null){
-
       String bodyEncoded = json.encode(body);
       response = await http.post((useTest?TEST_URL:APP_URL) + uri, headers: header, body: bodyEncoded);
     }else{

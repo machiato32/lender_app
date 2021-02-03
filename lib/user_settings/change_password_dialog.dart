@@ -33,10 +33,19 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
       await httpPut(uri: '/user',
           context: context, body: body);
+      Future.delayed(delayTime()).then((value) => _onUpdatePassword());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onUpdatePassword(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()),
+            (route) => false);
   }
 
   void initTextFields() {
@@ -234,11 +243,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                                     _newPasswordController.text, _passwordReminderController.text),
                                 dataTrueText: 'change_password_scf',
                                 onDataTrue: () {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MainPage()),
-                                      (route) => false);
+                                  _onUpdatePassword();
                                 },
                               ));
                           }

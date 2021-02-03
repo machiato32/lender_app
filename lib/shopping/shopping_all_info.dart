@@ -24,21 +24,32 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onFulfillShoppingRequest());
       return true;
-
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onFulfillShoppingRequest(){
+    Navigator.pop(context, true);
+    Navigator.pop(context, 'deleted');
   }
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onDeleteShoppingRequest());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onDeleteShoppingRequest(){
+    Navigator.pop(context);
+    Navigator.pop(context, 'deleted');
   }
 
   @override
@@ -139,14 +150,10 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                   context: context,
                                   child: FutureSuccessDialog(
                                     future:
-                                    _deleteShoppingRequest(
-                                        widget
-                                            .data.requestId),
+                                    _deleteShoppingRequest(widget.data.requestId),
                                     dataTrueText: 'delete_scf',
                                     onDataTrue: () {
-                                      Navigator.pop(context);
-                                      Navigator.pop(
-                                          context, 'deleted');
+                                      _onDeleteShoppingRequest();
                                     },
                                   )
                               );
@@ -187,8 +194,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                   future: _fulfillShoppingRequest(widget.data.requestId),
                                   dataTrueText: 'fulfill_scf',
                                   onDataTrue: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context, 'deleted');
+                                    _onFulfillShoppingRequest();
                                   },
                                 )
                             );
@@ -217,8 +223,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                   future: _fulfillShoppingRequest(widget.data.requestId),
                                   dataTrueText: 'fulfill_scf',
                                   onDataTrue: () {
-                                    Navigator.pop(context, true);
-                                    Navigator.pop(context, 'deleted');
+                                    _onFulfillShoppingRequest();
                                   },
                                 )
                             ).then((value) {

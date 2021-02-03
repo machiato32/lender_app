@@ -388,14 +388,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       future: _register(username, password, passwordReminder, _defaultValue),
                       dataTrueText: 'registration_scf',
                       onDataTrue: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => JoinGroup(
-                                  fromAuth: true,
-                                  inviteURL: widget.inviteURL,
-                                )),
-                                (r) => false);
+                        _onRegister();
                       },
                     )
                   );
@@ -475,6 +468,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  _onRegister(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => JoinGroup(
+              fromAuth: true,
+              inviteURL: widget.inviteURL,
+            )
+        ),
+            (r) => false
+    );
+  }
+
   Future<bool> _register(
       String username, String password, String reminder, String currency) async {
     try {
@@ -501,9 +507,9 @@ class _RegisterPageState extends State<RegisterPage> {
         apiToken = decoded['api_token'];
         currentUsername = decoded['username'];
         currentUserId = decoded['id'];
-        showAds=decoded['data']['ad_free']==0;
-        useGradients=decoded['data']['gradients_enabled']==1;
-        trialVersion=decoded['data']['trial']==1;
+        showAds=false;
+        useGradients=true;
+        trialVersion=true;
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);
@@ -511,6 +517,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _prefs.setString('api_token', apiToken);
         });
         await clearAllCache();
+        Future.delayed(delayTime()).then((value) => _onRegister());
         return true;
       } else {
         Map<String, dynamic> error = jsonDecode(response.body);

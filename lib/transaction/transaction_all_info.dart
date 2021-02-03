@@ -25,10 +25,16 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       await httpDelete(uri: '/purchases/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onDeleteElement());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onDeleteElement(){
+    Navigator.pop(context);
+    Navigator.pop(context, 'deleted');
   }
 
   @override
@@ -173,13 +179,10 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                                         barrierDismissible: false,
                                         context: context,
                                         child: FutureSuccessDialog(
-                                          future: _deleteElement(widget
-                                              .data.purchaseId),
+                                          future: _deleteElement(widget.data.purchaseId),
                                           dataTrueText: 'delete_scf',
                                           onDataTrue: () {
-                                            Navigator.pop(context);
-                                            Navigator.pop(
-                                                context, 'deleted');
+                                            _onDeleteElement();
                                           },
                                         )
                                       );

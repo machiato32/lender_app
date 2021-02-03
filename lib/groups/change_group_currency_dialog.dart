@@ -30,11 +30,24 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
       SharedPreferences.getInstance().then((prefs){
         prefs.setString('current_group_currency', currentGroupCurrency);
       });
+      Future.delayed(delayTime()).then((value) => _onUpdateGroupCurrency());
       return true;
 
     } catch (_) {
       throw _;
     }
+  }
+
+  Future<void> _onUpdateGroupCurrency() async {
+    await clearAllCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MainPage()
+        ),
+            (r) => false
+    );
   }
 
   @override
@@ -91,15 +104,10 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
                           future: _updateGroupCurrency(_currencyCode),
                           dataTrueText: 'currency_scf',
                           onDataTrue: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        MainPage()),
-                                    (r) => false);
-                            clearAllCache();
+                            _onUpdateGroupCurrency();
                           },
-                        ));
+                        )
+                    );
                   },
                   child: Icon(
                     Icons.check,
