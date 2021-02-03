@@ -114,7 +114,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 height: 10,
               ),
               Visibility(
-                  visible: widget.isCurrentUserAdmin, //TODO: Dominik guest
+                  visible: widget.isCurrentUserAdmin,
                   child: SwitchListTile(
                     value: widget.member.isAdmin,
                     title: Text(

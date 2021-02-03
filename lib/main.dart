@@ -38,6 +38,7 @@ import 'package:csocsort_szamla/groups/group_settings.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'essentials/widgets/gradient_button.dart';
 import 'main/report_a_bug_page.dart';
+import 'main/trial_version_dialog.dart';
 import 'main/tutorial_dialog.dart';
 import 'main/speed_dial.dart';
 import 'essentials/app_theme.dart';
@@ -340,7 +341,7 @@ class _LenderAppState extends State<LenderApp> {
       personalisedAds=decoded['data']['personalised_ads']==1;
       trialVersion=decoded['data']['trial']==1;
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      if(!useGradients && preferences.getString('theme').toLowerCase().contains('Gradient')){
+      if(!useGradients && preferences.getString('theme').toLowerCase().contains('gradient')){
         preferences.setString('theme', 'greenLightTheme');
       }
     }catch(_){
@@ -777,7 +778,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 dense: true,
                 onTap: (){
                   if(trialVersion){
-                    //TODO
+                    showDialog(context: context, child: TrialVersionDialog());
                   }else{
                     Navigator.push(
                         context,
@@ -862,7 +863,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           future: _isGroupBoosted(),
           builder: (context, snapshot){
             if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
-              print(snapshot.data);//TODO: DOMINIK
                if(snapshot.data['is_boosted']==1 || snapshot.data['trial']==1){
                  return FloatingActionButton(
                    onPressed: (){

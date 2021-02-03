@@ -329,5 +329,7 @@
     "use_personalised_ads_explanation": "use_personalised_ads_explanation",
     "update_personalised_ads_scf": "update_personalised_ads_scf",
 
-    "trial_time": "trial"
+    "trial_time": "trial",
+    "trial_version": "trial_version",
+    "trial_version_explanation": "trial_version_explanation"
 }

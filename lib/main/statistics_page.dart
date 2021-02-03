@@ -156,8 +156,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
               Colors.grey[800]:
               Colors.grey[200],
               getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
+                lineBarsSpot.sort((a, b) => a.barIndex.compareTo(b.barIndex));
                 return lineBarsSpot.map((lineBarSpot) {
+                  String date = DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(lineBarSpot.x.toInt()));
                   return LineTooltipItem(
+                    (lineBarSpot.barIndex==0?date+'\n':'')+
                     (lineBarSpot.barIndex==0?keywords[0].tr()+' ':keywords[1].tr()+' ')+
                         lineBarSpot.y.printMoney(currentGroupCurrency),
                     Theme.of(context).textTheme.subtitle2,
