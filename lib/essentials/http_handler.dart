@@ -54,7 +54,7 @@ void memberNotInGroup(BuildContext context){
   SharedPreferences.getInstance().then((prefs) {
     prefs.setStringList('users_groups', usersGroups);
     prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-  });//TODO:currency
+  });//TODO:currency DOMINIK MEG TUDJA OLDANI
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.removeQueuedCustomToasts();

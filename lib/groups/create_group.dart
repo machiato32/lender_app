@@ -153,7 +153,8 @@ class _CreateGroupState extends State<CreateGroup> {
                               return null;
                             },
                             decoration: InputDecoration(
-                              hintText: 'example_nickname'.tr(),
+                              hintText: currentUsername[0].toUpperCase() +
+                                  currentUsername.substring(1),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context).colorScheme.onSurface),

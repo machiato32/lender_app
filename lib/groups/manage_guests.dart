@@ -1,5 +1,4 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/groups/add_guest_dialog.dart';
 import 'package:csocsort_szamla/groups/select_member_to_merge_dialog.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +12,6 @@ class ManageGuests extends StatelessWidget {
   final bool hasGuests;
   final GlobalKey<State> bannerKey;
   ManageGuests({this.hasGuests, this.bannerKey});
-  Future<bool> _removeGuest(BuildContext context) async {
-    Map<String, dynamic> body ={
-      "member_id":guestUserId
-    };
-    await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,76 +108,6 @@ class ManageGuests extends StatelessWidget {
               visible: hasGuests,
               child: Column(
                 children: [
-                  // SizedBox(
-                  //   height: 10,
-                  // ),
-                  // Center(
-                  //     child: Text(
-                  //       'remove_guest'.tr(),
-                  //       style:
-                  //       Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
-                  //       textAlign: TextAlign.center,
-                  //     )
-                  // ),
-                  // SizedBox(
-                  //   height: 10,
-                  // ),
-                  // Center(
-                  //     child: Text(
-                  //       'remove_guest_explanation'.tr(),
-                  //       style:
-                  //       Theme.of(context).textTheme.subtitle2,
-                  //       textAlign: TextAlign.center,
-                  //     )
-                  // ),
-                  // SizedBox(
-                  //   height: 10,
-                  // ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     GradientButton(
-                  //       child: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.onSecondary,),
-                  //       onPressed: (){
-                  //         if(guestApiToken!=null){
-                  //           showDialog(
-                  //               context: context,
-                  //               child: ConfirmLeaveDialog(
-                  //                 title: 'remove_guest',
-                  //                 choice: 'sure_remove_guest',
-                  //               )
-                  //           ).then((value){
-                  //             if(value??false){
-                  //               showDialog(
-                  //                   context: context,
-                  //                   child: FutureSuccessDialog(
-                  //                     future: _removeGuest(context),
-                  //                     dataTrueText: 'remove_guest_scf',
-                  //                     onDataTrue: (){
-                  //                       clearAllCache();
-                  //                       deleteGuestApiToken();
-                  //                       deleteGuestGroupId();
-                  //                       deleteGuestNickname();
-                  //                       deleteGuestUserId();
-                  //                       Navigator.pushAndRemoveUntil(
-                  //                           context,
-                  //                           MaterialPageRoute(builder: (context) => MainPage()),
-                  //                               (r) => false);
-                  //                     },
-                  //                   )
-                  //               );
-                  //             }
-                  //           });
-                  //         }else{
-                  //           FlutterToast ft = FlutterToast(context);
-                  //           ft.showToast(
-                  //               child: toastMessage
-                  //           );
-                  //         }
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
                   SizedBox(
                     height: 10,
                   ),

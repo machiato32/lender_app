@@ -137,7 +137,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                           )
                         ],
                       ),
-                      child: Text('expense'.tr(),
+                      child: Text('purchase'.tr(),
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
@@ -152,7 +152,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                       height: 5,
                     ),
                     Text(
-                      'expense_explanation'.tr(),
+                      'purchase_explanation'.tr(),
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1

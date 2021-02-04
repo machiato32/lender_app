@@ -8,7 +8,6 @@
     "password": "Jelszó",
 
     "name": "Név",
-    "id": "Azonosító",
     "confirm_password": "Jelszó megerősítése",
 
     "balances": "Egyenlegek",
@@ -16,7 +15,7 @@
     "home": "Főoldal",
     "shopping_list": "Bevásárlólista",
     "group": "Csoport",
-    "expense": "Bevásárlás",
+    "purchase": "Bevásárlás",
     "payment": "Fizetés",
 
     "wish": "Kívánságom",
@@ -46,7 +45,6 @@
     "old_password": "Jelenlegi jelszó",
     "new_password": "Új jelszó",
     "new_password_confirm": "Jelszó megerősítése",
-    "send": "Küldés",
     "change_password_scf": "A jelszó megváltoztatása sikeres volt!",
     "change_theme": "Témaváltás",
     "change_language": "Nyelv választása",
@@ -66,7 +64,6 @@
     "not_alterable": "Nem változtatható!",
     "registration_scf": "A regisztráció sikeres volt!",
 
-    "example_nickname": "Sanyi",
     "creation_scf": "A létrehozás sikeres volt!",
 
     "want_make_admin": "Adminná szeretnéd tenni?",
@@ -80,7 +77,7 @@
     "join_scf": "A csatlakozás sikeres volt!",
 
     "login_required": "Sajnos újra be kell jelentkezned!",
-    "transactions": "Tranzakciók",
+    "purchases": "Bevásárlások",
     "payments": "Fizetések",
 
     "more": "Több",
@@ -88,15 +85,11 @@
     "person_not_chosen": "Nem választottál ki személyt!",
     "payment_scf": "A fizetést sikeresen könyveltük!",
     "add_new": "Új hozzáadása",
-    "payment_hint": "Mamut",
 
     "no_note": "Nincs megjegyzés",
     "want_delete": "Vissza szeretnéd vonni a tételt?",
     "delete_scf": "A visszavonás sikeres volt!",
     "delete": "Törlés",
-
-    "want_expense": "Fel szeretnéd számolni?",
-    "bought": "Megvettem",
 
     "add_scf": "A hozzáadás sikeres volt!",
 
@@ -107,7 +100,6 @@
     "invitation_to_lender": "Meghívó Lender csoportba",
 
     "field_empty": "A mező nem lehet üres!",
-    "num_length": "4 számjegy szükséges!",
     "not_valid_num": "Nem számot adtál meg!",
     "minimal_length": "Legalább {} karakter szükséges!",
     "edit_nickname": "Új becenév",
@@ -125,7 +117,6 @@
     "pay": "Fizetés",
     "who_to_pay": "Kinek fizessek?",
     "payments_needed": "Szükséges fizetések",
-    "you_are_good": "Nem kell fizetned senkinek",
 
     "fulfill_scf": "Az elemet sikeresen levettük a listáról",
     "remove_from_list": "Kipipálva",
@@ -153,20 +144,16 @@
     "discovery_drawer_title": "Felhasználói beállítások",
     "discovery_drawer_description": "\nA menü felső részében kezelheted csoportjaidat.\n\nAlatta a személyes beállításaidat találod.",
     "discovery_settings_title": "Személyes beállítások",
-    "discovery_settings_description": "\nItt változtathatod meg felhasználóneved, jelszavad, illetve választhatsz jobbnál jobb színek közül.",
+    "discovery_settings_description": "\nItt változtathatod meg felhasználóneved, jelszavad, illetve választhatsz jobbnál jobb színek közül. 😉",
     "discover_shopping_title": "Közös bevásárlólista",
     "discover_shopping_description" : "\nEzt a bevásárlólistát a csoport összes tagja látja.\n\nFelhasználhatjátok pl. nyaraláson közös bevásárláshoz vagy lakótársakként, hogy ne mindenki külön menjen boltba.",
     "discover_group_settings_title": "Csoport beállításai",
-    "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, illetve változtathatod meg a beceneved.",
+    "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, változtathatod meg a beceneved, illetve nézheted a csoport statisztikáit.",
 
-    "tutorial_1" : "Általában egy csoportban sok felesleges tranzakció történik, mivel mindig fizetned kell, hogyha valamit vettek neked.",
-    "tutorial_2" : "A Lender ezeket a tranzakciókat leegyszerűsíti.\nKésőbb látni fogod, hogy a tartozásod így nem egy személy felé, hanem a csoport felé irányul.",
-    "tutorial_3" : "A csoportban mindenki rendelkezik egy egyenleggel.\nPozitív egyenleg esetén neked tartoznak, míg negatív esetén te tartozol a csoportnak.",
-    "tutorial_4" : "Azt, hogy kinek kell fizetned, az egyenlegek alapján döntheted el, továbbá használhatod a \"Kinek fizessek?\" gombot.",
+    "tutorial_2" : "A Lender célja a csoportod tranzakcióinak leegyszerűsítése.\nAhogy láthatod, az animáción, eggyel kevesebb fizetésre volt szükség.",
+    "tutorial_3" : "A csoport összes tagja rendelkezik egy egyenleggel.\nPozitív egyenleg esetén neked tartoznak, míg negatív esetén te tartozol a csoportnak.",
+    "tutorial_4" : "Azt, hogy kinek fizess, az egyenlegek alapján döntheted el, vagy használhatod a \"Kinek fizessek?\" gombot.",
     "welcome": "Köszönjük, hogy regisztráltál a Lenderbe!\n\nA következőkben egy rövid tutorialban mutatjuk be az alkalmazás használatát.",
-    "next": "Következő",
-    "previous": "Előző",
-    "finish": "Megértettem",
     "": "",
 
     "reset_tutorial": "Tutorial újranézése",
@@ -210,8 +197,6 @@
     "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
     "add_guest": "Vendég hozzáadása",
     "add_guest_explanation": "Adj hozzá új vendéget a csoporthoz",
-    "remove_guest": "Vendég eltávolítása",
-    "remove_guest_explanation": "Távolítsd el a jelenleg kiválasztott vendéget a csoportból. Ilyenkor a jelenlegi egyenlege hozzá lesz rendelve a tiédhez.",
     "merge_guest": "Vendég hozzárendelése",
     "merge_guest_explanation": "Távolítsd el a vendéget, és rendeld hozzá a korábbi eseményeit a csoport egy tagjához.",
     "guest_switcher": "Vendég váltása",
@@ -242,10 +227,6 @@
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
     "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!",
 
-    "system_notification": "Rendszerüzenet",
-    "system_notification_explanation": "Az alkalmazás működésével kapcsolatos üzenet",
-    "free_trial_ended": "Az ingyenes próbaidőszak véget ért",
-    "free_trial_ended_explanation": "Mostantól megjelennek az alkalmazásban reklámok, valamint nem használhatók a színátmenetes témák.\nEzeket megveheted az alkalmazáson belül.",
     "gradient_available_in_paid_version": "A gradienses színeket megveheted az alkalmazáson belül",
 
     "version_not_supported": "A verzió nem támogatott",
@@ -285,7 +266,7 @@
 
     "you_seem_lonely": "Egyedül vagy?",
     "invite_friends": "Hívd meg a barátaid",
-    "add_guests_offline": "Vagy adj hozzá vendégeket a csoporthoz",
+    "add_guests_offline": "Vagy adj vendégeket a csoporthoz",
     "you_seem_lonely_explanation": "Később ezeket a csoport beállítasai között tudod elvégezni",
 
     "undo": "Visszavonás",
@@ -313,7 +294,6 @@
     "group_stats_explanation": "Itt láthatod a csoport összes bevásárlását, fizetését",
     "stats_purchases": "Bevásárlások:",
     "stats_payments": "Fizetések:",
-    "purchases": "Bevásrálások",
 
     "sum_of": "Σ",
 
@@ -325,11 +305,9 @@
     "statistics_not_available": "A statiszták nem elérhetőek",
     "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!",
 
-    "use_personalised_ads": "use_personalised_ads",
-    "use_personalised_ads_explanation": "use_personalised_ads_explanation",
-    "update_personalised_ads_scf": "update_personalised_ads_scf",
+    "use_personalised_ads": "Személyre szabott hirdetések",
+    "use_personalised_ads_explanation": "Hogyha szeretnél személyre szabott hirdetéseket látni",
 
-    "trial_time": "trial",
-    "trial_version": "trial_version",
-    "trial_version_explanation": "trial_version_explanation"
+    "trial_version": "Próbaidőszak",
+    "trial_version_explanation": "Mivel az elmúlt két hétben regisztráltál, így az alkalmazást jelenleg bónuszokkal használhatod. Ezekhez tartozik a reklámmentesség, a színátmenetes témák használata, illetve a csoport statisztikáihoz való hozzáférés. A két hét leteltével ezeket a Dodó Boltban veheted meg."
 }

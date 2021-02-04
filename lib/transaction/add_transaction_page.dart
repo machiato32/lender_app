@@ -147,7 +147,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('expense'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+          title: Text('purchase'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: AppTheme.gradientFromTheme(Theme.of(context))

@@ -130,7 +130,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              label: 'transactions'.tr(),
+              label: 'purchases'.tr(),
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.attach_money),

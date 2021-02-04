@@ -788,7 +788,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 },
                 leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
                 subtitle: trialVersion?
-                  Text('trial_time'.tr().toUpperCase(),
+                  Text('trial_version'.tr().toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).colorScheme.primary),
                   ):
                   null,

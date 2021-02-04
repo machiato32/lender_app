@@ -323,6 +323,13 @@
     "personalised_ads": "Ich möchte personalisierte Anzeigen sehen",
 
     "statistics_not_available": "Statistiken nicht verfügbar",
-    "statistics_not_available_explanation": "Diese Gruppe ist noch nicht geboostet, deshalb sind die Statistiken nicht verfügbar. Booste die Gruppe oder kaufe Gruppenboostende Dodos im Laden!"
+    "statistics_not_available_explanation": "Diese Gruppe ist noch nicht geboostet, deshalb sind die Statistiken nicht verfügbar. Booste die Gruppe oder kaufe Gruppenboostende Dodos im Laden!",
+
+    "use_personalised_ads": "Personalisierte Anzeigen",
+    "use_personalised_ads_explanation": "Falls du Personalisierte Anzeigen sehen möchtest",
+
+    "trial_version": "Probezeit",
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want."
+
 
 }

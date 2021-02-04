@@ -237,103 +237,95 @@ class _BalancesState extends State<Balances> {
 
 
   Widget _generatePaymentsNeeded(List<PaymentData> payments){
-    if(payments.length!=0){
-      return Flexible(
-        child: ListView(
-          shrinkWrap: true,
-          children: payments.map<Widget>((PaymentData payment) {
-            var icon = Icon(Icons.call_made,
-                color: Theme.of(context).textTheme.button.color);
-            var style = Theme.of(context).textTheme.button;
-            var dateColor = Theme.of(context).textTheme.button.color;
-            var boxDecoration = BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: ( Theme.of(context).brightness==Brightness.light)
-                  ?[ BoxShadow(
-                    color: Colors.grey[500],
-                    offset: Offset(0.0, 1.5),
-                    blurRadius: 1.5,
-                  )]
-                  : [],
-            );
-            var amount = payment.amount.money(currentGroupCurrency);
-            return Container(
-              height: 65,
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(bottom: 4),
-              decoration: boxDecoration,
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Flex(
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Flexible(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Flexible(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Row(
-                                      children: <Widget>[
-                                        icon,
-                                        SizedBox(
-                                          width: 20,
+    return Flexible(
+      child: ListView(
+        shrinkWrap: true,
+        children: payments.map<Widget>((PaymentData payment) {
+          var icon = Icon(Icons.call_made,
+              color: Theme.of(context).textTheme.button.color);
+          var style = Theme.of(context).textTheme.button;
+          var dateColor = Theme.of(context).textTheme.button.color;
+          var boxDecoration = BoxDecoration(
+            gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: ( Theme.of(context).brightness==Brightness.light)
+                ?[ BoxShadow(
+                  color: Colors.grey[500],
+                  offset: Offset(0.0, 1.5),
+                  blurRadius: 1.5,
+                )]
+                : [],
+          );
+          var amount = payment.amount.money(currentGroupCurrency);
+          return Container(
+            height: 65,
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(bottom: 4),
+            decoration: boxDecoration,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Row(
+                                    children: <Widget>[
+                                      icon,
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Flexible(
+                                                child: Text(
+                                                  payment.takerNickname,
+                                                  style: style.copyWith(fontSize: 22),
+                                                  overflow: TextOverflow.ellipsis,
+                                                )),
+                                            Flexible(
+                                                child: Text(
+                                                  'auto_payment'.tr(),
+                                                  style: TextStyle(
+                                                      color: dateColor, fontSize: 15),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ))
+                                          ],
                                         ),
-                                        Flexible(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Flexible(
-                                                  child: Text(
-                                                    payment.takerNickname,
-                                                    style: style.copyWith(fontSize: 22),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  )),
-                                              Flexible(
-                                                  child: Text(
-                                                    'auto_payment'.tr(),
-                                                    style: TextStyle(
-                                                        color: dateColor, fontSize: 15),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ))
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    amount,
-                                    style: style,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                Text(
+                                  amount,
+                                  style: style,
+                                ),
+                              ],
                             ),
-                          ],
-                        )
-                    ),
-                  ],
-                ),
+                          ),
+                        ],
+                      )
+                  ),
+                ],
               ),
-            );
-          }).toList(),
-        ),
-      );
+            ),
+          );
+        }).toList(),
+      ),
+    );
 
-    }else{
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(child: Text('you_are_good'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,)),
-        ],
-      );
-    }
+
   }
 
   Future<String> _getInvitation() async {
