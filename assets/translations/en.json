@@ -8,7 +8,6 @@
     "password":"Password",
 
     "name":"Name",
-    "id":"ID",
     "confirm_password":"Confirm password",
 
     "balances":"Balances",
@@ -16,7 +15,7 @@
     "home":"Home",
     "shopping_list":"Shopping list",
     "group":"Group",
-    "expense":"Purchase",
+    "purchase":"Purchase",
     "payment":"Payment",
 
     "wish":"My wish",
@@ -46,7 +45,6 @@
     "old_password":"Old password",
     "new_password":"New password",
     "new_password_confirm":"Confirm new password",
-    "send":"Send",
     "change_theme":"Change theme",
     "change_language": "Change language",
 
@@ -55,63 +53,43 @@
 
     "amount":"Amount",
 
-    "change_password_scf": "The change was successful!",
     "passwords_not_match": "The two passwords don't match!",
     "okay": "Affirmative!",
     "error": "An error occurred!",
     "back": "Back",
-    "login_scf": "The login was successful!",
 
     "example_name": "jack",
     "not_alterable": "Not alterable later!",
-    "registration_scf": "The registration was successful!",
-
-    "example_nickname": "Jack",
-    "creation_scf": "The creation was successful!",
 
     "want_make_admin": "Do you want to make them an admin?",
-    "admin_scf": "The change was successful!",
     "yes": "Yes",
     "no": "No",
     "make_admin": "Make them admin",
 
-    "nickname_scf": "The change was successful!",
-
-    "join_scf": "Successfully joined the group!",
-
     "login_required": "You need to log in again!",
-    "transactions": "Transactions",
+    "purchases": "Purchases",
     "payments": "Payments",
 
     "more": "More",
 
     "person_not_chosen": "No person chosen!",
-    "payment_scf": "The payment was saved successfully!",
     "add_new": "Add new",
-    "payment_hint": "Elephant",
 
     "no_note": "No additional note",
     "want_delete": "Do you want to revoke the item?",
-    "delete_scf":"The item was revoked successfully!",
     "delete": "Delete",
-
-    "want_expense": "Do you want them to pay for it?",
-    "bought": "Bought it",
-
-    "add_scf":"Successfully added!",
 
     "per_person": " {}/person",
     "no_amount": "No amount given!",
     "amount_not_negative": "The amount cannot be negative!",
-    "transaction_scf": "The transaction was saved successfully!",
+    "invitation_to_lender": "Invitation to a Lender group",
 
     "field_empty": "The field cannot be empty!",
-    "num_length": "4 numbers needed!",
     "not_valid_num": "You did'n enter a number!",
     "minimal_length": "At least {} characters needed!",
     "edit_nickname": "New nickname",
     "payment_explanation": "You paid someone",
-    "expense_explanation": "You bought something",
+    "purchase_explanation": "You bought something",
 
     "members_explanation": "See the members of the group and modify your nickname",
     "members_explanation_admin": "Manage member permissions and nicknames",
@@ -124,14 +102,11 @@
     "pay": "Pay",
     "who_to_pay": "Who should I pay?",
     "payments_needed": "Necessary payments",
-    "you_are_good": "You don't need to pay anyone",
 
-    "fulfill_scf": "The element was successfully removed from the list",
     "remove_from_list": "Check",
     "add_as_expense": "Book as expense",
     "revoke": "Revoke",
 
-    "change_username_scf": "The change was successful.",
     "change_username": "Change username",
 
     "hi": "Hi",
@@ -139,7 +114,6 @@
     "report_a_bug": "Report bug",
     "bug": "Bug",
     "what_is_wrong": "What is wrong?",
-    "bug_scf": "Bug logged successfully",
 
     "want_edit": "Do you want to modify the item?",
     "nothing_to_show": "It feels empty...",
@@ -147,25 +121,21 @@
     "i_m_shopping" : "I'm shopping",
     "where" : "Where?",
 
-    "discovery_add_floating_title": "Add expense or payment",
-    "discovery_add_floating_description": "\nExpense:\nEnter the amount, if you bought something for one or more members, the then app distributes it evenly between them.\n\nPayment:\nEnter an amount if you payed a member.",
+    "discovery_add_floating_title": "Add purchase or payment",
+    "discovery_add_floating_description": "\nPurchase:\nEnter the amount, if you bought something for one or more members, the then app distributes it evenly between them.\n\nPayment:\nEnter an amount if you payed a member.",
     "discovery_drawer_title": "User menu",
     "discovery_drawer_description": "\nAt the top of the menu you can switch between your groups.\n\nBelow you can find your personal settings.",
     "discovery_settings_title": "Personal settings",
-    "discovery_settings_description": "\nHere you can change your username or password, and choose between beautiful color themes.",
+    "discovery_settings_description": "\nHere you can change your username or password, and choose between beautiful color themes. 😉",
     "discover_shopping_title": "Group shopping list",
     "discover_shopping_description" : "\nEveryone in the group has access to this shopping list\n\nYou can use it travelling together or when sharing a flat.",
     "discover_group_settings_title": "Group settings",
     "discover_group_settings_description" : "\nAmongst other things this menu is used to invite people to the group and to change your nickname.",
 
-    "tutorial_1" : "Usually there are a lot of unnecessary transactions in a group, because you have to pay every time someone buys you something.",
-    "tutorial_2" : "Lender simplifies these transactions by making less of them.\nLater you'll see that this way you will owe the group instead of single members.",
+    "tutorial_2" : "The goal of Lender is to simplify the transactions of a group.\nYou can see, that in the above example one payment was saved.",
     "tutorial_3" : "In a group everyone has a balance.\nPositive balance means the group owes you, while negative means you owe the group.",
     "tutorial_4" : "You can determine who you should pay by looking at the balances, or alternatively by using the \"Who sould I pay?\" button.",
     "welcome": "Thank you for registering!\n\nOn the next few pages you'll see a short tutorial explaining the usage of the app.",
-    "next": "Next",
-    "previous": "Previous",
-    "finish": "Understood",
     "": "",
 
     "reset_tutorial": "Rewatch tutorial",
@@ -180,13 +150,10 @@
     "no_connection": "There is no internet connection.",
 
     "store": "Store",
-    "store_scf": "Notification sent successfully.",
 
     "leave_group": "Leave group",
-    "leave_scf": "The leaving was successful",
     "balance_at_least_0": "Your balance needs to be at least 0 to leave the group!",
     "kick_member": "Kick member",
-    "kick_member_scf": "Member kicked successfully",
     "really_kick": "If you kick this member, his current balance will be added to your balance. Are you sure you want to kick him?",
     "really_leave": "If you leave, your current balance will be split between everyone else. Are you sure you want to leave?",
 
@@ -203,24 +170,18 @@
 
     "change_group_currency": "Change group currency",
     "change_group_currency_explanation": "Change the currency of the group, but note that the balances will not be converted!",
-    "currency_scf": "Currency changed successfully!",
 
     "manage_guests": "Manage guests",
     "manage_guests_explanation": "The guests are members controlled by the admins. They are not registered on their own.",
     "add_guest": "Add guest",
     "add_guest_explanation": "Add a new guest to the group",
-    "remove_guest": "Remove guest",
-    "remove_guest_explanation": "Remove the chosen guest from the group. In this case the current balance of the guest will be assigned you.",
     "merge_guest": "Assign guest",
     "merge_guest_explanation": "Remove the chosen guest and assign their past transactions to a real member in the group.",
     "guest_switcher": "Switch guest",
     "guest_switcher_explanation": "Choose the guest whose finances you want to manage.",
     "sure_remove_guest": "Are you sure you want to remove them from the group?",
     "needs_choose_guest": "A guest needs to be chosen",
-    "merge_scf": "Assignment successful",
     "sure_merge_guest": "Are you sure you want to assign the guest to the chosen member?",
-    "add_guest_scf": "Guest added successfully",
-    "remove_guest_scf": "Guest removed successfully",
     "select_member": "Select member",
 
     "edit_request": "Edit shopping request",
@@ -233,7 +194,6 @@
     "reactions": "Reactions",
     "add_reaction": "Add reaction",
     "all_reactions": "Past reactions",
-    "reaction_scf": "Reaction added successfully!",
 
     "username_explanation": "You're going to use the username for logging into the app. Only the english lowecase letters and numbers are allowed. Later you will be able to assign yourself a nickname for each group.",
     "reminder_explanation": "We aren't storing you e-mail, so if you forget your password, we will show you this reminder.",
@@ -241,10 +201,6 @@
     "accept_privacy_policy": "I accept the privacy policy",
     "must_accept_privacy_policy": "You have to accept the privacy policy!",
 
-    "system_notification": "System notification",
-    "system_notification_explanation": "Messages about the app",
-    "free_trial_ended": "The free trial period has ended",
-    "free_trial_ended_explanation": "From now on you are going to see ads in the app, and you won't be able to use the gradient themes.\nYou can buy these through the app.",
     "gradient_available_in_paid_version": "You can buy the gradient themes through the app.",
 
     "version_not_supported": "The version is not supported",
@@ -275,12 +231,10 @@
     "available": "Number of group-boosting Dodos: {}",
 
     "sure_boost": "Are you sure you want to boost the group?",
-    "boost_scf": "The group was successfully boosted.",
     "already_boosted": "This group has already been boosted!",
 
     "delete_all_data": "Delete all user data",
     "delete_all_data_explanation": "Using this there won't be any remaining data on our servers, which could be bond to you",
-    "user_delete_scf": "The user data was removed successfully",
 
     "you_seem_lonely": "You seem lonely",
     "invite_friends": "Invite your friends",
@@ -288,7 +242,6 @@
     "you_seem_lonely_explanation": "You will be able to do these in the group settings",
 
     "undo": "Undo",
-    "undo_scf": "Request restored successfully",
     "request_deleted": "Deleted!",
 
     "sure_user_delete": "You won't be able to restore your account! Do you want to continue?",
@@ -312,7 +265,6 @@
     "group_stats_explanation": "Below are all the payments and purchases of the group",
     "stats_purchases": "Purchases:",
     "stats_payments": "Payments:",
-    "purchases": "Purchases",
 
     "sum_of": "Sum of",
 
@@ -329,5 +281,4 @@
 
     "trial_version": "Trial time",
     "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want."
-
 }

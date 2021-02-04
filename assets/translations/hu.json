@@ -45,7 +45,6 @@
     "old_password": "Jelenlegi jelszó",
     "new_password": "Új jelszó",
     "new_password_confirm": "Jelszó megerősítése",
-    "change_password_scf": "A jelszó megváltoztatása sikeres volt!",
     "change_theme": "Témaváltás",
     "change_language": "Nyelv választása",
 
@@ -58,23 +57,14 @@
     "okay": "Rendben",
     "error": "Hiba történt!",
     "back": "Vissza",
-    "login_scf": "A bejelentkezés sikeres volt!",
 
     "example_name": "sanyika",
     "not_alterable": "Nem változtatható!",
-    "registration_scf": "A regisztráció sikeres volt!",
-
-    "creation_scf": "A létrehozás sikeres volt!",
 
     "want_make_admin": "Adminná szeretnéd tenni?",
-    "admin_scf": "A változtatás sikeres volt!",
     "yes": "Igen",
     "no": "Nem",
     "make_admin": "Legyen admin",
-
-    "nickname_scf": "A név megváltoztatása sikeres volt!",
-
-    "join_scf": "A csatlakozás sikeres volt!",
 
     "login_required": "Sajnos újra be kell jelentkezned!",
     "purchases": "Bevásárlások",
@@ -83,20 +73,15 @@
     "more": "Több",
 
     "person_not_chosen": "Nem választottál ki személyt!",
-    "payment_scf": "A fizetést sikeresen könyveltük!",
     "add_new": "Új hozzáadása",
 
     "no_note": "Nincs megjegyzés",
     "want_delete": "Vissza szeretnéd vonni a tételt?",
-    "delete_scf": "A visszavonás sikeres volt!",
     "delete": "Törlés",
-
-    "add_scf": "A hozzáadás sikeres volt!",
 
     "per_person": " {}/fő",
     "no_amount": "Nem adtál meg összeget!",
     "amount_not_negative": "A végösszeg nem lehet negatív!",
-    "transaction_scf": "A bevásárlást sikeresen könyveltük!",
     "invitation_to_lender": "Meghívó Lender csoportba",
 
     "field_empty": "A mező nem lehet üres!",
@@ -104,7 +89,7 @@
     "minimal_length": "Legalább {} karakter szükséges!",
     "edit_nickname": "Új becenév",
     "payment_explanation": "Fizettél valakinek",
-    "expense_explanation": "Vettél valamit",
+    "purchase_explanation": "Vettél valamit",
 
     "members_explanation": "Nézd meg a csoport tagjait és változtasd meg a beceneved",
     "members_explanation_admin": "Kezeld a tagok jogosultságát, becenevét",
@@ -118,12 +103,10 @@
     "who_to_pay": "Kinek fizessek?",
     "payments_needed": "Szükséges fizetések",
 
-    "fulfill_scf": "Az elemet sikeresen levettük a listáról",
     "remove_from_list": "Kipipálva",
     "add_as_expense": "Írd fel bevásárlásnak",
     "revoke": "Visszavonás",
 
-    "change_username_scf": "A felhasználónév megváltoztatása sikeres volt.",
     "change_username": "Felhasználónév megváltoztatása",
 
     "hi": "Szia",
@@ -131,7 +114,6 @@
     "report_a_bug": "Hiba jelentése",
     "bug": "Hiba",
     "what_is_wrong": "A probléma",
-    "bug_scf": "A hiba jelentése sikeres volt.",
 
     "want_edit": "Változtatni szeretnéd a tételt?",
     "nothing_to_show": "Nagy az üresség...",
@@ -168,13 +150,10 @@
     "no_connection": "Nincs internetkapcsolat.",
 
     "store": "Bolt",
-    "store_scf": "Az értesítés sikeresen elküldve.",
 
     "leave_group": "Kilépés a csoportból",
-    "leave_scf": "A kilépés sikeres volt",
     "balance_at_least_0": "A kilépéshez legalább 0-nak kell lennie az egyenlegednek",
     "kick_member": "Tag kirúgása",
-    "kick_member_scf": "A kirúgás sikeres volt",
     "really_kick": "Hogyha kirúgod a tagot, akkor a jelenlegi egyenlege hozzáadódik a te egyenlegedhez. Biztosan kirúgod?",
     "really_leave": "Hogyha kilépsz, a jelenlegi egyenleged szét lesz osztva a csoport többi tagja között. Biztosan ki szeretnél lépni?",
 
@@ -191,7 +170,6 @@
 
     "change_group_currency": "Csoport pénznemének megváltoztatása",
     "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!",
-    "currency_scf": "A pénznem megváltoztatása sikeres volt",
 
     "manage_guests": "Vendégek kezelése",
     "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
@@ -203,10 +181,7 @@
     "guest_switcher_explanation": "Válaszd ki a vendéget, akinek pénzügyeit kezelni szeretnéd",
     "sure_remove_guest": "Biztosan el akarod távolítani a vendéget a csoportból?",
     "needs_choose_guest": "Előbb válassz ki egy vendéget a vendégválasztó felületen",
-    "merge_scf": "A hozzárendelés sikeres volt",
     "sure_merge_guest": "Biztosan hozzá szeretnéd rendelni a vendéget?",
-    "add_guest_scf": "A vendég hozzáadása sikeres volt",
-    "remove_guest_scf": "A vendég eltávolítása sikeres volt",
     "select_member": "Válassz egy tagot",
 
     "edit_request": "Elem szerkesztése",
@@ -219,7 +194,6 @@
     "reactions": "Reakciók",
     "add_reaction": "Reakció hozzáadása",
     "all_reactions": "Eddigi reakciók",
-    "reaction_scf": "Reakció sikersen hozzáadva!",
 
     "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit és számokat használhatsz. Később a csoportban megadhatsz becenevet.",
     "reminder_explanation": "Nem tároljuk e-mail címed, így amennyiben elfelejtenéd jelszavad, ezt az emlékeztetőt mutatjuk meg neked.",
@@ -257,12 +231,10 @@
     "available": "Csoportfejlesztő Dodóid száma: {}",
 
     "sure_boost": "Biztosan fejleszteni szeretnéd a csoportot?",
-    "boost_scf": "A csoportot sikeresen felfejlesztettük.",
     "already_boosted": "A csoportot már felfejlesztették!",
 
     "delete_all_data": "Összes felhasználói adat törlése",
     "delete_all_data_explanation": "Ekkor semmilyen hozzád köthető adat nem marad meg a szervereinken.",
-    "user_delete_scf": "A felhasználói fiók törlése sikeres volt!",
 
     "you_seem_lonely": "Egyedül vagy?",
     "invite_friends": "Hívd meg a barátaid",
@@ -270,7 +242,6 @@
     "you_seem_lonely_explanation": "Később ezeket a csoport beállítasai között tudod elvégezni",
 
     "undo": "Visszavonás",
-    "undo_scf": "A visszavonás sikeres volt!",
     "request_deleted": "Törölve!",
 
     "sure_user_delete": "Ezzel visszavonhatatlanul letörlöd a felhasználói profilod. Biztosan folytatni szeretnéd?",
