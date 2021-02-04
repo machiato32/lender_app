@@ -488,7 +488,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               .copyWith(color: Theme.of(context).colorScheme.secondary)
               : Theme.of(context).textTheme.bodyText1,
         ),
-        onTap: () {
+        onTap: () async {
+          await clearAllCache();
           currentGroupName = group.groupName;
           currentGroupId = group.groupId;
           currentGroupCurrency = group.groupCurrency;

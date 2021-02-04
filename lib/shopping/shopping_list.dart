@@ -615,6 +615,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                       )
                   ).then((val) {
                     if (val == 'deleted') widget.callback(restoreId: widget.data.requestId);
+                    if(val=='edited') widget.callback();
                   });
                 },
                 borderRadius: BorderRadius.circular(15),

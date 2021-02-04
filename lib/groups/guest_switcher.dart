@@ -28,13 +28,13 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
     try {
 
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: '/groups/' + currentGroupId.toString()+'/guests',
         context: context,
         useCache: false
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      for (var member in decoded['data']['guests']) {
+      for (var member in decoded['data']) {
         members.add(
           Member(
             apiToken: member['api_token'],

@@ -122,7 +122,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                                 child: EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,)
                             ).then((value){
                               if(value??false){
-                                Navigator.pop(context, 'deleted');
+                                Navigator.pop(context, 'edited');
                               }
                             });
                           },
