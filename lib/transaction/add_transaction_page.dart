@@ -1,4 +1,6 @@
 import 'package:csocsort_szamla/essentials/ad_management.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
@@ -176,16 +178,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     Icon(Icons.person, size: 40,),
-                              //     // Icon(Icons.attach_money, size: 40),
-                              //     Icon(Icons.shopping_cart, size: 40),
-                              //     Icon(Icons.people, size: 50)
-                              //   ],
-                              // ),
-                              // Center(child: Text("Elutod a bevasarlokocsival a barataidat")),
                               SizedBox(
                                 height: 10,
                               ),
@@ -234,57 +226,87 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    TextFormField(
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'field_empty'.tr();
-                                        }
-                                        if (double.tryParse(value) == null) {
-                                          return 'not_valid_num'.tr();
-                                        }
-                                        if (double.parse(value) < 0) {
-                                          return 'not_valid_num'.tr();
-                                        }
-                                        return null;
-                                      },
-                                      focusNode: _focusNode,
-                                      decoration: InputDecoration(
-                                        labelText: 'full_amount'.tr(),
-                                        hintText: getSymbol(currentGroupCurrency),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
+                                    Stack(
+                                      children: [
+                                        TextFormField(
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return 'field_empty'.tr();
+                                            }
+                                            if (double.tryParse(value) == null) {
+                                              return 'not_valid_num'.tr();
+                                            }
+                                            if (double.parse(value) < 0) {
+                                              return 'not_valid_num'.tr();
+                                            }
+                                            return null;
+                                          },
+                                          focusNode: _focusNode,
+                                          decoration: InputDecoration(
+                                            labelText: 'full_amount'.tr(),
+                                            hintText: getSymbol(currentGroupCurrency),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface),
+                                              //  when the TextFormField in unfocused
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color:
+                                                  Theme.of(context).colorScheme.primary,
+                                                  width: 2),
+                                            ),
+                                          ),
+                                          controller: amountController,
+                                          style: TextStyle(
+                                              fontSize: 20,
                                               color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                          //  when the TextFormField in unfocused
+                                                  .textTheme
+                                                  .bodyText1
+                                                  .color),
+                                          cursorColor:
+                                          Theme.of(context).colorScheme.secondary,
+                                          keyboardType:
+                                          TextInputType.numberWithOptions(decimal: true),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp('[0-9\\.]'))
+                                          ],
                                         ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color:
-                                              Theme.of(context).colorScheme.primary,
-                                              width: 2),
+                                        Container(
+                                          margin: EdgeInsets.only(top:20),
+                                          child: Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: IconButton(
+                                                icon: Icon(Icons.calculate, color: Theme.of(context).colorScheme.primary,),
+                                                onPressed: (){
+                                                  showModalBottomSheetCustom(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return SingleChildScrollView(
+                                                          child: Calculator(
+                                                            callback: (String fromCalc){
+                                                              setState(() {
+                                                                amountController.text=fromCalc;
+                                                              });
+                                                            },
+                                                          )
+                                                      );
+                                                    },
+                                                  );
+                                                }
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      controller: amountController,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color),
-                                      cursorColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                      keyboardType:
-                                      TextInputType.numberWithOptions(decimal: true),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9\\.]'))
                                       ],
                                     ),
 
                                   ],
                                 ),
                               ),
+
                               SizedBox(
                                 height: 20,
                               ),
@@ -466,7 +488,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                           ),
                         ),
                       ),
-                      // Balances()
                     ],
                   ),
                 ),

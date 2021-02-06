@@ -273,12 +273,15 @@
 
     "personalised_ads": "Szeretnék látni személyreszabott reklámokat",
 
-    "statistics_not_available": "A statiszták nem elérhetőek",
+    "statistics_not_available": "A sacisztiszták nem elérhetőek",
     "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!",
 
     "use_personalised_ads": "Személyre szabott hirdetések",
     "use_personalised_ads_explanation": "Hogyha szeretnél személyre szabott hirdetéseket látni",
 
     "trial_version": "Próbaidőszak",
-    "trial_version_explanation": "Mivel az elmúlt két hétben regisztráltál, így az alkalmazást jelenleg bónuszokkal használhatod. Ezekhez tartozik a reklámmentesség, a színátmenetes témák használata, illetve a csoport statisztikáihoz való hozzáférés. A két hét leteltével ezeket a Dodó Boltban veheted meg."
+    "trial_version_explanation": "Mivel az elmúlt két hétben regisztráltál, így az alkalmazást jelenleg bónuszokkal használhatod. Ezekhez tartozik a reklámmentesség, a színátmenetes témák használata, illetve a csoport statisztikáihoz való hozzáférés. A két hét leteltével ezeket a Dodó Boltban veheted meg.",
+
+    "calculator": "Számológép",
+    "calculator_explanation": "Itt egy számológép, használd, ha kell 😉"
 }

@@ -1,4 +1,6 @@
 import 'package:csocsort_szamla/essentials/ad_management.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -181,42 +183,71 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               SizedBox(
                                 height: 20,
                               ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'not_valid_num'.tr();
-                                  }
-                                  if (double.parse(value) < 0) {
-                                    return 'not_valid_num'.tr();
-                                  }
-                                  return null;
-                                },
-                                controller: _amountController,
-                                decoration: InputDecoration(
-                                  labelText: 'amount'.tr(),
-                                  hintText: getSymbol(currentGroupCurrency),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.onSurface),
-                                    //  when the TextFormField in unfocused
+                              Stack(
+                                children: [
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'field_empty'.tr();
+                                      }
+                                      if (double.tryParse(value) == null) {
+                                        return 'not_valid_num'.tr();
+                                      }
+                                      if (double.parse(value) < 0) {
+                                        return 'not_valid_num'.tr();
+                                      }
+                                      return null;
+                                    },
+                                    controller: _amountController,
+                                    decoration: InputDecoration(
+                                      labelText: 'amount'.tr(),
+                                      hintText: getSymbol(currentGroupCurrency),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.onSurface),
+                                        //  when the TextFormField in unfocused
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context).colorScheme.primary,
+                                            width: 2),
+                                      ),
+                                    ),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context).textTheme.bodyText1.color),
+                                    cursorColor: Theme.of(context).colorScheme.secondary,
+                                    keyboardType:
+                                    TextInputType.numberWithOptions(decimal: true),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
+                                    ],
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        width: 2),
+                                  Container(
+                                    margin: EdgeInsets.only(top:20),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: IconButton(
+                                          icon: Icon(Icons.calculate, color: Theme.of(context).colorScheme.primary,),
+                                          onPressed: (){
+                                            showModalBottomSheetCustom(
+                                              context: context,
+                                              builder: (context) {
+                                                return SingleChildScrollView(
+                                                    child: Calculator(
+                                                      callback: (String fromCalc){
+                                                        setState(() {
+                                                          _amountController.text=fromCalc;
+                                                        });
+                                                      },
+                                                    )
+                                                );
+                                              },
+                                            );
+                                          }
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context).textTheme.bodyText1.color),
-                                cursorColor: Theme.of(context).colorScheme.secondary,
-                                keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
                                 ],
                               ),
                               SizedBox(

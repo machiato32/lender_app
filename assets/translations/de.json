@@ -280,5 +280,8 @@
     "use_personalised_ads_explanation": "Falls du Personalisierte Anzeigen sehen möchtest",
 
     "trial_version": "Probezeit",
-    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want."
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+
+    "calculator": "Rechner",
+    "calculator_explanation": "Ein kleiner Taschenrechner falls du einen brauchst 😉"
 }

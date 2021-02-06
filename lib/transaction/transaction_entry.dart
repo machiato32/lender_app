@@ -160,7 +160,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
-                        child: PurchaseAllInfo(widget.data))
+                        child: PurchaseAllInfo(widget.data)
+                    )
                 )
                 .then((val) {
                   if (val == 'deleted') widget.callback(purchase: true);
