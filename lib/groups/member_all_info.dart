@@ -65,212 +65,211 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Icon(Icons.account_circle,
-                      color: Theme.of(context).colorScheme.primary),
-                  Text(' - '),
-                  Flexible(
-                      child: Text(
-                        widget.member.username,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.account_box,
-                      color: Theme.of(context).colorScheme.primary),
-                  Text(' - '),
-                  Flexible(
-                      child: Text(
-                        widget.member.nickname,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Center(
-                child: Visibility(
-                    visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
-                    child: Text(
-                      'Admin',
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )),
-              ),
-
-              SizedBox(
-                height: 10,
-              ),
-              Visibility(
-                  visible: widget.isCurrentUserAdmin,
-                  child: SwitchListTile(
-                    value: widget.member.isAdmin,
-                    title: Text(
-                      'Admin',
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    activeColor: Theme.of(context).colorScheme.secondary,
-                    onChanged: (value) {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
-                            future: _changeAdmin(widget.member.memberId, value),
-                            dataTrueText: 'admin_scf',
-                            onDataTrue: () {
-                              _onChangeAdmin();
-                            },
-                          ));
-                    },
+              Icon(Icons.account_circle,
+                  color: Theme.of(context).colorScheme.primary),
+              Text(' - '),
+              Flexible(
+                  child: Text(
+                    widget.member.username,
+                    style: Theme.of(context).textTheme.bodyText1,
                   )),
-              Visibility(
-                visible: widget.isCurrentUserAdmin ||
-                    widget.member.memberId == currentUserId,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GradientButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            child: ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,)
-                        ).then((value) {if(value!=null && value=='madeAdmin') Navigator.pop(context, 'madeAdmin');});
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.edit,
-                            color: Theme.of(context).textTheme.button.color,
-                          ),
-                          SizedBox(width: 3,),
-                          Text(
-                            'edit_nickname'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GradientButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          child: ConfirmLeaveDialog(
-                            title: 'kick_member',
-                            choice: 'really_kick',
-                          )
-                        ).then((value){
-                          if(value!=null && value){
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                child: FutureSuccessDialog(
-                                  future: _removeMember(widget.member.memberId),
-                                  dataTrueText: 'kick_member_scf',
-                                  onDataTrue: (){
-                                    _onRemoveMember();
-                                  },
-                                )
-                            );
-                          }
-                        });
-
-                      },
-                      child:Row(
-                        children: [
-                          Icon(
-                            Icons.person_outline,
-                            color: Theme.of(context).textTheme.button.color,
-                          ),
-                          SizedBox(width: 3,),
-                          Text(
-                            'kick_member'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: widget.member.memberId==currentUserId,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GradientButton(
-                      onPressed: () {
-                        if(widget.member.balance<0){
-                          FlutterToast ft = FlutterToast(context);
-                          ft.showToast(
-                              child: errorToast('balance_at_least_0', context),
-                              toastDuration: Duration(seconds: 2),
-                              gravity: ToastGravity.BOTTOM);
-                          return;
-                        }else{
-                          showDialog(
-                            context: context,
-                            child: ConfirmLeaveDialog(
-                              title: 'leave_group',
-                              choice: 'really_leave',
-                            )
-                          ).then((value){
-                            if(value!=null && value){
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child: FutureSuccessDialog(
-                                    future: _removeMember(null),
-                                    dataTrueText: 'leave_scf',
-                                    onDataTrue: () async {
-                                      _onRemoveMemberNull();
-                                    },
-                                  )
-                              );
-                            }
-                          });
-
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_back,
-                            color: Theme.of(context).textTheme.button.color,
-                          ),
-                          SizedBox(width: 3,),
-                          Text(
-                            'leave_group'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
-        ));
+          SizedBox(
+            height: 5,
+          ),
+          Row(
+            children: <Widget>[
+              Icon(Icons.account_box,
+                  color: Theme.of(context).colorScheme.primary),
+              Text(' - '),
+              Flexible(
+                  child: Text(
+                    widget.member.nickname,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Center(
+            child: Visibility(
+                visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
+                child: Text(
+                  'Admin',
+                  style: Theme.of(context).textTheme.bodyText1,
+                )),
+          ),
+
+          SizedBox(
+            height: 10,
+          ),
+          Visibility(
+              visible: widget.isCurrentUserAdmin,
+              child: SwitchListTile(
+                value: widget.member.isAdmin,
+                title: Text(
+                  'Admin',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                activeColor: Theme.of(context).colorScheme.secondary,
+                onChanged: (value) {
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      child: FutureSuccessDialog(
+                        future: _changeAdmin(widget.member.memberId, value),
+                        dataTrueText: 'admin_scf',
+                        onDataTrue: () {
+                          _onChangeAdmin();
+                        },
+                      ));
+                },
+              )),
+          Visibility(
+            visible: widget.isCurrentUserAdmin ||
+                widget.member.memberId == currentUserId,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        child: ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,)
+                    ).then((value) {if(value!=null && value=='madeAdmin') Navigator.pop(context, 'madeAdmin');});
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Theme.of(context).textTheme.button.color,
+                      ),
+                      SizedBox(width: 3,),
+                      Text(
+                        'edit_nickname'.tr(),
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      child: ConfirmLeaveDialog(
+                        title: 'kick_member',
+                        choice: 'really_kick',
+                      )
+                    ).then((value){
+                      if(value!=null && value){
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            child: FutureSuccessDialog(
+                              future: _removeMember(widget.member.memberId),
+                              dataTrueText: 'kick_member_scf',
+                              onDataTrue: (){
+                                _onRemoveMember();
+                              },
+                            )
+                        );
+                      }
+                    });
+
+                  },
+                  child:Row(
+                    children: [
+                      Icon(
+                        Icons.person_outline,
+                        color: Theme.of(context).textTheme.button.color,
+                      ),
+                      SizedBox(width: 3,),
+                      Text(
+                        'kick_member'.tr(),
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: widget.member.memberId==currentUserId,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  onPressed: () {
+                    if(widget.member.balance<0){
+                      FlutterToast ft = FlutterToast(context);
+                      ft.showToast(
+                          child: errorToast('balance_at_least_0', context),
+                          toastDuration: Duration(seconds: 2),
+                          gravity: ToastGravity.BOTTOM);
+                      return;
+                    }else{
+                      showDialog(
+                        context: context,
+                        child: ConfirmLeaveDialog(
+                          title: 'leave_group',
+                          choice: 'really_leave',
+                        )
+                      ).then((value){
+                        if(value!=null && value){
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              child: FutureSuccessDialog(
+                                future: _removeMember(null),
+                                dataTrueText: 'leave_scf',
+                                onDataTrue: () async {
+                                  _onRemoveMemberNull();
+                                },
+                              )
+                          );
+                        }
+                      });
+
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_back,
+                        color: Theme.of(context).textTheme.button.color,
+                      ),
+                      SizedBox(width: 3,),
+                      Text(
+                        'leave_group'.tr(),
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Future<bool> _removeMember(int memberId) async {
