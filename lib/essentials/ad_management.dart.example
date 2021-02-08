@@ -1,0 +1,25 @@
+import 'package:admob_flutter/admob_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:csocsort_szamla/config.dart';
+
+Map<String, String> appUnitIds = {
+  'create_group':'example',
+  'history':'example',
+  'home_screen':'example',
+  'join_group':'example',
+  'payment':'example',
+  'purchase':'example',
+  'report_bug':'example',
+  'settings':'example'
+};
+
+Widget adUnitForSite({@required String site, AdmobBannerSize size = AdmobBannerSize.BANNER}){
+  return Visibility(
+    visible: showAds,
+    child: AdmobBanner(
+      adUnitId: appUnitIds[site],
+      adSize: size,
+      nonPersonalizedAds: true,
+    ),
+  );
+}

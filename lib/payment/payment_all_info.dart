@@ -1,12 +1,16 @@
+import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/payment/add_payment_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class PaymentAllInfo extends StatefulWidget {
   final PaymentData data;
@@ -20,23 +24,30 @@ class PaymentAllInfo extends StatefulWidget {
 class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deletePayment(int id) async {
     try {
-      await httpDelete(uri: '/payments/' + id.toString(), context: context);
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onDeletePayment());
       return true;
     } catch (_) {
       throw _;
     }
   }
 
+  void _onDeletePayment(){
+    Navigator.pop(context);
+    Navigator.pop(context, 'deleted');
+  }
+
   @override
   Widget build(BuildContext context) {
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     String note = '';
     if (widget.data.note == '' || widget.data.note == null) {
       note = 'no_note'.tr();
     } else {
       note = widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
     }
-    return Card(
-        child: Padding(
+    return Padding(
       padding: const EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +103,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                   color: Theme.of(context).colorScheme.primary),
               Text(' - '),
               Flexible(
-                  child: Text(widget.data.amount.toString(),
+                  child: Text(widget.data.amount.printMoney(currentGroupCurrency),
                       style: Theme.of(context).textTheme.bodyText1)),
             ],
           ),
@@ -108,7 +119,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
               Text(' - '),
               Flexible(
                   child: Text(
-                      DateFormat('yyyy/MM/dd - kk:mm')
+                      DateFormat('yyyy/MM/dd - HH:mm')
                           .format(widget.data.updatedAt),
                       style: Theme.of(context).textTheme.bodyText1)),
             ],
@@ -117,153 +128,84 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == currentUserId,
+            visible: widget.data.payerId == idToUse,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  FlatButton.icon(
-
-                    onPressed: (){
-                      showDialog(
-                          context: context,
-                          child: Dialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text('want_edit'.tr(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white), textAlign: TextAlign.center,),
-                                  SizedBox(height: 15,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: <Widget>[
-                                      RaisedButton(
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          onPressed: (){
-                                            Navigator.pop(context);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                                AddPaymentRoute(
-                                                  payment: SavedPayment(
-                                                    amount: widget.data.amount,
-                                                    note: widget.data.note,
-                                                    payerId: widget.data.payerId,
-                                                    takerId: widget.data.takerId,
-                                                    paymentId: widget.data.paymentId
-                                                  ),
-                                                )
-                                              )
-                                            ).then((value) => Navigator.pop(context, 'deleted'));
-                                          },
-                                          child: Text('yes'.tr(), style: Theme.of(context).textTheme.button)
-                                      ),
-                                      RaisedButton(
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          onPressed: (){ Navigator.pop(context);},
-                                          child: Text('no'.tr(), style: Theme.of(context).textTheme.button)
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                      );
-                    },
-                    color: Theme.of(context).colorScheme.secondary,
-                    label: Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
-                    icon: Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-                  ),
-                  FlatButton.icon(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            child: Dialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              child: Container(
-                                padding: EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                      'want_delete'.tr(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1
-                                          .copyWith(color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        RaisedButton(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            onPressed: () async {
-                                              Navigator.pop(context);
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  child: FutureSuccessDialog(
-                                                    future: _deletePayment(
-                                                        widget.data.paymentId),
-                                                    dataTrueText: 'delete_scf',
-                                                    onDataTrue: () {
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(
-                                                          context, 'deleted');
-                                                    },
-                                                  ));
-                                            },
-                                            child: Text('yes'.tr(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .button)),
-                                        RaisedButton(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('no'.tr(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .button))
-                                      ],
-                                    )
-                                  ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              AddPaymentRoute(
+                                payment: SavedPayment(
+                                    amount: widget.data.amount,
+                                    note: widget.data.note,
+                                    payerId: widget.data.payerId,
+                                    takerId: widget.data.takerId,
+                                    paymentId: widget.data.paymentId
                                 ),
-                              ),
-                            ));
-                      },
-                      color: Theme.of(context).colorScheme.secondary,
-                      label: Text(
-                        'revoke'.tr(),
-                        style: Theme.of(context).textTheme.button,
+                              )
+                          )
+                          ).then((value) => Navigator.pop(context, 'deleted'));
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
+                            SizedBox(width: 3,),
+                            Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
+                          ],
+                        )
                       ),
-                      icon: Icon(Icons.delete,
-                          color: Theme.of(context).textTheme.button.color)),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                child: ConfirmChoiceDialog(
+                                  choice: 'want_delete',
+                                ),
+                            ).then((value){
+                              if(value!=null && value){
+                                showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future: _deletePayment(widget.data.paymentId),
+                                    dataTrueText: 'delete_scf',
+                                    onDataTrue: () {
+                                      _onDeletePayment();
+                                    },
+                                  )
+                                );
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, color: Theme.of(context).textTheme.button.color),
+                              SizedBox(width: 3,),
+                              Text(
+                                'revoke'.tr(),
+                                style: Theme.of(context).textTheme.button,
+                              ),
+                            ],
+                          ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
           )
         ],
       ),
-    ));
+    );
   }
 }

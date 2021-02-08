@@ -6,13 +6,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'package:csocsort_szamla/transaction/transaction_entry.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/purchase/purchase_entry.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+
+import '../essentials/widgets/error_message.dart';
+import '../essentials/widgets/gradient_button.dart';
 
 class History extends StatefulWidget {
   final Function callback;
-
-  History({this.callback});
+  final int selectedIndex;
+  History({this.callback, this.selectedIndex});
 
   @override
   _HistoryState createState() => _HistoryState();
@@ -20,21 +23,25 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
-  Future<List<TransactionData>> _transactions;
+  Future<List<PurchaseData>> _purchases;
   TabController _tabController;
 
-  Future<List<TransactionData>> _getTransactions({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getPurchases({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/transactions?group=' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/purchases?group=' + currentGroupId.toString()+'&limit=6',
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<TransactionData> transactionData = [];
+      List<PurchaseData> purchaseData = [];
       for (var data in decoded) {
-        transactionData.add(TransactionData.fromJson(data));
+        purchaseData.add(PurchaseData.fromJson(data));
       }
-      return transactionData;
+      return purchaseData;
 
     } catch (_) {
       throw _;
@@ -43,9 +50,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
     try {
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/payments?group=' + currentGroupId.toString(),
-          context: context, overwriteCache: overwriteCache);
+        uri: '/payments?group=' + currentGroupId.toString()+'&limit=6',
+        context: context,
+        overwriteCache: overwriteCache,
+        useGuest: useGuest
+      );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
       for (var data in decoded) {
@@ -57,21 +68,37 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  void callback() {
-    widget.callback();
-    _payments = null;
-    _payments = _getPayments(overwriteCache: true);
-    _transactions = null;
-    _transactions = _getTransactions(overwriteCache: true);
+  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
+    if(!reaction){
+      widget.callback();
+      _payments = null;
+      _payments = _getPayments(overwriteCache: true);
+      _purchases = null;
+      _purchases = _getPurchases(overwriteCache: true);
+    }else{
+      setState(() {
+        if(payment){
+          _payments = null;
+          _payments = _getPayments(overwriteCache: true);
+        }
+        if(purchase){
+          _purchases = null;
+          _purchases = _getPurchases(overwriteCache: true);
+        }
+      });
+
+    }
+
   }
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _payments = null;
     _payments = _getPayments();
-    _transactions = null;
-    _transactions = _getTransactions();
+    _purchases = null;
+    _purchases = _getPurchases();
     super.initState();
   }
 
@@ -79,8 +106,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   void didUpdateWidget(History oldWidget) {
     _payments = null;
     _payments = _getPayments();
-    _transactions = null;
-    _transactions = _getTransactions();
+    _purchases = null;
+    _purchases = _getPurchases();
     super.didUpdateWidget(oldWidget);
   }
 
@@ -117,18 +144,18 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                 ),
                 Tab(
                     icon: Icon(
-                  Icons.attach_money,
+                  Icons.payments,
                   color: Theme.of(context).colorScheme.secondary,
                 )),
               ],
             ),
             Container(
-              height: 500,
+              height: 550,
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
                   FutureBuilder(
-                    future: _transactions,
+                    future: _purchases,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
@@ -143,48 +170,60 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                children: _generateTransactions(snapshot.data),
+                              Container(
+                                height: 490,
+                                child: Column(
+                                  children: _generatePurchases(snapshot.data),
+                                ),
                               ),
                               Visibility(
-                                visible: (snapshot.data as List).length > 5,
-                                child: FlatButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AllHistoryRoute(startingIndex: _tabController.index)));
-                                    },
-                                    icon: Icon(
-                                      Icons.more_horiz,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
-                                    ),
-                                    label: Text(
-                                      'more'.tr(),
-                                      style: Theme.of(context).textTheme.button,
-                                    ),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                  visible: (snapshot.data as List).length > 5,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GradientButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllHistoryRoute(startingIndex: _tabController.index)
+                                              )
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.more_horiz,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .button
+                                                  .color,
+                                            ),
+                                            SizedBox(width: 4,),
+                                            Text(
+                                              'more'.tr(),
+                                              style: Theme.of(context).textTheme.button,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
                               )
                             ],
                           );
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _payments = null;
-                                  _payments = _getPayments();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'purchase_history',
+                            callback: (){
+                              setState(() {
+                                _purchases = null;
+                                _purchases = _getPurchases();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(child: CircularProgressIndicator());
@@ -206,47 +245,58 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                  children: _generatePayments(snapshot.data)),
+                              Container(
+                                height: 490,
+                                child: Column(
+                                    children: _generatePayments(snapshot.data)
+                                ),
+                              ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
-                                child: FlatButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AllHistoryRoute(startingIndex: _tabController.index,)));
-                                    },
-                                    icon: Icon(
-                                      Icons.more_horiz,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GradientButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllHistoryRoute(startingIndex: _tabController.index,)));
+                                        },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.more_horiz,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .button
+                                                .color,
+                                          ),
+                                          SizedBox(width: 4,),
+                                          Text(
+                                            'more'.tr(),
+                                            style: Theme.of(context).textTheme.button,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    label: Text(
-                                      'more'.tr(),
-                                      style: Theme.of(context).textTheme.button,
-                                    ),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                  ],
+                                ),
                               )
                             ],
                           );
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _payments = null;
-                                  _payments = _getPayments();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'payment_history',
+                            callback: (){
+                              setState(() {
+                                _payments = null;
+                                _payments = _getPayments();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(child: CircularProgressIndicator());
@@ -274,13 +324,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }).toList();
   }
 
-  List<Widget> _generateTransactions(List<TransactionData> data) {
+  List<Widget> _generatePurchases(List<PurchaseData> data) {
     if (data.length > 5) {
       data = data.take(5).toList();
     }
     Function callback = this.callback;
     return data.map((element) {
-      return TransactionEntry(
+      return PurchaseEntry(
         data: element,
         callback: callback,
       );

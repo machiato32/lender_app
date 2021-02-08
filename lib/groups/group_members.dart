@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/group_objects.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/http_handler.dart';
-import 'package:csocsort_szamla/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import '../essentials/app_theme.dart';
 import 'member_all_info.dart';
 
 class GroupMembers extends StatefulWidget {
@@ -181,29 +182,33 @@ class _MemberEntryState extends State<MemberEntry> {
   @override
   Widget build(BuildContext context) {
     if (widget.member.memberId == currentUserId) {
-      style = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).textTheme.bodyText1
-          : Theme.of(context).textTheme.button;
-      nicknameColor = (Theme.of(context).brightness == Brightness.dark)
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).textTheme.button.color;
+      style = Theme.of(context).textTheme.button;
+      nicknameColor = Theme.of(context).textTheme.button.color;
       iconColor = style.color;
       boxDecoration = BoxDecoration(
-        color: (Theme.of(context).brightness == Brightness.dark)
-            ? Colors.transparent
-            : Theme.of(context).colorScheme.secondary,
-        border: Border.all(
-            color: (Theme.of(context).brightness == Brightness.dark)
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 1.5),
+        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
+        boxShadow: ( Theme.of(context).brightness==Brightness.light)
+            ?[ BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(0.0, 1.5),
+              blurRadius: 1.5,
+            )]
+            : [],
       );
     } else {
       iconColor = Theme.of(context).textTheme.bodyText1.color;
       style = Theme.of(context).textTheme.bodyText1;
       nicknameColor = Theme.of(context).colorScheme.surface;
-      boxDecoration = BoxDecoration();
+      boxDecoration = BoxDecoration(
+        boxShadow: ( Theme.of(context).brightness==Brightness.light)
+            ?[ BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(0.0, 1.5),
+              blurRadius: 1.5,
+            )]
+            : [],
+      );
     }
     return Container(
       height: 65,
@@ -218,11 +223,11 @@ class _MemberEntryState extends State<MemberEntry> {
                 context: context,
                 backgroundColor: Theme.of(context).cardTheme.color,
                 builder: (context) => SingleChildScrollView(
-                      child: MemberAllInfo(
-                        member: widget.member,
-                        isCurrentUserAdmin: widget.isCurrentUserAdmin,
-                      ),
-                    )).then((val) {
+                  child: MemberAllInfo(
+                    member: widget.member,
+                    isCurrentUserAdmin: widget.isCurrentUserAdmin,
+                  ),
+                )).then((val) {
               if (val == 'madeAdmin') widget.callback();
             });
           },
@@ -278,10 +283,12 @@ class _MemberEntryState extends State<MemberEntry> {
                           Center(
                             child: Visibility(
                                 visible: widget.member.isAdmin,
-                                child: Text(
-                                  'Admin',
+                                child:
+                                Text(
+                                  '👑  ', //itt van egy korona emoji lol
                                   style: style,
-                                )),
+                                )
+                            ),
                           ),
                         ],
                       ),

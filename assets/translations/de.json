@@ -8,7 +8,6 @@
     "password":"Passwort",
 
     "name":"Name",
-    "id":"ID",
     "confirm_password":"Passwort bestätigen",
 
     "balances":"Kontostand",
@@ -16,7 +15,7 @@
     "home":"Start",
     "shopping_list":"Einkaufszettel",
     "group":"Gruppe",
-    "expense":"Ausgabe",
+    "purchase":"Einkauf",
     "payment":"Zahlung",
 
     "wish":"Mein Wunsch",
@@ -46,8 +45,6 @@
     "old_password":"Dein Passwort",
     "new_password":"Neues Passwort",
     "new_password_confirm":"Passwort bestätigen",
-    "send":"Senden",
-    "change_password_scf": "Dein Passwort wurde erfolgreich geändert!",
     "change_theme":"Farbe ändern",
     "change_language": "Sprache ändern",
 
@@ -60,58 +57,40 @@
     "okay": "Okay",
     "error": "Ein Fehler ist aufgetreten!",
     "back": "Zurück",
-    "login_scf": "Das Anmelden war erfolgreich!",
 
     "example_name": "daniel",
     "not_alterable": "Später nicht änderbar!",
-    "registration_scf": "Das Registrieren  war erfolgreich!",
-
-    "example_nickname": "Daniel",
-    "creation_scf": "Das Erstellen war erfolgreich!",
 
     "want_make_admin": "Möchtest du, dass er/sie Admin wird?",
-    "admin_scf": "Die Änderung war erfolgreich!",
     "yes": "Ja",
     "no": "Nein",
     "make_admin": "Mache ihn/sie zum Admin",
 
-    "nickname_scf": "Der Namenswechsel war erfolgreich!",
-
-    "join_scf": "Das Beitreten war erfolgreich!",
-
     "login_required": "Leider musst du dich neu anmelden!",
-    "transactions": "Ausgaben",
+    "purchases": "Einkäufe",
     "payments": "Zahlungen",
 
     "more": "Mehr",
 
     "person_not_chosen": "Du hast niemanden ausgewählt!",
-    "payment_scf": "Die Zahlung wurde gebucht!",
     "add_new": "Neues hinzufügen",
-    "payment_hint": "Mammut",
 
     "no_note": "Keine Notiz",
     "want_delete": "Möchtest du den Artikel zurückziehen?",
-    "delete_scf":"Das Zurückziehen war erfolgreich!",
     "delete": "Löschen",
 
-    "want_expense": "Möchtest du es aufrechnen?",
-    "bought": "Gekauft",
-
-    "add_scf":"Das Hinzufügen war erfolgreich!",
-
-    "per_person": " Ft/Person",
+    "per_person": " {}/Person",
     "no_amount": "Du hast keine Summe angegeben!",
     "amount_not_negative": "Die Summe darf nicht negativ sein!",
-    "transaction_scf": "Die Transaktion wurde erfolgreich gebucht!",
+    "purchase_scf": "Der Einkauf wurde erfolgreich gebucht!",
+    "invitation_to_lender": "Einladung zu einer Lender Gruppe",
 
     "field_empty": "Dieses Feld darf nicht leer sein!",
-    "num_length": "4 Ziffern nötig!",
     "not_valid_num": "Du hast keine Zahl angegeben!",
     "minimal_length": "Mindestens {} Charaktere nötig!",
     "edit_nickname": "Neuer Spitzname",
     "payment_explanation": "Du hast an jemanden Geld gezahlt",
-    "expense_explanation": "Du hast etwas gekauft",
+    "purchase_explanation": "Du hast etwas gekauft",
     
     "members_explanation": "Siehe dir die Gruppenmitglieder an und ändere deinen Spitznamen",
     "members_explanation_admin": "Verwalte die Genehmigungen und Spitznamen der Mitglieder",
@@ -124,14 +103,11 @@
     "pay": "Zahlen",
     "who_to_pay": "An wen soll ich zahlen?",
     "payments_needed": "Nötigen Zahlungen",
-    "you_are_good": "Du musst keinem zahlen",
 
-    "fulfill_scf": "Das Element wurde erfolgreich von der Liste gestrichen",
     "remove_from_list": "Abgehakt",
     "add_as_expense": "Schreibe es als Ausgabe auf",
     "revoke": "Zurückziehen",
 
-    "change_username_scf": "Die Änderung war erfolgreich.",
     "change_username": "Benutzername ändern",
 
     "hi": "Hallo",
@@ -139,7 +115,6 @@
     "report_a_bug": "Melde einen Fehler",
     "bug": "Fehler",
     "what_is_wrong": "Was ist der Fehler?",
-    "bug_scf": "Das Melden war erfolgreich",
 
     "want_edit": "Möchtest du den Artikel ändern?",
     "nothing_to_show": "Es fühlt sich so leer an...",
@@ -152,51 +127,162 @@
     "discovery_drawer_title": "Nutzereinstellungen",
     "discovery_drawer_description": "\nOben wechselst du zwischen deinen Gruppen\n\nDarunter findest du deine persönlichen Einstellungen.",
     "discovery_settings_title": "Persönliche Einstellungen",
-    "discovery_settings_description": "\nHier kannst du deinen Benutzernamen oder Passwort ändern, und dich zwischen mehreren Farbthemen entscheiden.",
+    "discovery_settings_description": "\nHier kannst du deinen Benutzernamen oder Passwort ändern, und dich zwischen mehreren Farbthemen entscheiden. 😉",
     "discover_shopping_title": "Gemeinsame Einkaufsliste",
     "discover_shopping_description" : "\nDiese Einkaufsliste sehen alle Mitglieder der Gruppe.\n\nIhr könnt sie zum Beispiel auf einer gemeinsamen Reise oder in einer WG benutzen.",
     "discover_group_settings_title": "Gruppeneinstellungen",
-    "discover_group_settings_description" : "\nUnter anderem kannst du hier neue Mitglieder zur Gruppe einladen und deinen Spitznamen ändern.",
+    "discover_group_settings_description" : "\nUnter anderem kannst du hier neue Mitglieder zur Gruppe einladen, deinen Spitznamen ändern oder dir die Statistiken ansehen.",
 
-    "tutorial_1" : "Normalerweise werden in einer Gruppe viele überflüssige Transaktionen durchgeführt, weil man immer zahlen muss, wenn jemand einem was kauft.",
-    "tutorial_2" : "Lender verringert die Zahl der Transaktionen.\nSpäter wirst du sehen, dass dies so erreicht wird, dass die Mitglieder der Gruppe schulden und nicht einander.",
+    "tutorial_2" : "Das Ziel von Lender ist das vereinfachern der Transaktionen in deiner Gruppe.\nWie du oben sehen kannst, konnte Lender hier eine Zahlung ersparen.",
     "tutorial_3" : "In der Gruppe verfügt jeder über ein Konto.\nPositiv bedeutet, dass die Gruppe dir schuldet, negativ dass du der Gruppe schuldig bist.",
     "tutorial_4" : "An wen du zahlen solltest kannst du anhand der Konten entscheiden, außerdem kannst du den \"An wen soll ich zahlen?\" Knopf benutzen.",
     "welcome": "Danke schön, dass du registriert hast!\n\nIn den nächsten paar Seiten werden wir dir die Benutzung der App zeigen.",
-    "next": "Weiter",
-    "previous": "Zurück",
-    "finish": "Verstanden",
     "": "",
 
     "reset_tutorial": "Tutorial neu anschauen",
     "reset_tutorial_explanation": "Dafür musst du die App neustarten",
 
-    "password_reminder": "Passworderinnerung",
-    "forgot_password": "Vergessenes Password",
+    "password_reminder": "Passworterinnerung",
+    "forgot_password": "Vergessenes Passwort",
     "your_password_reminder": "Deine passworterinnerung:",
 
-    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.\nError code:",
-    "format_exception": "Fehler bei der Verarbeitung der Daten. Probiere es noch einmal.\nError code:",
+    "cannot_connect": "Die Verbingung zum Server ist fehlgeschlagen. Prüfe deine Netzwerkeinstellungen und versuche es noch einmal.",
+    "format_exception": "Fehler bei der Verarbeitung der Daten. Probiere es noch einmal.",
     "no_connection": "Keine Internetverbindung.",
 
-    "input_error": "input_error",
-    "user_not_member": "user_not_member_error",
-    "guest_cannot_be_added": "guest_cannot_be_added",
-    "group_limit_reached": "group_limit_reached",
-    "user_already_member": "user_already_member",
-    "nickname_taken": "nickname_taken",
-    "guests_cannot_be_admins": "guests_cannot_be_admins",
-    "cannot_leave_until_payed": "cannot_leave_until_payed",
-    "choose_guest": "choose_guest",
-    "request_already_fulfilled": "request_already_fulfilled",
-    "request_cannot_fulfilled_requester": "request_cannot_fulfilled_requester",
-    "check_old_password": "check_old_password",
-    "new_password_cannot_same": "new_password_cannot_same",
-    "not_buyer_of_transaction": "not_buyer_of_transaction",
-    "not_payer_of_transaction": "not_payer_of_transaction",
-    "did_not_request_this": "did_not_request_this",
-
     "store": "Laden",
-    "store_scf": "Die Benachrichtigung wurde erfolgreich gesendet."
 
+    "leave_group": "Die Gruppe verlassen",
+    "balance_at_least_0": "Dein Konto muss positiv sein",
+    "kick_member": "Mitglied rausschmeisen",
+    "really_kick": "Möchtest du das Mitglied wirklich rausschmeisen?",
+    "really_leave": "Möchtest du die Gruppe wirklich verlassen?",
+
+    "auto_payment": "Automatische Zahlung",
+
+    "your_currency": "Deine Währung",
+    "currency_of_group": "Die Währung der Gruppe",
+
+    "location": "Name der Seite",
+    "details": "Detaillierte Beschreibung",
+
+    "change_username_explanation": "Ändere deinen Benutzernamen mit dem du dich einlogst",
+    "change_password_explanation": "Ändere dein Passwort mit dem du dich einlogst",
+
+    "change_group_currency": "Ändere die Gruppenwährung",
+    "change_group_currency_explanation": "Ändere die Währung der Gruppe, aber achte darauf, dass die bisherigen Kontostände nicht umgerechnet werden!",
+    
+    "manage_guests": "Gäste verwalten",
+    "manage_guests_explanation": "Gäste sind Mitglieder die von den Administratoren verwaltet werden. Sie haben sich nicht registriert.",
+    "add_guest": "Gast hinzufügen",
+    "add_guest_explanation": "Einen neuen Gast in die Gruppe aufnehmen",
+    "merge_guest": "Gast zuweisen",
+    "merge_guest_explanation": "Entferne den Gast und weise seine vorherigen Transaktionen einem echten Midglied zu.",
+    "guest_switcher": "Gast wechseln",
+    "guest_switcher_explanation": "Wähle den Gast wessen Finanzen du verwalten möchtest.",
+    "sure_remove_guest": "Bist du sicher, dass du den Gast von der Gruppe entfernen möchtest?",
+    "needs_choose_guest": "Zuerst musst du einen Gast auswählen",
+    "sure_merge_guest": "Bist du sicher, dass du den Gast jemanden zuweisen möchtest?",
+    "select_member": "Mitglied auswählen",
+
+    "edit_request": "Element ändern",
+    "edited_request": "Geändertes Element",
+
+    "about_us": "Über uns",
+    "about_us_explanation": "Infos über die Entwickler und die App",
+    "about_us_text": "Zwei Jungs die in Langeweile Apps entwickeln.\n\nEin großes Dankeschön an Anna Hegyi, Ábel Kocsis und Sára Kata Kovács, und an allen, die die App getestet haben!\uD83D\uDE09\n\nAlles gute, deine Entwickler",
+
+    "reactions": "Reaktionen",
+    "add_reaction": "Reaktion hinzufügen",
+    "all_reactions": "Vorherige Reaktionen",
+
+    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
+    "reminder_explanation": "Wir kennen deine e-mail nicht, deshalb zeigen wir dir diese Erinnerung, falls du dein Passwort vergisst.",
+
+    "accept_privacy_policy": "Ich akzeptiere die Datenschutzbestimmungen",
+    "must_accept_privacy_policy": "Du musst die Datenschutzbestimmungen akzeptieren!",
+
+    "gradient_available_in_paid_version": "Du kannst dir die Farbübergängigen Themen in der App kaufen.",
+
+    "version_not_supported": "Diese Version ist nicht unterstüzt",
+    "version_not_supported_explanation": "Wir haben eine neue Lender Version eingeführt. Mit dieser Änderung werden ein Paar Funktionen in deiner Version nicht Funktionieren.",
+    "download_new_version": "Die neue Version herunterladen",
+
+    "in_app_purchase": "Dodo Laden",
+
+    "if_not_working": "Falls das nicht hilft",
+    "report_this_error": "Melde den Fehler",
+
+    "remove_ads": "Lender ohne Anzeigen",
+    "remove_ads_explanation": "Erlebe Lender in seiner ganzen Realität.\nEntferne die Anzeigen.",
+    "group_boost": "Gruppenboostende Dodos",
+    "group_boost_explanation": "Booste den Limit für Gruppenmitglieder auf 30 und schalte die Statistiken für die Gruppe frei.\nDas Paket enthält genug Dodos für 2 Gruppen.",
+    "ad_gradient_bundle": "Kleines Lender Paket",
+    "ad_gradient_bundle_explanation":"Erlebe Lender in seiner vollen Schönheit.\nEntferne Anzeigen und Schalte Farbübergängige Themen frei.",
+    "gradients": "Farbübergängige Themen",
+    "gradients_explanation": "Erlebe Lender in all seinen Farben.\nSchalte die Farbübergändigen Themen frei. (Unser Liebling ist Orange 😉)",
+    "big_lender_bundle": "Großes Lender Paket",
+    "big_lender_bundle_explanation": "Das ist ein Kleines Lender Paket, nur geben wir Gruppenboostende Dodos genug für eine Gruppe dazu.",
+
+    "price": "Preis: ",
+    "buy": "Kaufen",
+
+    "boost_group": "Booste die Gruppe",
+    "boost_group_explanation": "Booste den Limit für Gruppenmitglieder auf 30 und sehe dir die Statistiken an.",
+    "available": "Anzahl der Gruppenboostenden Dodos: {}",
+
+    "sure_boost": "Bist du sicher, dass du die Gruppe boosten möchtest?",
+    "already_boosted": "Diese Gruppe wurde schon geboostet!",
+
+    "delete_all_data": "Lösche alle Benutzerdaten",
+    "delete_all_data_explanation": "Keine Daten, die mit dir in Verbindung gebracht werden können werden auf unseren Servern bleiben.",
+
+    "you_seem_lonely": "Bist du einsam?",
+    "invite_friends": "Lade deine Freunde ein",
+    "add_guests_offline": "Oder füge neue Gäste hinzu",
+    "you_seem_lonely_explanation": "Nachher wirst du diese Optionen in den Gruppeneinstellungen erreichen können",
+
+    "undo": "Rückgängig",
+    "request_deleted": "Gelöscht!",
+
+    "sure_user_delete": "Später wirst du dein Account nicht mehr wiederherstellen können! Möchtest du fortfahren?",
+
+    "statistics": "Statistiken",
+    "payments_stats": "Zahlungen",
+    "payments_stats_explanation": "Hier siehst du deine Zahlungsstatistiken",
+    "payed": "Gezahlt:",
+    "taken": "Bekommen:",
+    "you_payed": "Du zahltest",
+    "you_took": "Du bekamst",
+
+    "purchases_stats": "Einkäufe",
+    "purchases_stats_explanation": "Hier siehst du deine Einkaufsstatistiken",
+    "stat_bought": "Gekauft:",
+    "received": "Bekommen:",
+    "you_bought": "Du kauftest",
+    "you_received": "Du bekamst",
+
+    "group_stats": "Statistiken der Gruppe",
+    "group_stats_explanation": "Hier siehst du alle ",
+    "stats_purchases": "Einkäufe:",
+    "stats_payments": "Zahlungen:",
+
+    "sum_of": "Summe von",
+
+    "select_date": "Wähle ein Datum",
+    "select_date_explanation": "Wähle ein Bereich in dem du die Statistiken sehen möchtest",
+
+    "personalised_ads": "Ich möchte personalisierte Anzeigen sehen",
+
+    "statistics_not_available": "Statistiken nicht verfügbar",
+    "statistics_not_available_explanation": "Diese Gruppe ist noch nicht geboostet, deshalb sind die Statistiken nicht verfügbar. Booste die Gruppe oder kaufe Gruppenboostende Dodos im Laden!",
+
+    "use_personalised_ads": "Personalisierte Anzeigen",
+    "use_personalised_ads_explanation": "Falls du Personalisierte Anzeigen sehen möchtest",
+
+    "trial_version": "Probezeit",
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+
+    "calculator": "Rechner",
+    "calculator_explanation": "Ein kleiner Taschenrechner falls du einen brauchst 😉"
 }

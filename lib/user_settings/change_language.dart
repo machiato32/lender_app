@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/rendering.dart';
+
+import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:flutter/widgets.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override
@@ -7,6 +12,9 @@ class LanguagePicker extends StatefulWidget {
 }
 
 class _LanguagePickerState extends State<LanguagePicker> {
+
+
+
   List<Widget> _getLocales() {
     return context.supportedLocales.map((locale) {
       return LanguageElement(
@@ -29,11 +37,9 @@ class _LanguagePickerState extends State<LanguagePicker> {
               style: Theme.of(context).textTheme.headline6,
             )),
             SizedBox(height: 10),
-            Container(
-              height: 80,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
+            Center(
+              child: Wrap(
+                spacing: 5,
                 children: _getLocales(),
               ),
             )
@@ -54,44 +60,48 @@ class LanguageElement extends StatefulWidget {
 }
 
 class _LanguageElementState extends State<LanguageElement> {
+  Future<bool> _changeLanguage(String localeCode){
+    Map<String, dynamic> body = {
+      'language': localeCode
+    };
+    httpPut(context: context, uri: '/user', body: body);
+    return Future.value(true);
+  }
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            context.locale = Locale(widget.localeName);
-          },
-          child: Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-                color: (widget.localeName == context.locale.languageCode)
-                    ? Colors.grey
-                    : Colors.transparent,
-                shape: BoxShape.circle),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: (widget.localeName == context.locale.languageCode)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.white,
-                  shape: BoxShape.circle),
-              child: Center(
-                  child: Text(
-                widget.localeName.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    color: (widget.localeName == context.locale.languageCode)
-                        ? Theme.of(context).textTheme.button.color
-                        : Colors.black),
-              )),
-            ),
-          ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(15),
+      onTap: () {
+        context.locale = Locale(widget.localeName);
+        _changeLanguage(widget.localeName);
+      },
+      child: Ink(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+            boxShadow: (Theme.of(context).brightness==Brightness.light)
+                ?[ BoxShadow(
+                  color: Colors.grey[500],
+                  offset: Offset(0.0, 1.5),
+                  blurRadius: 1.5,
+                )]
+                : [],
+          gradient: (widget.localeName == context.locale.languageCode)
+              ? AppTheme.gradientFromTheme(Theme.of(context))
+              : LinearGradient(colors: [Colors.white, Colors.white]),
+          borderRadius: BorderRadius.circular(15)
         ),
-        SizedBox(
-          width: 5,
-        )
-      ],
+        child: Center(
+          child: Text(
+            widget.localeName.toUpperCase(),
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: (widget.localeName == context.locale.languageCode)
+                  ? Theme.of(context).textTheme.button.color
+                  : Colors.black,
+            )
+          )
+        ),
+      ),
     );
   }
 }

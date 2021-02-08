@@ -3,7 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+
+import '../essentials/app_theme.dart';
+import '../essentials/widgets/error_message.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   final String username;
@@ -24,7 +27,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('forgot_password'.tr()),),
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: AppTheme.gradientFromTheme(Theme.of(context))
+          ),
+        ),
+        title: Text('forgot_password'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24)),
+      ),
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
@@ -37,14 +47,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 if(snapshot.hasData){
                   return Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,);
                 }else{
-                  return InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(snapshot.error.toString()),
-                      ),
-                      onTap: () {
-                        setState(() {});
+                  return ErrorMessage(
+                    error: snapshot.error.toString(),
+                    locationOfError: 'password_reminder',
+                    callback: (){
+                      setState(() {
+
                       });
+                    },
+                  );
                 }
               }
               return Center(child: CircularProgressIndicator());

@@ -1,23 +1,26 @@
+import 'package:csocsort_szamla/essentials/ad_management.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/main.dart';
+import '../essentials/app_theme.dart';
 import 'create_group.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 
 class JoinGroup extends StatefulWidget {
   final bool fromAuth;
   final String inviteURL;
 
-  JoinGroup({this.fromAuth = false, this.inviteURL = ''});
+  JoinGroup({this.fromAuth = false, this.inviteURL});
 
   @override
   _JoinGroupState createState() => _JoinGroupState();
@@ -26,7 +29,8 @@ class JoinGroup extends StatefulWidget {
 class _JoinGroupState extends State<JoinGroup> {
   TextEditingController _tokenController = TextEditingController();
   TextEditingController _nicknameController = TextEditingController(
-      text: currentUsername[0].toUpperCase()+currentUsername.substring(1));
+      text: currentUsername[0].toUpperCase()+currentUsername.substring(1)
+  );
 
   var _formKey = GlobalKey<FormState>();
 
@@ -34,16 +38,10 @@ class _JoinGroupState extends State<JoinGroup> {
     try {
       await clearAllCache();
       await httpPost(context: context, uri: '/logout', body: {});
-      currentUserId = null;
-      currentGroupId = null;
-      currentGroupName = null;
-      apiToken = null;
-      SharedPreferences.getInstance().then((_prefs) {
-        _prefs.remove('current_group_name');
-        _prefs.remove('current_group_id');
-        _prefs.remove('current_user_id');
-        _prefs.remove('api_token');
-      });
+      deleteApiToken();
+      deleteUserId();
+      deleteGroupId();
+      deleteGroupName();
     } catch (_) {
       throw _;
     }
@@ -57,33 +55,40 @@ class _JoinGroupState extends State<JoinGroup> {
         'nickname': nickname
       };
       http.Response response =
-          await httpPost(uri: '/join', context: context, body: body);
+      await httpPost(uri: '/join', context: context, body: body);
 
-      Map<String, dynamic> response2 = jsonDecode(response.body);
-      currentGroupName = response2['data']['group_name'];
-      currentGroupId = response2['data']['group_id'];
-      SharedPreferences.getInstance().then((_prefs) {
-        _prefs.setString('current_group_name', currentGroupName);
-        _prefs.setInt('current_group_id', currentGroupId);
-      });
-
-      return response.statusCode == 200;
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      saveGroupName(decoded['data']['group_name']);
+      saveGroupId(decoded['data']['group_id']);
+      saveGroupCurrency(decoded['data']['currency']);
+      Future.delayed(delayTime()).then((value) => _onJoinGroup());
+      return true;
     } catch (_) {
       throw _;
     }
   }
 
+  void _onJoinGroup() async {
+    await clearAllCache();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage()),
+            (r) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    _tokenController.text =
-        widget.inviteURL != '' ? widget.inviteURL.split('/').removeLast() : '';
+    if(_tokenController.text==''){
+      _tokenController.text =widget.inviteURL!=null? widget.inviteURL.split('/').removeLast() : '';
+    }
     return WillPopScope(
       onWillPop: () {
-        if (currentGroupName != null) {
+        if (currentGroupName != null && currentGroupId!=null) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),
-              (r) => false);
+                  (r) => false);
           return Future.value(false);
         }
         return Future.value(true);
@@ -92,98 +97,103 @@ class _JoinGroupState extends State<JoinGroup> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context))
+              ),
+            ),
             title: Text(
               'join'.tr(),
-              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
             ),
             leading: (currentGroupName != null)
                 ? IconButton(
-                    icon: Icon(Icons.arrow_back),
+                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSecondary),
                     onPressed: () => Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => MainPage()),
-                        (r) => false),
+                            (r) => false),
                   )
                 : null,
           ),
           drawer: !widget.fromAuth
               ? null
               : Drawer(
-                  elevation: 16,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView(
+            elevation: 16,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: <Widget>[
+                      DrawerHeader(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            DrawerHeader(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    'LENDER',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .copyWith(letterSpacing: 2.5),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    currentUsername,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
-                                ],
-                              ),
+                            Text(
+                              'LENDER',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(letterSpacing: 2.5),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              currentUsername,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondary),
                             ),
                           ],
                         ),
                       ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(
-                          Icons.settings,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                        title: Text(
-                          'settings'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Settings()));
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.exit_to_app,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                        title: Text(
-                          'logout'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          _logout();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginOrRegisterPage()),
-                              (r) => false
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),
+                Divider(),
+                ListTile(
+                  leading: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'settings'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Settings()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.exit_to_app,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'logout'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    _logout();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginOrRegisterPage()),
+                            (r) => false
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
           body: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
@@ -224,7 +234,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary,
                                       width: 2),
                                 ),
                               ),
@@ -236,7 +246,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                       .bodyText1
                                       .color),
                               cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
+                              Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -276,7 +286,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary,
                                       width: 2),
                                 ),
                               ),
@@ -288,7 +298,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                       .bodyText1
                                       .color),
                               cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
+                              Theme.of(context).colorScheme.secondary,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(15),
                               ],
@@ -299,35 +309,33 @@ class _JoinGroupState extends State<JoinGroup> {
                       SizedBox(
                         height: 10,
                       ),
-                      Center(
-                        child: RaisedButton(
-                          child: Text('join_group'.tr(),
-                              style: Theme.of(context).textTheme.button),
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              String token = _tokenController.text;
-                              String nickname =
-                                  _nicknameController.text[0].toUpperCase() +
-                                      _nicknameController.text.substring(1);
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child: FutureSuccessDialog(
-                                    future: _joinGroup(token, nickname),
-                                    dataTrueText: 'join_scf',
-                                    onDataTrue: () async {
-                                      await clearCache();
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MainPage()),
-                                          (r) => false);
-                                    },
-                                  ));
-                            }
-                          },
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            child: Text('join_group'.tr(),
+                                style: Theme.of(context).textTheme.button),
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                String token = _tokenController.text;
+                                String nickname =
+                                    _nicknameController.text[0].toUpperCase() +
+                                        _nicknameController.text.substring(1);
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _joinGroup(token, nickname),
+                                      dataTrueText: 'join_scf',
+                                      onDataTrue: () {
+                                        _onJoinGroup();
+                                      },
+                                    ));
+                              }
+                            },
+                            // color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -338,38 +346,43 @@ class _JoinGroupState extends State<JoinGroup> {
 //              SizedBox(height: 40,),
                 Visibility(
                   visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Center(
-                            child: Text(
-                          'no_group_yet'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontSize: 12),
-                        )),
-                        SizedBox(
-                          height: 10,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Center(
+                                child: Text(
+                                  'no_group_yet'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .copyWith(fontSize: 12),
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GradientButton(
+                              child: Text('create_group'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      .copyWith(fontSize: 12)),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CreateGroup()));
+                              },
+                              // color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ],
                         ),
-                        RaisedButton(
-                          child: Text('create_group'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .button
-                                  .copyWith(fontSize: 12)),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateGroup()));
-                          },
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ],
-                    ),
+                      ),
+                      adUnitForSite('join_group'),
+                    ],
                   ),
                 ),
               ],
@@ -378,12 +391,5 @@ class _JoinGroupState extends State<JoinGroup> {
         ),
       ),
     );
-  }
-  Future clearCache() async {
-    await deleteCache(uri: '/groups/' + currentGroupId.toString());
-    await deleteCache(uri: '/groups');
-    await deleteCache(uri: '/user');
-    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
-    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

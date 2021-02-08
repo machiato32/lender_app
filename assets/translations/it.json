@@ -100,7 +100,7 @@
 
     "add_scf":"L'aggiunta è stata di successo!",
 
-    "per_person": " Ft/persona",
+    "per_person": " {}/persona",
     "no_amount": "Non hai aggiunto la somma!",
     "amount_not_negative": "La sommma totale non può essere negativa!",
     "transaction_scf": "La transazione è stata registrata con successo!",
@@ -159,7 +159,6 @@
     "discover_group_settings_title": "Impostazioni del gruppo",
     "discover_group_settings_description" : "\nQui puoi, tra l'altro, invitare nuovi membri e modificare il tuo soprannove.",
 
-
     "tutorial_1" : "In genere ci sono molte transazioni inutili in un gruppo siccome devi sempre pagare quando ti comprano qualcosa.",
     "tutorial_2" : "Il Lender rende queste transazioni più semplici.\nPiù tardi lo vedrai che il debito lo avrai verso il gruppo e non verso una persona.",
     "tutorial_3" : "Nel gruppo ogni membro ha il proprio saldo.\nSe il tuo salso è positivo, gli altri hanno debito con te, se hai quello negativo, tu sei in debito.",
@@ -177,11 +176,32 @@
     "forgot_password": "Password dimenticata",
     "your_password_reminder": "La tua promemoria della password:",
 
-    "cannot_connect": "La connessione al server non è stata di successo. Controlli la connessione internet e riprovi dopo.\nCodice di errore:",
-
-    "format_exception": "Errore mentre analizzare i dati. Cerca di riprovare!\nCodice di errore:",
+    "cannot_connect": "La connessione al server non è stata di successo. Controlli la connessione internet e riprovi dopo.",
+    "format_exception": "Errore mentre analizzare i dati. Cerca di riprovare!",
     "no_connection": "Non hai connessione internet.",
 
     "store": "Negozio",
-    "store_scf": "La notifica è mandata con successo."
+    "store_scf": "La notifica è mandata con successo.",
+
+    "leave_group": "Lasciare il gruppo",
+    "leave_scf": "Il lasciare è stato di successo ",
+    "balance_at_least_0": "Per poter lasciare, il tuo saldo deve essere 0 al minimo",
+    "kick_member": "Buttare fuori un membro",
+    "kick_member_scf": "La defenestrazione è stata di successo",
+    "really_kick": "Se butti fuori il membro, il suo saldo sarà aggunto al tuo. Vorrei buttarlo fuori comunque?",
+    "really_leave": "Se lasci, il tuo saldo sarà diviso tra gli altri membri del gruppo. Vorrei lasciarlo comunque?",
+
+    "auto_payment": "Pagamento automatico",
+
+    "your_currency": "Valuta tua",
+    "currency_of_group": "Valuta del gruppo",
+
+    "location": "Nome della pagina",
+    "details": "Nota più dettagliata",
+
+    "change_username_explanation": "Modifica il tuo nome utente con cui accedi all'applicazione",
+    "change_password_explanation": "Modifica la tua password con cui accedi all'applicazione",
+
+    "change_group_currency": "Cambia la valuta del gruppo",
+    "change_group_currency_explanation": "Cambia la valuta ma non dimenticare che i tuoi debiti non saranno convertiti!"
 }

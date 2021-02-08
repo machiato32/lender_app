@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -10,18 +11,21 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/main.dart';
-import 'package:csocsort_szamla/group_objects.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/future_success_dialog.dart';
-import 'package:csocsort_szamla/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import '../essentials/app_theme.dart';
 import 'forgot_password_page.dart';
 
-class LoginRoute extends StatefulWidget {
+class LoginPage extends StatefulWidget {
+  final String inviteURL;
+  LoginPage({this.inviteURL});
   @override
-  _LoginRouteState createState() => _LoginRouteState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginRouteState extends State<LoginRoute> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController(
       text: currentUsername ?? '');
   TextEditingController _passwordController = TextEditingController();
@@ -36,7 +40,14 @@ class _LoginRouteState extends State<LoginRoute> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(title: Text('login'.tr())),
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            ),
+          ),
+          title: Text('login'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
+        ),
         body: Center(
           child: ListView(
             padding: EdgeInsets.only(left:20, right: 20),
@@ -201,49 +212,39 @@ class _LoginRouteState extends State<LoginRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    dataTrueText: 'login_scf',
-                    dataFalse: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                            child: Text(
-                              'login_scf'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            )),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        FlatButton.icon(
-                          icon: Icon(Icons.check,
-                              color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => JoinGroup(
-                                      fromAuth: true,
-                                    )),
-                                    (r) => false
-                            );
-                          },
-                          label: Text(
-                            'okay'.tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          color: Theme.of(context).colorScheme.secondary,
-                        )
-                      ],
-                    ),
                     future: _login(username, password),
+                    dataTrueText: 'login_scf',
+                    // dataFalse: Column(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Flexible(
+                    //         child: Text(
+                    //           'login_scf'.tr(),
+                    //           style: Theme.of(context)
+                    //               .textTheme
+                    //               .bodyText1
+                    //               .copyWith(color: Colors.white),
+                    //           textAlign: TextAlign.center,
+                    //         )),
+                    //     SizedBox(
+                    //       height: 15,
+                    //     ),
+                    //     FlatButton.icon(
+                    //       icon: Icon(Icons.check,
+                    //           color: Theme.of(context).colorScheme.onSecondary),
+                    //       onPressed: () {
+                    //         _onSelectGroupFalse();
+                    //       },
+                    //       label: Text(
+                    //         'okay'.tr(),
+                    //         style: Theme.of(context).textTheme.button,
+                    //       ),
+                    //       color: Theme.of(context).colorScheme.secondary,
+                    //     )
+                    //   ],
+                    // ),
                     onDataTrue: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
-                          (r) => false);
+                      _onSelectGroupTrue();
                     },
                   ));
             }
@@ -257,41 +258,76 @@ class _LoginRouteState extends State<LoginRoute> {
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
       http.Response response =
-          await httpGet(uri: '/groups', context: context);
+      await httpGet(uri: '/groups', context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {
         groups.add(Group(
-            groupName: group['group_name'], groupId: group['group_id']));
+            groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
       }
       if (groups.length > 0) {
+        usersGroups=groups.map<String>((group) => group.groupName).toList();
+        usersGroupIds=groups.map<int>((group) => group.groupId).toList();
         if (groups
-                .where((group) => group.groupId == lastActiveGroup)
-                .toList()
-                .length !=0) {
-          currentGroupName = groups
-              .firstWhere((group) => group.groupId == lastActiveGroup)
-              .groupName;
-          currentGroupId = lastActiveGroup;
+            .where((group) => group.groupId == lastActiveGroup)
+            .toList()
+            .length !=0) {
+          Group currentGroup=groups.firstWhere((group) => group.groupId == lastActiveGroup);
+          saveGroupName(currentGroup.groupName);
+          saveGroupId(lastActiveGroup);
+          saveGroupCurrency(currentGroup.groupCurrency);
           SharedPreferences.getInstance().then((_prefs) {
-            _prefs.setString('current_group_name', currentGroupName);
-            _prefs.setInt('current_group_id', currentGroupId);
+            _prefs.setStringList('users_groups', usersGroups);
+            _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
           });
+          Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
           return true;
         }
-        currentGroupName = groups[0].groupName;
-        currentGroupId = groups[0].groupId;
+        saveGroupName(groups[0].groupName);
+        saveGroupId(groups[0].groupId);
+        saveGroupCurrency(groups[0].groupCurrency);
         SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_group_name', currentGroupName);
-          _prefs.setInt('current_group_id', currentGroupId);
+          _prefs.setStringList('users_groups', usersGroups);
+          _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
         });
+        Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
         return true;
       }
-      return false;
+      Future.delayed(delayTime()).then((value) => _onSelectGroupFalse());
+      return true;
 
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onSelectGroupTrue(){
+    if(widget.inviteURL==null){
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+              (r) => false
+      );
+    }else{
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => JoinGroup(inviteURL: widget.inviteURL,)),
+              (r) => false
+      );
+    }
+  }
+
+  void _onSelectGroupFalse(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => JoinGroup(
+              fromAuth: true,
+              inviteURL: widget.inviteURL,
+            )
+        ),
+            (r) => false
+    );
   }
 
   Future<bool> _login(String username, String password) async {
@@ -301,21 +337,23 @@ class _LoginRouteState extends State<LoginRoute> {
         "Content-Type": "application/json"
       };
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post(APPURL + '/login',
+      http.Response response = await http.post((useTest?TEST_URL:APP_URL) + '/login',
           headers: header, body: bodyEncoded);
       if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
         apiToken = decoded['data']['api_token'];
         currentUserId = decoded['data']['id'];
         currentUsername = decoded['data']['username'];
-
+        showAds=decoded['data']['ad_free']==0;
+        useGradients=decoded['data']['gradients_enabled']==1;
+        trialVersion=decoded['data']['trial']==1;
 
         SharedPreferences.getInstance().then((_prefs) {
           _prefs.setString('current_username', currentUsername);
           _prefs.setInt('current_user_id', currentUserId);
           _prefs.setString('api_token', apiToken);
         });
-
+        await clearAllCache();
         return await _selectGroup(decoded['data']['last_active_group']);
       } else {
         Map<String, dynamic> error = jsonDecode(response.body);

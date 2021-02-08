@@ -7,8 +7,8 @@ class TutorialDialog extends StatefulWidget {
 }
 
 class _TutorialDialogState extends State<TutorialDialog> {
-  List<String> title = ['hi', '', '', '', ''];
-  List<String> content = ['welcome', 'tutorial_1', 'tutorial_2', 'tutorial_3', 'tutorial_4'];
+  List<String> title = ['hi', '', '', ''];
+  List<String> content = ['welcome', 'tutorial_2', 'tutorial_3', 'tutorial_4'];
   int index=0;
   @override
   Widget build(BuildContext context) {
@@ -16,17 +16,19 @@ class _TutorialDialogState extends State<TutorialDialog> {
       builder: (context, setState){
         return AlertDialog(
           backgroundColor: Theme.of(context).cardTheme.color,
-          title: Center(child: Text(title[index].tr()+((index==0)?'!':''))),
+          title: Center(child: Text(title[index].tr()+((index==0)?'! 😎':''), textAlign: TextAlign.center,)),
           content: Container(
             width: double.minPositive,
             child: ListView(
               shrinkWrap: true,
               children: [
                 Visibility(visible: index!=0,child: Image.asset('assets/tutorial/lendertut'+index.toString()+'.gif')),
+                SizedBox(height: 10,),
                 Text(content[index].tr(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1,
+                  textAlign: TextAlign.center
                 ),
               ],
 
@@ -46,7 +48,7 @@ class _TutorialDialogState extends State<TutorialDialog> {
               ),
             ),
             Visibility(
-              visible: index!=4,
+              visible: index!=3,
               child: FlatButton(
                 onPressed: () {
                   setState(() {
@@ -58,7 +60,7 @@ class _TutorialDialogState extends State<TutorialDialog> {
               ),
             ),
             Visibility(
-              visible: index==4,
+              visible: index==3,
               child: FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
