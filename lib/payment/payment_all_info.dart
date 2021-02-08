@@ -47,8 +47,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
     } else {
       note = widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
     }
-    return Card(
-        child: Padding(
+    return Padding(
       padding: const EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +206,6 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           )
         ],
       ),
-    ));
+    );
   }
 }

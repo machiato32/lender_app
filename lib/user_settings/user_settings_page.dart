@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/user_settings/delete_all_data.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,9 @@ class _SettingsState extends State<Settings> {
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(), PersonalisedAds(), AboutUs(), DeleteAllData()],
+                children: <Widget>[ColorPicker(), LanguagePicker(), ChangePassword(), ChangeUsername(), ResetTutorial(),
+                  Visibility(visible: showAds, child: PersonalisedAds()),
+                  AboutUs(), DeleteAllData()],
               ),
             ),
             adUnitForSite('settings'),

@@ -348,6 +348,7 @@ Future<T> showModalBottomSheetCustom<T>({
   assert(context != null);
   assert(builder != null);
   assert(debugCheckHasMaterialLocalizations(context));
+  backgroundColor=Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white;
   return Navigator.push(
       context,
       _ModalBottomSheetRoute<T>(

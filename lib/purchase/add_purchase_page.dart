@@ -283,6 +283,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                 icon: Icon(Icons.calculate, color: Theme.of(context).colorScheme.primary,),
                                                 onPressed: (){
                                                   showModalBottomSheetCustom(
+                                                    // backgroundColor: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
                                                     context: context,
                                                     builder: (context) {
                                                       return SingleChildScrollView(

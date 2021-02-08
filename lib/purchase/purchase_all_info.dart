@@ -46,166 +46,164 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
     } else {
       note = widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
     }
-    return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-            child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(Icons.note, color: Theme.of(context).colorScheme.primary),
+                Text(' - '),
+                Flexible(
+                    child: Text(
+                  note,
+                  style: Theme.of(context).textTheme.bodyText1,
+                )),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: <Widget>[
+                Icon(Icons.account_circle,
+                    color: Theme.of(context).colorScheme.primary),
+                Text(' - '),
+                Flexible(
+                    child: Text(
+                  widget.data.buyerNickname,
+                  style: Theme.of(context).textTheme.bodyText1,
+                )),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
+                Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
+                Text(' - '),
+                Flexible(
+                    child: Text(
+                  widget.data.receivers.join(', '),
+                  style: Theme.of(context).textTheme.bodyText1,
+                )),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: <Widget>[
+                Icon(Icons.attach_money,
+                    color: Theme.of(context).colorScheme.primary),
+                Text(' - '),
+                Flexible(
+                    child: Text(widget.data.totalAmount.printMoney(currentGroupCurrency),
+                        style: Theme.of(context).textTheme.bodyText1)),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: <Widget>[
+                Icon(
+                  Icons.date_range,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                Text(' - '),
+                Flexible(
+                    child: Text(
+                        DateFormat('yyyy/MM/dd - HH:mm')
+                            .format(widget.data.updatedAt),
+                        style: Theme.of(context).textTheme.bodyText1)),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: Visibility(
+                visible: widget.data.buyerId == idToUse,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.note, color: Theme.of(context).colorScheme.primary),
-                    Text(' - '),
-                    Flexible(
-                        child: Text(
-                      note,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.account_circle,
-                        color: Theme.of(context).colorScheme.primary),
-                    Text(' - '),
-                    Flexible(
-                        child: Text(
-                      widget.data.buyerNickname,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
-                    Text(' - '),
-                    Flexible(
-                        child: Text(
-                      widget.data.receivers.join(', '),
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.attach_money,
-                        color: Theme.of(context).colorScheme.primary),
-                    Text(' - '),
-                    Flexible(
-                        child: Text(widget.data.totalAmount.printMoney(currentGroupCurrency),
-                            style: Theme.of(context).textTheme.bodyText1)),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.date_range,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    Text(' - '),
-                    Flexible(
-                        child: Text(
-                            DateFormat('yyyy/MM/dd - HH:mm')
-                                .format(widget.data.updatedAt),
-                            style: Theme.of(context).textTheme.bodyText1)),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Visibility(
-                    visible: widget.data.buyerId == idToUse,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.center,
-                           children: [
-                             GradientButton(
-                               onPressed: (){
-                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                      AddPurchaseRoute(
-                                        type: PurchaseType.fromModifyExpense,
-                                        expense: SavedPurchase(
-                                         buyerNickname: widget.data.buyerNickname,
-                                         buyerId: widget.data.buyerId,
-                                         buyerUsername: widget.data.buyerUsername,
-                                         receivers: widget.data.receivers,
-                                         totalAmount: widget.data.totalAmount,
-                                         name: widget.data.name,
-                                         purchaseId: widget.data.purchaseId
-                                        ),
-                                      )
-                                    )
-                                  ).then((value) => Navigator.pop(context, 'deleted'));
-                               },
-                               child: Row(
-                                 children: [
-                                   Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-                                   SizedBox(width: 3,),
-                                   Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
-                                 ],
-                               ),
-                             ),
-                           ],
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         GradientButton(
+                           onPressed: (){
+                             Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                  AddPurchaseRoute(
+                                    type: PurchaseType.fromModifyExpense,
+                                    expense: SavedPurchase(
+                                     buyerNickname: widget.data.buyerNickname,
+                                     buyerId: widget.data.buyerId,
+                                     buyerUsername: widget.data.buyerUsername,
+                                     receivers: widget.data.receivers,
+                                     totalAmount: widget.data.totalAmount,
+                                     name: widget.data.name,
+                                     purchaseId: widget.data.purchaseId
+                                    ),
+                                  )
+                                )
+                              ).then((value) => Navigator.pop(context, 'deleted'));
+                           },
+                           child: Row(
+                             children: [
+                               Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
+                               SizedBox(width: 3,),
+                               Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
+                             ],
+                           ),
                          ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                                onPressed: () {
+                       ],
+                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  child: ConfirmChoiceDialog(
+                                    choice: 'want_delete',
+                                  )
+                              ).then((value){
+                                if(value!=null && value){
                                   showDialog(
-                                      context: context,
-                                      child: ConfirmChoiceDialog(
-                                        choice: 'want_delete',
-                                      )
-                                  ).then((value){
-                                    if(value!=null && value){
-                                      showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        child: FutureSuccessDialog(
-                                          future: _deleteElement(widget.data.purchaseId),
-                                          dataTrueText: 'delete_scf',
-                                          onDataTrue: () {
-                                            _onDeleteElement();
-                                          },
-                                        )
-                                      );
-                                    }
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.delete, color: Theme.of(context).colorScheme.onSecondary),
-                                    SizedBox(width: 3,),
-                                    Text('revoke'.tr(), style: Theme.of(context).textTheme.button,),
-                                  ],
-                                ),
+                                    barrierDismissible: false,
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _deleteElement(widget.data.purchaseId),
+                                      dataTrueText: 'delete_scf',
+                                      onDataTrue: () {
+                                        _onDeleteElement();
+                                      },
+                                    )
+                                  );
+                                }
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Theme.of(context).colorScheme.onSecondary),
+                                SizedBox(width: 3,),
+                                Text('revoke'.tr(), style: Theme.of(context).textTheme.button,),
+                              ],
                             ),
-                          ],
                         ),
                       ],
                     ),
-                  ),
-                )
-              ],
-            ),
-        )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
     );
   }
 }
