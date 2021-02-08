@@ -69,7 +69,7 @@ class _JoinGroupState extends State<JoinGroup> {
   }
 
   void _onJoinGroup() async {
-    await clearCache();
+    await clearAllCache();
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -391,12 +391,5 @@ class _JoinGroupState extends State<JoinGroup> {
         ),
       ),
     );
-  }
-  Future clearCache() async {
-    await deleteCache(uri: '/groups/' + currentGroupId.toString());
-    await deleteCache(uri: '/groups');
-    await deleteCache(uri: '/user');
-    await deleteCache(uri: '/payments?group=' + currentGroupId.toString());
-    await deleteCache(uri: '/transactions?group=' + currentGroupId.toString());
   }
 }

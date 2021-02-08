@@ -20,15 +20,15 @@ class AllHistoryRoute extends StatefulWidget {
 
 class _AllHistoryRouteState extends State<AllHistoryRoute>
     with TickerProviderStateMixin {
-  Future<List<PurchaseData>> _transactions;
+  Future<List<PurchaseData>> _purchases;
   Future<List<PaymentData>> _payments;
 
-  ScrollController _transactionScrollController = ScrollController();
+  ScrollController _purchaseScrollController = ScrollController();
   ScrollController _paymentScrollController = ScrollController();
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<PurchaseData>> _getTransactions({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getPurchases({bool overwriteCache=false}) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
@@ -38,11 +38,11 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         useGuest: useGuest
       );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<PurchaseData> transactionData = [];
+      List<PurchaseData> purchaseData = [];
       for (var data in decoded) {
-        transactionData.add(PurchaseData.fromJson(data));
+        purchaseData.add(PurchaseData.fromJson(data));
       }
-      return transactionData;
+      return purchaseData;
 
     } catch (_) {
       throw _;
@@ -76,8 +76,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       setState(() {
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
-        _transactions = null;
-        _transactions = _getTransactions(overwriteCache: true);
+        _purchases = null;
+        _purchases = _getPurchases(overwriteCache: true);
       });
     }else{
       setState(() {
@@ -86,8 +86,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           _payments = _getPayments(overwriteCache: true);
         }
         if(purchase){
-          _transactions = null;
-          _transactions = _getTransactions(overwriteCache: true);
+          _purchases = null;
+          _purchases = _getPurchases(overwriteCache: true);
         }
       });
 
@@ -100,8 +100,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     _tabController = TabController(length: 2, vsync: this, initialIndex: widget.startingIndex);
     _selectedIndex = widget.startingIndex;
 
-    _transactions = null;
-    _transactions = _getTransactions();
+    _purchases = null;
+    _purchases = _getPurchases();
 
     _payments = null;
     _payments = _getPayments();
@@ -147,16 +147,16 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   FutureBuilder(
-                    future: _transactions,
+                    future: _purchases,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
                           return ListView(
-                              controller: _transactionScrollController,
-                              key: PageStorageKey('transactionList'),
+                              controller: _purchaseScrollController,
+                              key: PageStorageKey('purchaseList'),
                               padding: EdgeInsets.all(10),
                               shrinkWrap: true,
-                              children: _generateTransactions(snapshot.data));
+                              children: _generatePurchase(snapshot.data));
                         } else {
                           return InkWell(
                               child: Padding(
@@ -165,8 +165,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                               ),
                               onTap: () {
                                 setState(() {
-                                  _transactions = null;
-                                  _transactions = _getTransactions();
+                                  _purchases = null;
+                                  _purchases = _getPurchases();
                                 });
                               });
                         }
@@ -222,8 +222,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         child: FloatingActionButton(
           onPressed: () {
             if (_selectedIndex == 0 &&
-                _transactionScrollController.hasClients) {
-              _transactionScrollController.animateTo(
+                _purchaseScrollController.hasClients) {
+              _purchaseScrollController.animateTo(
                 0.0,
                 curve: Curves.easeOut,
                 duration: const Duration(milliseconds: 300),
@@ -282,7 +282,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }).toList());
   }
 
-  List<Widget> _generateTransactions(List<PurchaseData> data) {
+  List<Widget> _generatePurchase(List<PurchaseData> data) {
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);

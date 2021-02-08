@@ -23,10 +23,10 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
-  Future<List<PurchaseData>> _transactions;
+  Future<List<PurchaseData>> _purchases;
   TabController _tabController;
 
-  Future<List<PurchaseData>> _getTransactions({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getPurchases({bool overwriteCache=false}) async {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
@@ -37,11 +37,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
       );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<PurchaseData> transactionData = [];
+      List<PurchaseData> purchaseData = [];
       for (var data in decoded) {
-        transactionData.add(PurchaseData.fromJson(data));
+        purchaseData.add(PurchaseData.fromJson(data));
       }
-      return transactionData;
+      return purchaseData;
 
     } catch (_) {
       throw _;
@@ -73,8 +73,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
       widget.callback();
       _payments = null;
       _payments = _getPayments(overwriteCache: true);
-      _transactions = null;
-      _transactions = _getTransactions(overwriteCache: true);
+      _purchases = null;
+      _purchases = _getPurchases(overwriteCache: true);
     }else{
       setState(() {
         if(payment){
@@ -82,8 +82,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           _payments = _getPayments(overwriteCache: true);
         }
         if(purchase){
-          _transactions = null;
-          _transactions = _getTransactions(overwriteCache: true);
+          _purchases = null;
+          _purchases = _getPurchases(overwriteCache: true);
         }
       });
 
@@ -97,8 +97,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _payments = null;
     _payments = _getPayments();
-    _transactions = null;
-    _transactions = _getTransactions();
+    _purchases = null;
+    _purchases = _getPurchases();
     super.initState();
   }
 
@@ -106,8 +106,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   void didUpdateWidget(History oldWidget) {
     _payments = null;
     _payments = _getPayments();
-    _transactions = null;
-    _transactions = _getTransactions();
+    _purchases = null;
+    _purchases = _getPurchases();
     super.didUpdateWidget(oldWidget);
   }
 
@@ -155,7 +155,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                 controller: _tabController,
                 children: <Widget>[
                   FutureBuilder(
-                    future: _transactions,
+                    future: _purchases,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
@@ -173,7 +173,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               Container(
                                 height: 490,
                                 child: Column(
-                                  children: _generateTransactions(snapshot.data),
+                                  children: _generatePurchases(snapshot.data),
                                 ),
                               ),
                               Visibility(
@@ -219,8 +219,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                             locationOfError: 'purchase_history',
                             callback: (){
                               setState(() {
-                                _transactions = null;
-                                _transactions = _getTransactions();
+                                _purchases = null;
+                                _purchases = _getPurchases();
                               });
                             },
                           );
@@ -324,7 +324,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }).toList();
   }
 
-  List<Widget> _generateTransactions(List<PurchaseData> data) {
+  List<Widget> _generatePurchases(List<PurchaseData> data) {
     if (data.length > 5) {
       data = data.take(5).toList();
     }
