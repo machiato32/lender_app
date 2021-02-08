@@ -82,6 +82,7 @@
     "per_person": " {}/fő",
     "no_amount": "Nem adtál meg összeget!",
     "amount_not_negative": "A végösszeg nem lehet negatív!",
+    "purchase_scf": "A bevásárlást sikeresen könyveltük!",
     "invitation_to_lender": "Meghívó Lender csoportba",
 
     "field_empty": "A mező nem lehet üres!",

@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 
 import 'package:csocsort_szamla/payment/add_payment_page.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
+import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 
 import '../essentials/app_theme.dart';
 

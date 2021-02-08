@@ -2,7 +2,7 @@ import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
+import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;

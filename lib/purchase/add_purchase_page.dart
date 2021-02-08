@@ -554,7 +554,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                       children: [
                         Flexible(
                             child: Text(
-                          "transaction_scf".tr(),
+                          'purchase_scf'.tr(),
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1

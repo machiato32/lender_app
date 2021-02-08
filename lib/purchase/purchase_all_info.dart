@@ -1,11 +1,11 @@
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/transaction/add_transaction_page.dart';
+import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/transaction/transaction_entry.dart';
+import 'package:csocsort_szamla/purchase/purchase_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';

@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'package:csocsort_szamla/transaction/transaction_entry.dart';
+import 'package:csocsort_szamla/purchase/purchase_entry.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 
 import '../essentials/widgets/error_message.dart';

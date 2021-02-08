@@ -82,6 +82,7 @@
     "per_person": " {}/person",
     "no_amount": "No amount given!",
     "amount_not_negative": "The amount cannot be negative!",
+    "purchase_scf": "The purchase was saved successfully!",
     "invitation_to_lender": "Invitation to a Lender group",
 
     "field_empty": "The field cannot be empty!",

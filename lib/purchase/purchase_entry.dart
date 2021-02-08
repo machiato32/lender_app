@@ -5,7 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/transaction/transaction_all_info.dart';
+import 'package:csocsort_szamla/purchase/purchase_all_info.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';

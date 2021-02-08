@@ -82,6 +82,7 @@
     "per_person": " {}/Person",
     "no_amount": "Du hast keine Summe angegeben!",
     "amount_not_negative": "Die Summe darf nicht negativ sein!",
+    "purchase_scf": "Der Einkauf wurde erfolgreich gebucht!",
     "invitation_to_lender": "Einladung zu einer Lender Gruppe",
 
     "field_empty": "Dieses Feld darf nicht leer sein!",
