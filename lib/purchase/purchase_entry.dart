@@ -75,9 +75,28 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
   String amount;
   String selfAmount = '';
 
-  @override
-  void initState() {
-    super.initState();
+  void callbackForReaction(String reaction){//TODO: currentNickname
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    Reaction oldReaction=widget.data.reactions.firstWhere((element) => element.userId==idToUse, orElse: () => null);
+    bool alreadyReacted = oldReaction!=null;
+    bool sameReaction = alreadyReacted?oldReaction.reaction==reaction:false;
+    if(sameReaction){
+      widget.data.reactions.remove(oldReaction);
+      setState(() {
+
+      });
+    }else if(!alreadyReacted){
+      widget.data.reactions.add(Reaction(nickname: idToUse==currentUserId?currentUsername:guestNickname, reaction: reaction, userId: idToUse));
+      setState(() {
+
+      });
+    }else{
+      widget.data.reactions.add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
+      widget.data.reactions.remove(oldReaction);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -153,7 +172,12 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
             type: MaterialType.transparency,
             child: InkWell(
               onLongPress: (){
-                showDialog(context: context, child: AddReactionDialog(type: 'purchases', reactions: widget.data.reactions, reactToId: widget.data.purchaseId, callback: widget.callback,));
+                showDialog(context: context, child: AddReactionDialog(
+                  type: 'purchases',
+                  reactions: widget.data.reactions,
+                  reactToId: widget.data.purchaseId,
+                  callback: this.callbackForReaction,)
+                );
               },
               onTap: () async {
                 showModalBottomSheetCustom(
@@ -240,7 +264,13 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
             ),
           ),
         ),
-        PastReactionContainer(reactions: widget.data.reactions, reactedToId: widget.data.purchaseId, isSecondaryColor:bought, type: 'purchases', callback: widget.callback,),
+        PastReactionContainer(
+          reactions: widget.data.reactions,
+          reactedToId: widget.data.purchaseId,
+          isSecondaryColor:bought,
+          type: 'purchases',
+          callback: this.callbackForReaction,
+        ),
       ]
     );
   }

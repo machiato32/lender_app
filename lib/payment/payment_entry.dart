@@ -73,6 +73,30 @@ class _PaymentEntryState extends State<PaymentEntry> {
   String takerName;
   String amount;
 
+  void callbackForReaction(String reaction){//TODO: currentNickname
+    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    Reaction oldReaction=widget.data.reactions.firstWhere((element) => element.userId==idToUse, orElse: () => null);
+    bool alreadyReacted = oldReaction!=null;
+    bool sameReaction = alreadyReacted?oldReaction.reaction==reaction:false;
+    if(sameReaction){
+      widget.data.reactions.remove(oldReaction);
+      setState(() {
+
+      });
+    }else if(!alreadyReacted){
+      widget.data.reactions.add(Reaction(nickname: idToUse==currentUserId?currentUsername:guestNickname, reaction: reaction, userId: idToUse));
+      setState(() {
+
+      });
+    }else{
+      widget.data.reactions.add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
+      widget.data.reactions.remove(oldReaction);
+      setState(() {
+
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     date = DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt);
@@ -118,7 +142,13 @@ class _PaymentEntryState extends State<PaymentEntry> {
             type: MaterialType.transparency,
             child: InkWell(
               onLongPress: (){
-                showDialog(context: context, child: AddReactionDialog(type: 'payments', reactions: widget.data.reactions, reactToId: widget.data.paymentId, callback: widget.callback,));
+                showDialog(context: context, child: AddReactionDialog(
+                    type: 'payments',
+                    reactions: widget.data.reactions,
+                    reactToId: widget.data.paymentId,
+                    callback: this.callbackForReaction,
+                  )
+                );
               },
               onTap: () async {
                 showModalBottomSheetCustom(
@@ -190,7 +220,13 @@ class _PaymentEntryState extends State<PaymentEntry> {
             ),
           ),
         ),
-        PastReactionContainer(reactedToId: widget.data.paymentId, reactions: widget.data.reactions, callback: widget.callback, isSecondaryColor: widget.data.payerId==idToUse, type:'payments')
+        PastReactionContainer(
+          reactedToId: widget.data.paymentId,
+          reactions: widget.data.reactions,
+          callback: this.callbackForReaction,
+          isSecondaryColor: widget.data.payerId==idToUse,
+          type:'payments'
+        )
       ],
     );
   }

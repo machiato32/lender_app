@@ -170,43 +170,46 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                children: _generateTransactions(snapshot.data),
+                              Container(
+                                height: 490,
+                                child: Column(
+                                  children: _generateTransactions(snapshot.data),
+                                ),
                               ),
                               Visibility(
-                                visible: (snapshot.data as List).length > 5,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GradientButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AllHistoryRoute(startingIndex: _tabController.index)
-                                            )
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                          Icons.more_horiz,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .button
-                                              .color,
-                                          ),
-                                          SizedBox(width: 4,),
-                                          Text(
-                                          'more'.tr(),
-                                          style: Theme.of(context).textTheme.button,
-                                          ),
-                                        ],
+                                  visible: (snapshot.data as List).length > 5,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GradientButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllHistoryRoute(startingIndex: _tabController.index)
+                                              )
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.more_horiz,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .button
+                                                  .color,
+                                            ),
+                                            SizedBox(width: 4,),
+                                            Text(
+                                              'more'.tr(),
+                                              style: Theme.of(context).textTheme.button,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )
+                                    ],
+                                  )
                               )
                             ],
                           );
@@ -242,8 +245,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                  children: _generatePayments(snapshot.data)),
+                              Container(
+                                height: 490,
+                                child: Column(
+                                    children: _generatePayments(snapshot.data)
+                                ),
+                              ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
                                 child: Row(

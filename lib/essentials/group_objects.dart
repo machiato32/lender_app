@@ -37,15 +37,13 @@ class Group{
 
 class Reaction{
   String reaction;
-  int reactionId;
   String nickname;
   int userId;
   static List<String> possibleReactions = ['👍', '❤', '😲', '😥', '❗', '❓'];
-  Reaction({this.reaction, this.reactionId, this.nickname, this.userId});
+  Reaction({this.reaction, this.nickname, this.userId});
   factory Reaction.fromJson(Map<String, dynamic> reaction){
     return Reaction(
       reaction: reaction['reaction'],
-      reactionId: reaction['id'],
       nickname: reaction['user_nickname'],
       userId: reaction['user_id']
     );

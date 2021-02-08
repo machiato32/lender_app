@@ -5,13 +5,12 @@ import '../../config.dart';
 import '../app_theme.dart';
 import '../group_objects.dart';
 import '../http_handler.dart';
-import 'future_success_dialog.dart';
 
 class AddReactionDialog extends StatefulWidget {
   final String type;
   final List<Reaction> reactions;
   final int reactToId;
-  final Function callback;
+  final Function(String reaction) callback;
   AddReactionDialog({this.type, this.reactions, this.reactToId, this.callback});
   @override
   _AddReactionDialogState createState() => _AddReactionDialogState();
@@ -20,30 +19,19 @@ class AddReactionDialog extends StatefulWidget {
 class _AddReactionDialogState extends State<AddReactionDialog> {
 
 
-  void _onSendReaction(){
+  void _onSendReaction(String reaction){
     Navigator.pop(context);
-    Navigator.pop(context);
-    switch(widget.type){
-      case 'purchases':
-        widget.callback(purchase: true, reaction:true);
-        break;
-      case 'payments':
-        widget.callback(payment: true, reaction:true);
-        break;
-      case 'requests':
-        widget.callback();
-        break;
-    }
+    widget.callback(reaction);
   }
   Future<bool> _sendReaction (String reaction) async {
     try{
-      print(widget.type.substring(0, widget.type.length-1));
       Map<String, dynamic> body = {
         widget.type.substring(0, widget.type.length-1)+"_id":widget.reactToId,
         "reaction":reaction
       };
-      await httpPost(context: context, uri: '/'+widget.type+'/reaction', body: body);
-      Future.delayed(delayTime()).then((value) => _onSendReaction());
+      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      await httpPost(context: context, uri: '/'+widget.type+'/reaction', body: body, useGuest: useGuest);
+      // Future.delayed(delayTime()).then((value) => _onSendReaction(reaction));
       return true;
     }catch(_){
       throw _;
@@ -67,7 +55,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(e.nickname, style: style,),
+            Flexible(child: Text(e.nickname, style: style, overflow: TextOverflow.ellipsis,)),
             Text(e.reaction)
           ],
         ),
@@ -110,17 +98,19 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(50),
                               onTap: (){
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    child: FutureSuccessDialog(
-                                      future: _sendReaction(e),
-                                      dataTrueText: 'reaction_scf',
-                                      onDataTrue: (){
-                                        _onSendReaction();
-                                      },
-                                    )
-                                );
+                                _sendReaction(e);
+                                _onSendReaction(e);
+                                // showDialog(
+                                //     context: context,
+                                //     barrierDismissible: false,
+                                //     child: FutureSuccessDialog(
+                                //       future: _sendReaction(e),
+                                //       dataTrueText: 'reaction_scf',
+                                //       onDataTrue: (){
+                                //         _onSendReaction(e);
+                                //       },
+                                //     )
+                                // );
                               },
                               child: Ink(
                                   padding: EdgeInsets.all(3),
