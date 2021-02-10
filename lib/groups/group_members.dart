@@ -188,7 +188,7 @@ class _MemberEntryState extends State<MemberEntry> {
       boxDecoration = BoxDecoration(
         gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
-        boxShadow: ( Theme.of(context).brightness==Brightness.light)
+        boxShadow: (Theme.of(context).brightness==Brightness.light)
             ?[ BoxShadow(
               color: Colors.grey[500],
               offset: Offset(0.0, 1.5),
@@ -200,15 +200,7 @@ class _MemberEntryState extends State<MemberEntry> {
       iconColor = Theme.of(context).textTheme.bodyText1.color;
       style = Theme.of(context).textTheme.bodyText1;
       nicknameColor = Theme.of(context).colorScheme.surface;
-      boxDecoration = BoxDecoration(
-        boxShadow: ( Theme.of(context).brightness==Brightness.light)
-            ?[ BoxShadow(
-              color: Colors.grey[500],
-              offset: Offset(0.0, 1.5),
-              blurRadius: 1.5,
-            )]
-            : [],
-      );
+      boxDecoration = BoxDecoration();
     }
     return Container(
       height: 65,
