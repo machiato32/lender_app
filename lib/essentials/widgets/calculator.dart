@@ -9,7 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 class Calculator extends StatefulWidget {
   final Function callback;
-  Calculator({this.callback});
+  final String initial;
+  Calculator({this.callback, this.initial});
   @override
   _CalculatorState createState() => _CalculatorState();
 }
@@ -21,12 +22,21 @@ class _CalculatorState extends State<Calculator> {
   bool _isStillNum=false;
   String _storeNum='';
   String _lastOperator='asd';
+  @override
+  void initState() {
+    super.initState();
+    if(widget.initial!=null){
+      _isStillNum=true;
+      _numToWrite=widget.initial;
+      _storeNum=widget.initial;
+    }
+  }
   void parse(String input){
     if(input=='.'){
       if(_isStillNum && !_storeNum.contains('.')){
         _storeNum+=input;
         setState(() {
-          // _lastOperator='asd';
+          _lastOperator='asd';
           _numToWrite=_storeNum;
         });
       }
@@ -36,7 +46,7 @@ class _CalculatorState extends State<Calculator> {
       }
       _isStillNum=true;
       setState(() {
-        // _lastOperator='asd';
+        _lastOperator='asd';
         _numToWrite=_storeNum;
       });
     }else{
@@ -216,11 +226,15 @@ class _CalculatorState extends State<Calculator> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
-                child: Icon(Icons.copy, color: Theme.of(context).colorScheme.onSecondary,),
+                child: _operators.length!=0 && _isStillNum?Text('=', style: Theme.of(context).textTheme.button,):Icon(Icons.copy, color: Theme.of(context).colorScheme.onSecondary,),
                 onPressed: (){
-                  Navigator.pop(context);
-                  if(double.tryParse(_numToWrite)!=null){
-                    widget.callback(_numToWrite);
+                  if(_operators.length!=0 && _isStillNum){
+                    equals();
+                  }else{
+                    Navigator.pop(context);
+                    if(double.tryParse(_numToWrite)!=null){
+                      widget.callback(_numToWrite);
+                    }
                   }
                 },
               ),
@@ -258,7 +272,6 @@ class _CalculatorState extends State<Calculator> {
         borderRadius: BorderRadius.circular(15),
         onTap: e!=''?(){
           if(e=='C'){
-            print('asd');
             clearAll();
             return;
           }
@@ -283,7 +296,7 @@ class _CalculatorState extends State<Calculator> {
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: _lastOperator==e?Colors.grey[200]:Colors.transparent,
+            color: _lastOperator==e?Theme.of(context).brightness==Brightness.light?Colors.grey[200]:Colors.grey[700]:Colors.transparent,
           ),
           child: Padding(
             padding: EdgeInsets.all(20),

@@ -163,7 +163,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     (lineBarSpot.barIndex==0?date+'\n':'')+
                     (lineBarSpot.barIndex==0?keywords[0].tr()+' ':keywords[1].tr()+' ')+
                         lineBarSpot.y.printMoney(currentGroupCurrency),
-                    Theme.of(context).textTheme.subtitle2,
+                    Theme.of(context).textTheme.subtitle2.copyWith(height: lineBarSpot.barIndex==0?1.5:1),
                   );
                 }).toList();
               },

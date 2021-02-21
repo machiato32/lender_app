@@ -50,7 +50,7 @@ class AddPurchaseRoute extends StatefulWidget {
 }
 
 class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
-  TextEditingController amountController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   Future<List<Member>> _members;
   Future<bool> success;
@@ -124,7 +124,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   void setInitialValues() {
     if (widget.type == PurchaseType.fromModifyExpense) {
       noteController.text = widget.expense.name;
-      amountController.text = widget.expense.totalAmount.toString();
+      _amountController.text = widget.expense.totalAmount.toString();
     } else {
       noteController.text = widget.shoppingData.name;
     }
@@ -259,7 +259,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                   width: 2),
                                             ),
                                           ),
-                                          controller: amountController,
+                                          controller: _amountController,
                                           style: TextStyle(
                                               fontSize: 20,
                                               color: Theme.of(context)
@@ -283,14 +283,14 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                 icon: Icon(Icons.calculate, color: Theme.of(context).colorScheme.primary,),
                                                 onPressed: (){
                                                   showModalBottomSheetCustom(
-                                                    // backgroundColor: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
                                                     context: context,
                                                     builder: (context) {
                                                       return SingleChildScrollView(
                                                           child: Calculator(
+                                                            initial: _amountController.text,
                                                             callback: (String fromCalc){
                                                               setState(() {
-                                                                amountController.text=fromCalc;
+                                                                _amountController.text=fromCalc;
                                                               });
                                                             },
                                                           )
@@ -432,14 +432,14 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                           borderRadius: BorderRadius.circular(30),
                                         ),
                                         child: Text(
-                                          amountController.text != '' &&
+                                          _amountController.text != '' &&
                                                   checkboxBool.values
                                                           .where((element) =>
                                                               element == true)
                                                           .toList()
                                                           .length >
                                                       0
-                                              ? ((double.tryParse(amountController
+                                              ? ((double.tryParse(_amountController
                                                                   .text) ??
                                                               0) /
                                                           checkboxBool.values
@@ -539,7 +539,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                     gravity: ToastGravity.BOTTOM);
                 return;
               }
-              double amount = double.parse(amountController.text);
+              double amount = double.parse(_amountController.text);
               String name = noteController.text;
               List<Member> members = new List<Member>();
               checkboxBool.forEach((Member key, bool value) {
@@ -597,7 +597,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  amountController.text = '';
+                                  _amountController.text = '';
                                   noteController.text = '';
                                   for (Member key in checkboxBool.keys) {
                                     checkboxBool[key] = false;

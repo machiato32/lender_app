@@ -12,18 +12,26 @@ class PastReactionContainer extends StatelessWidget {
   PastReactionContainer({this.reactions, this.reactedToId, this.callback, this.isSecondaryColor, this.type});
   @override
   Widget build(BuildContext context) {
-    Map<String, int> numberOfReaction ={
-      '👍':0, '❤':0, '😲':0, '😥':0, '❗':0, '❓':0
+    Map<String, int> numberOfReactions ={
+      '❗':0, '👍':0, '❤':0, '😲':0, '😥':0, '❓':0
     };
     for(Reaction reaction in reactions){
-      if(numberOfReaction.keys.contains(reaction.reaction))
-        numberOfReaction[reaction.reaction]++;
+      if(numberOfReactions.keys.contains(reaction.reaction))
+        numberOfReactions[reaction.reaction]++;
     }
-    var sortedKeys = numberOfReaction.keys.toList(growable:false)
-      ..sort((k1, k2) => numberOfReaction[k2].compareTo(numberOfReaction[k1]));
+    var sortedKeys = numberOfReactions.keys.toList(growable:false)
+      ..sort((k1, k2) {
+        if(k1=='❗' && numberOfReactions[k1]!=0){
+          return -1;
+        }
+        if(k2=='❗' && numberOfReactions[k2]!=0){
+          return 1;
+        }
+        return numberOfReactions[k2].compareTo(numberOfReactions[k1]);
+      });
     List<List<dynamic>> sortedReactions = [];
     for(String key in sortedKeys){
-      sortedReactions.add([key,numberOfReaction[key]]);
+      sortedReactions.add([key,numberOfReactions[key]]);
     }
     int sum = 0;
     for(var list in sortedReactions){
