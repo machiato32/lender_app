@@ -428,7 +428,14 @@ class _ShoppingListState extends State<ShoppingList> {
   }
 
   List<Widget> _generateShoppingList(List<ShoppingRequestData> data) {
-    data.sort((e1, e2) => e1.reactions.where((reaction) => reaction.reaction=='❗').length>=e2.reactions.where((element) => element.reaction=='❗').length?-1:1);
+    data.sort((e1, e2) {
+      int e2Length=e2.reactions.where((reaction) => reaction.reaction=='❗').length;
+      int e1Length=e1.reactions.where((reaction) => reaction.reaction=='❗').length;
+      if(e2Length>e1Length) return 1;
+      if(e2Length<e1Length) return -1;
+      if(e1.updatedAt.isAfter(e2.updatedAt)) return -1;
+      return 1;
+    });
     return data.map((element) {
       return ShoppingListEntry(
         data: element,
@@ -467,6 +474,11 @@ class ShoppingRequestData {
             .map<Reaction>((reaction) => Reaction.fromJson(reaction))
             .toList()
     );
+  }
+
+  @override
+  String toString() {
+    return name+'; '+updatedAt.toString()+'; '+reactions.join(', ');
   }
 }
 

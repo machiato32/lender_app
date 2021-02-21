@@ -93,9 +93,9 @@ class AppTheme {
           cardTheme: CardTheme(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(15),
             ),
-            elevation: 1,
+            margin: EdgeInsets.all(5),
           ),
           dialogTheme: DialogTheme(
             shape: RoundedRectangleBorder(
@@ -162,9 +162,9 @@ class AppTheme {
           cardTheme: CardTheme(
             color: Color.fromARGB(255, 25, 25, 25),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
-            elevation: 5,
+            margin: EdgeInsets.all(5),
           ),
           buttonTheme: ButtonThemeData(
               shape:
