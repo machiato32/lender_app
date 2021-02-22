@@ -148,48 +148,55 @@ class _InvitationState extends State<Invitation> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 7,),
-                          Divider(),
-                          SizedBox(height: 7,),
-                          Text('approve_members'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-                          SizedBox(height: 10,),
-                          Text('approve_members_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
-                          SizedBox(height: 5,),
-                          SwitchListTile(
-                            value: _needsApproval,
-                            // secondary: Icon(Icons.update, color: Theme.of(context).colorScheme.primary,),
-                            activeColor: Theme.of(context).colorScheme.primary,
-                            onChanged: (value){
-                              setState(() {
-                                _needsApproval=value;
-                              });
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  child: FutureSuccessDialog(
-                                    future: _updateNeedsApproval(),
-                                    onDataTrue: (){
-                                      _onUpdateNeedsApproval();
-                                    },
-                                    onDataFalse: (){
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        _needsApproval=!_needsApproval;
-                                      });
-                                    },
-                                    onNoData: (){
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        _needsApproval=!_needsApproval;
-                                      });
-                                    },
-                                  )
-                              );
-                            },
+                          Visibility(
+                            visible: widget.isAdmin,
+                            child: Column(
+                              children: [
+                                SizedBox(height: 7,),
+                                Divider(),
+                                SizedBox(height: 7,),
+                                Text('approve_members'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+                                SizedBox(height: 10,),
+                                Text('approve_members_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
+                                SizedBox(height: 5,),
+                                SwitchListTile(
+                                  value: _needsApproval,
+                                  activeColor: Theme.of(context).colorScheme.primary,
+                                  onChanged: (value){
+                                    setState(() {
+                                      _needsApproval=value;
+                                    });
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        child: FutureSuccessDialog(
+                                          future: _updateNeedsApproval(),
+                                          onDataTrue: (){
+                                            _onUpdateNeedsApproval();
+                                          },
+                                          onDataFalse: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              _needsApproval=!_needsApproval;
+                                            });
+                                          },
+                                          onNoData: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              _needsApproval=!_needsApproval;
+                                            });
+                                          },
+                                        )
+                                    );
+                                  },
 
-                            title: Text('needs_approval'.tr(), style: Theme.of(context).textTheme.subtitle2,),
-                            dense: true,
+                                  title: Text('needs_approval'.tr(), style: Theme.of(context).textTheme.subtitle2,),
+                                  dense: true,
+                                ),
+                              ],
+                            ),
                           ),
+
                         ],
                       );
                     } else {
@@ -210,38 +217,39 @@ class _InvitationState extends State<Invitation> {
                 },
               ),
 
-              FutureBuilder(
-                future: _unapproved,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return Visibility(
-                        visible: snapshot.data.length!=0,
-                        child: Column(
-                          children: [
-
-                            Column(
-                              children: _generateMembers(snapshot.data)
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return ErrorMessage(
-                        error: snapshot.error.toString(),
-                        locationOfError: 'approve_members',
-                        callback: (){
-                          setState(() {
-                            _unapproved = null;
-                            _unapproved = _getUnapprovedMembers();
-                          });
-                        },
-                      );
+              Visibility(
+                visible: widget.isAdmin,
+                child: FutureBuilder(
+                  future: _unapproved,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return Visibility(
+                          visible: snapshot.data.length!=0,
+                          child: Column(
+                            children: [
+                              Column(
+                                children: _generateMembers(snapshot.data)
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return ErrorMessage(
+                          error: snapshot.error.toString(),
+                          locationOfError: 'approve_members',
+                          callback: (){
+                            setState(() {
+                              _unapproved = null;
+                              _unapproved = _getUnapprovedMembers();
+                            });
+                          },
+                        );
+                      }
                     }
-                  }
-                  return Container();
-                },
+                    return Container();
+                  },
+                ),
               ),
             ],
           ),
