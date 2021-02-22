@@ -565,8 +565,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _selectedIndex!=1?Theme.of(context).scaffoldBackgroundColor:Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
+        elevation: _selectedIndex==1?0:4,
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(

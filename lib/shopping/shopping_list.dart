@@ -3,6 +3,7 @@ import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
+import 'package:csocsort_szamla/shopping/im_shopping_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -79,22 +80,7 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
-  Future<bool> _postImShopping(String store) async {
-    try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      Map<String, dynamic> body = {'store':store};
-      await httpPost(context: context, body: body, uri: '/groups/'+currentGroupId.toString()+'/send_shopping_notification', useGuest: useGuest);
-      Future.delayed(delayTime()).then((value) => _onPostImShopping());
-      return true;
-    } catch (_) {
-      throw _;
-    }
-  }
 
-  void _onPostImShopping(){
-    Navigator.pop(context);
-    Navigator.pop(context);
-  }
 
   Future<bool> _undoDeleteRequest(int id) async {
     try{
@@ -197,230 +183,185 @@ class _ShoppingListState extends State<ShoppingList> {
         },
         child: Form(
           key: _formKey,
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                  child: Column(
-                    children: <Widget>[
-                      Center(
-                          child: Text(
-                        'shopping_list'.tr(),
-                        style: Theme.of(context).textTheme.headline6,
-                      )),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Text(
-                          'shopping_list_explanation'.tr(),
-                          style: Theme.of(context).textTheme.subtitle2,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Flexible(
-                            child: TextFormField(
-                              validator: (value) {
-                                value=value.trim();
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                if (value.length < 2) {
-                                  return 'minimal_length'.tr(args: ['2']);
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'wish'.tr(),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Theme.of(context).colorScheme.onSurface),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      width: 2),
-                                ),
-                              ),
-                              controller: _addRequestController,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color:
-                                      Theme.of(context).textTheme.bodyText1.color),
-                              cursorColor: Theme.of(context).colorScheme.secondary,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(255)
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          GradientButton(
-                            // color: Theme.of(context).colorScheme.secondary,
-                            child: Icon(Icons.add,
-                                color: Theme.of(context).colorScheme.onSecondary),
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              if (_formKey.currentState.validate()) {
-                                String name = _addRequestController.text;
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    child: FutureSuccessDialog(
-                                      future: _postShoppingRequest(name),
-                                      dataTrueText: 'add_scf',
-                                      onDataTrue: () {
-                                        _onPostShoppingRequest();
-                                      },
-                                      onDataFalse: () {
-                                        Navigator.pop(context);
-                                        setState(() {});
-                                      },
-                                    ));
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientButton(
-                            onPressed: (){
-                              TextEditingController controller = TextEditingController();
-                              GlobalKey<FormState> formKey = GlobalKey<FormState>();
-                              showDialog(
-                                context: context,
-                                child:
-                                  Form(
-                                    key: formKey,
-                                    child: Dialog(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text('where'.tr()),
-                                            TextFormField(
-                                              validator: (value){
-                                                value=value.trim();
-                                                if (value.isEmpty) {
-                                                  return 'field_empty'.tr();
-                                                }
-                                                return null;
-                                              },
-                                              decoration: InputDecoration(
-                                                labelText: 'store'.tr(),
-                                                enabledBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color:
-                                                      Theme.of(context).colorScheme.onSurface),
-                                                ),
-                                                focusedBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context).colorScheme.primary,
-                                                      width: 2),
-                                                ),
-                                              ),
-                                              controller: controller,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color:
-                                                  Theme.of(context).textTheme.bodyText1.color),
-                                              cursorColor: Theme.of(context).colorScheme.secondary,
-                                              inputFormatters: [
-                                                LengthLimitingTextInputFormatter(20)
-                                              ],
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                GradientButton(
-                                                  onPressed: (){
-                                                    if(formKey.currentState.validate()){
-                                                      String store = controller.text;
-                                                      showDialog(
-                                                          context: context,
-                                                          barrierDismissible: false,
-                                                          child: FutureSuccessDialog(
-                                                            future: _postImShopping(store),
-                                                            dataTrueText: 'store_scf',
-                                                            onDataTrue: () {
-                                                              _onPostImShopping();
-                                                            },
-                                                          )
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-
-                                        ),
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: [
+                  SizedBox(
+                    height: 212,
+                  ),
+                  Expanded(
+                    child: FutureBuilder(
+                      future: _shoppingList,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            if(snapshot.data.length==0){
+                              return ListView(
+                                controller: _scrollController,
+                                padding: EdgeInsets.all(15),
+                                children: [
+                                  SizedBox(height: 15,),
+                                  Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                                ],
+                              );
+                            }
+                            return ListView(
+                                children: [
+                                  Container(
+                                    transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(15),
+                                      child: Column(
+                                        children: _generateShoppingList(snapshot.data),
                                       ),
-
-
                                     ),
                                   )
-                              );//TODO: dialog in own file
-                            },
-                            child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: FutureBuilder(
-                    future: _shoppingList,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          if(snapshot.data.length==0){
-                            return ListView(
-                              controller: _scrollController,
-                              key: PageStorageKey('shoppingList'),
-                              padding: EdgeInsets.all(15),
-                              children: [
-                                Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                              ],
+                                ]
+                            );
+                          } else {
+                            return ErrorMessage(
+                              error: snapshot.error.toString(),
+                              locationOfError: 'shopping_list',
+                              callback: (){
+                                setState(() {
+                                  _shoppingList = null;
+                                  _shoppingList = _getShoppingList();
+                                });
+                              },
                             );
                           }
-                          return ListView(
-                              padding: EdgeInsets.all(15),
-                              children: _generateShoppingList(snapshot.data));
-                        } else {
-                          return ErrorMessage(
-                            error: snapshot.error.toString(),
-                            locationOfError: 'shopping_list',
-                            callback: (){
-                              setState(() {
-                                _shoppingList = null;
-                                _shoppingList = _getShoppingList();
-                              });
-                            },
-                          );
                         }
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
+                        return Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                color: Colors.transparent,
+                child: Card(
+                  // color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
+                  margin: EdgeInsets.only(left: 0, right: 0),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Center(
+                            child: Text(
+                              'shopping_list'.tr(),
+                              style: Theme.of(context).textTheme.headline6,
+                            )),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: Text(
+                            'shopping_list_explanation'.tr(),
+                            style: Theme.of(context).textTheme.subtitle2,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Flexible(
+                              child: TextFormField(
+                                validator: (value) {
+                                  value=value.trim();
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
+                                  }
+                                  if (value.length < 2) {
+                                    return 'minimal_length'.tr(args: ['2']);
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'wish'.tr(),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
+                                        Theme.of(context).colorScheme.onSurface),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        width: 2),
+                                  ),
+                                ),
+                                controller: _addRequestController,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color:
+                                    Theme.of(context).textTheme.bodyText1.color),
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(255)
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            GradientButton(
+                              // color: Theme.of(context).colorScheme.secondary,
+                              child: Icon(Icons.add,
+                                  color: Theme.of(context).colorScheme.onSecondary),
+                              onPressed: () {
+                                FocusScope.of(context).unfocus();
+                                if (_formKey.currentState.validate()) {
+                                  String name = _addRequestController.text;
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      child: FutureSuccessDialog(
+                                        future: _postShoppingRequest(name),
+                                        dataTrueText: 'add_scf',
+                                        onDataTrue: () {
+                                          _onPostShoppingRequest();
+                                        },
+                                        onDataFalse: () {
+                                          Navigator.pop(context);
+                                          setState(() {});
+                                        },
+                                      ));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              onPressed: (){
+                                showDialog(
+                                    context: context,
+                                    child: ImShoppingDialog(),
+                                );
+                              },
+                              child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
