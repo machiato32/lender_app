@@ -284,5 +284,20 @@
     "trial_version_explanation": "Mivel az elmúlt két hétben regisztráltál, így az alkalmazást jelenleg bónuszokkal használhatod. Ezekhez tartozik a reklámmentesség, a színátmenetes témák használata, illetve a csoport statisztikáihoz való hozzáférés. A két hét leteltével ezeket a Dodó Boltban veheted meg.",
 
     "calculator": "Számológép",
-    "calculator_explanation": "Itt egy számológép, használd, ha kell 😉"
+    "calculator_explanation": "Itt egy számológép, használd, ha kell 😉",
+
+    "approve_members": "approve_members",
+    "approve_members_explanation": "approve_members_explanation",
+    "needs_approval": "needs_approval",
+    "download_export": "download_export",
+    "download_export_explanation": "download_export_explanation",
+    "download_xls": "download_xls",
+    "download_xls_explanation": "download_xls_explanation",
+    "download_pdf": "download_pdf",
+    "download_pdf_explanation": "download_pdf_explanation",
+    "export": "export",
+    "export_explanation": "export_explanation",
+    "statistics_explanation": "statistics_explanation",
+    "coming_soon": "coming_soon"
+
 }

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
+import 'package:csocsort_szamla/main/group_settings_speed_dial.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
-import 'package:csocsort_szamla/main/statistics_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +21,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -34,13 +35,12 @@ import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:csocsort_szamla/history/history.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
-import 'package:csocsort_szamla/groups/group_settings.dart';
+import 'package:csocsort_szamla/groups/group_settings_page.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
-import 'essentials/widgets/gradient_button.dart';
 import 'main/report_a_bug_page.dart';
 import 'main/trial_version_dialog.dart';
 import 'main/tutorial_dialog.dart';
-import 'main/speed_dial.dart';
+import 'main/main_speed_dial.dart';
 import 'essentials/app_theme.dart';
 import 'essentials/currencies.dart';
 import 'essentials/navigator_service.dart';
@@ -80,6 +80,9 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+      debug: false // optional: set false to disable printing logs to console
+  );
   InAppPurchaseConnection.enablePendingPurchases();
   Admob.initialize();
   setup();
@@ -423,7 +426,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     for (var group in decoded['data']) {
       groups.add(
         Group(
-          groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']
+          groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency'],
         )
       );
     }
@@ -507,15 +510,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     }).toList();
   }
 
-  Future<dynamic> _isGroupBoosted() async {
-    try{
-      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      return decoded['data'];
-    }catch(_){
-      throw _;
-    }
-  }
+
 
   @override
   void initState() {
@@ -860,74 +855,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButton: _selectedIndex==2?
-        FutureBuilder(
-          future: _isGroupBoosted(),
-          builder: (context, snapshot){
-            if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
-               if(snapshot.data['is_boosted']==1 || snapshot.data['trial']==1){
-                 return FloatingActionButton(
-                   onPressed: (){
-                     Navigator.push(
-                         context,
-                         MaterialPageRoute(
-                             builder: (context) => StatisticsPage(groupCreation: snapshot.data['created_at']==null?DateTime.parse('2020-01-17'):DateTime.parse(snapshot.data['created_at']).toLocal(),)
-                         )
-                     );
-                   },
-                   child: Icon(Icons.assessment)
-                 );
-               }else{
-                 return FloatingActionButton(
-                   onPressed: (){
-                     showDialog(
-                       context: context,
-                       child: Dialog(
-                         child: Padding(
-                           padding: const EdgeInsets.all(15),
-                           child: Column(
-                             mainAxisSize: MainAxisSize.min,
-                             children: [
-                               Text('statistics_not_available'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-                               SizedBox(height: 10),
-                               Text('statistics_not_available_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center),
-                               SizedBox(height: 15),
-                               Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 children: [
-                                   GradientButton(
-                                     child: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
-                                     onPressed: (){
-                                       Navigator.push(
-                                           context,
-                                           MaterialPageRoute(
-                                               builder: (context) => InAppPurchasePage()
-                                           )
-                                       );
-                                     },
-                                   ),
-                                 ],
-                               )
-                             ],
-                           ),
-                         ),
-                       )
-                     );
-                   },
-                   backgroundColor: Colors.grey[400],
-                   child: Stack(
-                     children: [
-                       Align(
-                           alignment: Alignment.center,
-                           child: Icon(Icons.assessment,)
-                       ),
-                     ],
-                   ),
-                 );
-               }
-            }
-            return Container();
-          }
-        )
+        GroupSettingsSpeedDial()
 
         :
         Visibility(

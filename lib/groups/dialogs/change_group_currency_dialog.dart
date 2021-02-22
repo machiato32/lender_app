@@ -5,9 +5,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../essentials/widgets/future_success_dialog.dart';
-import '../essentials/widgets/gradient_button.dart';
-import '../main.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/main.dart';
 
 class ChangeGroupCurrencyDialog extends StatefulWidget {
   @override

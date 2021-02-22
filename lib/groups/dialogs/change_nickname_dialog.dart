@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 
-import '../config.dart';
-import '../essentials/widgets/future_success_dialog.dart';
-import '../essentials/widgets/gradient_button.dart';
-import '../essentials/http_handler.dart';
+import '../../config.dart';
+import '../../essentials/widgets/future_success_dialog.dart';
+import '../../essentials/widgets/gradient_button.dart';
+import '../../essentials/http_handler.dart';
 
 class ChangeNicknameDialog extends StatefulWidget {
   final String username;
