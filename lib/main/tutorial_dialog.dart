@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -14,62 +15,59 @@ class _TutorialDialogState extends State<TutorialDialog> {
   Widget build(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setState){
-        return AlertDialog(
+        return Dialog(
           backgroundColor: Theme.of(context).cardTheme.color,
-          title: Center(child: Text(title[index].tr()+((index==0)?'! 😎':''), textAlign: TextAlign.center,)),
-          content: Container(
-            width: double.minPositive,
-            child: ListView(
-              shrinkWrap: true,
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Visibility(visible: index!=0,child: Image.asset('assets/tutorial/lendertut'+index.toString()+'.gif')),
-                SizedBox(height: 10,),
-                Text(content[index].tr(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1,
-                  textAlign: TextAlign.center
+                Center(child: Text(title[index].tr()+((index==0)?'! 😎':''), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,)),
+                ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Visibility(visible: index!=0,child: Image.asset('assets/tutorial/lendertut'+index.toString()+'.gif')),
+                    SizedBox(height: 10,),
+                    Text(content[index].tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.center
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Visibility(
+                      visible: index!=0,
+                      child: GradientButton(
+                        onPressed: () {
+                          setState(() {
+                            index--;
+                          });
+                        },
+                        child: Icon(Icons.navigate_before, color: Theme.of(context).textTheme.button.color),
+                      ),
+                    ),
+                    GradientButton(
+                      onPressed: () {
+                        if(index!=3){
+                          setState(() {
+                            index++;
+                          });
+                        }else{
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Icon(index==3?Icons.check:Icons.navigate_next, color: Theme.of(context).textTheme.button.color),
+                    ),
+                  ],
                 ),
               ],
-
             ),
           ),
-          actions: <Widget>[
-            Visibility(
-              visible: index!=0,
-              child: FlatButton(
-                onPressed: () {
-                  setState(() {
-                    index--;
-                  });
-                },
-                child: Icon(Icons.navigate_before, color: Theme.of(context).textTheme.button.color),
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            Visibility(
-              visible: index!=3,
-              child: FlatButton(
-                onPressed: () {
-                  setState(() {
-                    index++;
-                  });
-                },
-                child: Icon(Icons.navigate_next, color: Theme.of(context).textTheme.button.color),
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            Visibility(
-              visible: index==3,
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.check, color: Theme.of(context).textTheme.button.color),
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-          ],
         );
       },
     );

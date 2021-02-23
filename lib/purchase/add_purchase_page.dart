@@ -36,14 +36,13 @@ class SavedPurchase {
     this.receivers, this.totalAmount, this.name, this.purchaseId});
 }
 
-enum PurchaseType { fromShopping, fromModifyExpense, newExpense }
+enum PurchaseType { fromShopping, newPurchase }
 
 class AddPurchaseRoute extends StatefulWidget {
   final PurchaseType type;
-  final SavedPurchase expense;
   final ShoppingRequestData shoppingData;
 
-  AddPurchaseRoute({@required this.type, this.expense, this.shoppingData});
+  AddPurchaseRoute({@required this.type, this.shoppingData});
 
   @override
   _AddPurchaseRouteState createState() => _AddPurchaseRouteState();
@@ -53,8 +52,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   Future<List<Member>> _members;
-  Future<bool> success;
-  Map<Member, bool> checkboxBool = Map<Member, bool>();
+  Map<Member, bool> memberChipBool = Map<Member, bool>();
   FocusNode _focusNode = FocusNode();
 
   var _formKey = GlobalKey<FormState>();
@@ -104,37 +102,16 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
     }
   }
 
-  Future<bool> _updatePurchase(List<Member> members, double amount, String name, int purchaseId) async {
-    try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      Map<String, dynamic> body = {
-        "name": name,
-        "amount": amount,
-        "receivers": members.map((e) => e.toJson()).toList()
-      };
 
-      await httpPut(uri: '/purchases/'+purchaseId.toString(), body: body, context: context, useGuest: useGuest);
-      return true;
-
-    } catch (_) {
-      throw _;
-    }
-  }
 
   void setInitialValues() {
-    if (widget.type == PurchaseType.fromModifyExpense) {
-      noteController.text = widget.expense.name;
-      _amountController.text = widget.expense.totalAmount.toString();
-    } else {
-      noteController.text = widget.shoppingData.name;
-    }
+    noteController.text = widget.shoppingData.name;
   }
 
   @override
   void initState() {
     super.initState();
-    if (widget.type == PurchaseType.fromModifyExpense ||
-        widget.type == PurchaseType.fromShopping) {
+    if (widget.type == PurchaseType.fromShopping) {
       setInitialValues();
     }
     _members = _getMembers();
@@ -317,19 +294,11 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.done) {
                                       if (snapshot.hasData) {
-                                        List<Member> snapshotMembers = snapshot.data;
                                         for (Member member in snapshot.data) {
-                                          checkboxBool.putIfAbsent(member, () => false);
+                                          memberChipBool.putIfAbsent(member, () => false);
                                         }
-                                       if(widget.type==PurchaseType.fromModifyExpense && widget.expense.receivers!=null){
-                                         for(Member member in widget.expense.receivers){
-                                           Member memberInCheckbox = snapshotMembers.firstWhere((element) => element.memberId==member.memberId, orElse: null);
-                                           if(memberInCheckbox!=null)
-                                             checkboxBool[memberInCheckbox]=true;
-                                         }
-                                         widget.expense.receivers=null;
-                                       }else if (widget.type == PurchaseType.fromShopping) {
-                                          checkboxBool[(snapshot.data as List<Member>)
+                                       if (widget.type == PurchaseType.fromShopping) {
+                                          memberChipBool[(snapshot.data as List<Member>)
                                                   .firstWhere((member) =>
                                                       member.memberId ==
                                                       widget.shoppingData.requesterId)] =
@@ -342,14 +311,14 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                   ChoiceChip(
                                                     label: Text(member.nickname),
                                                     pressElevation: 30,
-                                                    selected: checkboxBool[member],
+                                                    selected: memberChipBool[member],
                                                     onSelected: (bool newValue) {
                                                       FocusScope.of(context).unfocus();
                                                       setState(() {
-                                                        checkboxBool[member] = newValue;
+                                                        memberChipBool[member] = newValue;
                                                       });
                                                     },
-                                                    labelStyle: checkboxBool[member]
+                                                    labelStyle: memberChipBool[member]
                                                         ? Theme.of(context)
                                                             .textTheme
                                                             .bodyText1
@@ -406,9 +375,9 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                           borderRadius: BorderRadius.circular(1000.0),
                                           onTap: () {
                                             FocusScope.of(context).unfocus();
-                                            for (Member member in checkboxBool.keys) {
-                                              checkboxBool[member] =
-                                                  !checkboxBool[member];
+                                            for (Member member in memberChipBool.keys) {
+                                              memberChipBool[member] =
+                                                  !memberChipBool[member];
                                             }
                                             setState(() {});
                                           },
@@ -433,7 +402,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                         ),
                                         child: Text(
                                           _amountController.text != '' &&
-                                                  checkboxBool.values
+                                                  memberChipBool.values
                                                           .where((element) =>
                                                               element == true)
                                                           .toList()
@@ -442,7 +411,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                               ? ((double.tryParse(_amountController
                                                                   .text) ??
                                                               0) /
-                                                          checkboxBool.values
+                                                          memberChipBool.values
                                                               .where((element) =>
                                                                   element == true)
                                                               .toList()
@@ -469,8 +438,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                           borderRadius: BorderRadius.circular(1000.0),
                                           onTap: () {
                                             FocusScope.of(context).unfocus();
-                                            for (Member member in checkboxBool.keys) {
-                                              checkboxBool[member] = false;
+                                            for (Member member in memberChipBool.keys) {
+                                              memberChipBool[member] = false;
                                             }
                                             setState(() {});
                                           },
@@ -505,36 +474,10 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
           onPressed: () {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
-              if (!checkboxBool.containsValue(true)) {
-                Widget toast = Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 12.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    color: Colors.red,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.clear,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
-                      Flexible(
-                          child: Text("person_not_chosen".tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(color: Colors.white))),
-                    ],
-                  ),
-                );
+              if (!memberChipBool.containsValue(true)) {
                 FlutterToast ft = FlutterToast(context);
                 ft.showToast(
-                    child: toast,
+                    child: errorToast('person_not_chosen', context),
                     toastDuration: Duration(seconds: 2),
                     gravity: ToastGravity.BOTTOM);
                 return;
@@ -542,76 +485,77 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
               double amount = double.parse(_amountController.text);
               String name = noteController.text;
               List<Member> members = new List<Member>();
-              checkboxBool.forEach((Member key, bool value) {
+              memberChipBool.forEach((Member key, bool value) {
                 if (value) members.add(key);
               });
               showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  child: FutureSuccessDialog(
-                    future: widget.type==PurchaseType.fromModifyExpense?_updatePurchase(members, amount, name, widget.expense.purchaseId):_postPurchase(members, amount, name),
-                    dataTrue: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                            child: Text(
-                          'purchase_scf'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        )),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              child:Row(
-                                children: [
-                                  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                  SizedBox(width: 3,),
-                                  Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                ],
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              useShadow: false,
+                barrierDismissible: false,
+                context: context,
+                child: FutureSuccessDialog(
+                  future: _postPurchase(members, amount, name),
+                  dataTrue: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                          child: Text(
+                        'purchase_scf'.tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            child:Row(
+                              children: [
+                                Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                                SizedBox(width: 3,),
+                                Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
+                              ],
                             ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              child:Row(
-                                children: [
-                                  Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                                  SizedBox(width: 3,),
-                                  Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
-                                ],
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _amountController.text = '';
-                                  noteController.text = '';
-                                  for (Member key in checkboxBool.keys) {
-                                    checkboxBool[key] = false;
-                                  }
-                                });
-                                Navigator.pop(context);
-                              },
-                              useShadow: false,
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            useShadow: false,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientButton(
+                            child:Row(
+                              children: [
+                                Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                                SizedBox(width: 3,),
+                                Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ));
+                            onPressed: () {
+                              setState(() {
+                                _amountController.text = '';
+                                noteController.text = '';
+                                for (Member key in memberChipBool.keys) {
+                                  memberChipBool[key] = false;
+                                }
+                              });
+                              Navigator.pop(context);
+                            },
+                            useShadow: false,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              );
             }
           },
         ),

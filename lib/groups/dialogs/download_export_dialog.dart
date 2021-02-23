@@ -20,7 +20,6 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
         : '';//TODO
     await FlutterDownloader.enqueue(
       headers: {
-        // "Content-Type": "application/json",
         "Authorization": "Bearer " +(apiToken==null?'':apiToken)
       },
       url: (useTest?TEST_URL:APP_URL)+'/groups/'+currentGroupId.toString()+'/export',

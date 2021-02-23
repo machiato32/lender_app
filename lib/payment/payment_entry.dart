@@ -156,7 +156,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
                         child: PaymentAllInfo(widget.data))).then((val) {
-                  if (val == 'deleted') widget.callback(payment:true);
+                  if (val == 'deleted') widget.callback();
                 });
               },
               borderRadius: BorderRadius.circular(15),

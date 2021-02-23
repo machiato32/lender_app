@@ -73,6 +73,7 @@
     "more": "Több",
 
     "person_not_chosen": "Nem választottál ki személyt!",
+    "payment_scf": "A fizetést sikeresen könyveltük!",
     "add_new": "Új hozzáadása",
 
     "no_note": "Nincs megjegyzés",
@@ -298,6 +299,14 @@
     "export": "export",
     "export_explanation": "export_explanation",
     "statistics_explanation": "statistics_explanation",
-    "coming_soon": "coming_soon"
+    "coming_soon": "coming_soon",
+
+    "cannot_modify_element_deleted_member": "cannot_modify_element_deleted_member",
+    "cannot_delete_element_deleted_member": "cannot_delete_element_deleted_member",
+
+    "modify_payment": "modify_payment",
+    "modify_payment_explanation": "modify_payment_explanation",
+    "modify_purchase": "modify_purchase",
+    "modify_purchase_explanation": "modify_purchase_explanation"
 
 }

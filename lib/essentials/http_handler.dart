@@ -41,7 +41,9 @@ Widget errorToast(String msg, BuildContext context){
                 style: Theme.of(context)
                     .textTheme
                     .bodyText1
-                    .copyWith(color: Colors.white))),
+                    .copyWith(color: Colors.white)
+            )
+        ),
       ],
     ),
   );
