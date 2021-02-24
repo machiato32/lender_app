@@ -285,5 +285,27 @@
     "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
 
     "calculator": "Rechner",
-    "calculator_explanation": "Ein kleiner Taschenrechner falls du einen brauchst 😉"
+    "calculator_explanation": "Ein kleiner Taschenrechner falls du einen brauchst 😉",
+
+    "approve_members": "Mitgliedsanfragen genehmigen",
+    "approve_members_explanation": "Genehmige das Beitreten von neuen Mitgliedern. Unten kannst du auswählen ob eine Genehmigung nötig ist",
+    "needs_approval": "Admin genehmigung",
+    "download_export": "Daten runterladen",
+    "download_export_explanation": "Lade alle Daten dieser Gruppe runter",
+    "download_xls": "Als Excel Tabelle runterladen",
+    "download_xls_explanation": "Benutze dies wenn du die Daten selber ordnen möchtest",
+    "download_pdf": "Als PDF runterladen",
+    "download_pdf_explanation": "Benutze dies wenn du einen übersichtlichen Überblick der Gruppe erhalten möchtest",
+    "export": "Daten runterladen",
+    "export_explanation": "Lade die Daten der Gruppe als PDF oder XLS",
+    "statistics_explanation": "Die Statistiken der Gruppe graphisch dargestellt",
+    "coming_soon": "Kommt demnächst",
+
+    "cannot_modify_element_deleted_member": "Du kannst das Element nicht ändern, weil ein entferntes Mitglied dabei ist",
+    "cannot_delete_element_deleted_member": "Du kannst das Element nicht zurückziehen, weil ein entferntes Mitglied dabei ist",
+
+    "modify_payment": "Zahlung bearbeiten",
+    "modify_payment_explanation": "Bearbeite die Zahlung, falls sich etwas geändert hat",
+    "modify_purchase": "Einkauf bearbeiten",
+    "modify_purchase_explanation": "Bearbeite den Einkauf, falls sich etwas geändert hat"
 }

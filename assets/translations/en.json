@@ -282,8 +282,30 @@
     "use_personalised_ads_explanation": "If you want to see personalised ads",
 
     "trial_version": "Trial time",
-    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These include the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
 
     "calculator": "Calculator",
-    "calculator_explanation": "A simple calculator if you need it 😉"
+    "calculator_explanation": "A simple calculator if you need it 😉",
+
+    "approve_members": "Approve members",
+    "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below",
+    "needs_approval": "Admin approval",
+    "download_export": "Download data",
+    "download_export_explanation": "Download all group data",
+    "download_xls": "Download as an excel table",
+    "download_xls_explanation": "Use this if you want to manage the data for yourself",
+    "download_pdf": "Download as a PDF file",
+    "download_pdf_explanation": "Use this if you want to get a quick overview of the group",
+    "export": "Downloadable data",
+    "export_explanation": "The groups data as XLS or PDF",
+    "statistics_explanation": "The groups statistics as graphs",
+    "coming_soon": "Coming soon",
+
+    "cannot_modify_element_deleted_member": "You cannot modify the element, as it contains a removed member",
+    "cannot_delete_element_deleted_member": "You cannot revoke the element, as it contains a removed member",
+
+    "modify_payment": "Modify payment",
+    "modify_payment_explanation": "Modify a payment if its details changed",
+    "modify_purchase": "Modify purchase",
+    "modify_purchase_explanation": "Modify a purchase if its details changed"
 }
