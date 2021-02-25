@@ -73,6 +73,7 @@
     "more": "Több",
 
     "person_not_chosen": "Nem választottál ki személyt!",
+    "payment_scf": "A fizetést sikeresen könyveltük!",
     "add_new": "Új hozzáadása",
 
     "no_note": "Nincs megjegyzés",
@@ -284,5 +285,28 @@
     "trial_version_explanation": "Mivel az elmúlt két hétben regisztráltál, így az alkalmazást jelenleg bónuszokkal használhatod. Ezekhez tartozik a reklámmentesség, a színátmenetes témák használata, illetve a csoport statisztikáihoz való hozzáférés. A két hét leteltével ezeket a Dodó Boltban veheted meg.",
 
     "calculator": "Számológép",
-    "calculator_explanation": "Itt egy számológép, használd, ha kell 😉"
+    "calculator_explanation": "Itt egy számológép, használd, ha kell 😉",
+
+    "approve_members": "Jelentkezések elfogadása",
+    "approve_members_explanation": "Fogadd el az új tagok jelentkezését a csoportba. Lent változtathatod, az adminok beleegyezésének  szükségességét",
+    "needs_approval": "Admin beleegyezés",
+    "download_export": "Letölthető adatok",
+    "download_export_explanation": "Töltsd le a csoport összes adatát",
+    "download_xls": "Letöltés excel táblázatként",
+    "download_xls_explanation": "Használd ezt, ha magad szeretnéd rendezni az adatokat",
+    "download_pdf": "Letöltés PDF-ként",
+    "download_pdf_explanation": "Használd ezt, hogyha gyorsan átlátható összegzést szeretnél",
+    "export": "Letölthető adatok",
+    "export_explanation": "A csoport adatai táblázat és PDF formában",
+    "statistics_explanation": "A csoport statisztikái grafikusan ábrázolva",
+    "coming_soon": "Nem sokára elérhető",
+
+    "cannot_modify_element_deleted_member": "Nem módosíthatod az elemet, mert az kilépett tagot tartalmaz",
+    "cannot_delete_element_deleted_member": "Nem vonhatod vissza az elemet, mert az kilépett tagot tartalmaz",
+
+    "modify_payment": "Fizetés módosítása",
+    "modify_payment_explanation": "Módosítsd a fizetést, ha változtak a részletei",
+    "modify_purchase": "Vásárlás módósítása",
+    "modify_purchase_explanation": "Módosítsd a vásárlást, ha változtak a részletei"
+
 }

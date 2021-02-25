@@ -168,7 +168,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddPurchaseRoute(
-                        type: PurchaseType.newExpense,
+                        type: PurchaseType.newPurchase,
                       )
                   )).then((value) {widget.callback();});
             }),

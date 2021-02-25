@@ -28,14 +28,12 @@ class SavedPayment{
 }
 
 class AddPaymentRoute extends StatefulWidget {
-  final SavedPayment payment;
-  AddPaymentRoute({this.payment});
   @override
   _AddPaymentRouteState createState() => _AddPaymentRouteState();
 }
 
 class _AddPaymentRouteState extends State<AddPaymentRoute> {
-  Member _dropdownValue;
+  Member _chipChoiceValue;
   TextEditingController _amountController = TextEditingController();
   TextEditingController _noteController = TextEditingController();
   Future<List<Member>> _members;
@@ -88,32 +86,10 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
       throw _;
     }
   }
-
-  Future<bool> _updatePayment(double amount, String note, Member toMember, int paymentId) async {
-    try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      Map<String, dynamic> body = {
-        'amount': amount,
-        'note': note,
-        'taker_id': toMember.memberId
-      };
-
-      await httpPut(uri: '/payments/'+paymentId.toString(), body: body, context: context, useGuest: useGuest);
-      return true;
-    } catch (_) {
-      throw _;
-    }
-  }
-
-  
   
   @override
   void initState() {
     super.initState();
-    if(widget.payment!=null){
-      _amountController.text=widget.payment.amount.toString();
-      _noteController.text=widget.payment.note;
-    }
     _members = _getMembers();
   }
 
@@ -260,12 +236,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                     if (snapshot.connectionState ==
                                         ConnectionState.done) {
                                       if (snapshot.hasData) {
-                                        if(widget.payment!=null && widget.payment.takerId!=-1){
-                                          Member selectMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==widget.payment.takerId, orElse: null);
-                                          if(selectMember!=null)
-                                            _dropdownValue=selectMember;
-                                          widget.payment.takerId=-1;
-                                        }
                                         return Wrap(
                                           spacing: 10,
                                           children: snapshot.data
@@ -273,16 +243,16 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                                   ChoiceChip(
                                                     label: Text(member.nickname),
                                                     pressElevation: 30,
-                                                    selected: _dropdownValue ==
+                                                    selected: _chipChoiceValue ==
                                                         member,
                                                     onSelected: (bool newValue) {
                                                       FocusScope.of(context).unfocus();
                                                       setState(() {
-                                                        _dropdownValue = member;
+                                                        _chipChoiceValue = member;
                                                         // _selectedMember = member;
                                                       });
                                                     },
-                                                    labelStyle: _dropdownValue ==
+                                                    labelStyle: _chipChoiceValue ==
                                                             member
                                                         ? Theme.of(context)
                                                             .textTheme
@@ -342,39 +312,10 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
           onPressed: () {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
-              if (_dropdownValue == null) {
-                Widget toast = Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 12.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    color: Colors.red,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.clear,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
-                      Flexible(
-                          child: Text(
-                            "person_not_chosen".tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                .copyWith(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                );
+              if (_chipChoiceValue == null) {
                 FlutterToast ft = FlutterToast(context);
                 ft.showToast(
-                    child: toast,
+                    child: errorToast('person_not_chosen', context),
                     toastDuration: Duration(seconds: 2),
                     gravity: ToastGravity.BOTTOM);
                 return;
@@ -385,7 +326,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   barrierDismissible: false,
                   context: context,
                   child: FutureSuccessDialog(
-                    future: widget.payment!=null?_updatePayment(amount, note, _dropdownValue, widget.payment.paymentId):_postPayment(amount, note, _dropdownValue),
+                    future: _postPayment(amount, note, _chipChoiceValue),
                     dataTrue: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -432,7 +373,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               onPressed: () {
                                 _amountController.text = '';
                                 _noteController.text = '';
-                                _dropdownValue = null;
+                                _chipChoiceValue = null;
                                 Navigator.pop(context);
                               },
                               useShadow: false,

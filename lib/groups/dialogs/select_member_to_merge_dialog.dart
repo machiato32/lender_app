@@ -11,8 +11,8 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 
-import '../config.dart';
-import '../main.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/main.dart';
 
 class MemberToMergeDialog extends StatefulWidget {
   @override

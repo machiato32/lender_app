@@ -23,6 +23,7 @@ class Invitation extends StatefulWidget {
 class _InvitationState extends State<Invitation> {
   Future<String> _invitation;
   Future<List<Member>> _unapproved;
+  bool _needsApproval;
 
   Future<String> _getInvitation() async {
     try {
@@ -32,6 +33,7 @@ class _InvitationState extends State<Invitation> {
           useCache: false
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
+      _needsApproval=decoded['data']['admin_approval']==1;
       return decoded['data']['invitation'];
     } catch (_) {
       throw _;
@@ -46,7 +48,6 @@ class _InvitationState extends State<Invitation> {
         useCache: false
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      print(decoded);
       List<Member> members = List<Member>();
       for(Map<String, dynamic> member in decoded['data']){
         members.add(Member.fromJson(member));
@@ -55,6 +56,23 @@ class _InvitationState extends State<Invitation> {
     }catch(_){
       throw _;
     }
+  }
+
+  Future<bool> _updateNeedsApproval() async {
+    try{
+      Map<String, dynamic> body = {
+        'admin_approval':_needsApproval?1:0
+      };
+      await httpPut(context: context, uri: '/groups/'+currentGroupId.toString(), body: body);
+      Future.delayed(delayTime()).then((value) => _onUpdateNeedsApproval());
+      return true;
+    }catch(_){
+      throw _;
+    }
+  }
+
+  void _onUpdateNeedsApproval(){
+    Navigator.pop(context);
   }
 
   @override
@@ -104,29 +122,82 @@ class _InvitationState extends State<Invitation> {
                   if (snapshot.connectionState ==
                       ConnectionState.done) {
                     if (snapshot.hasData) {
-                      return Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              onPressed: () {
-                                Share.share(
-                                  'https://www.lenderapp.net/join/' +
-                                      snapshot.data,
-                                  subject:
-                                  'invitation_to_lender'
-                                      .tr()
-                                );
-                              },
-                              child: Icon(
-                                Icons.share,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSecondary,
-                              ),
+                      return Column(
+                        children: [
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientButton(
+                                  onPressed: () {
+                                    Share.share(
+                                      'https://www.lenderapp.net/join/' +
+                                          snapshot.data,
+                                      subject:
+                                      'invitation_to_lender'
+                                          .tr()
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.share,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Visibility(
+                            visible: widget.isAdmin,
+                            child: Column(
+                              children: [
+                                SizedBox(height: 7,),
+                                Divider(),
+                                SizedBox(height: 7,),
+                                Text('approve_members'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+                                SizedBox(height: 10,),
+                                Text('approve_members_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
+                                SizedBox(height: 5,),
+                                SwitchListTile(
+                                  value: _needsApproval,
+                                  activeColor: Theme.of(context).colorScheme.primary,
+                                  onChanged: (value){
+                                    setState(() {
+                                      _needsApproval=value;
+                                    });
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        child: FutureSuccessDialog(
+                                          future: _updateNeedsApproval(),
+                                          onDataTrue: (){
+                                            _onUpdateNeedsApproval();
+                                          },
+                                          onDataFalse: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              _needsApproval=!_needsApproval;
+                                            });
+                                          },
+                                          onNoData: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              _needsApproval=!_needsApproval;
+                                            });
+                                          },
+                                        )
+                                    );
+                                  },
+
+                                  title: Text('needs_approval'.tr(), style: Theme.of(context).textTheme.subtitle2,),
+                                  dense: true,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        ],
                       );
                     } else {
                       return ErrorMessage(
@@ -145,45 +216,40 @@ class _InvitationState extends State<Invitation> {
                       child: CircularProgressIndicator());
                 },
               ),
-              FutureBuilder(
-                future: _unapproved,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return Visibility(
-                        visible: snapshot.data.length!=0,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 7,),
-                            Divider(),
-                            SizedBox(height: 7,),
-                            Text('approve_members'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-                            SizedBox(height: 10,),
-                            Text('approve_members_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
-                            SizedBox(height: 5,),
-                            Column(
-                              children: _generateMembers(snapshot.data)
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return ErrorMessage(
-                        error: snapshot.error.toString(),
-                        locationOfError: 'approve_members',
-                        callback: (){
-                          setState(() {
-                            _unapproved = null;
-                            _unapproved = _getUnapprovedMembers();
-                          });
-                        },
-                      );
+
+              Visibility(
+                visible: widget.isAdmin,
+                child: FutureBuilder(
+                  future: _unapproved,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return Visibility(
+                          visible: snapshot.data.length!=0,
+                          child: Column(
+                            children: [
+                              Column(
+                                children: _generateMembers(snapshot.data)
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return ErrorMessage(
+                          error: snapshot.error.toString(),
+                          locationOfError: 'approve_members',
+                          callback: (){
+                            setState(() {
+                              _unapproved = null;
+                              _unapproved = _getUnapprovedMembers();
+                            });
+                          },
+                        );
+                      }
                     }
-                  }
-                  return Center(
-                      child: CircularProgressIndicator());
-                },
+                    return Container();
+                  },
+                ),
               ),
             ],
           ),

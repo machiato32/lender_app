@@ -1,6 +1,6 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/groups/add_guest_dialog.dart';
-import 'package:csocsort_szamla/groups/select_member_to_merge_dialog.dart';
+import 'file:///C:/Users/szasa/FlutterProjects/csocsort_szamla/lib/groups/dialogs/add_guest_dialog.dart';
+import 'package:csocsort_szamla/groups/dialogs/select_member_to_merge_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';

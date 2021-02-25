@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -350,7 +351,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Flexible(
                       child: InkWell(
                           onTap: (){
-                            launch('https://www.mopub.com/en/legal/privacy');
+                            launch('https://policies.google.com/privacy');
                           },
                           child: Text('personalised_ads'.tr(),
                             style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline),
@@ -369,100 +370,105 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          String username = _usernameController.text;
+                          String passwordReminder = _passwordReminderController.text;
+                          if (_passwordController.text == _passwordConfirmController.text) {
+                            if(_privacyPolicy){
+                              String password = _passwordConfirmController.text;
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  child: FutureSuccessDialog(
+                                    future: _register(username, password, passwordReminder, _defaultValue),
+                                    dataTrueText: 'registration_scf',
+                                    onDataTrue: () {
+                                      _onRegister();
+                                    },
+                                  )
+                              );
+                            }else{
+                              Widget toast = Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  color: Colors.red,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Flexible(
+                                        child: Text("must_accept_privacy_policy".tr(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(color: Colors.white))),
+                                  ],
+                                ),
+                              );
+                              FlutterToast ft = FlutterToast(context);
+                              ft.showToast(
+                                  child: toast,
+                                  toastDuration: Duration(seconds: 2),
+                                  gravity: ToastGravity.BOTTOM
+                              );
+                            }
+
+                          } else {
+                            Widget toast = Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Colors.red,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.clear,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: 12.0,
+                                  ),
+                                  Flexible(
+                                      child: Text("passwords_not_match".tr(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .copyWith(color: Colors.white))),
+                                ],
+                              ),
+                            );
+                            FlutterToast ft = FlutterToast(context);
+                            ft.showToast(
+                                child: toast,
+                                toastDuration: Duration(seconds: 2),
+                                gravity: ToastGravity.BOTTOM);
+                          }
+                        }
+                      },
+                    )
+                  ],
+                ),
               ],
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              String username = _usernameController.text;
-              String passwordReminder = _passwordReminderController.text;
-              if (_passwordController.text == _passwordConfirmController.text) {
-                if(_privacyPolicy){
-                  String password = _passwordConfirmController.text;
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    child: FutureSuccessDialog(
-                      future: _register(username, password, passwordReminder, _defaultValue),
-                      dataTrueText: 'registration_scf',
-                      onDataTrue: () {
-                        _onRegister();
-                      },
-                    )
-                  );
-                }else{
-                  Widget toast = Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      color: Colors.red,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.clear,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 12.0,
-                        ),
-                        Flexible(
-                            child: Text("must_accept_privacy_policy".tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(color: Colors.white))),
-                      ],
-                    ),
-                  );
-                  FlutterToast ft = FlutterToast(context);
-                  ft.showToast(
-                      child: toast,
-                      toastDuration: Duration(seconds: 2),
-                      gravity: ToastGravity.BOTTOM
-                  );
-                }
-
-              } else {
-                Widget toast = Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 12.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    color: Colors.red,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.clear,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
-                      Flexible(
-                          child: Text("passwords_not_match".tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(color: Colors.white))),
-                    ],
-                  ),
-                );
-                FlutterToast ft = FlutterToast(context);
-                ft.showToast(
-                    child: toast,
-                    toastDuration: Duration(seconds: 2),
-                    gravity: ToastGravity.BOTTOM);
-              }
-            }
-          },
-          child: Icon(Icons.send),
         ),
       ),
     );

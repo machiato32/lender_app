@@ -48,4 +48,8 @@ class Reaction{
       userId: reaction['user_id']
     );
   }
+  @override
+  String toString() {
+    return reaction;
+  }
 }
