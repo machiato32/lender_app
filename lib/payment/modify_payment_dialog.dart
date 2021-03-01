@@ -215,7 +215,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                           ConnectionState.done) {
                         if (snapshot.hasData) {
                           if(widget.savedPayment!=null && widget.savedPayment.takerId!=-1){
-                            Member selectMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==widget.savedPayment.takerId, orElse: null);
+                            Member selectMember = (snapshot.data as List<Member>)
+                                .firstWhere((element) => element.memberId==widget.savedPayment.takerId, orElse: () => null);
                             if(selectMember!=null)
                               _chipChoiceValue=selectMember;
                             widget.savedPayment.takerId=-1;

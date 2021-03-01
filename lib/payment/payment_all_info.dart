@@ -4,7 +4,6 @@ import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/payment/modify_payment_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -140,33 +139,24 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     children: [
                       GradientButton(
                         onPressed: (){
-                          if(widget.data.takerUsername!=null){
-                            showDialog(
-                                context: context,
-                                child: ModifyPaymentDialog(
-                                  savedPayment: SavedPayment(
-                                      amount: widget.data.amount,
-                                      note: widget.data.note,
-                                      payerId: widget.data.payerId,
-                                      takerId: widget.data.takerId,
-                                      paymentId: widget.data.paymentId
-                                  ),
-                                )
-                            )
-                                .then((value){
-                              if(value??false){
-                                Navigator.pop(context, 'deleted');
-                              }
-                            });
-                          }else{
-                            FlutterToast ft = FlutterToast(context);
-                            ft.removeQueuedCustomToasts();
-                            ft.showToast(
-                                child: errorToast('cannot_modify_element_deleted_member', context),
-                                toastDuration: Duration(seconds: 2),
-                                gravity: ToastGravity.BOTTOM
-                            );
-                          }
+                          showDialog(
+                              context: context,
+                              child: ModifyPaymentDialog(
+                                savedPayment: SavedPayment(
+                                    amount: widget.data.amount,
+                                    note: widget.data.note,
+                                    payerId: widget.data.payerId,
+                                    takerId: widget.data.takerId,
+                                    paymentId: widget.data.paymentId
+                                ),
+                              )
+                          )
+                              .then((value){
+                            if(value??false){
+                              Navigator.pop(context, 'deleted');
+                            }
+                          });
+
 
                         },
                         child: Row(
@@ -184,36 +174,28 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     children: [
                       GradientButton(
                           onPressed: () {
-                            if(widget.data.takerUsername!=null){
-                              showDialog(
-                                context: context,
-                                child: ConfirmChoiceDialog(
-                                  choice: 'want_delete',
-                                ),
-                              ).then((value){
-                                if(value!=null && value){
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      child: FutureSuccessDialog(
-                                        future: _deletePayment(widget.data.paymentId),
-                                        dataTrueText: 'delete_scf',
-                                        onDataTrue: () {
-                                          _onDeletePayment();
-                                        },
-                                      )
-                                  );
-                                }
-                              });
-                            }else{
-                              FlutterToast ft = FlutterToast(context);
-                              ft.removeQueuedCustomToasts();
-                              ft.showToast(
-                                  child: errorToast('cannot_delete_element_deleted_member', context),
-                                  toastDuration: Duration(seconds: 2),
-                                  gravity: ToastGravity.BOTTOM
-                              );
-                            }
+
+                            showDialog(
+                              context: context,
+                              child: ConfirmChoiceDialog(
+                                choice: 'want_delete',
+                              ),
+                            ).then((value){
+                              if(value!=null && value){
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    child: FutureSuccessDialog(
+                                      future: _deletePayment(widget.data.paymentId),
+                                      dataTrueText: 'delete_scf',
+                                      onDataTrue: () {
+                                        _onDeletePayment();
+                                      },
+                                    )
+                                );
+                              }
+                            });
+
 
                           },
                           child: Row(
