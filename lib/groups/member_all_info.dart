@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'file:///C:/Users/szasa/FlutterProjects/csocsort_szamla/lib/groups/dialogs/change_nickname_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import 'dialogs/change_nickname_dialog.dart';
 import 'dialogs/confirm_leave_dialog.dart';
 import 'join_group.dart';
 
