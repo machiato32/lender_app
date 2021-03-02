@@ -188,7 +188,7 @@ class _ShoppingListState extends State<ShoppingList> {
               Column(
                 children: [
                   SizedBox(
-                    height: 212,
+                    height: 220,
                   ),
                   Expanded(
                     child: FutureBuilder(

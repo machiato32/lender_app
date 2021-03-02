@@ -279,8 +279,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     clearAllCache();
     http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
     if(memberId==null){
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      if(decoded!=null){
+      if(response.body!=""){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
         saveGroupName(decoded['data']['group_name']);
         saveGroupId(decoded['data']['group_id']);
         saveGroupCurrency(decoded['data']['currency']);

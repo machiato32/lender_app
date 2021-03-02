@@ -289,7 +289,7 @@
 
     "approve_members": "Approve members",
     "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below",
-    "needs_approval": "Admin approval",
+    "needs_approval": "Admin approval needed",
     "download_export": "Download data",
     "download_export_explanation": "Download all group data",
     "download_xls": "Download as an excel table",
@@ -307,5 +307,11 @@
     "modify_payment": "Modify payment",
     "modify_payment_explanation": "Modify a payment if its details changed",
     "modify_purchase": "Modify purchase",
-    "modify_purchase_explanation": "Modify a purchase if its details changed"
+    "modify_purchase_explanation": "Modify a purchase if its details changed",
+
+    "not_in_group": "You are not a member of this group!",
+
+    "approve_still_needed": "The request to join the group was sent, it needs to be approved by the group's admins. Be patient, you will be receiving a notification.",
+    "approve": "Approve",
+    "disapprove": "Disapprove"
 }

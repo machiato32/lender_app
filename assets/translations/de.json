@@ -289,7 +289,7 @@
 
     "approve_members": "Mitgliedsanfragen genehmigen",
     "approve_members_explanation": "Genehmige das Beitreten von neuen Mitgliedern. Unten kannst du auswählen ob eine Genehmigung nötig ist",
-    "needs_approval": "Admin genehmigung",
+    "needs_approval": "Admin Genehmigung nötig",
     "download_export": "Daten runterladen",
     "download_export_explanation": "Lade alle Daten dieser Gruppe runter",
     "download_xls": "Als Excel Tabelle runterladen",
@@ -307,5 +307,11 @@
     "modify_payment": "Zahlung bearbeiten",
     "modify_payment_explanation": "Bearbeite die Zahlung, falls sich etwas geändert hat",
     "modify_purchase": "Einkauf bearbeiten",
-    "modify_purchase_explanation": "Bearbeite den Einkauf, falls sich etwas geändert hat"
+    "modify_purchase_explanation": "Bearbeite den Einkauf, falls sich etwas geändert hat",
+
+    "not_in_group": "Du bist nicht Mitglied dieser Gruppe!",
+
+    "approve_still_needed": "Deine Mitgliedsanfrage wurde gesendet und muss jetzt von den Admins genehmingt werden. Wir werden dir eine Benachrichtigung senden wenn das passiert.",
+    "approve": "Engedélyezés",
+    "disapprove": "Elutasítás"
 }

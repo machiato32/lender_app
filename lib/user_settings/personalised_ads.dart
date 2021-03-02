@@ -18,7 +18,7 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
     try{
       if(personalisedAds!=_personalisedAds){
         Map<String, dynamic> body = {
-          "personalised_ads":_personalisedAds
+          "personalised_ads":_personalisedAds?"on":"off"
         };
         await httpPut(context: context, uri: '/user', body: body);
         personalisedAds=_personalisedAds;

@@ -289,7 +289,7 @@
 
     "approve_members": "Jelentkezések elfogadása",
     "approve_members_explanation": "Fogadd el az új tagok jelentkezését a csoportba. Lent változtathatod, az adminok beleegyezésének  szükségességét",
-    "needs_approval": "Admin beleegyezés",
+    "needs_approval": "Admin beleegyezés szükséges",
     "download_export": "Letölthető adatok",
     "download_export_explanation": "Töltsd le a csoport összes adatát",
     "download_xls": "Letöltés excel táblázatként",
@@ -301,12 +301,14 @@
     "statistics_explanation": "A csoport statisztikái grafikusan ábrázolva",
     "coming_soon": "Nem sokára elérhető",
 
-    "cannot_modify_element_deleted_member": "Nem módosíthatod az elemet, mert az kilépett tagot tartalmaz",
-    "cannot_delete_element_deleted_member": "Nem vonhatod vissza az elemet, mert az kilépett tagot tartalmaz",
-
     "modify_payment": "Fizetés módosítása",
     "modify_payment_explanation": "Módosítsd a fizetést, ha változtak a részletei",
     "modify_purchase": "Vásárlás módósítása",
-    "modify_purchase_explanation": "Módosítsd a vásárlást, ha változtak a részletei"
+    "modify_purchase_explanation": "Módosítsd a vásárlást, ha változtak a részletei",
 
+    "not_in_group": "Nem vagy a csoport tagja!",
+
+    "approve_still_needed": "A belépési kérelmet elküldtük, a belépéshez a csoport adminjának beleegyezése szükséges. Ha az megtörtént, étesítést fogsz kapni, addig várj türelemmel.",
+    "approve": "Engedélyezés",
+    "disapprove": "Elutasítás"
 }

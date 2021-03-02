@@ -178,11 +178,14 @@ class _LenderAppState extends State<LenderApp> {
       Map<String, dynamic> decoded = jsonDecode(payload);
       int groupId = decoded['group_id'];
       String groupName = decoded['group_name'];
+      String currency = decoded['group_currency'];
       String page = decoded['screen'];
       String details = decoded['details'];
       if(usersGroupIds.contains(groupId)){
         saveGroupId(groupId);
         saveGroupName(groupName);
+        if(currency!=null)
+          saveGroupCurrency(currency);
       }
       clearAllCache();
       if(currentUserId!=null){
