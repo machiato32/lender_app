@@ -41,6 +41,12 @@ class _CreateGroupState extends State<CreateGroup> {
       saveGroupName(decoded['group_name']);
       saveGroupId(decoded['group_id']);
       saveGroupCurrency(decoded['currency']);
+      if(usersGroups==null){
+        usersGroups=List<String>();
+        usersGroupIds=List<int>();
+      }
+      usersGroups.add(decoded['group_name']);
+      usersGroupIds.add(decoded['group_id']);
       Future.delayed(delayTime()).then((value) => _onCreateGroup());
       return true;
     } catch (_) {
@@ -55,7 +61,7 @@ class _CreateGroupState extends State<CreateGroup> {
         MaterialPageRoute(
             builder: (context) => MainPage()
         ),
-            (r) => false
+        (r) => false
     );
   }
 

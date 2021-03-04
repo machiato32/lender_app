@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:expandable/expandable.dart';
@@ -376,6 +376,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     GradientButton(
                       child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
                       onPressed: () {
+                        FocusScope.of(context).unfocus();
                         if (_formKey.currentState.validate()) {
                           String username = _usernameController.text;
                           String passwordReminder = _passwordReminderController.text;
@@ -510,18 +511,12 @@ class _RegisterPageState extends State<RegisterPage> {
           headers: header, body: bodyEncoded);
       if (response.statusCode == 201) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        apiToken = decoded['api_token'];
-        currentUsername = decoded['username'];
-        currentUserId = decoded['id'];
         showAds=false;
         useGradients=true;
         trialVersion=true;
-
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_username', currentUsername);
-          _prefs.setInt('current_user_id', currentUserId);
-          _prefs.setString('api_token', apiToken);
-        });
+        saveApiToken(decoded['api_token']);
+        saveUsername(decoded['username']);
+        saveUserId(decoded['id']);
         await clearAllCache();
         Future.delayed(delayTime()).then((value) => _onRegister());
         return true;

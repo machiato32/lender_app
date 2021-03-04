@@ -66,14 +66,14 @@ void setup(){
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  if (message.containsKey('data')) {
-
-  }
-
-  print("background: "+message.toString());
-
-  if (message.containsKey('notification')) {
-  }
+  // if (message.containsKey('data')) {
+  //
+  // }
+  //
+  // print("background: "+message.toString());
+  //
+  // if (message.containsKey('notification')) {
+  // }
 
   // Or do other work.
 }
@@ -186,6 +186,18 @@ class _LenderAppState extends State<LenderApp> {
         saveGroupName(groupName);
         if(currency!=null)
           saveGroupCurrency(currency);
+      }
+      if(details=='added_to_group'){//TODO: dominik
+        saveGroupId(groupId);
+        saveGroupName(groupName);
+        if(usersGroups==null){
+          usersGroups=List<String>();
+          usersGroupIds=List<int>();
+        }
+        usersGroups.add(groupName);
+        usersGroupIds.add(groupId);
+        saveUsersGroups();
+        saveUsersGroupIds();
       }
       clearAllCache();
       if(currentUserId!=null){
@@ -346,8 +358,12 @@ class _LenderAppState extends State<LenderApp> {
       useGradients=decoded['data']['gradients_enabled']==1;
       personalisedAds=decoded['data']['personalised_ads']==1;
       trialVersion=decoded['data']['trial']==1;
+      if(currentGroupId==null && decoded['data']['last_active_group']!=""){
+        currentGroupId=decoded['data']['last_active_group'];
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(),));
+      }
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      if(!useGradients && preferences.getString('theme').toLowerCase().contains('gradient')){
+      if(!useGradients && preferences.getString('theme').contains('Gradient')){
         preferences.setString('theme', 'greenLightTheme');
       }
     }catch(_){
@@ -426,6 +442,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     http.Response response = await httpGet(context: context, uri: '/groups');
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
+    usersGroups=groups.map<String>((group) => group.groupName).toList();
+    usersGroupIds=groups.map<int>((group) => group.groupId).toList();
+    saveUsersGroups();
+    saveUsersGroupIds();
     for (var group in decoded['data']) {
       groups.add(
         Group(
@@ -471,12 +491,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       deleteGuestNickname();
       deleteGuestGroupId();
       deleteGuestApiToken();
-      usersGroups=null;
-      usersGroupIds=null;
-      SharedPreferences.getInstance().then((_prefs) {
-        _prefs.remove('users_groups');
-        _prefs.remove('users_group_ids');
-      });
+      deleteUsersGroups();
+      deleteUsersGroupIds();
     } catch (_) {
       throw _;
     }
@@ -496,14 +512,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
         onTap: () async {
           await clearAllCache();
-          currentGroupName = group.groupName;
-          currentGroupId = group.groupId;
-          currentGroupCurrency = group.groupCurrency;
-          SharedPreferences.getInstance().then((_prefs) {
-            _prefs.setString('current_group_name', group.groupName);
-            _prefs.setInt('current_group_id', group.groupId);
-            _prefs.setString('current_group_currency', group.groupCurrency);
-          });
+          saveGroupName(group.groupName);
+          saveGroupId(group.groupId);
+          saveGroupCurrency(group.groupCurrency);
           setState(() {
             _selectedIndex = 0;
             _tabController.animateTo(_selectedIndex);

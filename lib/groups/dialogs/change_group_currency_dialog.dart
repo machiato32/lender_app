@@ -1,10 +1,10 @@
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/main.dart';
@@ -25,11 +25,9 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
       await httpPut(
           uri: '/groups/' + currentGroupId.toString(),
           context: context,
-          body: body);
-      currentGroupCurrency=code;
-      SharedPreferences.getInstance().then((prefs){
-        prefs.setString('current_group_currency', currentGroupCurrency);
-      });
+          body: body
+      );
+      saveGroupCurrency(code);
       Future.delayed(delayTime()).then((value) => _onUpdateGroupCurrency());
       return true;
 

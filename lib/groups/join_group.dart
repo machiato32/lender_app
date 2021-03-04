@@ -61,6 +61,15 @@ class _JoinGroupState extends State<JoinGroup> {
         saveGroupName(decoded['data']['group_name']);
         saveGroupId(decoded['data']['group_id']);
         saveGroupCurrency(decoded['data']['currency']);
+        if(usersGroups==null){
+          usersGroupIds=List<int>();
+          usersGroups=List<String>();
+        }
+        usersGroupIds.add(decoded['data']['group_id']);
+        usersGroups.add(decoded['data']['group_name']);
+        saveUsersGroupIds();
+        saveUsersGroups();
+        //TODO: english deutsch
         Future.delayed(delayTime()).then((value) => _onJoinGroup());
       }else{
         return false;

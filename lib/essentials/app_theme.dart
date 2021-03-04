@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-//TODO: material.io template should be used...
-
 class AppTheme {
   AppTheme._();
 

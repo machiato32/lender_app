@@ -1,11 +1,11 @@
 
 import 'dart:io';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 
@@ -53,10 +53,9 @@ Widget errorToast(String msg, BuildContext context){
 void memberNotInGroup(BuildContext context){
   usersGroupIds.remove(currentGroupId);
   usersGroups.remove(currentGroupName);
-  SharedPreferences.getInstance().then((prefs) {
-    prefs.setStringList('users_groups', usersGroups);
-    prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-  });//TODO:currency DOMINIK MEG TUDJA OLDANI
+  saveUsersGroupIds();
+  saveUsersGroups();
+  //TODO:currency DOMINIK MEG TUDJA OLDANI
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.removeQueuedCustomToasts();
@@ -81,8 +80,10 @@ void memberNotInGroup(BuildContext context){
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (context) => JoinGroup()),
-            (r) => false);
+            builder: (context) => JoinGroup(fromAuth: true,)
+        ),
+        (r) => false
+    );
   }
 
 }
@@ -156,6 +157,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        //TODO: lehet itt dobja a random hibat
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(

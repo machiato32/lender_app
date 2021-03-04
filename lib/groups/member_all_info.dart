@@ -11,7 +11,6 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import 'dialogs/change_nickname_dialog.dart';
@@ -317,10 +316,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     }else{
       usersGroupIds.remove(currentGroupId);
       usersGroups.remove(currentGroupName);
-      SharedPreferences.getInstance().then((prefs) {
-        prefs.setStringList('users_groups', usersGroups);
-        prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-      });
+      saveUsersGroupIds();
+      saveUsersGroups();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
