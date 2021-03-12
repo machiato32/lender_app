@@ -310,5 +310,16 @@
 
     "approve_still_needed": "A belépési kérelmet elküldtük, a belépéshez a csoport adminjának beleegyezése szükséges. Ha az megtörtént, étesítést fogsz kapni, addig várj türelemmel.",
     "approve": "Engedélyezés",
-    "disapprove": "Elutasítás"
+    "disapprove": "Elutasítás",
+
+    "purchase_notification": "Bevásárlások",
+
+    "purchase_created_notification": "Új bevásárlás",
+    "purchase_created_notification_explanation": "Itt jelennek meg az új bevásárlásokról érkező értesítések",
+
+    "purchase_modified_notification": "Szerkesztett bevásárlás",
+    "purchase_modified_notification_explanation": "Itt jelennek meg a szerkesztett bevásárlásokról érkező értesítések",
+
+    "purchase_deleted_notification": "Visszavont bevásárlás",
+    "purchase_deleted_notification_explanation": "Itt jelennek meg a visszavont bevásárlásokról érkező értesítések"
 }

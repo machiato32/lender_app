@@ -21,7 +21,6 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -80,9 +79,6 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(
-      debug: false // optional: set false to disable printing logs to console
-  );
   InAppPurchaseConnection.enablePendingPurchases();
   Admob.initialize();
   setup();
@@ -181,12 +177,7 @@ class _LenderAppState extends State<LenderApp> {
       String currency = decoded['group_currency'];
       String page = decoded['screen'];
       String details = decoded['details'];
-      if(usersGroupIds.contains(groupId)){
-        saveGroupId(groupId);
-        saveGroupName(groupName);
-        if(currency!=null)
-          saveGroupCurrency(currency);
-      }
+
       if(details=='added_to_group'){//TODO: dominik
         saveGroupId(groupId);
         saveGroupName(groupName);
@@ -198,6 +189,11 @@ class _LenderAppState extends State<LenderApp> {
         usersGroupIds.add(groupId);
         saveUsersGroups();
         saveUsersGroupIds();
+      }else if(usersGroupIds!=null && usersGroupIds.contains(groupId)){
+        saveGroupId(groupId);
+        saveGroupName(groupName);
+        if(currency!=null)
+          saveGroupCurrency(currency);
       }
       clearAllCache();
       if(currentUserId!=null){
@@ -219,6 +215,29 @@ class _LenderAppState extends State<LenderApp> {
     {
       print(e.toString());
     }
+  }
+
+  void _createNotificationChannels(String groupId, List<String> channels){
+    AndroidNotificationChannelGroup androidNotificationChannelGroup =
+    AndroidNotificationChannelGroup(groupId, (groupId+'_notification').tr());
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        .createNotificationChannelGroup(androidNotificationChannelGroup);
+
+    for(String channel in channels){
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .createNotificationChannel(
+          AndroidNotificationChannel(
+            channel,
+            (channel+'_notification').tr(),
+            (channel+'_notification_explanation').tr(),
+            groupId: groupId,
+          )
+      );
+    }
+
   }
 
   @override
@@ -277,10 +296,16 @@ class _LenderAppState extends State<LenderApp> {
     new AndroidInitializationSettings('@drawable/dodo_white');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
+
+    _createNotificationChannels('group_system', ['other', 'group_update']);
+    _createNotificationChannels('purchase', ['purchase_created', 'purchase_modified', 'purchase_deleted']);
+    _createNotificationChannels('payment', ['payment_created', 'payment_modified', 'payment_deleted']);
+    _createNotificationChannels('shopping', ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
+
     initUniLinks();
     _link = widget.initURL;
 
@@ -288,26 +313,24 @@ class _LenderAppState extends State<LenderApp> {
       _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
-          var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-              '1234',
-              'Lender',
-              'Lender',
-              playSound: false,
-              importance: Importance.High,
-              priority: Priority.Default,
-              styleInformation: BigTextStyleInformation('')
-          );
-          var iOSPlatformChannelSpecifics =
-          new IOSNotificationDetails(presentSound: false);
-          var platformChannelSpecifics = new NotificationDetails(
-              androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-          flutterLocalNotificationsPlugin.show(
-              int.parse(message['data']['id'])??0,
-              message['notification']['title'],
-              message['notification']['body'],
-              platformChannelSpecifics,
-              payload: message['data']['payload']
-          );
+          Map<String, dynamic> decoded = jsonDecode(message['data']['payload']);
+          print(decoded);
+          // var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+          //     message['data']['payload']['channel_id'],
+          //     (message['data']['payload']['channel_id']+'_notification').tr(),
+          //     (message['data']['payload']['channel_id']+'_notification_explanation').tr()
+          // );
+          // var iOSPlatformChannelSpecifics =
+          // new IOSNotificationDetails(presentSound: false);
+          // var platformChannelSpecifics = new NotificationDetails(
+          //     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+          // flutterLocalNotificationsPlugin.show(
+          //     int.parse(message['data']['id'])??0,
+          //     message['notification']['title'],
+          //     message['notification']['body'],
+          //     platformChannelSpecifics,
+          //     payload: message['data']['payload']
+          // );
         },
         onBackgroundMessage: myBackgroundMessageHandler,
         onLaunch: (Map<String, dynamic> message) async {

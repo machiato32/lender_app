@@ -1,8 +1,11 @@
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../config.dart';
 
@@ -14,19 +17,21 @@ class DownloadExportDialog extends StatefulWidget {
 
 class _DownloadExportDialogState extends State<DownloadExportDialog> {
 
-  Future<void> _downloadXls() async {
-    String path = Theme.of(context).platform == TargetPlatform.android
-        ? '/storage/emulated/0/Download'
-        : '';//TODO
-    await FlutterDownloader.enqueue(
-      headers: {
-        "Authorization": "Bearer " +(apiToken==null?'':apiToken)
-      },
-      url: (useTest?TEST_URL:APP_URL)+'/groups/'+currentGroupId.toString()+'/export',
-      savedDir: path,
-      showNotification: true,
-      openFileFromNotification: true
-    );
+  Future<bool> _downloadXls() async {
+    try{
+      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/export/get_link');
+      String url = response.body;
+      Future.delayed(delayTime()).then((value) => _onDownloadXls(url));
+      return true;
+    }catch(_){
+      throw _;
+    }
+  }
+
+  void _onDownloadXls(String url){
+    Navigator.pop(context);
+    launch(url);
+
   }
 
   @override
@@ -51,7 +56,14 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                 GradientButton(
                   child: Icon(Icons.table_chart, color: Theme.of(context).colorScheme.onSecondary),
                   onPressed: (){
-                    _downloadXls();
+                    showDialog(
+                      context: context,
+                      builder: (context){
+                        return FutureSuccessDialog(
+                          future: _downloadXls(),
+                        );
+                      }
+                    );
                   },
                 ),
               ],

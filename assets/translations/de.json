@@ -98,7 +98,7 @@
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
+    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel oder sag den Anderen bescheid, dass du gerade Einkaufen bist",
     "history_explanation": "Verfolge, ziehe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
@@ -312,6 +312,47 @@
     "not_in_group": "Du bist nicht Mitglied dieser Gruppe!",
 
     "approve_still_needed": "Deine Mitgliedsanfrage wurde gesendet und muss jetzt von den Admins genehmingt werden. Wir werden dir eine Benachrichtigung senden wenn das passiert.",
-    "approve": "Engedélyezés",
-    "disapprove": "Elutasítás"
+    "approve": "Genehmigen",
+    "disapprove": "Ablehnen",
+
+    "purchase_notification": "Einkäufe",
+
+    "purchase_created_notification": "Neue Einkäufe",
+    "purchase_created_notification_explanation": "Benachrichtigungen der neuen Einkäufe werden hier angezeigt",
+
+    "purchase_modified_notification": "Modifizierte Einkäufe",
+    "purchase_modified_notification_explanation": "Benachrichtigungen der modifizierten Einkäufe werden hier angezeigt",
+
+    "purchase_deleted_notification": "Zurückgezogene Einkäufe",
+    "purchase_deleted_notification_explanation": "Benachrichtigungen der zurückgezogenen Einkäufe werden hier angezeigt",
+
+    "payment_notification": "Zahlungen",
+
+    "payment_created_notification": "Neue Zahlungen",
+    "payment_created_notification_explanation": "Benachrichtigungen von neuen Zahlungen werden hier angezeigt",
+
+    "payment_modified_notification": "Modifizierte Zahlungen",
+    "payment_modified_notification_explanation": "Benachrichtigungen von modifizierten Zahlungen werden hier angezeigt",
+
+    "payment_deleted_notification": "Zurückgezogene Zahlungen",
+    "payment_deleted_notification_explanation": "Benachrichtigungen von zurückgezogenen Zahlungen werden hier angezeigt",
+
+    "shopping_notification": "Einkaufszettel",
+
+    "shopping_created_notification": "Neue Wünsche",
+    "shopping_created_notification_explanation": "Benachrichtigungen von neuen Wünschen werden hier angezeigt",
+
+    "shopping_fulfilled_notification": "Erledigte Wünsche",
+    "shopping_fulfilled_notification_explanation": "Benachrichtigungen von erledigten Wünchen werden hier angezeigt",
+
+    "shopping_shop_notification": "Jemand ist Einkaufen",
+    "shopping_shop_notification_explanation": "Benachrichtigungen die du bekommst wenn Jemand einkaufen ist",
+
+    "group_system_notification":"Gruppen- und Systembenachrichtigungen",
+
+    "other_notification": "Alles andere",
+    "other_notification_explanation": "Alle anderen Benachrichtigungen",
+
+    "group_update_notification": "Alle Gruppenupdates",
+    "group_update_notification_explanation": "Zum Beispiel Namesänderungen, neue Mitglieder usw."
 }

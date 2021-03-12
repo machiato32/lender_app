@@ -20,6 +20,8 @@ class BoostGroup extends StatefulWidget {
 
 class _BoostGroupState extends State<BoostGroup> {
 
+  Future<Map<String, dynamic>> _boostNumber;
+
   Future<Map<String, dynamic>> _getBoostNumber() async {
     try{
       http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
@@ -53,19 +55,26 @@ class _BoostGroupState extends State<BoostGroup> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _boostNumber=null;
+    _boostNumber=_getBoostNumber();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text('boost_group'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
             SizedBox(height: 10),
             Text('boost_group_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             FutureBuilder(
-              future: _getBoostNumber(),
+              future: _boostNumber,
               builder: (context, snapshot){
                 if(snapshot.connectionState==ConnectionState.done){
                   if(snapshot.hasData){
@@ -124,7 +133,7 @@ class _BoostGroupState extends State<BoostGroup> {
                       ],
                     );
                   }else{
-                    return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { });});
+                    return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { _boostNumber=null; _boostNumber=_getBoostNumber(); });});
                   }
                 }
                 return CircularProgressIndicator();
