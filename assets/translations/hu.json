@@ -321,5 +321,35 @@
     "purchase_modified_notification_explanation": "Itt jelennek meg a szerkesztett bevásárlásokról érkező értesítések",
 
     "purchase_deleted_notification": "Visszavont bevásárlás",
-    "purchase_deleted_notification_explanation": "Itt jelennek meg a visszavont bevásárlásokról érkező értesítések"
+    "purchase_deleted_notification_explanation": "Itt jelennek meg a visszavont bevásárlásokról érkező értesítések",
+
+    "payment_notification": "Fizetések",
+
+    "payment_created_notification": "Új fizetések",
+    "payment_created_notification_explanation": "Az új fizetésekről érkező értesítések",
+
+    "payment_modified_notification": "Módosított fizetések",
+    "payment_modified_notification_explanation": "A módosított fizetésekről érkező értesítések",
+
+    "payment_deleted_notification": "Visszavont fizetések",
+    "payment_deleted_notification_explanation": "A visszavont fizetésekről érkező értesítések",
+
+    "shopping_notification": "Bevásárlólista",
+
+    "shopping_created_notification": "Új kérések",
+    "shopping_created_notification_explanation": "Az új kérésekről érkező értesítések",
+
+    "shopping_fulfilled_notification": "Kipipált kérések",
+    "shopping_fulfilled_notification_explanation": "A kipipált kérésekről érkező értesítések",
+
+    "shopping_shop_notification": "Valaki épp bevásárol",
+    "shopping_shop_notification_explanation": "Akkor érkező értesítések, mikor valaki bevásárol",
+
+    "group_system_notification":"Csoport- és rendszerértesítések",
+
+    "other_notification": "Minden más",
+    "other_notification_explanation": "Az összes többi értesítés",
+
+    "group_update_notification": "Csoprtfrissítések",
+    "group_update_notification_explanation": "Pl. névváltoztatások, új tagok stb."
 }
