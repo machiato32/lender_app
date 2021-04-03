@@ -155,7 +155,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                     );
                                   }
                                 }
-                                return LinearProgressIndicator();
+                                return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
                               },
                             ),
                           ),
@@ -219,7 +219,7 @@ class _GroupSettingState extends State<GroupSettings> {
                       );
                     }
                   }
-                  return LinearProgressIndicator();
+                  return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
                 }),
           ],
         ),

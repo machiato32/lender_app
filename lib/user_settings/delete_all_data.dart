@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../essentials/widgets/gradient_button.dart';
+import '../essentials/save_preferences.dart';
 
 class DeleteAllData extends StatefulWidget {
   @override
@@ -17,6 +18,14 @@ class _DeleteAllDataState extends State<DeleteAllData> {
   Future<bool> _deleteAllData() async {
     try{
       await httpDelete(context: context, uri: '/user');
+      clearAllCache();
+      deleteUserId();
+      deleteUsersGroupIds();
+      deleteUsername();
+      deleteUsersGroups();
+      deleteGroupName();
+      deleteGroupId();
+      deleteGroupCurrency();
       Future.delayed(delayTime()).then((value) => _onDeleteAllData());
       return true;
     }catch(_){
@@ -25,6 +34,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
   }
 
   void _onDeleteAllData(){
+
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

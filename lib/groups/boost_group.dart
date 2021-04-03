@@ -136,7 +136,7 @@ class _BoostGroupState extends State<BoostGroup> {
                     return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { _boostNumber=null; _boostNumber=_getBoostNumber(); });});
                   }
                 }
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               },
             ),
 
