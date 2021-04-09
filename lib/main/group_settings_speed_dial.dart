@@ -48,7 +48,10 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GradientButton(
-                      child: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
+                      child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.onSecondary, BlendMode.srcIn),
+                          child: Image.asset('assets/dodo_color.png', width: 25,)
+                      ),
                       onPressed: (){
                         Navigator.push(
                             context,

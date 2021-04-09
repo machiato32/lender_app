@@ -821,7 +821,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     );
                   }
                 },
-                leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
+                leading: ColorFiltered(
+                  colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyText1.color, BlendMode.srcIn),
+                  child: Image.asset('assets/dodo_color.png', width: 25,)
+                ),
                 subtitle: trialVersion?
                   Text('trial_version'.tr().toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).colorScheme.primary),
@@ -895,7 +898,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: _selectedIndex==2?
         GroupSettingsSpeedDial()
-
         :
         Visibility(
           visible: _selectedIndex == 0,

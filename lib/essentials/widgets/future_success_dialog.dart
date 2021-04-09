@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
+import 'package:rive/rive.dart';
 
 class FutureSuccessDialog extends StatefulWidget {
   final Widget dataTrue;
@@ -34,26 +36,50 @@ class FutureSuccessDialog extends StatefulWidget {
 }
 
 class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
-  Widget dataTrue, dataFalse, noData;
-  Function onDataFalse;
-  Function onNoData;
+  Function _onDataFalse;
+  Function _onNoData;
+
+  /// Tracks if the animation is playing by whether controller is running.
+  bool get isPlaying => _controller?.isActive ?? false;
+
+  Artboard _riveArtboard;
+  RiveAnimationController _controller;
+
 
   @override
   void initState() {
-    onDataFalse = widget.onDataFalse;
-    onNoData = widget.onNoData;
-
-    if (onDataFalse == null) {
-      onDataFalse = () {
-        Navigator.pop(context);
-      };
-    }
-    if (onNoData == null) {
-      onNoData = () {
-        Navigator.pop(context);
-      };
-    }
     super.initState();
+    _onDataFalse = widget.onDataFalse;
+    _onNoData = widget.onNoData;
+
+    if (_onDataFalse == null) {
+      _onDataFalse = () {
+        Navigator.pop(context);
+      };
+    }
+    if (_onNoData == null) {
+      _onNoData = () {
+        Navigator.pop(context);
+      };
+    }
+
+    rootBundle.load('assets/pipa.riv').then(
+          (data) async {
+        final file = RiveFile();
+
+        // Load the RiveFile from the binary data.
+        if (file.import(data)) {
+          // The artboard is the root of the animation and gets drawn in the
+          // Rive widget.
+          final artboard = file.mainArtboard;
+          // Add a controller to play back a known animation on the main/default
+          // artboard.We store a reference to it so we can toggle playback.
+          artboard.addController(_controller = SimpleAnimation('go'));
+          _riveArtboard = artboard;
+        }
+      },
+    );
+
   }
 
   Widget _buildDataTrue() {
@@ -61,46 +87,19 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
       // if(true){
       //   return Container();
       // }
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.primary, size: 50,),
-          // Flexible(
-          //     child: Text(
-          //   widget.dataTrueText.tr(),
-          //   style: Theme.of(context)
-          //       .textTheme
-          //       .bodyText1
-          //       .copyWith(color: Colors.white),
-          //   textAlign: TextAlign.center,
-          // )),
-          // SizedBox(
-          //   height: 15,
-          // ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     GradientButton(
-          //       child: Row(
-          //         children: [
-          //           Icon(Icons.check,
-          //               color: Theme.of(context).colorScheme.onSecondary),
-          //           SizedBox(width: 3,),
-          //           Text('okay'.tr(),
-          //             style: Theme.of(context).textTheme.button,
-          //           ),
-          //         ],
-          //       ),
-          //       onPressed: () {
-          //         widget.onDataTrue();
-          //       },
-          //       useShadow: false,
-          //     ),
-          //   ],
-          // )
-        ],
-      );
-    }
+      // return Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.primary, size: 50,);
+      return _riveArtboard == null
+          ? Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.secondary, size: 50,)
+          : ColorFiltered(
+            colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.secondary, BlendMode.srcIn),
+            child: Container(
+                height: 60,
+                width: 60,
+                child: Rive(artboard: _riveArtboard)
+              ),
+          );
+
+  }
     return widget.dataTrue;
   }
 
@@ -129,7 +128,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                 color: Colors.white,
               ),
               onPressed: () {
-                onDataFalse();
+                _onDataFalse();
               },
               label: Text(
                 'back'.tr(),
@@ -172,7 +171,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                 color: Colors.white,
               ),
               onPressed: () {
-                onNoData();
+                _onNoData();
               },
               label: Text(
                 'back'.tr(),

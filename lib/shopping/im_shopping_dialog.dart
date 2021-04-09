@@ -44,37 +44,43 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('where'.tr()),
-              TextFormField(
-                validator: (value){
-                  value=value.trim();
-                  if (value.isEmpty) {
-                    return 'field_empty'.tr();
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'store'.tr(),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color:
-                        Theme.of(context).colorScheme.onSurface),
+              Text('where'.tr(), style: Theme.of(context).textTheme.headline6,),
+              SizedBox(height: 10,),
+              Text('im_shopping_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
+              SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextFormField(
+                  validator: (value){
+                    value=value.trim();
+                    if (value.isEmpty) {
+                      return 'field_empty'.tr();
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'store'.tr(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color:
+                          Theme.of(context).colorScheme.onSurface),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
-                  ),
+                  controller: _controller,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color:
+                      Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(20)
+                  ],
                 ),
-                controller: _controller,
-                style: TextStyle(
-                    fontSize: 20,
-                    color:
-                    Theme.of(context).textTheme.bodyText1.color),
-                cursorColor: Theme.of(context).colorScheme.secondary,
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(20)
-                ],
               ),
               SizedBox(height: 10,),
               Row(
@@ -97,7 +103,7 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
                         );
                       }
                     },
-                    child: Text('send'.tr(), style: Theme.of(context).textTheme.button),
+                    child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
                   ),
                 ],
               )

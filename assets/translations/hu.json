@@ -351,5 +351,9 @@
     "other_notification_explanation": "Az összes többi értesítés",
 
     "group_update_notification": "Csoprtfrissítések",
-    "group_update_notification_explanation": "Pl. névváltoztatások, új tagok stb."
+    "group_update_notification_explanation": "Pl. névváltoztatások, új tagok stb.",
+
+    "im_shopping_explanation": "A barátaid értesítést kapnak róla, hogy hol vagy",
+
+    "just_few_things_left": "Már csak néhány mező van hátra"
 }

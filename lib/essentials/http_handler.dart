@@ -135,7 +135,7 @@ Future clearAllCache() async {
 }
 
 Duration delayTime(){
-  return Duration(milliseconds: 300);
+  return Duration(milliseconds: 500);
 }
 
 Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true, bool useGuest=false}) async {

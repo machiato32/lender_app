@@ -188,7 +188,7 @@ class _ShoppingListState extends State<ShoppingList> {
               Column(
                 children: [
                   SizedBox(
-                    height: 220,
+                    height: 250,
                   ),
                   Expanded(
                     child: FutureBuilder(
@@ -239,6 +239,7 @@ class _ShoppingListState extends State<ShoppingList> {
                 ],
               ),
               Container(
+                height: 260,
                 color: Colors.transparent,
                 child: Card(
                   // color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
@@ -270,73 +271,76 @@ class _ShoppingListState extends State<ShoppingList> {
                         SizedBox(
                           height: 20,
                         ),
-                        Row(
-                          children: <Widget>[
-                            Flexible(
-                              child: TextFormField(
-                                validator: (value) {
-                                  value=value.trim();
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 2) {
-                                    return 'minimal_length'.tr(args: ['2']);
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'wish'.tr(),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                        Theme.of(context).colorScheme.onSurface),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: TextFormField(
+                                  validator: (value) {
+                                    value=value.trim();
+                                    if (value.isEmpty) {
+                                      return 'field_empty'.tr();
+                                    }
+                                    if (value.length < 2) {
+                                      return 'minimal_length'.tr(args: ['2']);
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'wish'.tr(),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                          Theme.of(context).colorScheme.onSurface),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          width: 2),
+                                    ),
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        width: 2),
-                                  ),
+                                  controller: _addRequestController,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                      Theme.of(context).textTheme.bodyText1.color),
+                                  cursorColor: Theme.of(context).colorScheme.secondary,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(255)
+                                  ],
                                 ),
-                                controller: _addRequestController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color:
-                                    Theme.of(context).textTheme.bodyText1.color),
-                                cursorColor: Theme.of(context).colorScheme.secondary,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(255)
-                                ],
                               ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            GradientButton(
-                              // color: Theme.of(context).colorScheme.secondary,
-                              child: Icon(Icons.add,
-                                  color: Theme.of(context).colorScheme.onSecondary),
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (_formKey.currentState.validate()) {
-                                  String name = _addRequestController.text;
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      child: FutureSuccessDialog(
-                                        future: _postShoppingRequest(name),
-                                        dataTrueText: 'add_scf',
-                                        onDataTrue: () {
-                                          _onPostShoppingRequest();
-                                        },
-                                        onDataFalse: () {
-                                          Navigator.pop(context);
-                                          setState(() {});
-                                        },
-                                      ));
-                                }
-                              },
-                            ),
-                          ],
+                              SizedBox(
+                                width: 20,
+                              ),
+                              GradientButton(
+                                // color: Theme.of(context).colorScheme.secondary,
+                                child: Icon(Icons.add,
+                                    color: Theme.of(context).colorScheme.onSecondary),
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  if (_formKey.currentState.validate()) {
+                                    String name = _addRequestController.text;
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        child: FutureSuccessDialog(
+                                          future: _postShoppingRequest(name),
+                                          dataTrueText: 'add_scf',
+                                          onDataTrue: () {
+                                            _onPostShoppingRequest();
+                                          },
+                                          onDataFalse: () {
+                                            Navigator.pop(context);
+                                            setState(() {});
+                                          },
+                                        ));
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(height: 10,),
                         Row(
