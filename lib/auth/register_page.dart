@@ -235,7 +235,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     GradientButton(
                       child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                      onPressed: () {
+                      onPressed: () {//TODO: check if username is already used
                         FocusScope.of(context).unfocus();
                         if (_formKey.currentState.validate()) {
                           String username = _usernameController.text;

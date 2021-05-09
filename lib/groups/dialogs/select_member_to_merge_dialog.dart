@@ -59,7 +59,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
           members.add(
               Member(
                 apiToken: member['api_token'],
-                nickname: member['username'],
+                nickname: member['nickname'],
                 memberId: member['user_id']
               )
           );

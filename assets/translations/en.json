@@ -354,5 +354,11 @@
     "other_notification_explanation": "Everything else",
 
     "group_update_notification": "Group updates",
-    "group_update_notification_explanation": "Group updates"
+    "group_update_notification_explanation": "Group updates",
+
+    "im_shopping_explanation": "Your friends will be notified, that you are shopping",
+
+    "just_few_things_left": "Just a few things left",
+
+    "acting_as": "Acting as {}"
 }

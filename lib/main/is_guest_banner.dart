@@ -42,9 +42,9 @@ class _IsGuestBannerState extends State<IsGuestBanner> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // Icon(Icons.account_circle, color: Theme.of(context).colorScheme.primary,),
-                  Text('acting as'.tr(), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
-                  SizedBox(width: 5,),
-                  Text(guestNickname??currentUsername, style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
+                  Text('acting_as'.tr(args: [guestNickname??currentUsername]), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
+                  // SizedBox(width: 5,),
+                  // Text(, style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),),
                 ],
               )
             ],
