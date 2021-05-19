@@ -37,7 +37,8 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
   }
 
   Future<void> _onUpdateGroupCurrency() async {
-    await clearAllCache();
+    await clearGroupCache();
+    await deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

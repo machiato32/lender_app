@@ -36,7 +36,7 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
   }
 
   Future<void> _onAddGuest() async {
-    await clearAllCache();
+    await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

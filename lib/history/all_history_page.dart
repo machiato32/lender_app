@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/essentials/ad_management.dart';
+import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +33,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/purchases?group=' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.purchasesAll),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -53,9 +54,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/payments?group=' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.paymentsAll),
         context: context,
-          overwriteCache: overwriteCache,
+        overwriteCache: overwriteCache,
         useGuest: useGuest
       );
 
@@ -70,29 +71,29 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }
   }
 
-  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
-    if(!reaction){
-      clearAllCache();
+  void callback({bool purchase=false, bool payment=false}) {
+    if(!purchase && !payment){
+      deleteCache(uri: '/payments?group=' + currentGroupId.toString(),);
+      deleteCache(uri: '/purchases?group=' + currentGroupId.toString());
       setState(() {
-        _payments = null;
+        _payments=null;
         _payments = _getPayments(overwriteCache: true);
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
       });
-    }else{
-      setState(() {
-        if(payment){
-          _payments = null;
-          _payments = _getPayments(overwriteCache: true);
-        }
-        if(purchase){
-          _purchases = null;
-          _purchases = _getPurchases(overwriteCache: true);
-        }
-      });
-
+      return;
     }
+    setState(() {
+      if(payment){
+        _payments = null;
+        _payments = _getPayments(overwriteCache: true);
 
+      }
+      if(purchase){
+        _purchases = null;
+        _purchases = _getPurchases(overwriteCache: true);
+      }
+    });
   }
 
   @override
@@ -158,17 +159,16 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                               shrinkWrap: true,
                               children: _generatePurchase(snapshot.data));
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _purchases = null;
-                                  _purchases = _getPurchases();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'purchase_history_page',
+                            callback: (){
+                              setState(() {
+                                _purchases = null;
+                                _purchases = _getPurchases();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(
@@ -189,17 +189,16 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                               shrinkWrap: true,
                               children: _generatePayments(snapshot.data));
                         } else {
-                          return InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Text(snapshot.error.toString()),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _payments = null;
-                                  _payments = _getPayments();
-                                });
+                          return ErrorMessage(
+                            error: snapshot.error.toString(),
+                            locationOfError: 'payment_history_page',
+                            callback: (){
+                              setState(() {
+                                _payments = null;
+                                _payments = _getPayments();
                               });
+                            },
+                          );
                         }
                       }
                       return Center(

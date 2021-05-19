@@ -28,7 +28,7 @@ class _InvitationState extends State<Invitation> {
   Future<String> _getInvitation() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
+          uri: generateUri(GetUriKeys.groupCurrent),
           context: context,
           useCache: false
       );
@@ -43,7 +43,7 @@ class _InvitationState extends State<Invitation> {
   Future<List<Member>> _getUnapprovedMembers() async {
     try{
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString()+'/members/unapproved',
+        uri: generateUri(GetUriKeys.groupUnapprovedMembers),
         context: context,
         useCache: false
       );
@@ -366,7 +366,7 @@ class _ApproveMemberState extends State<ApproveMember> {
   }
 
   void _onPostApproveMember(){
-    clearAllCache();
+    clearGroupCache();
     Navigator.pop(context);
     Navigator.pop(context, true);
   }

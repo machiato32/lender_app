@@ -23,7 +23,7 @@ class _GroupMembersState extends State<GroupMembers> {
   Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
+          uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
           context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];

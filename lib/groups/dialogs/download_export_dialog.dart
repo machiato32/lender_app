@@ -6,9 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'dart:math' as math;
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../config.dart';
-
 class DownloadExportDialog extends StatefulWidget {
 
   @override
@@ -19,7 +16,7 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
 
   Future<bool> _downloadXls() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/export/get_link');
+      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupExportXls));
       String url = response.body;
       Future.delayed(delayTime()).then((value) => _onDownloadXls(url));
       return true;

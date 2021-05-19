@@ -33,7 +33,8 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
     return true;
   }
   void _onMergeGuest(){
-    clearAllCache();
+    clearGroupCache();
+    deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     deleteGuestApiToken();
     deleteGuestGroupId();
     deleteGuestNickname();
@@ -47,7 +48,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
     try {
 
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
+          uri: generateUri(GetUriKeys.groupCurrent),
           context: context,
           useCache: false
       );

@@ -64,7 +64,7 @@ class _BalancesState extends State<Balances> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
         context: context,
         useGuest: useGuest
       );
@@ -331,8 +331,9 @@ class _BalancesState extends State<Balances> {
   Future<String> _getInvitation() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context);
+          uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
+          context: context,
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['invitation'];
 

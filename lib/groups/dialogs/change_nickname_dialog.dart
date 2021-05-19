@@ -42,7 +42,7 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
     _nicknameController.text = '';
     Navigator.pop(context);
     Navigator.pop(context, 'madeAdmin');
-    clearAllCache();
+    clearGroupCache();
   }
 
   @override

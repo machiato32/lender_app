@@ -462,7 +462,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<List<Group>> _getGroups() async {
-    http.Response response = await httpGet(context: context, uri: '/groups');
+    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groups));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
     usersGroups=groups.map<String>((group) => group.groupName).toList();
@@ -485,7 +485,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<String> _getCurrentGroup() async {
-    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
+    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),);
     Map<String, dynamic> decoded = jsonDecode(response.body);
     saveGroupName(decoded['data']['group_name']);
     return currentGroupName;
@@ -493,7 +493,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<dynamic> _getSumBalance() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/balance');
+      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.userBalanceSum));
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     }catch(_){
@@ -534,7 +534,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               : Theme.of(context).textTheme.bodyText1,
         ),
         onTap: () async {
-          await clearAllCache();
           saveGroupName(group.groupName);
           saveGroupId(group.groupId);
           saveGroupCurrency(group.groupCurrency);
@@ -592,10 +591,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<void> callback() async {
-    await clearAllCache();
+    await clearGroupCache();
+    await deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     setState(() {
       _groups = null;
       _groups = _getGroups();
+
     });
   }
 

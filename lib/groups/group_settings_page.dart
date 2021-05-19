@@ -29,7 +29,7 @@ class _GroupSettingState extends State<GroupSettings> {
   Future<bool> _getHasGuests() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString()+'/has_guests',
+          uri: generateUri(GetUriKeys.groupHasGuests, args:[currentGroupId.toString()]),
           context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       print(decoded);
@@ -42,8 +42,9 @@ class _GroupSettingState extends State<GroupSettings> {
   Future<bool> _getIsUserAdmin() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString() + '/member',
-          context: context, useCache: false);
+          uri: generateUri(GetUriKeys.groupMember),
+          context: context, useCache: false
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['is_admin'] == 1;
     } catch (_) {

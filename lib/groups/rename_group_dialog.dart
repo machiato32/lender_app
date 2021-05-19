@@ -47,9 +47,9 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
             builder: (context) =>
                 MainPage()),
             (r) => false);
-    _groupNameController.text =
-    '';
-    clearAllCache();
+    _groupNameController.text ='';
+    clearGroupCache();
+    deleteCache(uri:generateUri(GetUriKeys.groups));
   }
 
   @override

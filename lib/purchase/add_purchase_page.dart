@@ -61,7 +61,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.groupCurrent),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest

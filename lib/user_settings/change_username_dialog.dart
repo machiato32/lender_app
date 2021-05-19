@@ -39,11 +39,12 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                MainPage()),
-            (r) => false);
-    _usernameController.text =
-    '';
-    clearAllCache();
+                MainPage()
+        ),
+        (r) => false
+    );
+    _usernameController.text = '';
+    // clearAllCache();
   }
 
   @override

@@ -40,7 +40,7 @@ class _ShoppingListState extends State<ShoppingList> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/requests?group=' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.requestsAll),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest

@@ -188,7 +188,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     )
                 )
                 .then((val) {
-                  if (val == 'deleted') widget.callback();
+                  if (val == 'deleted') widget.callback(purchase: true);
                 });
               },
               borderRadius: BorderRadius.circular(15),

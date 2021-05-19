@@ -275,7 +275,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     Map<String, dynamic> body ={
       "member_id":memberId??currentUserId
     };
-    clearAllCache();
+
     http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
     if(memberId==null){
       if(response.body!=""){
@@ -296,7 +296,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   }
 
   void _onRemoveMember() async {
-    await clearAllCache();
+    await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

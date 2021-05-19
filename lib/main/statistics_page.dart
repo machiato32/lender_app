@@ -45,7 +45,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
       String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
       String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
       print(startDate);
-      http.Response response = await httpGet(useCache: false, context: context, uri: '/groups/'+currentGroupId.toString()+'/statistics/payments?from_date='+startDate+'&until_date='+endDate);
+      http.Response response = await httpGet(
+          useCache: false,
+          context: context,
+          uri:generateUri(GetUriKeys.statisticsPayments, args:[currentGroupId.toString(), startDate, endDate])
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       Map<DateTime, double> payed = (decoded['data']['payed'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));
@@ -60,7 +64,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
     try{
       String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
       String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
-      http.Response response = await httpGet(useCache: false, context: context, uri: '/groups/'+currentGroupId.toString()+'/statistics/purchases?from_date='+startDate+'&until_date='+endDate);
+      http.Response response = await httpGet(
+          useCache: false,
+          context: context,
+          uri: generateUri(GetUriKeys.statisticsPurchases, args:[currentGroupId.toString(), startDate, endDate])
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       Map<DateTime, double> bought = (decoded['data']['bought'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));
@@ -75,8 +83,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
     try{
       String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
       String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
-      http.Response response = await httpGet(useCache: false, context: context, uri: '/groups/'+currentGroupId.toString()+'/statistics/all?from_date='+startDate+'&until_date='+endDate);
-      Map<String, dynamic> decoded = jsonDecode(response.body);
+      http.Response response = await httpGet(
+          useCache: false,
+          context: context,
+          uri:generateUri(GetUriKeys.statisticsAll, args:[currentGroupId.toString(), startDate, endDate])
+      );
+          Map<String, dynamic> decoded = jsonDecode(response.body);
 
       Map<DateTime, double> purchases = (decoded['data']['purchases'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));
       Map<DateTime, double> payments = (decoded['data']['payments'] as Map<String, dynamic>).map((key, value) => MapEntry(DateTime.parse(key), value*1.0));

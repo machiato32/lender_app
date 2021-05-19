@@ -14,11 +14,57 @@ import '../config.dart';
 import '../groups/join_group.dart';
 import '../main.dart';
 
+enum GetUriKeys {
+  groupHasGuests, groupCurrent, groupMember, groups, userBalanceSum, passwordReminder,
+  groupBoost, groupGuests, groupUnapprovedMembers, groupExportXls, purchasesAll, paymentsAll,
+  purchasesFirst6, paymentsFirst6, statisticsPayments, statisticsPurchases, statisticsAll,
+  requestsAll
+}
+List<String> getUris = [
+  '/groups/{}/has_guests',
+  '/groups/{}',
+  '/groups/{}/member',
+  '/groups',
+  '/balance',
+  '/password_reminder?username={}',
+  '/groups/{}/boost',
+  '/groups/{}/guests',
+  '/groups/{}/members/unapproved',
+  '/groups/{}/export/get_link',
+  '/purchases?group={}',
+  '/payments?group={}',
+  '/purchases?group={}&limit=6',
+  '/payments?group={}&limit=6',
+  '/groups/{}/statistics/payments?from_date={}&until_date={}',
+  '/groups/{}/statistics/purchases?from_date={}&until_date={}',
+  '/groups/{}/statistics/all?from_date={}&until_date={}',
+  '/requests?group={}'
+];//TODO: same for other types
 
-bool needsLogin = false;
+enum HttpType {get, post, put, delete}
+
+String generateUri(GetUriKeys key, {HttpType type=HttpType.get, List<String> args}){
+  if(type==HttpType.get){
+    if(args==null){
+      args=[currentGroupId.toString()];
+    }
+    String uri=getUris[key.index];
+    if(args!=null){
+      for(String arg in args){
+        if(uri.contains('{}')) {
+          uri = uri.replaceFirst('{}', arg);
+        }else {
+          break;
+        }
+      }
+    }
+    return uri;
+  }
+  return '';
+}
+
 
 Widget errorToast(String msg, BuildContext context){
-
   return Container(
     padding: const EdgeInsets.symmetric(
         horizontal: 24.0, vertical: 12.0),
@@ -94,6 +140,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
     if(!cacheDir.existsSync()){
       return null;
     }
+    print(cacheDir.listSync());
     File file = File(cacheDir.path+'/'+fileName);
     if(alwaysReturnCache || (!overwriteCache && (file.existsSync() && DateTime.now().difference(await file.lastModified()).inMinutes<5))){
       // print('from cache');
@@ -122,12 +169,30 @@ Future deleteCache({@required String uri}) async {
   var cacheDir = await getTemporaryDirectory();
   File file = File(cacheDir.path+'/'+fileName);
   if(file.existsSync()){
-    // print('delete cache');
-    file.delete();
+    print('delete cache'+fileName);
+    await file.delete();
+  }
+}
+
+
+Future clearGroupCache() async {
+  var cacheDir = await getTemporaryDirectory();
+  if(cacheDir.existsSync()){
+    List<FileSystemEntity> files = cacheDir.listSync();
+    for(var file in files){
+      if(file is File){
+        String fileName=file.path.split('/').last;
+        if(fileName.contains('groups-'+currentGroupId.toString()) || fileName.contains('group='+currentGroupId.toString())){
+          print('deleting '+fileName);
+          file.deleteSync();
+        }
+      }
+    }
   }
 }
 
 Future clearAllCache() async {
+  print('all cache');
   var cacheDir = await getTemporaryDirectory();
   if(cacheDir.existsSync()){
     cacheDir.delete(recursive: true);
@@ -158,6 +223,7 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         //TODO: lehet itt dobja a random hibat
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -206,6 +272,7 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -249,6 +316,7 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -286,6 +354,7 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
             child: errorToast('login_required', context),

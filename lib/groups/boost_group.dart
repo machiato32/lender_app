@@ -24,7 +24,7 @@ class _BoostGroupState extends State<BoostGroup> {
 
   Future<Map<String, dynamic>> _getBoostNumber() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
+      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupBoost, args: [currentGroupId.toString()]), useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     }catch(_){
@@ -43,7 +43,7 @@ class _BoostGroupState extends State<BoostGroup> {
   }
 
   Future<void> _onPostBoost() async {
-    await clearAllCache();
+    await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
