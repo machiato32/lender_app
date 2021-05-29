@@ -68,26 +68,18 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
-    if(!reaction){
-      widget.callback();
-      _payments = null;
-      _payments = _getPayments(overwriteCache: true);
-      _purchases = null;
-      _purchases = _getPurchases(overwriteCache: true);
-    }else{
-      setState(() {
-        if(payment){
-          _payments = null;
-          _payments = _getPayments(overwriteCache: true);
-        }
-        if(purchase){
-          _purchases = null;
-          _purchases = _getPurchases(overwriteCache: true);
-        }
-      });
-
-    }
+  void callback({bool purchase=false, bool payment=false}) {
+    widget.callback();
+    setState(() {
+      if(payment){
+        _payments = null;
+        _payments = _getPayments(overwriteCache: true);
+      }
+      if(purchase){
+        _purchases = null;
+        _purchases = _getPurchases(overwriteCache: true);
+      }
+    });
 
   }
 

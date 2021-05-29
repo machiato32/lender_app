@@ -55,7 +55,7 @@ class PaymentData {
 
 class PaymentEntry extends StatefulWidget {
   final PaymentData data;
-  final Function callback;
+  final Function({bool purchase, bool payment}) callback;
 
   const PaymentEntry({this.data, this.callback});
 
@@ -155,9 +155,11 @@ class _PaymentEntryState extends State<PaymentEntry> {
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(
-                        child: PaymentAllInfo(widget.data))).then((val) {
-                  if (val == 'deleted') widget.callback(payment: true);
-                });
+                        child: PaymentAllInfo(widget.data)
+                    )
+                ).then((val) {
+                    if (val == 'deleted') widget.callback(purchase: false, payment: true);
+                  });
               },
               borderRadius: BorderRadius.circular(15),
               child: Padding(

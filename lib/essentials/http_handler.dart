@@ -18,7 +18,7 @@ enum GetUriKeys {
   groupHasGuests, groupCurrent, groupMember, groups, userBalanceSum, passwordReminder,
   groupBoost, groupGuests, groupUnapprovedMembers, groupExportXls, purchasesAll, paymentsAll,
   purchasesFirst6, paymentsFirst6, statisticsPayments, statisticsPurchases, statisticsAll,
-  requestsAll
+  requestsAll, purchasesDate, paymentsDate
 }
 List<String> getUris = [
   '/groups/{}/has_guests',
@@ -38,11 +38,14 @@ List<String> getUris = [
   '/groups/{}/statistics/payments?from_date={}&until_date={}',
   '/groups/{}/statistics/purchases?from_date={}&until_date={}',
   '/groups/{}/statistics/all?from_date={}&until_date={}',
-  '/requests?group={}'
+  '/requests?group={}',
+  '/purchases?group={}&from_date={}&until_date={}',
+  '/payments?group={}&from_date={}&until_date={}'
 ];//TODO: same for other types
 
 enum HttpType {get, post, put, delete}
 
+///Generates URI-s from enum values. The default value of [args] is [currentGroupId].
 String generateUri(GetUriKeys key, {HttpType type=HttpType.get, List<String> args}){
   if(type==HttpType.get){
     if(args==null){
@@ -101,7 +104,7 @@ void memberNotInGroup(BuildContext context){
   usersGroups.remove(currentGroupName);
   saveUsersGroupIds();
   saveUsersGroups();
-  //TODO:currency DOMINIK MEG TUDJA OLDANI
+  //TODO:currency DOMINIK MEG TUDJA OLDANI, nem tudni, hogy hova kellene mennie, csak currency nelkul
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.removeQueuedCustomToasts();
@@ -140,7 +143,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
     if(!cacheDir.existsSync()){
       return null;
     }
-    print(cacheDir.listSync());
+    // print(cacheDir.listSync());
     File file = File(cacheDir.path+'/'+fileName);
     if(alwaysReturnCache || (!overwriteCache && (file.existsSync() && DateTime.now().difference(await file.lastModified()).inMinutes<5))){
       // print('from cache');
@@ -163,15 +166,34 @@ Future toCache({@required String uri, @required http.Response response}) async {
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
 }
 
-Future deleteCache({@required String uri}) async {
+///Deletes file at the given [uri] from the cache directory.
+///The [multipleArgs] bool is used for [uri]-s where not all of the [args]
+///are known at the time of the removal. (See [generateUri] function)
+///In this case the [uri] becomes a search word
+Future deleteCache({@required String uri, bool multipleArgs=false}) async {
   uri = uri.substring(1);
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path+'/'+fileName);
-  if(file.existsSync()){
-    print('delete cache'+fileName);
-    await file.delete();
+  if(multipleArgs){
+    if(cacheDir.existsSync()){
+      List<FileSystemEntity> files = cacheDir.listSync();
+      for(var file in files){
+        if(file is File){
+          String fileName=file.path.split('/').last;
+          if(fileName.contains(uri)){
+            file.deleteSync();
+          }
+        }
+      }
+    }
+  }else{
+    File file = File(cacheDir.path+'/'+fileName);
+    if(file.existsSync()){
+      // print('delete cache'+fileName);
+      await file.delete();
+    }
   }
+
 }
 
 
@@ -183,7 +205,7 @@ Future clearGroupCache() async {
       if(file is File){
         String fileName=file.path.split('/').last;
         if(fileName.contains('groups-'+currentGroupId.toString()) || fileName.contains('group='+currentGroupId.toString())){
-          print('deleting '+fileName);
+          // print('deleting '+fileName);
           file.deleteSync();
         }
       }
@@ -192,7 +214,7 @@ Future clearGroupCache() async {
 }
 
 Future clearAllCache() async {
-  print('all cache');
+  // print('all cache');
   var cacheDir = await getTemporaryDirectory();
   if(cacheDir.existsSync()){
     cacheDir.delete(recursive: true);

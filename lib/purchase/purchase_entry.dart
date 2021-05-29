@@ -57,7 +57,7 @@ class PurchaseData {
 
 class PurchaseEntry extends StatefulWidget {
   final PurchaseData data;
-  final Function callback;
+  final Function({bool purchase, bool payment}) callback;
 
   const PurchaseEntry({this.data, this.callback});
 
@@ -188,7 +188,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     )
                 )
                 .then((val) {
-                  if (val == 'deleted') widget.callback(purchase: true);
+                  if (val == 'deleted') widget.callback(purchase: true, payment: false);
                 });
               },
               borderRadius: BorderRadius.circular(15),

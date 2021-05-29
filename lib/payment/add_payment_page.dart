@@ -121,7 +121,15 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             },
             child: Column(
               children: [
-                IsGuestBanner(callback: (){setState(() { _members=null; _members=_getMembers();});},),
+                IsGuestBanner(
+                  callback: (){
+                    setState(() {
+                      clearGroupCache();
+                      _members=null;
+                      _members=_getMembers();
+                    });
+                  },
+                ),
                 Expanded(
                   child: ListView(
                     shrinkWrap: true,

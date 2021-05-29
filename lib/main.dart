@@ -92,6 +92,8 @@ void main() async {
     themeName = preferences.getString('theme');
   }
   await loadAllPrefs();
+  print(usersGroupIds);
+  print(usersGroups);
 
   String initURL;
   try {
@@ -120,10 +122,10 @@ void main() async {
             child: Text(
               'LENDER',
               style: TextStyle(
-                  color:
-                  (themeName.contains('Light')) ? Colors.black : Colors.white,
-                  letterSpacing: 2.5,
-                  fontSize: 35),
+                color:
+                (themeName.contains('Light')) ? Colors.black : Colors.white,
+                letterSpacing: 2.5,
+                fontSize: 35),
             ),
           ),
         ),
@@ -178,17 +180,21 @@ class _LenderAppState extends State<LenderApp> {
       String page = decoded['screen'];
       String details = decoded['details'];
 
-      if(details=='added_to_group'){//TODO: dominik
+      //If this notification is about a user who just got accepted to a group
+      if(details=='added_to_group'){
         saveGroupId(groupId);
         saveGroupName(groupName);
+        //If he doesn't have a group yet -> create the necessary lists
         if(usersGroups==null){
           usersGroups=List<String>();
           usersGroupIds=List<int>();
         }
+        //Add the group to the list and save them to the cache
         usersGroups.add(groupName);
         usersGroupIds.add(groupId);
         saveUsersGroups();
         saveUsersGroupIds();
+      //If the group is one of the user's groups
       }else if(usersGroupIds!=null && usersGroupIds.contains(groupId)){
         saveGroupId(groupId);
         saveGroupName(groupName);
@@ -208,6 +214,9 @@ class _LenderAppState extends State<LenderApp> {
           getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
         }else if(page=='store'){
           getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+        }else if(page=='group_settings'){
+          int selectedTab=2;
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
         }
       }
     }
@@ -315,22 +324,22 @@ class _LenderAppState extends State<LenderApp> {
           print("onMessage: $message");
           Map<String, dynamic> decoded = jsonDecode(message['data']['payload']);
           print(decoded);
-          // var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-          //     message['data']['payload']['channel_id'],
-          //     (message['data']['payload']['channel_id']+'_notification').tr(),
-          //     (message['data']['payload']['channel_id']+'_notification_explanation').tr()
-          // );
-          // var iOSPlatformChannelSpecifics =
-          // new IOSNotificationDetails(presentSound: false);
-          // var platformChannelSpecifics = new NotificationDetails(
-          //     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
-          // flutterLocalNotificationsPlugin.show(
-          //     int.parse(message['data']['id'])??0,
-          //     message['notification']['title'],
-          //     message['notification']['body'],
-          //     platformChannelSpecifics,
-          //     payload: message['data']['payload']
-          // );
+          var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+              message['data']['payload']['channel_id'],
+              (message['data']['payload']['channel_id']+'_notification').tr(),
+              (message['data']['payload']['channel_id']+'_notification_explanation').tr()
+          );
+          var iOSPlatformChannelSpecifics =
+          new IOSNotificationDetails(presentSound: false);
+          var platformChannelSpecifics = new NotificationDetails(
+              android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+          flutterLocalNotificationsPlugin.show(
+              int.parse(message['data']['id'])??0,
+              message['notification']['title'],
+              message['notification']['body'],
+              platformChannelSpecifics,
+              payload: message['data']['payload']
+          );
         },
         onBackgroundMessage: myBackgroundMessageHandler,
         onLaunch: (Map<String, dynamic> message) async {
@@ -369,7 +378,7 @@ class _LenderAppState extends State<LenderApp> {
     }
   }
 
-  Future<void> _getUserData() async { //TODO: needs testing
+  Future<void> _getUserData() async {
     try{
       Map<String, String> header = {
         "Content-Type": "application/json",
@@ -465,10 +474,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groups));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
-    usersGroups=groups.map<String>((group) => group.groupName).toList();
-    usersGroupIds=groups.map<int>((group) => group.groupId).toList();
-    saveUsersGroups();
-    saveUsersGroupIds();
     for (var group in decoded['data']) {
       groups.add(
         Group(
@@ -476,6 +481,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         )
       );
     }
+    usersGroups=groups.map<String>((group) => group.groupName).toList();
+    usersGroupIds=groups.map<int>((group) => group.groupId).toList();
+    saveUsersGroups();
+    saveUsersGroupIds();
+    //The group ID cannot change, but the group name and currency can change
     if(groups.any((element) => element.groupId==currentGroupId)){
       var group = groups.firstWhere((element) => element.groupId==currentGroupId);
       saveGroupName(group.groupName);
@@ -596,7 +606,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     setState(() {
       _groups = null;
       _groups = _getGroups();
-
     });
   }
 

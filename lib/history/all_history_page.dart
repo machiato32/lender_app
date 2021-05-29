@@ -13,6 +13,7 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 
 class AllHistoryRoute extends StatefulWidget {
+  ///Defines whether to show purchases (0) or payments (1)
   final int startingIndex;
   AllHistoryRoute({@required this.startingIndex});
   @override
@@ -72,9 +73,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   }
 
   void callback({bool purchase=false, bool payment=false}) {
-    if(!purchase && !payment){
-      deleteCache(uri: '/payments?group=' + currentGroupId.toString(),);
-      deleteCache(uri: '/purchases?group=' + currentGroupId.toString());
+    if(!purchase && !payment){ //IsGuestBanner callback
+      clearGroupCache();
       setState(() {
         _payments=null;
         _payments = _getPayments(overwriteCache: true);
@@ -85,14 +85,21 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }
     setState(() {
       if(payment){
+        deleteCache(uri: generateUri(GetUriKeys.paymentsAll));
+        deleteCache(uri: generateUri(GetUriKeys.paymentsFirst6));
+        deleteCache(uri: 'payments?group=$currentGroupId&from_date', multipleArgs: true); //payments date
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
-
       }
       if(purchase){
+        deleteCache(uri: generateUri(GetUriKeys.purchasesAll));
+        deleteCache(uri: generateUri(GetUriKeys.purchasesFirst6));
+        deleteCache(uri: 'purchases?group=$currentGroupId&from_date', multipleArgs: true); //purchases date
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
       }
+      deleteCache(uri: generateUri(GetUriKeys.groupCurrent)); //Balances
+      deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     });
   }
 
@@ -119,6 +126,14 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
               gradient: AppTheme.gradientFromTheme(Theme.of(context))
           ),
         ),
+        actions: [//TODO:daterange
+          // IconButton(
+          //   icon: Icon(Icons.search_rounded),
+          //   onPressed: (){
+          //
+          //   },
+          // )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (_index) {
@@ -248,14 +263,30 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   List<Widget> _generatePayments(List<PaymentData> data) {
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
+    //Initial
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
-    Widget initial =
-    Center(
-      child: Container(
-          padding: EdgeInsets.all(8),
-          child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
-      ),
-    );
+    Widget initial;
+    if(now.difference(data[0].updatedAt).inDays>7){
+      int toSubtract = (now.difference(data[0].updatedAt).inDays/7).floor();
+      now=now.subtract(Duration(days: toSubtract*7));
+      initial =
+        Column(
+          children: [
+            Container(
+                padding: EdgeInsets.all(8),
+                child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
+            ),
+          ],
+        );
+    }else{
+      initial = Center(
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
+        ),
+      );
+    }
+
     return [initial]..addAll(data.map((element) {
       if(now.difference(element.updatedAt).inDays>7){
         int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
@@ -265,7 +296,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           children: [
             Container(
               padding: EdgeInsets.all(8),
-              child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+              child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
             ),
             PaymentEntry(
               data: element,
@@ -281,17 +312,31 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }).toList());
   }
 
-  List<Widget> _generatePurchase(List<PurchaseData> data) {
+  List<Widget> _generatePurchase(List<PurchaseData> data) {//TODO: ezt szebben
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
-    Widget initial =
-    Center(
-      child: Container(
-          padding: EdgeInsets.all(8),
-          child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
-      ),
-    );
+    Widget initial;
+    if(now.difference(data[0].updatedAt).inDays>7){
+      int toSubtract = (now.difference(data[0].updatedAt).inDays/7).floor();
+      now=now.subtract(Duration(days: toSubtract*7));
+      initial =
+          Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.all(8),
+                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
+              ),
+            ],
+          );
+    }else{
+      initial = Center(
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
+        ),
+      );
+    }
     return [initial]..addAll(data.map((element) {
       if(now.difference(element.updatedAt).inDays>7){
         int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
@@ -301,7 +346,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             children: [
               Container(
                   padding: EdgeInsets.all(8),
-                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))), style: Theme.of(context).textTheme.subtitle2,)
+                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
               ),
               PurchaseEntry(
                 data: element,

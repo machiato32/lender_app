@@ -145,7 +145,15 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
             },
             child: Column(
               children: [
-                IsGuestBanner(callback: (){},),
+                IsGuestBanner(
+                  callback: (){
+                    setState(() {
+                      clearGroupCache();
+                      _members=null;
+                      _members=_getMembers();
+                    });
+                  },
+                ),
                 Expanded(
                   child: ListView(
                     children: <Widget>[

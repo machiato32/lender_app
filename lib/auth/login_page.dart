@@ -257,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
       http.Response response =
-      await httpGet(uri: generateUri(GetUriKeys.groups), context: context);
+        await httpGet(uri: generateUri(GetUriKeys.groups), context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {

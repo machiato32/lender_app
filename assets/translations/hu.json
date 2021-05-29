@@ -263,7 +263,7 @@
     "you_bought": "Te vásároltál",
     "you_received": "Neked vásároltak",
 
-    "group_stats": "A csoport sacisztikái",
+    "group_stats": "A csoport statisztikái",
     "group_stats_explanation": "Itt láthatod a csoport összes bevásárlását, fizetését",
     "stats_purchases": "Bevásárlások:",
     "stats_payments": "Fizetések:",
@@ -275,7 +275,7 @@
 
     "personalised_ads": "Szeretnék látni személyreszabott reklámokat",
 
-    "statistics_not_available": "A sacisztiszták nem elérhetőek",
+    "statistics_not_available": "A statisztiszták nem elérhetőek",
     "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!",
 
     "use_personalised_ads": "Személyre szabott hirdetések",
