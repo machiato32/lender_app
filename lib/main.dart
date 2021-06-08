@@ -602,6 +602,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<void> callback() async {
     await clearGroupCache();
+    await deleteCache(uri: generateUri(GetUriKeys.groups));
     await deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     setState(() {
       _groups = null;

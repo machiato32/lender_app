@@ -6,12 +6,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import '../essentials/widgets/future_success_dialog.dart';
-import '../essentials/widgets/gradient_button.dart';
-import '../essentials/http_handler.dart';
+import '../../essentials/widgets/future_success_dialog.dart';
+import '../../essentials/widgets/gradient_button.dart';
+import '../../essentials/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class RenameGroupDialog extends StatefulWidget {
   @override

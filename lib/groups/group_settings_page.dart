@@ -1,7 +1,7 @@
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/manage_guests.dart';
 import 'package:csocsort_szamla/groups/dialogs/change_group_currency_dialog.dart';
-import 'package:csocsort_szamla/groups/rename_group_dialog.dart';
+import 'file:///C:/Users/szasa/FlutterProjects/csocsort_szamla/lib/groups/dialogs/rename_group_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
