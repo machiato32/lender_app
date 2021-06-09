@@ -357,5 +357,8 @@
 
     "just_few_things_left": "Már csak néhány lépés van hátra",
 
-    "acting_as": "{}-t kezeled"
+    "acting_as": "{}-t kezeled",
+
+    "group_needs_approval": "Admin beleegyezés",
+    "group_needs_approval_explanation": "Döntsd el, hogy a csoportba való csatlakozáshoz szükséges-e az adminok beleegyezése"
 }

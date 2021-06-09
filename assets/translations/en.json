@@ -288,7 +288,7 @@
     "calculator_explanation": "A simple calculator if you need it 😉",
 
     "approve_members": "Approve members",
-    "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below",
+    "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below.",
     "needs_approval": "Admin approval needed",
     "download_export": "Download data",
     "download_export_explanation": "Download all group data",
@@ -358,7 +358,11 @@
 
     "im_shopping_explanation": "Your friends will be notified, that you are shopping",
 
-    "just_few_things_left": "Just a few things left",
+    "just_few_things_left": "Just one steps left",
 
-    "acting_as": "Acting as {}"
+    "acting_as": "Acting as {}",
+
+
+    "group_needs_approval": "Admin approval",
+    "group_needs_approval_explanation": "Decide whether it needs an admin's approval to join the group"
 }

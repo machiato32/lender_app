@@ -325,9 +325,9 @@ class _LenderAppState extends State<LenderApp> {
           Map<String, dynamic> decoded = jsonDecode(message['data']['payload']);
           print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-              message['data']['payload']['channel_id'],
-              (message['data']['payload']['channel_id']+'_notification').tr(),
-              (message['data']['payload']['channel_id']+'_notification_explanation').tr()
+              decoded['channel_id'], //only this is needed
+              (decoded['channel_id']+'_notification'), // these don't do anything
+              (decoded['channel_id']+'_notification_explanation')
           );
           var iOSPlatformChannelSpecifics =
           new IOSNotificationDetails(presentSound: false);

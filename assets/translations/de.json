@@ -361,5 +361,8 @@
 
     "just_few_things_left": "Nur noch ein Paar Schritte übrig",
 
-    "acting_as": "Du bist {}"
+    "acting_as": "Du bist {}",
+
+    "group_needs_approval": "Admin Genehmigung",
+    "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten"
 }
