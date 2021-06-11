@@ -3,7 +3,6 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'dart:math' as math;
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 class DownloadExportDialog extends StatefulWidget {
@@ -66,33 +65,21 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
               ],
             ),
             SizedBox(height: 15),
-            Stack(
+            Column(
               children: [
-                Column(
+                Text('download_pdf'.tr(), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20), textAlign: TextAlign.center,),
+                SizedBox(height: 10),
+                Text('download_pdf_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('download_pdf'.tr(), style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20), textAlign: TextAlign.center,),
-                    SizedBox(height: 10),
-                    Text('download_pdf_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          child: Icon(Icons.picture_as_pdf, color: Theme.of(context).colorScheme.onSecondary),
-                          onPressed: (){
-
-                          },
-                        ),
-                      ],
-                    )
+                    RaisedButton(
+                      color: Theme.of(context).colorScheme.secondary,
+                      child: Icon(Icons.picture_as_pdf, color: Theme.of(context).colorScheme.onSecondary),
+                    ),
                   ],
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Transform.rotate(
-                    angle: -math.pi / 8,
-                    child: Text('coming_soon'.tr(), style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.red),),
-                  ),
-                )
+                Text('coming_soon'.tr(), style: Theme.of(context).textTheme.subtitle2,)
               ],
             ),
 

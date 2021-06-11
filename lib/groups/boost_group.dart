@@ -63,32 +63,32 @@ class _BoostGroupState extends State<BoostGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('boost_group'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-            SizedBox(height: 10),
-            Text('boost_group_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
-            SizedBox(height: 20),
-            FutureBuilder(
-              future: _boostNumber,
-              builder: (context, snapshot){
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    return Column(
-                      children: [
-                        Text('available'.tr(args:[snapshot.data['available_boosts'].toString()]), style: Theme.of(context).textTheme.subtitle2,),
-                        SizedBox(height: 10),
-                        Visibility(
-                          visible: snapshot.data['is_boosted']==1,
-                          child: Text('already_boosted'.tr(), style: Theme.of(context).textTheme.subtitle2,),
-                        ),
-                        Visibility(
-                          visible: snapshot.data['is_boosted']==0,
-                          child: Row(
+    return FutureBuilder(
+      future: _boostNumber,
+      builder: (context, snapshot){
+        if(snapshot.connectionState==ConnectionState.done) {
+          if (snapshot.hasData) {
+            return Card(
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('boost_group'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+                    SizedBox(height: 10),
+                    Text(
+                      snapshot.data['is_boosted']==0?'boost_group_explanation'.tr():'boost_group_boosted_explanation'.tr(),
+                      style: Theme.of(context).textTheme.subtitle2,
+                      textAlign: TextAlign.center,
+                    ),
+
+                    Visibility(
+                      visible: snapshot.data['is_boosted']==0,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Text('available'.tr(args:[snapshot.data['available_boosts'].toString()]), style: Theme.of(context).textTheme.subtitle2,),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GradientButton(
@@ -104,23 +104,23 @@ class _BoostGroupState extends State<BoostGroup> {
                                     });
                                   }else{
                                     showDialog(
-                                      context: context,
-                                      child: ConfirmChoiceDialog(
-                                        choice: 'sure_boost',
-                                      )
+                                        context: context,
+                                        child: ConfirmChoiceDialog(
+                                          choice: 'sure_boost',
+                                        )
                                     )
-                                    .then((value){
+                                        .then((value){
                                       if(value??false){
                                         showDialog(
-                                          barrierDismissible: false,
-                                          context: context,
-                                          child: FutureSuccessDialog(
-                                            future: _postBoost(),
-                                            dataTrueText: 'boost_scf',
-                                            onDataTrue: (){
-                                              _onPostBoost();
-                                            },
-                                          )
+                                            barrierDismissible: false,
+                                            context: context,
+                                            child: FutureSuccessDialog(
+                                              future: _postBoost(),
+                                              dataTrueText: 'boost_scf',
+                                              onDataTrue: (){
+                                                _onPostBoost();
+                                              },
+                                            )
                                         );
                                       }
                                     });
@@ -128,21 +128,22 @@ class _BoostGroupState extends State<BoostGroup> {
                                 },
                               ),
                             ],
-                          ),
-                        )
-                      ],
-                    );
-                  }else{
-                    return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { _boostNumber=null; _boostNumber=_getBoostNumber(); });});
-                  }
-                }
-                return Center(child: CircularProgressIndicator());
-              },
-            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }else{
+            return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { _boostNumber=null; _boostNumber=_getBoostNumber(); });});
+          }
+        }
+        return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
 
-          ],
-        ),
-      ),
+      }
+
     );
   }
 }

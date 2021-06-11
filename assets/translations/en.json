@@ -364,5 +364,8 @@
 
 
     "group_needs_approval": "Admin approval",
-    "group_needs_approval_explanation": "Decide whether it needs an admin's approval to join the group"
+    "group_needs_approval_explanation": "Decide whether it needs an admin's approval to join the group",
+
+    "boost_group_boosted_explanation": "This group has already been boosted \uD83D\uDE0E. This means, that you are able to see the group's statistics and that the member limit is up to 30."
+
 }

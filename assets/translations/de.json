@@ -364,5 +364,8 @@
     "acting_as": "Du bist {}",
 
     "group_needs_approval": "Admin Genehmigung",
-    "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten"
+    "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten",
+
+    "boost_group_boosted_explanation": "Diese Gruppe wurde schon geboostet 😎. Das heißt, dass du dir die Statistiken ansehen kannst und dass die maximale Mitgliedszahl 30 ist."
+
 }
