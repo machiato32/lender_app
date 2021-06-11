@@ -21,7 +21,6 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'balances.dart';
 import 'config.dart';
@@ -66,23 +65,20 @@ void setup(){
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  if (message.containsKey('data')) {
-
-  }
-
-  print("background: "+message.toString());
-
-  if (message.containsKey('notification')) {
-  }
+  // if (message.containsKey('data')) {
+  //
+  // }
+  //
+  // print("background: "+message.toString());
+  //
+  // if (message.containsKey('notification')) {
+  // }
 
   // Or do other work.
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(
-      debug: false // optional: set false to disable printing logs to console
-  );
   InAppPurchaseConnection.enablePendingPurchases();
   Admob.initialize();
   setup();
@@ -96,6 +92,8 @@ void main() async {
     themeName = preferences.getString('theme');
   }
   await loadAllPrefs();
+  print(usersGroupIds);
+  print(usersGroups);
 
   String initURL;
   try {
@@ -124,10 +122,10 @@ void main() async {
             child: Text(
               'LENDER',
               style: TextStyle(
-                  color:
-                  (themeName.contains('Light')) ? Colors.black : Colors.white,
-                  letterSpacing: 2.5,
-                  fontSize: 35),
+                color:
+                (themeName.contains('Light')) ? Colors.black : Colors.white,
+                letterSpacing: 2.5,
+                fontSize: 35),
             ),
           ),
         ),
@@ -178,11 +176,30 @@ class _LenderAppState extends State<LenderApp> {
       Map<String, dynamic> decoded = jsonDecode(payload);
       int groupId = decoded['group_id'];
       String groupName = decoded['group_name'];
+      String currency = decoded['group_currency'];
       String page = decoded['screen'];
       String details = decoded['details'];
-      if(usersGroupIds.contains(groupId)){
+
+      //If this notification is about a user who just got accepted to a group
+      if(details=='added_to_group'){
         saveGroupId(groupId);
         saveGroupName(groupName);
+        //If he doesn't have a group yet -> create the necessary lists
+        if(usersGroups==null){
+          usersGroups=List<String>();
+          usersGroupIds=List<int>();
+        }
+        //Add the group to the list and save them to the cache
+        usersGroups.add(groupName);
+        usersGroupIds.add(groupId);
+        saveUsersGroups();
+        saveUsersGroupIds();
+      //If the group is one of the user's groups
+      }else if(usersGroupIds!=null && usersGroupIds.contains(groupId)){
+        saveGroupId(groupId);
+        saveGroupName(groupName);
+        if(currency!=null)
+          saveGroupCurrency(currency);
       }
       clearAllCache();
       if(currentUserId!=null){
@@ -197,6 +214,9 @@ class _LenderAppState extends State<LenderApp> {
           getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
         }else if(page=='store'){
           getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+        }else if(page=='group_settings'){
+          int selectedTab=2;
+          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(selectedIndex:selectedTab)));
         }
       }
     }
@@ -204,6 +224,29 @@ class _LenderAppState extends State<LenderApp> {
     {
       print(e.toString());
     }
+  }
+
+  void _createNotificationChannels(String groupId, List<String> channels){
+    AndroidNotificationChannelGroup androidNotificationChannelGroup =
+    AndroidNotificationChannelGroup(groupId, (groupId+'_notification').tr());
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        .createNotificationChannelGroup(androidNotificationChannelGroup);
+
+    for(String channel in channels){
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .createNotificationChannel(
+          AndroidNotificationChannel(
+            channel,
+            (channel+'_notification').tr(),
+            (channel+'_notification_explanation').tr(),
+            groupId: groupId,
+          )
+      );
+    }
+
   }
 
   @override
@@ -262,10 +305,16 @@ class _LenderAppState extends State<LenderApp> {
     new AndroidInitializationSettings('@drawable/dodo_white');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
+
+    _createNotificationChannels('group_system', ['other', 'group_update']);
+    _createNotificationChannels('purchase', ['purchase_created', 'purchase_modified', 'purchase_deleted']);
+    _createNotificationChannels('payment', ['payment_created', 'payment_modified', 'payment_deleted']);
+    _createNotificationChannels('shopping', ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
+
     initUniLinks();
     _link = widget.initURL;
 
@@ -273,19 +322,17 @@ class _LenderAppState extends State<LenderApp> {
       _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
+          Map<String, dynamic> decoded = jsonDecode(message['data']['payload']);
+          print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-              '1234',
-              'Lender',
-              'Lender',
-              playSound: false,
-              importance: Importance.High,
-              priority: Priority.Default,
-              styleInformation: BigTextStyleInformation('')
+              decoded['channel_id'], //only this is needed
+              (decoded['channel_id']+'_notification'), // these don't do anything
+              (decoded['channel_id']+'_notification_explanation')
           );
           var iOSPlatformChannelSpecifics =
           new IOSNotificationDetails(presentSound: false);
           var platformChannelSpecifics = new NotificationDetails(
-              androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+              android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
           flutterLocalNotificationsPlugin.show(
               int.parse(message['data']['id'])??0,
               message['notification']['title'],
@@ -331,7 +378,7 @@ class _LenderAppState extends State<LenderApp> {
     }
   }
 
-  Future<void> _getUserData() async { //TODO: needs testing
+  Future<void> _getUserData() async {
     try{
       Map<String, String> header = {
         "Content-Type": "application/json",
@@ -343,8 +390,12 @@ class _LenderAppState extends State<LenderApp> {
       useGradients=decoded['data']['gradients_enabled']==1;
       personalisedAds=decoded['data']['personalised_ads']==1;
       trialVersion=decoded['data']['trial']==1;
+      if(currentGroupId==null && decoded['data']['last_active_group']!=null){
+        currentGroupId=decoded['data']['last_active_group'];
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(),));
+      }
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      if(!useGradients && preferences.getString('theme').toLowerCase().contains('gradient')){
+      if(!useGradients && preferences.getString('theme').contains('Gradient')){
         preferences.setString('theme', 'greenLightTheme');
       }
     }catch(_){
@@ -420,7 +471,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<List<Group>> _getGroups() async {
-    http.Response response = await httpGet(context: context, uri: '/groups');
+    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groups));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
     for (var group in decoded['data']) {
@@ -430,6 +481,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         )
       );
     }
+    usersGroups=groups.map<String>((group) => group.groupName).toList();
+    usersGroupIds=groups.map<int>((group) => group.groupId).toList();
+    saveUsersGroups();
+    saveUsersGroupIds();
+    //The group ID cannot change, but the group name and currency can change
     if(groups.any((element) => element.groupId==currentGroupId)){
       var group = groups.firstWhere((element) => element.groupId==currentGroupId);
       saveGroupName(group.groupName);
@@ -439,7 +495,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<String> _getCurrentGroup() async {
-    http.Response response = await httpGet(context: context, uri: '/groups/' + currentGroupId.toString());
+    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),);
     Map<String, dynamic> decoded = jsonDecode(response.body);
     saveGroupName(decoded['data']['group_name']);
     return currentGroupName;
@@ -447,7 +503,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<dynamic> _getSumBalance() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/balance');
+      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.userBalanceSum));
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     }catch(_){
@@ -468,12 +524,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       deleteGuestNickname();
       deleteGuestGroupId();
       deleteGuestApiToken();
-      usersGroups=null;
-      usersGroupIds=null;
-      SharedPreferences.getInstance().then((_prefs) {
-        _prefs.remove('users_groups');
-        _prefs.remove('users_group_ids');
-      });
+      deleteUsersGroups();
+      deleteUsersGroupIds();
     } catch (_) {
       throw _;
     }
@@ -492,15 +544,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               : Theme.of(context).textTheme.bodyText1,
         ),
         onTap: () async {
-          await clearAllCache();
-          currentGroupName = group.groupName;
-          currentGroupId = group.groupId;
-          currentGroupCurrency = group.groupCurrency;
-          SharedPreferences.getInstance().then((_prefs) {
-            _prefs.setString('current_group_name', group.groupName);
-            _prefs.setInt('current_group_id', group.groupId);
-            _prefs.setString('current_group_currency', group.groupCurrency);
-          });
+          saveGroupName(group.groupName);
+          saveGroupId(group.groupId);
+          saveGroupCurrency(group.groupCurrency);
           setState(() {
             _selectedIndex = 0;
             _tabController.animateTo(_selectedIndex);
@@ -555,7 +601,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<void> callback() async {
-    await clearAllCache();
+    await clearGroupCache();
+    await deleteCache(uri: generateUri(GetUriKeys.groups));
+    await deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     setState(() {
       _groups = null;
       _groups = _getGroups();
@@ -784,7 +832,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     );
                   }
                 },
-                leading: Icon(Icons.shopping_basket, color: Theme.of(context).textTheme.bodyText1.color,),
+                leading: ColorFiltered(
+                  colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyText1.color, BlendMode.srcIn),
+                  child: Image.asset('assets/dodo_color.png', width: 25,)
+                ),
                 subtitle: trialVersion?
                   Text('trial_version'.tr().toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).colorScheme.primary),
@@ -858,7 +909,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: _selectedIndex==2?
         GroupSettingsSpeedDial()
-
         :
         Visibility(
           visible: _selectedIndex == 0,

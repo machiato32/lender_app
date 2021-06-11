@@ -1,11 +1,11 @@
 
 import 'dart:io';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 
@@ -14,11 +14,60 @@ import '../config.dart';
 import '../groups/join_group.dart';
 import '../main.dart';
 
+enum GetUriKeys {
+  groupHasGuests, groupCurrent, groupMember, groups, userBalanceSum, passwordReminder,
+  groupBoost, groupGuests, groupUnapprovedMembers, groupExportXls, purchasesAll, paymentsAll,
+  purchasesFirst6, paymentsFirst6, statisticsPayments, statisticsPurchases, statisticsAll,
+  requestsAll, purchasesDate, paymentsDate
+}
+List<String> getUris = [
+  '/groups/{}/has_guests',
+  '/groups/{}',
+  '/groups/{}/member',
+  '/groups',
+  '/balance',
+  '/password_reminder?username={}',
+  '/groups/{}/boost',
+  '/groups/{}/guests',
+  '/groups/{}/members/unapproved',
+  '/groups/{}/export/get_link',
+  '/purchases?group={}',
+  '/payments?group={}',
+  '/purchases?group={}&limit=6',
+  '/payments?group={}&limit=6',
+  '/groups/{}/statistics/payments?from_date={}&until_date={}',
+  '/groups/{}/statistics/purchases?from_date={}&until_date={}',
+  '/groups/{}/statistics/all?from_date={}&until_date={}',
+  '/requests?group={}',
+  '/purchases?group={}&from_date={}&until_date={}',
+  '/payments?group={}&from_date={}&until_date={}'
+];//TODO: same for other types
 
-bool needsLogin = false;
+enum HttpType {get, post, put, delete}
+
+///Generates URI-s from enum values. The default value of [args] is [currentGroupId].
+String generateUri(GetUriKeys key, {HttpType type=HttpType.get, List<String> args}){
+  if(type==HttpType.get){
+    if(args==null){
+      args=[currentGroupId.toString()];
+    }
+    String uri=getUris[key.index];
+    if(args!=null){
+      for(String arg in args){
+        if(uri.contains('{}')) {
+          uri = uri.replaceFirst('{}', arg);
+        }else {
+          break;
+        }
+      }
+    }
+    return uri;
+  }
+  return '';
+}
+
 
 Widget errorToast(String msg, BuildContext context){
-
   return Container(
     padding: const EdgeInsets.symmetric(
         horizontal: 24.0, vertical: 12.0),
@@ -53,10 +102,9 @@ Widget errorToast(String msg, BuildContext context){
 void memberNotInGroup(BuildContext context){
   usersGroupIds.remove(currentGroupId);
   usersGroups.remove(currentGroupName);
-  SharedPreferences.getInstance().then((prefs) {
-    prefs.setStringList('users_groups', usersGroups);
-    prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-  });//TODO:currency DOMINIK MEG TUDJA OLDANI
+  saveUsersGroupIds();
+  saveUsersGroups();
+  //TODO:currency DOMINIK MEG TUDJA OLDANI, nem tudni, hogy hova kellene mennie, csak currency nelkul
   clearAllCache();
   FlutterToast ft = FlutterToast(context);
   ft.removeQueuedCustomToasts();
@@ -71,16 +119,20 @@ void memberNotInGroup(BuildContext context){
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (context) => MainPage()),
-            (r) => false);
+            builder: (context) => MainPage()
+        ),
+        (r) => false
+    );
   }else{
     currentGroupName=null;
     currentGroupId=null;
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (context) => JoinGroup()),
-            (r) => false);
+            builder: (context) => JoinGroup(fromAuth: true,)
+        ),
+        (r) => false
+    );
   }
 
 }
@@ -91,6 +143,7 @@ Future<http.Response> fromCache({@required String uri, @required bool overwriteC
     if(!cacheDir.existsSync()){
       return null;
     }
+    // print(cacheDir.listSync());
     File file = File(cacheDir.path+'/'+fileName);
     if(alwaysReturnCache || (!overwriteCache && (file.existsSync() && DateTime.now().difference(await file.lastModified()).inMinutes<5))){
       // print('from cache');
@@ -113,18 +166,55 @@ Future toCache({@required String uri, @required http.Response response}) async {
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
 }
 
-Future deleteCache({@required String uri}) async {
+///Deletes file at the given [uri] from the cache directory.
+///The [multipleArgs] bool is used for [uri]-s where not all of the [args]
+///are known at the time of the removal. (See [generateUri] function)
+///In this case the [uri] becomes a search word
+Future deleteCache({@required String uri, bool multipleArgs=false}) async {
   uri = uri.substring(1);
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path+'/'+fileName);
-  if(file.existsSync()){
-    // print('delete cache');
-    file.delete();
+  if(multipleArgs){
+    if(cacheDir.existsSync()){
+      List<FileSystemEntity> files = cacheDir.listSync();
+      for(var file in files){
+        if(file is File){
+          String fileName=file.path.split('/').last;
+          if(fileName.contains(uri)){
+            file.deleteSync();
+          }
+        }
+      }
+    }
+  }else{
+    File file = File(cacheDir.path+'/'+fileName);
+    if(file.existsSync()){
+      // print('delete cache'+fileName);
+      await file.delete();
+    }
+  }
+
+}
+
+
+Future clearGroupCache() async {
+  var cacheDir = await getTemporaryDirectory();
+  if(cacheDir.existsSync()){
+    List<FileSystemEntity> files = cacheDir.listSync();
+    for(var file in files){
+      if(file is File){
+        String fileName=file.path.split('/').last;
+        if(fileName.contains('groups-'+currentGroupId.toString()) || fileName.contains('group='+currentGroupId.toString())){
+          // print('deleting '+fileName);
+          file.deleteSync();
+        }
+      }
+    }
   }
 }
 
 Future clearAllCache() async {
+  // print('all cache');
   var cacheDir = await getTemporaryDirectory();
   if(cacheDir.existsSync()){
     cacheDir.delete(recursive: true);
@@ -132,7 +222,7 @@ Future clearAllCache() async {
 }
 
 Duration delayTime(){
-  return Duration(milliseconds: 300);
+  return Duration(milliseconds: 700);
 }
 
 Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true, bool useGuest=false}) async {
@@ -154,6 +244,8 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        //TODO: lehet itt dobja a random hibat
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -202,6 +294,7 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -245,6 +338,7 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
@@ -282,6 +376,7 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
+        clearAllCache();
         FlutterToast ft = FlutterToast(context);
         ft.showToast(
             child: errorToast('login_required', context),

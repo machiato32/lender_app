@@ -98,7 +98,7 @@
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
     "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel",
+    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel oder sag den Anderen bescheid, dass du gerade Einkaufen bist",
     "history_explanation": "Verfolge, ziehe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
@@ -282,14 +282,15 @@
     "use_personalised_ads_explanation": "Falls du Personalisierte Anzeigen sehen möchtest",
 
     "trial_version": "Probezeit",
-    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These inclued the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+    "trial_version_explanation": "Du hast dich in den letzten zwei Wochen registriert, deshalb kannst du die App mit einigen Boni benutzen. Zum Beispiel dass du keine Anzeigen siehst, dass du Farbübergängige Themen benutzen kannst und dass du Zugriff auf die Statistiken deiner Gruppe hast. Falls du diese Boni nach den zwei Wochen benutzen möchtest, kannst du dir sie im Dodo Laden kaufen.",
+
 
     "calculator": "Rechner",
     "calculator_explanation": "Ein kleiner Taschenrechner falls du einen brauchst 😉",
 
     "approve_members": "Mitgliedsanfragen genehmigen",
     "approve_members_explanation": "Genehmige das Beitreten von neuen Mitgliedern. Unten kannst du auswählen ob eine Genehmigung nötig ist",
-    "needs_approval": "Admin genehmigung",
+    "needs_approval": "Admin Genehmigung nötig",
     "download_export": "Daten runterladen",
     "download_export_explanation": "Lade alle Daten dieser Gruppe runter",
     "download_xls": "Als Excel Tabelle runterladen",
@@ -307,5 +308,64 @@
     "modify_payment": "Zahlung bearbeiten",
     "modify_payment_explanation": "Bearbeite die Zahlung, falls sich etwas geändert hat",
     "modify_purchase": "Einkauf bearbeiten",
-    "modify_purchase_explanation": "Bearbeite den Einkauf, falls sich etwas geändert hat"
+    "modify_purchase_explanation": "Bearbeite den Einkauf, falls sich etwas geändert hat",
+
+    "not_in_group": "Du bist nicht Mitglied dieser Gruppe!",
+
+    "approve_still_needed": "Deine Mitgliedsanfrage wurde gesendet und muss jetzt von den Admins genehmingt werden. Wir werden dir eine Benachrichtigung senden wenn das passiert.",
+    "approve": "Genehmigen",
+    "disapprove": "Ablehnen",
+
+    "purchase_notification": "Einkäufe",
+
+    "purchase_created_notification": "Neue Einkäufe",
+    "purchase_created_notification_explanation": "Benachrichtigungen der neuen Einkäufe werden hier angezeigt",
+
+    "purchase_modified_notification": "Modifizierte Einkäufe",
+    "purchase_modified_notification_explanation": "Benachrichtigungen der modifizierten Einkäufe werden hier angezeigt",
+
+    "purchase_deleted_notification": "Zurückgezogene Einkäufe",
+    "purchase_deleted_notification_explanation": "Benachrichtigungen der zurückgezogenen Einkäufe werden hier angezeigt",
+
+    "payment_notification": "Zahlungen",
+
+    "payment_created_notification": "Neue Zahlungen",
+    "payment_created_notification_explanation": "Benachrichtigungen von neuen Zahlungen werden hier angezeigt",
+
+    "payment_modified_notification": "Modifizierte Zahlungen",
+    "payment_modified_notification_explanation": "Benachrichtigungen von modifizierten Zahlungen werden hier angezeigt",
+
+    "payment_deleted_notification": "Zurückgezogene Zahlungen",
+    "payment_deleted_notification_explanation": "Benachrichtigungen von zurückgezogenen Zahlungen werden hier angezeigt",
+
+    "shopping_notification": "Einkaufszettel",
+
+    "shopping_created_notification": "Neue Wünsche",
+    "shopping_created_notification_explanation": "Benachrichtigungen von neuen Wünschen werden hier angezeigt",
+
+    "shopping_fulfilled_notification": "Erledigte Wünsche",
+    "shopping_fulfilled_notification_explanation": "Benachrichtigungen von erledigten Wünchen werden hier angezeigt",
+
+    "shopping_shop_notification": "Jemand ist Einkaufen",
+    "shopping_shop_notification_explanation": "Benachrichtigungen die du bekommst wenn Jemand einkaufen ist",
+
+    "group_system_notification":"Gruppen- und Systembenachrichtigungen",
+
+    "other_notification": "Alles andere",
+    "other_notification_explanation": "Alle anderen Benachrichtigungen",
+
+    "group_update_notification": "Alle Gruppenupdates",
+    "group_update_notification_explanation": "Zum Beispiel Namesänderungen, neue Mitglieder usw.",
+
+    "im_shopping_explanation": "Deine Freunde werden benachrichtigt, dass du gerade in einem Laden bist",
+
+    "just_few_things_left": "Nur noch ein Paar Schritte übrig",
+
+    "acting_as": "Du bist {}",
+
+    "group_needs_approval": "Admin Genehmigung",
+    "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten",
+
+    "boost_group_boosted_explanation": "Diese Gruppe wurde schon geboostet 😎. Das heißt, dass du dir die Statistiken ansehen kannst und dass die maximale Mitgliedszahl 30 ist."
+
 }

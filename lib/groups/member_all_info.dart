@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'file:///C:/Users/szasa/FlutterProjects/csocsort_szamla/lib/groups/dialogs/change_nickname_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
@@ -12,9 +12,9 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import 'dialogs/change_nickname_dialog.dart';
 import 'dialogs/confirm_leave_dialog.dart';
 import 'join_group.dart';
 
@@ -218,12 +218,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               children: [
                 GradientButton(
                   onPressed: () {
-                    if(widget.member.balance<0){
+                    double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
+                    if(widget.member.balance<=-currencyThreshold){
                       FlutterToast ft = FlutterToast(context);
                       ft.showToast(
                           child: errorToast('balance_at_least_0', context),
                           toastDuration: Duration(seconds: 2),
-                          gravity: ToastGravity.BOTTOM);
+                          gravity: ToastGravity.BOTTOM
+                      );
                       return;
                     }else{
                       showDialog(
@@ -274,13 +276,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   Future<bool> _removeMember(int memberId) async {
     Map<String, dynamic> body ={
-      "member_id":memberId??currentUserId
+      "member_id":memberId??currentUserId,
+      "threshold":(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2
     };
-    clearAllCache();
+
     http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
-    if(memberId==null){
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      if(decoded!=null){
+    if(memberId==null){ // The member leaves on his own
+      if(response.body!=""){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
         saveGroupName(decoded['data']['group_name']);
         saveGroupId(decoded['data']['group_id']);
         saveGroupCurrency(decoded['data']['currency']);
@@ -290,14 +293,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
         deleteGroupName();
       }
       Future.delayed(delayTime()).then((value) => _onRemoveMemberNull());
-    }else{
+    }else{ // The member got kicked
       Future.delayed(delayTime()).then((value) => _onRemoveMember());
     }
     return true;
   }
 
   void _onRemoveMember() async {
-    await clearAllCache();
+    await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -317,10 +320,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     }else{
       usersGroupIds.remove(currentGroupId);
       usersGroups.remove(currentGroupName);
-      SharedPreferences.getInstance().then((prefs) {
-        prefs.setStringList('users_groups', usersGroups);
-        prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-      });
+      saveUsersGroupIds();
+      saveUsersGroups();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
-import '../config.dart';
 import '../essentials/app_theme.dart';
 import 'in_app_purchase_page.dart';
 
@@ -23,7 +22,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   Future<dynamic> _isGroupBoosted() async {
     try{
-      http.Response response = await httpGet(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost', useCache: false);
+      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupBoost), useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     }catch(_){
@@ -48,7 +47,10 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GradientButton(
-                      child: Icon(Icons.shopping_basket, color: Theme.of(context).colorScheme.onSecondary),
+                      child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.onSecondary, BlendMode.srcIn),
+                          child: Image.asset('assets/dodo_color.png', width: 25,)
+                      ),
                       onPressed: (){
                         Navigator.push(
                             context,

@@ -1,21 +1,28 @@
 import 'dart:collection';
 
 extension Money on double{
+  double threshold(String code){
+    return (currencies[code]['subunit']==1?0.01:1)/2;
+  }
   String money(String code){
+    double d=this;
+    if(this<threshold(code) && this<0){
+      d=-this;
+    }
     return currencies[code]["subunit"]==1?
-      this.toStringAsFixed(2)
+      d.toStringAsFixed(2)
       :
-      this.toStringAsFixed(0);
+      d.toStringAsFixed(0);
   }
 
-  String printMoney(String code){
-    return currencies[code]["before"]==1?
-      this<0?
-        "-"+currencies[code]["symbol"]+""+this.abs().money(code)
-        :
-        currencies[code]["symbol"]+""+this.money(code)
+String printMoney(String code){
+  return currencies[code]["before"]==1?
+    this<0?
+      "-"+currencies[code]["symbol"]+""+this.abs().money(code)
       :
-      this.money(code)+" "+currencies[code]["symbol"];
+      currencies[code]["symbol"]+""+this.money(code)
+    :
+    this.money(code)+" "+currencies[code]["symbol"];
   }
 }
 

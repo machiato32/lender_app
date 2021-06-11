@@ -1,12 +1,11 @@
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../essentials/widgets/future_success_dialog.dart';
 import '../essentials/widgets/gradient_button.dart';
 import '../essentials/http_handler.dart';
-import 'package:csocsort_szamla/config.dart';
 
 import '../main.dart';
 
@@ -27,10 +26,7 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
 
       await httpPut(uri: '/user',
           context: context, body: body);
-      SharedPreferences.getInstance().then((prefs){
-        prefs.setString('current_username', newUsername);
-      });
-      currentUsername=newUsername;
+      saveUsername(newUsername);
       Future.delayed(delayTime()).then((value) => _onUpdateUsername());
       return true;
     } catch (_) {
@@ -43,11 +39,12 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                MainPage()),
-            (r) => false);
-    _usernameController.text =
-    '';
-    clearAllCache();
+                MainPage()
+        ),
+        (r) => false
+    );
+    _usernameController.text = '';
+    // clearAllCache();
   }
 
   @override

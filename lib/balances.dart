@@ -64,7 +64,7 @@ class _BalancesState extends State<Balances> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
         context: context,
         useGuest: useGuest
       );
@@ -125,6 +125,7 @@ class _BalancesState extends State<Balances> {
                     if (snapshot.hasData) {
                       int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
                       Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==idToUse, orElse: () => null);
+                      double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
@@ -132,7 +133,7 @@ class _BalancesState extends State<Balances> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Visibility(
-                                visible: currentMember==null?false:currentMember.balance<0,
+                                visible: currentMember==null?false:currentMember.balance<-currencyThreshold,
                                 child: GradientButton(
                                   onPressed: (){
                                     List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==idToUse).toList();
@@ -331,8 +332,9 @@ class _BalancesState extends State<Balances> {
   Future<String> _getInvitation() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context);
+          uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
+          context: context,
+      );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['invitation'];
 

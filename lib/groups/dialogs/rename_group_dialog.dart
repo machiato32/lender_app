@@ -1,17 +1,17 @@
 import 'dart:convert';
 
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../essentials/widgets/future_success_dialog.dart';
-import '../essentials/widgets/gradient_button.dart';
-import '../essentials/http_handler.dart';
+import '../../essentials/widgets/future_success_dialog.dart';
+import '../../essentials/widgets/gradient_button.dart';
+import '../../essentials/http_handler.dart';
 import 'package:csocsort_szamla/config.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class RenameGroupDialog extends StatefulWidget {
   @override
@@ -32,11 +32,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
           body: body);
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      currentGroupName = decoded['group_name'];
-      currentGroupId = decoded['group_id'];
-      SharedPreferences.getInstance().then((prefs){
-        prefs.setString('current_group_name', currentGroupName);
-      });
+      saveGroupName(decoded['group_name']);
       Future.delayed(delayTime()).then((value) => _onUpdateGroupName());
       return true;
     } catch (_) {
@@ -51,9 +47,9 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
             builder: (context) =>
                 MainPage()),
             (r) => false);
-    _groupNameController.text =
-    '';
-    clearAllCache();
+    _groupNameController.text ='';
+    clearGroupCache();
+    deleteCache(uri:generateUri(GetUriKeys.groups));
   }
 
   @override

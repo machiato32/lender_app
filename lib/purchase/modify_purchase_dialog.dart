@@ -39,7 +39,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
+          uri: generateUri(GetUriKeys.groupCurrent),
           context: context,
           overwriteCache: overwriteCache,
           useGuest: useGuest
@@ -242,10 +242,8 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                             for (Member member in widget.savedPurchase.receivers) {
                               print(member.username);
                               Member memberInCheckbox = snapshotMembers.firstWhere(
-                                (element) {
-                                  return element.memberId == member.memberId;
-                                },
-                                orElse: null
+                                (element) => element.memberId == member.memberId,
+                                orElse: () => null
                               );
                               if (memberInCheckbox != null)
                                 memberChipBool[memberInCheckbox] = true;

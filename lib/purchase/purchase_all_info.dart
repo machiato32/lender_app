@@ -3,7 +3,6 @@ import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/purchase/modify_purchase_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -138,35 +137,25 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                        children: [
                          GradientButton(
                            onPressed: (){
-                             if(widget.data.receivers.where((element) => element.username==null).length!=0){
-                               FlutterToast ft = FlutterToast(context);
-                               ft.removeQueuedCustomToasts();
-                               ft.showToast(
-                                   child: errorToast('cannot_modify_element_deleted_member', context),
-                                   toastDuration: Duration(seconds: 2),
-                                   gravity: ToastGravity.BOTTOM
-                               );
-                             }else{
-                               showDialog(
-                                 context: context,
-                                 child: ModifyPurchaseDialog(
-                                   savedPurchase: SavedPurchase(
-                                       buyerNickname: widget.data.buyerNickname,
-                                       buyerId: widget.data.buyerId,
-                                       buyerUsername: widget.data.buyerUsername,
-                                       receivers: widget.data.receivers,
-                                       totalAmount: widget.data.totalAmount,
-                                       name: widget.data.name,
-                                       purchaseId: widget.data.purchaseId
-                                   ),
+                             showDialog(
+                               context: context,
+                               child: ModifyPurchaseDialog(
+                                 savedPurchase: SavedPurchase(
+                                     buyerNickname: widget.data.buyerNickname,
+                                     buyerId: widget.data.buyerId,
+                                     buyerUsername: widget.data.buyerUsername,
+                                     receivers: widget.data.receivers,
+                                     totalAmount: widget.data.totalAmount,
+                                     name: widget.data.name,
+                                     purchaseId: widget.data.purchaseId
                                  ),
-                               )
-                               .then((value){
-                                 if(value??false){
-                                   Navigator.pop(context, 'deleted');
-                                 }
-                               });
-                             }
+                               ),
+                             )
+                             .then((value){
+                               if(value??false){
+                                 Navigator.pop(context, 'deleted');
+                               }
+                             });
 
                            },
                            child: Row(
@@ -184,36 +173,27 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                       children: [
                         GradientButton(
                             onPressed: () {
-                              if(widget.data.receivers.where((element) => element.username==null).length!=0){
-                                FlutterToast ft = FlutterToast(context);
-                                ft.removeQueuedCustomToasts();
-                                ft.showToast(
-                                    child: errorToast('cannot_delete_element_deleted_member', context),
-                                    toastDuration: Duration(seconds: 2),
-                                    gravity: ToastGravity.BOTTOM
-                                );
-                              }else{
-                                showDialog(
-                                    context: context,
-                                    child: ConfirmChoiceDialog(
-                                      choice: 'want_delete',
-                                    )
-                                ).then((value){
-                                  if(value!=null && value){
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        child: FutureSuccessDialog(
-                                          future: _deleteElement(widget.data.purchaseId),
-                                          dataTrueText: 'delete_scf',
-                                          onDataTrue: () {
-                                            _onDeleteElement();
-                                          },
-                                        )
-                                    );
-                                  }
-                                });
-                              }
+                              showDialog(
+                                  context: context,
+                                  child: ConfirmChoiceDialog(
+                                    choice: 'want_delete',
+                                  )
+                              ).then((value){
+                                if(value!=null && value){
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      child: FutureSuccessDialog(
+                                        future: _deleteElement(widget.data.purchaseId),
+                                        dataTrueText: 'delete_scf',
+                                        onDataTrue: () {
+                                          _onDeleteElement();
+                                        },
+                                      )
+                                  );
+                                }
+                              });
+
 
                             },
                             child: Row(

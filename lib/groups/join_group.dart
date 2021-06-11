@@ -54,14 +54,26 @@ class _JoinGroupState extends State<JoinGroup> {
         'invitation_token': token,
         'nickname': nickname
       };
-      http.Response response =
-      await httpPost(uri: '/join', context: context, body: body);
+      http.Response response = await httpPost(uri: '/join', context: context, body: body);
 
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      saveGroupName(decoded['data']['group_name']);
-      saveGroupId(decoded['data']['group_id']);
-      saveGroupCurrency(decoded['data']['currency']);
-      Future.delayed(delayTime()).then((value) => _onJoinGroup());
+      if(response.body!=""){
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        saveGroupName(decoded['data']['group_name']);
+        saveGroupId(decoded['data']['group_id']);
+        saveGroupCurrency(decoded['data']['currency']);
+        if(usersGroups==null){
+          usersGroupIds=List<int>();
+          usersGroups=List<String>();
+        }
+        usersGroupIds.add(decoded['data']['group_id']);
+        usersGroups.add(decoded['data']['group_name']);
+        saveUsersGroupIds();
+        saveUsersGroups();
+        Future.delayed(delayTime()).then((value) => _onJoinGroup());
+      }else{
+        return false;
+      }
+
       return true;
     } catch (_) {
       throw _;
@@ -116,7 +128,7 @@ class _JoinGroupState extends State<JoinGroup> {
                   )
                 : null,
           ),
-          drawer: !widget.fromAuth
+          drawer: !(widget.fromAuth || currentGroupName!=null)
               ? null
               : Drawer(
             elevation: 16,
@@ -275,7 +287,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 return null;
                               },
                               decoration: InputDecoration(
-                                hintText: 'example_nickname'.tr(),
+                                hintText: 'example_name'.tr(),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                       color: Theme.of(context)
@@ -330,7 +342,46 @@ class _JoinGroupState extends State<JoinGroup> {
                                       onDataTrue: () {
                                         _onJoinGroup();
                                       },
-                                    ));
+                                      dataFalse: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(
+                                              child: Text(
+                                            'approve_still_needed'.tr(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(color: Colors.white),
+                                            textAlign: TextAlign.center,
+                                          )),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              GradientButton(
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.check,
+                                                        color: Theme.of(context).colorScheme.onSecondary),
+                                                    SizedBox(width: 3,),
+                                                    Text('okay'.tr(),
+                                                      style: Theme.of(context).textTheme.button,
+                                                    ),
+                                                  ],
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                useShadow: false,
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                );
                               }
                             },
                             // color: Theme.of(context).colorScheme.secondary,

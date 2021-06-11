@@ -61,7 +61,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.groupCurrent),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -145,7 +145,15 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
             },
             child: Column(
               children: [
-                IsGuestBanner(callback: (){},),
+                IsGuestBanner(
+                  callback: (){
+                    setState(() {
+                      clearGroupCache();
+                      _members=null;
+                      _members=_getMembers();
+                    });
+                  },
+                ),
                 Expanded(
                   child: ListView(
                     children: <Widget>[

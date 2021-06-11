@@ -36,7 +36,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
   }
 
   void _onUpdateRequest(){
-    clearAllCache();
+    deleteCache(uri: generateUri(GetUriKeys.requestsAll));
     Navigator.pop(context);
     Navigator.pop(context, true);
   }

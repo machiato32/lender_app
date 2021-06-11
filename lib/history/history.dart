@@ -30,7 +30,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/purchases?group=' + currentGroupId.toString()+'&limit=6',
+        uri: generateUri(GetUriKeys.purchasesFirst6),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -52,7 +52,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/payments?group=' + currentGroupId.toString()+'&limit=6',
+        uri: generateUri(GetUriKeys.paymentsFirst6),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -68,32 +68,23 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  void callback({bool purchase=false, bool payment=false, bool reaction=false}) {
-    if(!reaction){
-      widget.callback();
-      _payments = null;
-      _payments = _getPayments(overwriteCache: true);
-      _purchases = null;
-      _purchases = _getPurchases(overwriteCache: true);
-    }else{
-      setState(() {
-        if(payment){
-          _payments = null;
-          _payments = _getPayments(overwriteCache: true);
-        }
-        if(purchase){
-          _purchases = null;
-          _purchases = _getPurchases(overwriteCache: true);
-        }
-      });
-
-    }
+  void callback({bool purchase=false, bool payment=false}) {
+    widget.callback();
+    setState(() {
+      if(payment){
+        _payments = null;
+        _payments = _getPayments(overwriteCache: true);
+      }
+      if(purchase){
+        _purchases = null;
+        _purchases = _getPurchases(overwriteCache: true);
+      }
+    });
 
   }
 
   @override
   void initState() {
-
     _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _payments = null;
     _payments = _getPayments();

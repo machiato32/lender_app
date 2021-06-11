@@ -98,7 +98,7 @@
     "modify": "Modify",
     "invitation_explanation": "Invite someone to the group",
     "rename_group_explanation": "Rename the group if you don't like the name",
-    "shopping_list_explanation": "Write on the joint shopping list",
+    "shopping_list_explanation": "Write on the joint shopping list or tell your friends that you are shopping.",
     "history_explanation": "Follow, modify and revoke recent transactions",
 
     "pay": "Pay",
@@ -288,8 +288,8 @@
     "calculator_explanation": "A simple calculator if you need it 😉",
 
     "approve_members": "Approve members",
-    "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below",
-    "needs_approval": "Admin approval",
+    "approve_members_explanation": "Approve joining of new members to the group. You can toggle the necessity of the admin approval below.",
+    "needs_approval": "Admin approval needed",
     "download_export": "Download data",
     "download_export_explanation": "Download all group data",
     "download_xls": "Download as an excel table",
@@ -307,5 +307,65 @@
     "modify_payment": "Modify payment",
     "modify_payment_explanation": "Modify a payment if its details changed",
     "modify_purchase": "Modify purchase",
-    "modify_purchase_explanation": "Modify a purchase if its details changed"
+    "modify_purchase_explanation": "Modify a purchase if its details changed",
+
+    "not_in_group": "You are not a member of this group!",
+
+    "approve_still_needed": "The request to join the group was sent, it needs to be approved by the group's admins. Be patient, you will be receiving a notification.",
+    "approve": "Approve",
+    "disapprove": "Disapprove",
+
+    "purchase_notification": "Purchases",
+
+    "purchase_created_notification": "New purchases",
+    "purchase_created_notification_explanation": "New purchases",
+
+    "purchase_modified_notification": "Modified purchases",
+    "purchase_modified_notification_explanation": "Modified purchases",
+
+    "purchase_deleted_notification": "Revoked purchases",
+    "purchase_deleted_notification_explanation": "Revoked purchases",
+
+    "payment_notification": "Payments",
+
+    "payment_created_notification": "New payments",
+    "payment_created_notification_explanation": "New payments",
+
+    "payment_modified_notification": "Modified payments",
+    "payment_modified_notification_explanation": "Modified payments",
+
+    "payment_deleted_notification": "Revoked payments",
+    "payment_deleted_notification_explanation": "Revoked payments",
+
+    "shopping_notification": "Shopping list",
+
+    "shopping_created_notification": "New wishes",
+    "shopping_created_notification_explanation": "New wishes",
+
+    "shopping_fulfilled_notification": "Fulfilled wishes",
+    "shopping_fulfilled_notification_explanation": "Fulfilled wishes",
+
+    "shopping_shop_notification": "Someone is shopping",
+    "shopping_shop_notification_explanation": "Someone is shopping",
+
+    "group_system_notification":"Group and systemnotifications",
+
+    "other_notification": "Everything else",
+    "other_notification_explanation": "Everything else",
+
+    "group_update_notification": "Group updates",
+    "group_update_notification_explanation": "Group updates",
+
+    "im_shopping_explanation": "Your friends will be notified, that you are shopping",
+
+    "just_few_things_left": "Just one steps left",
+
+    "acting_as": "Acting as {}",
+
+
+    "group_needs_approval": "Admin approval",
+    "group_needs_approval_explanation": "Decide whether it needs an admin's approval to join the group",
+
+    "boost_group_boosted_explanation": "This group has already been boosted \uD83D\uDE0E. This means, that you are able to see the group's statistics and that the member limit is up to 30."
+
 }

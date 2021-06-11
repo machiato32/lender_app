@@ -77,6 +77,14 @@ void saveGuestNickname(String newGuestNickname) {
   guestNickname=newGuestNickname;
   _saveString('guest_nickname', newGuestNickname);
 }
+///If [usersGroupIds] are already saved locally
+void saveUsersGroupIds(){
+  _getPrefs().then((value) => value.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList()));
+}
+///If [usersGroups] are already saved locally
+void saveUsersGroups(){
+  _getPrefs().then((value) => value.setStringList('users_groups', usersGroups));
+}
 //-------------------------------------------------------//
 void deleteApiToken() {
   apiToken=null;
@@ -128,6 +136,15 @@ void deleteGuestNickname() {
   _delete('guest_nickname');
 }
 
+void deleteUsersGroupIds(){
+  usersGroups=null;
+  _getPrefs().then((value) => value.remove('users_group_ids'));
+}
+void deleteUsersGroups(){
+  usersGroups=null;
+  _getPrefs().then((value) => value.remove('users_groups'));
+}
+
 Future loadAllPrefs() async {
   await _getPrefs().then((preferences){
     if (preferences.containsKey('current_username')) {
@@ -155,5 +172,3 @@ Future loadAllPrefs() async {
     }
   });
 }
-
-//TODO: save lists, change everywhere

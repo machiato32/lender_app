@@ -44,7 +44,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
     try {
       bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString(),
+        uri: generateUri(GetUriKeys.groupCurrent),
         context: context,
         overwriteCache: overwriteCache,
         useGuest: useGuest
@@ -121,7 +121,15 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             },
             child: Column(
               children: [
-                IsGuestBanner(callback: (){setState(() { _members=null; _members=_getMembers();});},),
+                IsGuestBanner(
+                  callback: (){
+                    setState(() {
+                      clearGroupCache();
+                      _members=null;
+                      _members=_getMembers();
+                    });
+                  },
+                ),
                 Expanded(
                   child: ListView(
                     shrinkWrap: true,

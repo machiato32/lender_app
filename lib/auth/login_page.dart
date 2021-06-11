@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:csocsort_szamla/config.dart';
@@ -258,16 +257,17 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
       http.Response response =
-      await httpGet(uri: '/groups', context: context);
+        await httpGet(uri: generateUri(GetUriKeys.groups), context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {
-        groups.add(Group(
-            groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
+        groups.add(Group(groupName: group['group_name'], groupId: group['group_id'], groupCurrency: group['currency']));
       }
       if (groups.length > 0) {
         usersGroups=groups.map<String>((group) => group.groupName).toList();
         usersGroupIds=groups.map<int>((group) => group.groupId).toList();
+        saveUsersGroups();
+        saveUsersGroupIds();
         if (groups
             .where((group) => group.groupId == lastActiveGroup)
             .toList()
@@ -276,20 +276,12 @@ class _LoginPageState extends State<LoginPage> {
           saveGroupName(currentGroup.groupName);
           saveGroupId(lastActiveGroup);
           saveGroupCurrency(currentGroup.groupCurrency);
-          SharedPreferences.getInstance().then((_prefs) {
-            _prefs.setStringList('users_groups', usersGroups);
-            _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-          });
           Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
           return true;
         }
         saveGroupName(groups[0].groupName);
         saveGroupId(groups[0].groupId);
         saveGroupCurrency(groups[0].groupCurrency);
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setStringList('users_groups', usersGroups);
-          _prefs.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList());
-        });
         Future.delayed(delayTime()).then((value) => _onSelectGroupTrue());
         return true;
       }
@@ -341,18 +333,12 @@ class _LoginPageState extends State<LoginPage> {
           headers: header, body: bodyEncoded);
       if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        apiToken = decoded['data']['api_token'];
-        currentUserId = decoded['data']['id'];
-        currentUsername = decoded['data']['username'];
         showAds=decoded['data']['ad_free']==0;
         useGradients=decoded['data']['gradients_enabled']==1;
         trialVersion=decoded['data']['trial']==1;
-
-        SharedPreferences.getInstance().then((_prefs) {
-          _prefs.setString('current_username', currentUsername);
-          _prefs.setInt('current_user_id', currentUserId);
-          _prefs.setString('api_token', apiToken);
-        });
+        saveUsername(decoded['data']['username']);
+        saveUserId(decoded['data']['id']);
+        saveApiToken(decoded['data']['api_token']);
         await clearAllCache();
         return await _selectGroup(decoded['data']['last_active_group']);
       } else {

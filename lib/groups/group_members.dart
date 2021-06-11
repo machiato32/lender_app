@@ -23,7 +23,7 @@ class _GroupMembersState extends State<GroupMembers> {
   Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
-          uri: '/groups/' + currentGroupId.toString(),
+          uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
           context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -39,12 +39,6 @@ class _GroupMembersState extends State<GroupMembers> {
     } catch (_) {
       throw _;
     }
-  }
-  @override
-  void didUpdateWidget(GroupMembers oldWidget) {
-    _members = null;
-    _members = _getMembers();
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -230,63 +224,58 @@ class _MemberEntryState extends State<MemberEntry> {
               direction: Axis.horizontal,
               children: <Widget>[
                 Flexible(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            child: Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.account_box,
-                                  color: iconColor,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Flexible(
-                                          child: Text(
-                                        widget.member.username,
-                                        style: style.copyWith(fontSize: 20),
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                      Flexible(
-                                          child: Text(
-                                        widget.member.nickname,
-                                        style: TextStyle(
-                                            color: nicknameColor, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.account_box,
+                              color: iconColor,
                             ),
-                          ),
-                          Center(
-                            child: Visibility(
-                                visible: widget.member.isAdmin,
-                                child:
-                                Text(
-                                  '👑  ', //itt van egy korona emoji lol
-                                  style: style,
-                                )
+                            SizedBox(
+                              width: 20,
                             ),
-                          ),
-                        ],
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Flexible(
+                                      child: Text(
+                                    widget.member.username,
+                                    style: style.copyWith(fontSize: 20),
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                                  Flexible(
+                                    child: Text(
+                                      widget.member.nickname,
+                                      style: TextStyle(
+                                          color: nicknameColor, fontSize: 15),
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                )),
+                      Center(
+                        child: Visibility(
+                            visible: widget.member.isAdmin,
+                            child:
+                            Text(
+                              '👑  ', //itt van egy korona emoji lol
+                              style: style,
+                            )
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

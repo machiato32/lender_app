@@ -28,7 +28,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
     try {
 
       http.Response response = await httpGet(
-        uri: '/groups/' + currentGroupId.toString()+'/guests',
+        uri: generateUri(GetUriKeys.groupGuests),
         context: context,
         useCache: false
       );
@@ -101,7 +101,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                           selected: _selectedGuest == member,
                           onSelected: (bool newValue) {
                             FocusScope.of(context).unfocus();
-                            clearAllCache();
+                            clearGroupCache();
                             if(_selectedGuest!=member){
                               _selectedGuest = member;
                               saveGuestGroupId(currentGroupId);

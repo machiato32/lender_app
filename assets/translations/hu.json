@@ -98,7 +98,7 @@
     "modify": "Módosítás",
     "invitation_explanation": "Hívj meg valakit a csoportba",
     "rename_group_explanation": "Nevezd át a csoportod, ha nem tetszik a neve",
-    "shopping_list_explanation": "Írj a közös bevásárlólistára, vagy szólj a többieknek, hogy éppen boltaban vagy",
+    "shopping_list_explanation": "Írj a közös bevásárlólistára, vagy szólj a többieknek, hogy éppen boltban vagy",
     "history_explanation": "Kövesd nyomon, vond vissza és módosítsd korábbi tranzakcióid",
 
     "pay": "Fizetés",
@@ -263,7 +263,7 @@
     "you_bought": "Te vásároltál",
     "you_received": "Neked vásároltak",
 
-    "group_stats": "A csoport sacisztikái",
+    "group_stats": "A csoport statisztikái",
     "group_stats_explanation": "Itt láthatod a csoport összes bevásárlását, fizetését",
     "stats_purchases": "Bevásárlások:",
     "stats_payments": "Fizetések:",
@@ -275,7 +275,7 @@
 
     "personalised_ads": "Szeretnék látni személyreszabott reklámokat",
 
-    "statistics_not_available": "A sacisztiszták nem elérhetőek",
+    "statistics_not_available": "A statisztiszták nem elérhetőek",
     "statistics_not_available_explanation": "Ez a csoport még nem lett felfejlesztve, így a statisztikák még nem elérhetőek. Fejleszd fel a csoportot, vagy vedd meg a Csoportfejlesztő Dodókat a boltban!",
 
     "use_personalised_ads": "Személyre szabott hirdetések",
@@ -289,7 +289,7 @@
 
     "approve_members": "Jelentkezések elfogadása",
     "approve_members_explanation": "Fogadd el az új tagok jelentkezését a csoportba. Lent változtathatod, az adminok beleegyezésének  szükségességét",
-    "needs_approval": "Admin beleegyezés",
+    "needs_approval": "Admin beleegyezés szükséges",
     "download_export": "Letölthető adatok",
     "download_export_explanation": "Töltsd le a csoport összes adatát",
     "download_xls": "Letöltés excel táblázatként",
@@ -301,12 +301,66 @@
     "statistics_explanation": "A csoport statisztikái grafikusan ábrázolva",
     "coming_soon": "Nem sokára elérhető",
 
-    "cannot_modify_element_deleted_member": "Nem módosíthatod az elemet, mert az kilépett tagot tartalmaz",
-    "cannot_delete_element_deleted_member": "Nem vonhatod vissza az elemet, mert az kilépett tagot tartalmaz",
-
     "modify_payment": "Fizetés módosítása",
     "modify_payment_explanation": "Módosítsd a fizetést, ha változtak a részletei",
     "modify_purchase": "Vásárlás módósítása",
-    "modify_purchase_explanation": "Módosítsd a vásárlást, ha változtak a részletei"
+    "modify_purchase_explanation": "Módosítsd a vásárlást, ha változtak a részletei",
 
+    "not_in_group": "Nem vagy a csoport tagja!",
+
+    "approve_still_needed": "A belépési kérelmet elküldtük, a belépéshez a csoport adminjának beleegyezése szükséges. Ha az megtörtént, étesítést fogsz kapni, addig várj türelemmel.",
+    "approve": "Engedélyezés",
+    "disapprove": "Elutasítás",
+
+    "purchase_notification": "Bevásárlások",
+
+    "purchase_created_notification": "Új bevásárlás",
+    "purchase_created_notification_explanation": "Itt jelennek meg az új bevásárlásokról érkező értesítések",
+
+    "purchase_modified_notification": "Szerkesztett bevásárlás",
+    "purchase_modified_notification_explanation": "Itt jelennek meg a szerkesztett bevásárlásokról érkező értesítések",
+
+    "purchase_deleted_notification": "Visszavont bevásárlás",
+    "purchase_deleted_notification_explanation": "Itt jelennek meg a visszavont bevásárlásokról érkező értesítések",
+
+    "payment_notification": "Fizetések",
+
+    "payment_created_notification": "Új fizetések",
+    "payment_created_notification_explanation": "Az új fizetésekről érkező értesítések",
+
+    "payment_modified_notification": "Módosított fizetések",
+    "payment_modified_notification_explanation": "A módosított fizetésekről érkező értesítések",
+
+    "payment_deleted_notification": "Visszavont fizetések",
+    "payment_deleted_notification_explanation": "A visszavont fizetésekről érkező értesítések",
+
+    "shopping_notification": "Bevásárlólista",
+
+    "shopping_created_notification": "Új kérések",
+    "shopping_created_notification_explanation": "Az új kérésekről érkező értesítések",
+
+    "shopping_fulfilled_notification": "Kipipált kérések",
+    "shopping_fulfilled_notification_explanation": "A kipipált kérésekről érkező értesítések",
+
+    "shopping_shop_notification": "Valaki épp bevásárol",
+    "shopping_shop_notification_explanation": "Akkor érkező értesítések, mikor valaki bevásárol",
+
+    "group_system_notification":"Csoport- és rendszerértesítések",
+
+    "other_notification": "Minden más",
+    "other_notification_explanation": "Az összes többi értesítés",
+
+    "group_update_notification": "Csoprtfrissítések",
+    "group_update_notification_explanation": "Pl. névváltoztatások, új tagok stb.",
+
+    "im_shopping_explanation": "A barátaid értesítést kapnak róla, hogy hol vagy",
+
+    "just_few_things_left": "Már csak néhány lépés van hátra",
+
+    "acting_as": "{}-t kezeled",
+
+    "group_needs_approval": "Admin beleegyezés",
+    "group_needs_approval_explanation": "Döntsd el, hogy a csoportba való csatlakozáshoz szükséges-e az adminok beleegyezése",
+
+    "boost_group_boosted_explanation": "Ezt a csoportot már felfejlesztették \uD83D\uDE0E. Így elérhetőek a statisztik, valamint 30 főre emelkedett a maximális létszám."
 }

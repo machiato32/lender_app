@@ -121,7 +121,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
                       }
                     }
 
-                    return LinearProgressIndicator();
+                    return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
                   },
                 );
               }else{
@@ -147,7 +147,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
               );
             }
           }
-          return LinearProgressIndicator();
+          return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
         },
       ),
     );
