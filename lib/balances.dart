@@ -125,6 +125,7 @@ class _BalancesState extends State<Balances> {
                     if (snapshot.hasData) {
                       int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
                       Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==idToUse, orElse: () => null);
+                      double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
@@ -132,7 +133,7 @@ class _BalancesState extends State<Balances> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Visibility(
-                                visible: currentMember==null?false:currentMember.balance<0,
+                                visible: currentMember==null?false:currentMember.balance<-currencyThreshold,
                                 child: GradientButton(
                                   onPressed: (){
                                     List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==idToUse).toList();

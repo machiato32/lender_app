@@ -390,7 +390,7 @@ class _LenderAppState extends State<LenderApp> {
       useGradients=decoded['data']['gradients_enabled']==1;
       personalisedAds=decoded['data']['personalised_ads']==1;
       trialVersion=decoded['data']['trial']==1;
-      if(currentGroupId==null && decoded['data']['last_active_group']!=""){
+      if(currentGroupId==null && decoded['data']['last_active_group']!=null){
         currentGroupId=decoded['data']['last_active_group'];
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(builder: (context) => MainPage(),));
       }

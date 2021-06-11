@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
@@ -217,12 +218,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               children: [
                 GradientButton(
                   onPressed: () {
-                    if(widget.member.balance<0){
+                    double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
+                    if(widget.member.balance<=-currencyThreshold){
                       FlutterToast ft = FlutterToast(context);
                       ft.showToast(
                           child: errorToast('balance_at_least_0', context),
                           toastDuration: Duration(seconds: 2),
-                          gravity: ToastGravity.BOTTOM);
+                          gravity: ToastGravity.BOTTOM
+                      );
                       return;
                     }else{
                       showDialog(
@@ -273,11 +276,12 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   Future<bool> _removeMember(int memberId) async {
     Map<String, dynamic> body ={
-      "member_id":memberId??currentUserId
+      "member_id":memberId??currentUserId,
+      "threshold":(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2
     };
 
     http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
-    if(memberId==null){
+    if(memberId==null){ // The member leaves on his own
       if(response.body!=""){
         Map<String, dynamic> decoded = jsonDecode(response.body);
         saveGroupName(decoded['data']['group_name']);
@@ -289,7 +293,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
         deleteGroupName();
       }
       Future.delayed(delayTime()).then((value) => _onRemoveMemberNull());
-    }else{
+    }else{ // The member got kicked
       Future.delayed(delayTime()).then((value) => _onRemoveMember());
     }
     return true;
