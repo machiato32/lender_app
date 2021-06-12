@@ -6,7 +6,7 @@ extension Money on double{
   }
   String money(String code){
     double d=this;
-    if(this<threshold(code) && this<0){
+    if(this>-threshold(code) && this<0){
       d=-this;
     }
     return currencies[code]["subunit"]==1?

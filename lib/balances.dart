@@ -133,7 +133,7 @@ class _BalancesState extends State<Balances> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Visibility(
-                                visible: currentMember==null?false:currentMember.balance<-currencyThreshold,
+                                visible: currentMember==null?false:(currentMember.balance<-currencyThreshold),
                                 child: GradientButton(
                                   onPressed: (){
                                     List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==idToUse).toList();

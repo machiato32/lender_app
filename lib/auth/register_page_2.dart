@@ -178,7 +178,7 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                 ],
               ),
               SizedBox(
-                height: 30,
+                height: 40,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
