@@ -130,16 +130,15 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
                           String username =
                               _usernameController.text;
                           showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
+                              builder: (context) => FutureSuccessDialog(
                                 future: _updateUsername(
                                     username),
                                 dataTrueText: 'nickname_scf',
                                 onDataTrue: () {
                                   _onUpdateUsername();
                                 },
-                              ));
+                              ), barrierDismissible: false,
+                              context: context);
                         }
                       },
                       child: Icon(

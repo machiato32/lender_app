@@ -91,15 +91,14 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
                       if(_formKey.currentState.validate()){
                         String store = _controller.text;
                         showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _postImShopping(store),
                               dataTrueText: 'store_scf',
                               onDataTrue: () {
                                 _onPostImShopping();
                               },
-                            )
+                            ), context: context,
+                            barrierDismissible: false
                         );
                       }
                     },

@@ -136,22 +136,20 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                   child: Icon(Icons.done, color: Theme.of(context).colorScheme.onSecondary,),
                   onPressed: (){
                     showDialog(
-                      context: context,
-                      child: ConfirmChoiceDialog(
+                      builder: (context) => ConfirmChoiceDialog(
                         choice: 'sure_merge_guest',
-                      )
+                      ), context: context
                     ).then((value){
                       if(value??false==true){
                         print(_dropdownValue.memberId);
                         showDialog(
-                          context: context,
-                          child: FutureSuccessDialog(
+                          builder: (context) => FutureSuccessDialog(
                             future: _mergeGuest(_dropdownValue.memberId),
                             dataTrueText: 'merge_scf',
                             onDataTrue: (){
                               _onMergeGuest();
                             },
-                          )
+                          ), context: context
                         );
                       }
                     });

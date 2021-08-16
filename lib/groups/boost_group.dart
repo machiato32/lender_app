@@ -104,23 +104,21 @@ class _BoostGroupState extends State<BoostGroup> {
                                     });
                                   }else{
                                     showDialog(
-                                        context: context,
-                                        child: ConfirmChoiceDialog(
+                                        builder: (context) => ConfirmChoiceDialog(
                                           choice: 'sure_boost',
-                                        )
+                                        ), context: context
                                     )
                                         .then((value){
                                       if(value??false){
                                         showDialog(
-                                            barrierDismissible: false,
-                                            context: context,
-                                            child: FutureSuccessDialog(
+                                            builder: (context) => FutureSuccessDialog(
                                               future: _postBoost(),
                                               dataTrueText: 'boost_scf',
                                               onDataTrue: (){
                                                 _onPostBoost();
                                               },
-                                            )
+                                            ), barrierDismissible: false,
+                                            context: context
                                         );
                                       }
                                     });

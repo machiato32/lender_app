@@ -182,13 +182,15 @@ class _BalancesState extends State<Balances> {
                                                           showDialog(
                                                               context: context,
                                                               barrierDismissible: true,
-                                                              child: FutureSuccessDialog(
-                                                                future: _postPayments(payments),
-                                                                dataTrueText: 'payment_scf',
-                                                                onDataTrue: (){
-                                                                  _onPostPayments();
-                                                                },
-                                                              )
+                                                              builder: (context){
+                                                                return FutureSuccessDialog(
+                                                                  future: _postPayments(payments),
+                                                                  dataTrueText: 'payment_scf',
+                                                                  onDataTrue: (){
+                                                                    _onPostPayments();
+                                                                  },
+                                                                );
+                                                              },
                                                           );
                                                         },
                                                         child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),

@@ -12,7 +12,7 @@ class InAppPurchasePage extends StatefulWidget {
 }
 
 class _InAppPurchasePageState extends State<InAppPurchasePage> {
-  Set<String> _ids = {'gradients','remove_ads', 'ad_gradient_bundle', 'group_boost', 'big_lender_bundle'};
+  Set<String> _ids = {'gradients','remove_ads', 'ad_gradient_bundle', 'group_boost', 'big_lender_bundle'};//TODO: ezt megerteni lol
   Map<String, int> sortBasic = {
     'remove_ads':1,
     'gradients':2,
@@ -20,7 +20,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
     'group_boost':4,
     'big_lender_bundle':5
   };
-  var iap = InAppPurchaseConnection.instance;
+  var iap = InAppPurchase.instance;
 
   bool _isConsumable(String id){
     switch(id){
@@ -68,9 +68,9 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
                     onPressed: (){
                       PurchaseParam purchaseParam = PurchaseParam(productDetails: e);
                       if(_isConsumable(e.id)){
-                        InAppPurchaseConnection.instance.buyConsumable(purchaseParam: purchaseParam);
+                        InAppPurchase.instance.buyConsumable(purchaseParam: purchaseParam);
                       }else{
-                        InAppPurchaseConnection.instance.buyNonConsumable(purchaseParam: purchaseParam);
+                        InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
                       }
                     },
                   )
@@ -101,7 +101,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
             if(snapshot.hasData){
               if(snapshot.data){
                 return FutureBuilder(
-                  future: InAppPurchaseConnection.instance.queryProductDetails(_ids),
+                  future: InAppPurchase.instance.queryProductDetails(_ids),
                   builder: (context, snapshot){
                     if(snapshot.connectionState==ConnectionState.done){
                       if(snapshot.hasData){

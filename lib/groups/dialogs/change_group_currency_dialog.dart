@@ -98,15 +98,14 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
                   onPressed: () {
                     FocusScope.of(context).unfocus();
                     showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        child: FutureSuccessDialog(
+                        builder: (context) => FutureSuccessDialog(
                           future: _updateGroupCurrency(_currencyCode),
                           dataTrueText: 'currency_scf',
                           onDataTrue: () {
                             _onUpdateGroupCurrency();
                           },
-                        )
+                        ), barrierDismissible: false,
+                        context: context
                     );
                   },
                   child: Icon(

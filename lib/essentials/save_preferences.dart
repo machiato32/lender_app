@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:csocsort_szamla/config.dart';
@@ -7,14 +8,19 @@ Future<SharedPreferences> _getPrefs() async {
 }
 
 Future _saveString(String key, String value) async {
-  return await _getPrefs().then((prefs){
-    prefs.setString(key, value);
-  });
+  if(!kIsWeb){
+    return await _getPrefs().then((prefs){
+      prefs.setString(key, value);
+    });
+  }
+  return;
 }
 Future _saveInt(String key, int value) async {
-  return await _getPrefs().then((prefs){
-    prefs.setInt(key, value);
-  });
+  if(!kIsWeb){
+    return await _getPrefs().then((prefs){
+      prefs.setInt(key, value);
+    });
+  }
 }
 Future _saveBool(String key, bool value) async {
   return await _getPrefs().then((prefs){
@@ -79,11 +85,13 @@ void saveGuestNickname(String newGuestNickname) {
 }
 ///If [usersGroupIds] are already saved locally
 void saveUsersGroupIds(){
-  _getPrefs().then((value) => value.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList()));
+  if(!kIsWeb)
+    _getPrefs().then((value) => value.setStringList('users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList()));
 }
 ///If [usersGroups] are already saved locally
 void saveUsersGroups(){
-  _getPrefs().then((value) => value.setStringList('users_groups', usersGroups));
+  if(!kIsWeb)
+    _getPrefs().then((value) => value.setStringList('users_groups', usersGroups));
 }
 //-------------------------------------------------------//
 void deleteApiToken() {

@@ -305,7 +305,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
                           if (_chipChoiceValue == null) {
-                            FlutterToast ft = FlutterToast(context);
+                            FToast ft = FToast();
+                            ft.init(context);
                             ft.showToast(
                                 child: errorToast('person_not_chosen', context),
                                 toastDuration: Duration(seconds: 2),
@@ -315,10 +316,9 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                           double amount = double.parse(_amountController.text);
                           String note = _noteController.text;
                           showDialog(
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _updatePayment(amount, note, _chipChoiceValue, widget.savedPayment.paymentId),
-                            )
+                            ), context: context
                           );
                         }
                       }

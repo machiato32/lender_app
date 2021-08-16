@@ -123,15 +123,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (value) {
                   showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      child: FutureSuccessDialog(
+                      builder: (context) => FutureSuccessDialog(
                         future: _changeAdmin(widget.member.memberId, value),
                         dataTrueText: 'admin_scf',
                         onDataTrue: () {
                           _onChangeAdmin();
                         },
-                      ));
+                      ), barrierDismissible: false,
+                      context: context);
                 },
               )),
           Visibility(
@@ -143,8 +142,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 GradientButton(
                   onPressed: () {
                     showDialog(
-                        context: context,
-                        child: ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,)
+                        builder: (context) => ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,), context: context
                     ).then((value) {if(value!=null && value=='madeAdmin') Navigator.pop(context, 'madeAdmin');});
                   },
                   child: Row(
@@ -172,23 +170,21 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 GradientButton(
                   onPressed: () {
                     showDialog(
-                      context: context,
-                      child: ConfirmLeaveDialog(
+                      builder: (context) => ConfirmLeaveDialog(
                         title: 'kick_member',
                         choice: 'really_kick',
-                      )
+                      ), context: context
                     ).then((value){
                       if(value!=null && value){
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _removeMember(widget.member.memberId),
                               dataTrueText: 'kick_member_scf',
                               onDataTrue: (){
                                 _onRemoveMember();
                               },
-                            )
+                            ), barrierDismissible: false,
+                            context: context
                         );
                       }
                     });
@@ -220,7 +216,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                   onPressed: () {
                     double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
                     if(widget.member.balance<=-currencyThreshold){
-                      FlutterToast ft = FlutterToast(context);
+                      FToast ft = FToast();
+                      ft.init(context);
                       ft.showToast(
                           child: errorToast('balance_at_least_0', context),
                           toastDuration: Duration(seconds: 2),
@@ -229,23 +226,21 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       return;
                     }else{
                       showDialog(
-                        context: context,
-                        child: ConfirmLeaveDialog(
+                        builder: (context) => ConfirmLeaveDialog(
                           title: 'leave_group',
                           choice: 'really_leave',
-                        )
+                        ), context: context
                       ).then((value){
                         if(value!=null && value){
                           showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
+                              builder: (context) => FutureSuccessDialog(
                                 future: _removeMember(null),
                                 dataTrueText: 'leave_scf',
                                 onDataTrue: () async {
                                   _onRemoveMemberNull();
                                 },
-                              )
+                              ), barrierDismissible: false,
+                              context: context
                           );
                         }
                       });

@@ -117,8 +117,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              child: EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,)
+                              builder: (context) => EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,), context: context
                           ).then((value){
                             if(value??false){
                               Navigator.pop(context, 'edited');
@@ -145,16 +144,15 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                           onPressed: () {
                             showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                child: FutureSuccessDialog(
+                                builder: (context) => FutureSuccessDialog(
                                   future:
                                   _deleteShoppingRequest(widget.data.requestId),
                                   dataTrueText: 'delete_scf',
                                   onDataTrue: () {
                                     _onDeleteShoppingRequest();
                                   },
-                                )
+                                ), barrierDismissible: false,
+                                context: context
                             );
                           },
                           child: Row(
@@ -187,15 +185,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
+                              builder: (context) => FutureSuccessDialog(
                                 future: _fulfillShoppingRequest(widget.data.requestId),
                                 dataTrueText: 'fulfill_scf',
                                 onDataTrue: () {
                                   _onFulfillShoppingRequest();
                                 },
-                              )
+                              ), barrierDismissible: false,
+                              context: context
                           );
                         },
                         child: Row(
@@ -216,15 +213,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
+                              builder: (context) => FutureSuccessDialog(
                                 future: _fulfillShoppingRequest(widget.data.requestId),
                                 dataTrueText: 'fulfill_scf',
                                 onDataTrue: () {
                                   _onFulfillShoppingRequest();
                                 },
-                              )
+                              ), barrierDismissible: false,
+                              context: context
                           ).then((value) {
                             if(value==true){
                               Navigator.push(

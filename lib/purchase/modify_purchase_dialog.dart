@@ -339,7 +339,8 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
                           if (!memberChipBool.containsValue(true)) {
-                            FlutterToast ft = FlutterToast(context);
+                            FToast ft = FToast();
+                            ft.init(context);
                             ft.showToast(
                                 child: errorToast('person_not_chosen', context),
                                 toastDuration: Duration(seconds: 2),
@@ -353,10 +354,9 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                             if (value) members.add(key);
                           });
                           showDialog(
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _updatePurchase(members, amount, name, widget.savedPurchase.purchaseId),
-                            )
+                            ), context: context
                           );
                         }
                       }

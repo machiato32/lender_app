@@ -245,10 +245,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               showDialog(
                                   barrierDismissible: false,
                                   context: context,
-                                  child: FutureSuccessDialog(
-                                    future: _register(username, password),
-                                    dataTrueText: 'registration_scf',
-                                  )
+                                  builder: (context){
+                                    return FutureSuccessDialog(
+                                      future: _register(username, password),
+                                      dataTrueText: 'registration_scf',
+                                    );
+                                  },
                               );
                             }else{
                               Widget toast = Container(
@@ -277,7 +279,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ],
                                 ),
                               );
-                              FlutterToast ft = FlutterToast(context);
+                              // FlutterToast ft = FlutterToast(context);
+                              FToast ft = FToast();
+                              ft.init(context);
                               ft.showToast(
                                 child: toast,
                                 toastDuration: Duration(seconds: 2),
@@ -313,7 +317,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ],
                               ),
                             );
-                            FlutterToast ft = FlutterToast(context);
+                            FToast ft = FToast();
+                            ft.init(context);
                             ft.showToast(
                               child: toast,
                               toastDuration: Duration(seconds: 2),

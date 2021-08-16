@@ -234,15 +234,14 @@ class _CreateGroupState extends State<CreateGroup> {
                               String token = _groupName.text;
                               String nickname = _nicknameController.text;
                               showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  child: FutureSuccessDialog(
+                                  builder: (context) => FutureSuccessDialog(
                                     future: _createGroup(token, nickname, _defaultValue),
                                     onDataTrue: () {
                                       _onCreateGroup();
                                     },
                                     dataTrueText: 'creation_scf',
-                                  ));
+                                  ), barrierDismissible: false,
+                                  context: context);
                             }
                           },
                         ),

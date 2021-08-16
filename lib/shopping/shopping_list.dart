@@ -120,15 +120,14 @@ class _ShoppingListState extends State<ShoppingList> {
                 InkWell(
                   onTap: (){
                     showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        child: FutureSuccessDialog(
+                        builder: (context) => FutureSuccessDialog(
                           future: _undoDeleteRequest(restoreId),
                           dataTrueText: 'undo_scf',
                           onDataTrue: (){
                             _onUndoDeleteRequest();
                           },
-                        )
+                        ), context: context,
+                        barrierDismissible: false
                     ).then((value) {
                       if (value ?? false) callback();
                     });
@@ -323,9 +322,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   if (_formKey.currentState.validate()) {
                                     String name = _addRequestController.text;
                                     showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        child: FutureSuccessDialog(
+                                        builder: (context) => FutureSuccessDialog(
                                           future: _postShoppingRequest(name),
                                           dataTrueText: 'add_scf',
                                           onDataTrue: () {
@@ -335,7 +332,8 @@ class _ShoppingListState extends State<ShoppingList> {
                                             Navigator.pop(context);
                                             setState(() {});
                                           },
-                                        ));
+                                        ), barrierDismissible: false,
+                                        context: context);
                                   }
                                 },
                               ),
@@ -349,8 +347,7 @@ class _ShoppingListState extends State<ShoppingList> {
                             GradientButton(
                               onPressed: (){
                                 showDialog(
-                                    context: context,
-                                    child: ImShoppingDialog(),
+                                    builder: (context) => ImShoppingDialog(), context: context,
                                 );
                               },
                               child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
@@ -520,15 +517,14 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       onDismissed: (direction){
         if(widget.data.requesterId != idToUse){
           showDialog(
-              barrierDismissible: false,
-              context: context,
-              child: FutureSuccessDialog(
+              builder: (context) => FutureSuccessDialog(
                 future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                 dataTrueText: 'fulfill_scf',
                 onDataTrue: () {
                   _onDeleteFulfillShoppingRequest();
                 },
-              )
+              ), barrierDismissible: false,
+              context: context
           ).then((value) {
             widget.callback(restoreId: widget.data.requestId);
             if(direction==DismissDirection.startToEnd && value==true){
@@ -548,23 +544,21 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         }else{
           if(direction == DismissDirection.endToStart){
             showDialog(
-                barrierDismissible: false,
-                context: context,
-                child: FutureSuccessDialog(
+                builder: (context) => FutureSuccessDialog(
                   future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                   dataTrueText: 'delete_scf',
                   onDataTrue: () {
                     _onDeleteFulfillShoppingRequest();
                   },
-                )
+                ), barrierDismissible: false,
+                context: context
             ).then((value) {
               if (value ?? false)
                 widget.callback(restoreId: widget.data.requestId);
             });
           }else if(direction==DismissDirection.startToEnd){
             showDialog(
-                context: context,
-                child: EditRequestDialog(textBefore: widget.data.name, requestId: widget.data.requestId,),
+                builder: (context) => EditRequestDialog(textBefore: widget.data.name, requestId: widget.data.requestId,), context: context,
             ).then((value){
               if(value??false){
                 widget.callback();
@@ -586,13 +580,12 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
               child: InkWell(
                 onLongPress: (){
                   showDialog(
-                    context: context,
-                    child: AddReactionDialog(
+                    builder: (context) => AddReactionDialog(
                       type: 'requests',
                       reactions: widget.data.reactions,
                       reactToId: widget.data.requestId,
                       callback: this.callbackForReaction,
-                    )
+                    ), context: context
                   );
                 },
                 onTap: () async {

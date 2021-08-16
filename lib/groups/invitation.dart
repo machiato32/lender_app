@@ -190,9 +190,7 @@ class _InvitationState extends State<Invitation> {
                                               _needsApproval=value;
                                             });
                                             showDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                child: FutureSuccessDialog(
+                                                builder: (context) => FutureSuccessDialog(
                                                   future: _updateNeedsApproval(),
                                                   onDataTrue: (){
                                                     _onUpdateNeedsApproval();
@@ -209,7 +207,8 @@ class _InvitationState extends State<Invitation> {
                                                       _needsApproval=!_needsApproval;
                                                     });
                                                   },
-                                                )
+                                                ), context: context,
+                                                barrierDismissible: false
                                             );
                                           },
 
@@ -419,10 +418,9 @@ class _ApproveMemberState extends State<ApproveMember> {
               GradientButton(
                 onPressed: (){
                   showDialog(
-                    context: context,
-                    child: FutureSuccessDialog(
+                    builder: (context) => FutureSuccessDialog(
                       future: _postApproveMember(widget.member.memberId, true),
-                    )
+                    ), context: context
                   );
                 },
                 child: Row(
@@ -444,10 +442,9 @@ class _ApproveMemberState extends State<ApproveMember> {
               GradientButton(
                 onPressed: (){
                   showDialog(
-                      context: context,
-                      child: FutureSuccessDialog(
+                      builder: (context) => FutureSuccessDialog(
                         future: _postApproveMember(widget.member.memberId, false),
-                      )
+                      ), context: context
                   );
                 },
                 child: Row(

@@ -110,15 +110,14 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                         FocusScope.of(context).unfocus();
                         String newRequest = _requestController.text;
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _updateRequest(newRequest),
                               onDataTrue: () {
                                 _onUpdateRequest();
                               },
                               dataTrueText: 'request_edit_scf',
-                            ));
+                            ), barrierDismissible: false,
+                            context: context);
                       }
                     },
                     child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)

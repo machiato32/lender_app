@@ -46,7 +46,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 GradientButton(
                   child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onSecondary,),
                   onPressed: (){
-                    showDialog(context: context, child: ChangePasswordDialog());
+                    showDialog(builder: (context) => ChangePasswordDialog(), context: context);
                   },
                 ),
               ],

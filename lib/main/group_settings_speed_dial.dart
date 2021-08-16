@@ -32,8 +32,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   void showNoStatisticsDialog(){
     showDialog(
-        context: context,
-        child: Dialog(
+        builder: (context) => Dialog(
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
@@ -65,7 +64,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
               ],
             ),
           ),
-        )
+        ), context: context
     );
   }
 
@@ -153,8 +152,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
             labelWidget: GestureDetector(
               onTap: () {
                 showDialog(
-                  context: context,
-                  child: DownloadExportDialog(),
+                  builder: (context) => DownloadExportDialog(), context: context,
                 );
               },
               child: Padding(
@@ -208,8 +206,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
             child: Icon(Icons.table_chart),
             onTap: () {
               showDialog(
-                context: context,
-                child: DownloadExportDialog(),
+                builder: (context) => DownloadExportDialog(), context: context,
               );
             }
         ),

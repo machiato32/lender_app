@@ -178,15 +178,14 @@ class _ReportABugPageState extends State<ReportABugPage> {
               String location = widget.location??_locationController.text;
               String details = _detailsController.text;
               showDialog(
-                barrierDismissible: false,
-                context: context,
-                child: FutureSuccessDialog(
+                builder: (context) => FutureSuccessDialog(
                   future: _postBug(error, date, location, details),
                   dataTrueText: 'bug_scf',
                   onDataTrue: () {
                     _onPostBug();
                   },
-                )
+                ), barrierDismissible: false,
+                context: context
               );
 
 

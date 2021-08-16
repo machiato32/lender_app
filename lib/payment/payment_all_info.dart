@@ -140,8 +140,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                       GradientButton(
                         onPressed: (){
                           showDialog(
-                              context: context,
-                              child: ModifyPaymentDialog(
+                              builder: (context) => ModifyPaymentDialog(
                                 savedPayment: SavedPayment(
                                     amount: widget.data.amount,
                                     note: widget.data.note,
@@ -149,7 +148,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                                     takerId: widget.data.takerId,
                                     paymentId: widget.data.paymentId
                                 ),
-                              )
+                              ), context: context
                           )
                               .then((value){
                             if(value??false){
@@ -176,22 +175,20 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                           onPressed: () {
 
                             showDialog(
-                              context: context,
-                              child: ConfirmChoiceDialog(
+                              builder: (context) => ConfirmChoiceDialog(
                                 choice: 'want_delete',
-                              ),
+                              ), context: context,
                             ).then((value){
                               if(value!=null && value){
                                 showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    child: FutureSuccessDialog(
+                                    builder: (context) => FutureSuccessDialog(
                                       future: _deletePayment(widget.data.paymentId),
                                       dataTrueText: 'delete_scf',
                                       onDataTrue: () {
                                         _onDeletePayment();
                                       },
-                                    )
+                                    ), barrierDismissible: false,
+                                    context: context
                                 );
                               }
                             });

@@ -74,9 +74,7 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
                   _personalisedAds=value;
                 });
                 showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    child: FutureSuccessDialog(
+                    builder: (context) => FutureSuccessDialog(
                       future: _updatePersonalisedAds(),
                       onDataTrue: (){
                         _onUpdatePersonalisedAds();
@@ -94,7 +92,8 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
                         });
                       },
                       dataTrueText: 'update_personalised_ads_scf',
-                    )
+                    ), context: context,
+                    barrierDismissible: false
                 );
               },
 

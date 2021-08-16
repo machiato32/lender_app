@@ -217,10 +217,12 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                         showDialog(
                             barrierDismissible: false,
                             context: context,
-                            child: FutureSuccessDialog(
-                              future: _register(widget.username, widget.password, passwordReminder, _defaultCurrencyValue),
-                              dataTrueText: 'registration_scf',
-                            )
+                            builder: (context){
+                              return FutureSuccessDialog(
+                                future: _register(widget.username, widget.password, passwordReminder, _defaultCurrencyValue),
+                                dataTrueText: 'registration_scf',
+                              );
+                            },
                         );
                       }
                     },
@@ -250,7 +252,7 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
   Future<bool> _register(
       String username, String password, String reminder, String currency) async {
     try {
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       Map<String, dynamic> body = {
         "username": username,
         "default_currency": currency,
@@ -266,7 +268,7 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
       };
 
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post((useTest?TEST_URL:APP_URL) + '/register',
+      http.Response response = await http.post(Uri.parse((useTest?TEST_URL:APP_URL) + '/register'),
           headers: header, body: bodyEncoded);
       if (response.statusCode == 201) {
         Map<String, dynamic> decoded = jsonDecode(response.body);

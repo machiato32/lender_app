@@ -99,7 +99,7 @@ class ManageGuests extends StatelessWidget {
                 GradientButton(
                   child: Icon(Icons.person_add, color: Theme.of(context).colorScheme.onSecondary,),
                   onPressed: (){
-                    showDialog(context: context, child: AddGuestDialog());
+                    showDialog(builder: (context) => AddGuestDialog(), context: context);
                   },
                 ),
               ],
@@ -141,11 +141,11 @@ class ManageGuests extends StatelessWidget {
                         onPressed: (){
                           if(guestApiToken!=null){
                             showDialog(
-                                context: context,
-                                child: MemberToMergeDialog()
+                                builder: (context) => MemberToMergeDialog(), context: context
                             );
                           }else{
-                            FlutterToast ft = FlutterToast(context);
+                            FToast ft = FToast();
+                            ft.init(context);
                             ft.showToast(
                                 child: toastMessage
                             );

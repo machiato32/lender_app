@@ -236,16 +236,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                             });
                           }else{
                             showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              child: FutureSuccessDialog(
+                              builder: (context) => FutureSuccessDialog(
                                 future: _updatePassword(_oldPasswordController.text,
                                     _newPasswordController.text, _passwordReminderController.text),
                                 dataTrueText: 'change_password_scf',
                                 onDataTrue: () {
                                   _onUpdatePassword();
                                 },
-                              ));
+                              ), barrierDismissible: false,
+                              context: context);
                           }
 
                         }

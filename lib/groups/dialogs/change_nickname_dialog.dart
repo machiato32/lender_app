@@ -125,15 +125,14 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                           _nicknameController.text[0].toUpperCase() +
                               _nicknameController.text.substring(1);
                       showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: FutureSuccessDialog(
+                          builder: (context) => FutureSuccessDialog(
                             future: _updateNickname(nickname, widget.memberId),
                             onDataTrue: () {
                               _onUpdateNickname();
                             },
                             dataTrueText: 'nickname_scf',
-                          ));
+                          ), barrierDismissible: false,
+                          context: context);
                     }
                   },
                   child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)

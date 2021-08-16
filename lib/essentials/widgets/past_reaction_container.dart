@@ -59,7 +59,7 @@ class PastReactionContainer extends StatelessWidget {
           children: [
             InkWell(
               onTap: (){
-                showDialog(context: context, child: AddReactionDialog(type: type, reactions: reactions, reactToId: reactedToId, callback: callback,));
+                showDialog(builder: (context) => AddReactionDialog(type: type, reactions: reactions, reactToId: reactedToId, callback: callback,), context: context);
               },
               borderRadius: BorderRadius.circular(15),
               child: Container(

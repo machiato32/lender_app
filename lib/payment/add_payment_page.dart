@@ -321,7 +321,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
               if (_chipChoiceValue == null) {
-                FlutterToast ft = FlutterToast(context);
+                FToast ft = FToast();
+                ft.init(context);
                 ft.showToast(
                     child: errorToast('person_not_chosen', context),
                     toastDuration: Duration(seconds: 2),
@@ -331,9 +332,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
               double amount = double.parse(_amountController.text);
               String note = _noteController.text;
               showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  child: FutureSuccessDialog(
+                  builder: (context) => FutureSuccessDialog(
                     future: _postPayment(amount, note, _chipChoiceValue),
                     dataTrue: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -390,7 +389,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                         ),
                       ],
                     ),
-                  ));
+                  ), barrierDismissible: false,
+                  context: context);
             }
           },
         ),

@@ -334,9 +334,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                     _nicknameController.text[0].toUpperCase() +
                                         _nicknameController.text.substring(1);
                                 showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    child: FutureSuccessDialog(
+                                    builder: (context) => FutureSuccessDialog(
                                       future: _joinGroup(token, nickname),
                                       dataTrueText: 'join_scf',
                                       onDataTrue: () {
@@ -380,7 +378,8 @@ class _JoinGroupState extends State<JoinGroup> {
                                           )
                                         ],
                                       ),
-                                    )
+                                    ), barrierDismissible: false,
+                                    context: context
                                 );
                               }
                             },

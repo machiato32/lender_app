@@ -134,15 +134,14 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                         String groupName =
                             _groupNameController.text;
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _updateGroupName(groupName),
                               dataTrueText: 'nickname_scf',
                               onDataTrue: () {
                                 _onUpdateGroupName();
                               },
-                            ));
+                            ), barrierDismissible: false,
+                            context: context);
                       }
                     },
                     child: Icon(

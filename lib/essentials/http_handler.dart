@@ -1,6 +1,6 @@
-
 import 'dart:io';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,17 +8,32 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 import '../auth/login_or_register_page.dart';
 import '../config.dart';
 import '../groups/join_group.dart';
 import '../main.dart';
 
 enum GetUriKeys {
-  groupHasGuests, groupCurrent, groupMember, groups, userBalanceSum, passwordReminder,
-  groupBoost, groupGuests, groupUnapprovedMembers, groupExportXls, purchasesAll, paymentsAll,
-  purchasesFirst6, paymentsFirst6, statisticsPayments, statisticsPurchases, statisticsAll,
-  requestsAll, purchasesDate, paymentsDate
+  groupHasGuests,
+  groupCurrent,
+  groupMember,
+  groups,
+  userBalanceSum,
+  passwordReminder,
+  groupBoost,
+  groupGuests,
+  groupUnapprovedMembers,
+  groupExportXls,
+  purchasesAll,
+  paymentsAll,
+  purchasesFirst6,
+  paymentsFirst6,
+  statisticsPayments,
+  statisticsPurchases,
+  statisticsAll,
+  requestsAll,
+  purchasesDate,
+  paymentsDate
 }
 List<String> getUris = [
   '/groups/{}/has_guests',
@@ -41,22 +56,23 @@ List<String> getUris = [
   '/requests?group={}',
   '/purchases?group={}&from_date={}&until_date={}',
   '/payments?group={}&from_date={}&until_date={}'
-];//TODO: same for other types
+]; //TODO: same for other types
 
-enum HttpType {get, post, put, delete}
+enum HttpType { get, post, put, delete }
 
 ///Generates URI-s from enum values. The default value of [args] is [currentGroupId].
-String generateUri(GetUriKeys key, {HttpType type=HttpType.get, List<String> args}){
-  if(type==HttpType.get){
-    if(args==null){
-      args=[currentGroupId.toString()];
+String generateUri(GetUriKeys key,
+    {HttpType type = HttpType.get, List<String> args}) {
+  if (type == HttpType.get) {
+    if (args == null) {
+      args = [currentGroupId.toString()];
     }
-    String uri=getUris[key.index];
-    if(args!=null){
-      for(String arg in args){
-        if(uri.contains('{}')) {
+    String uri = getUris[key.index];
+    if (args != null) {
+      for (String arg in args) {
+        if (uri.contains('{}')) {
           uri = uri.replaceFirst('{}', arg);
-        }else {
+        } else {
           break;
         }
       }
@@ -66,11 +82,9 @@ String generateUri(GetUriKeys key, {HttpType type=HttpType.get, List<String> arg
   return '';
 }
 
-
-Widget errorToast(String msg, BuildContext context){
+Widget errorToast(String msg, BuildContext context) {
   return Container(
-    padding: const EdgeInsets.symmetric(
-        horizontal: 24.0, vertical: 12.0),
+    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25.0),
       color: Colors.red,
@@ -90,79 +104,78 @@ Widget errorToast(String msg, BuildContext context){
                 style: Theme.of(context)
                     .textTheme
                     .bodyText1
-                    .copyWith(color: Colors.white)
-            )
-        ),
+                    .copyWith(color: Colors.white))),
       ],
     ),
   );
 }
 
-
-void memberNotInGroup(BuildContext context){
+void memberNotInGroup(BuildContext context) {
   usersGroupIds.remove(currentGroupId);
   usersGroups.remove(currentGroupName);
   saveUsersGroupIds();
   saveUsersGroups();
   //TODO:currency DOMINIK MEG TUDJA OLDANI, nem tudni, hogy hova kellene mennie, csak currency nelkul
   clearAllCache();
-  FlutterToast ft = FlutterToast(context);
+  FToast ft = FToast();
+  ft.init(context);
   ft.removeQueuedCustomToasts();
   ft.showToast(
       child: errorToast('not_in_group'.tr(), context),
       toastDuration: Duration(seconds: 2),
-      gravity: ToastGravity.BOTTOM
-  );
-  if(usersGroups.length>0){
-    currentGroupName=usersGroups[0];
-    currentGroupId=usersGroupIds[0];
+      gravity: ToastGravity.BOTTOM);
+  if (usersGroups.length > 0) {
+    currentGroupName = usersGroups[0];
+    currentGroupId = usersGroupIds[0];
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+  } else {
+    currentGroupName = null;
+    currentGroupId = null;
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (context) => MainPage()
-        ),
-        (r) => false
-    );
-  }else{
-    currentGroupName=null;
-    currentGroupId=null;
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => JoinGroup(fromAuth: true,)
-        ),
-        (r) => false
-    );
+            builder: (context) => JoinGroup(
+                  fromAuth: true,
+                )),
+        (r) => false);
   }
-
 }
-Future<http.Response> fromCache({@required String uri, @required bool overwriteCache, bool alwaysReturnCache=false}) async {
-  try{
+
+Future<http.Response> fromCache(
+    {@required String uri,
+    @required bool overwriteCache,
+    bool alwaysReturnCache = false}) async {
+  try {
     String fileName = uri.replaceAll('/', '-');
     var cacheDir = await getTemporaryDirectory();
-    if(!cacheDir.existsSync()){
+    if (!cacheDir.existsSync()) {
       return null;
     }
     // print(cacheDir.listSync());
-    File file = File(cacheDir.path+'/'+fileName);
-    if(alwaysReturnCache || (!overwriteCache && (file.existsSync() && DateTime.now().difference(await file.lastModified()).inMinutes<5))){
+    File file = File(cacheDir.path + '/' + fileName);
+    if (alwaysReturnCache ||
+        (!overwriteCache &&
+            (file.existsSync() &&
+                DateTime.now().difference(await file.lastModified()).inMinutes <
+                    5))) {
       // print('from cache');
       return http.Response(file.readAsStringSync(), 200);
     }
     // print('from API');
     return null;
-  }catch(e){
+  } catch (e) {
     //TODO: this is wrong, shouldn't be this way
     print(e.toString());
     return null;
   }
-
 }
+
 Future toCache({@required String uri, @required http.Response response}) async {
   // print('to cache');
   String fileName = uri.replaceAll('/', '-');
   var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path+'/'+fileName);
+  File file = File(cacheDir.path + '/' + fileName);
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
 }
 
@@ -170,43 +183,46 @@ Future toCache({@required String uri, @required http.Response response}) async {
 ///The [multipleArgs] bool is used for [uri]-s where not all of the [args]
 ///are known at the time of the removal. (See [generateUri] function)
 ///In this case the [uri] becomes a search word
-Future deleteCache({@required String uri, bool multipleArgs=false}) async {
-  uri = uri.substring(1);
-  String fileName = uri.replaceAll('/', '-');
-  var cacheDir = await getTemporaryDirectory();
-  if(multipleArgs){
-    if(cacheDir.existsSync()){
-      List<FileSystemEntity> files = cacheDir.listSync();
-      for(var file in files){
-        if(file is File){
-          String fileName=file.path.split('/').last;
-          if(fileName.contains(uri)){
-            file.deleteSync();
+Future deleteCache({@required String uri, bool multipleArgs = false}) async {
+  if (!kIsWeb) {
+    uri = uri.substring(1);
+    String fileName = uri.replaceAll('/', '-');
+    var cacheDir = await getTemporaryDirectory();
+    if (multipleArgs) {
+      if (cacheDir.existsSync()) {
+        List<FileSystemEntity> files = cacheDir.listSync();
+        for (var file in files) {
+          if (file is File) {
+            String fileName = file.path.split('/').last;
+            if (fileName.contains(uri)) {
+              file.deleteSync();
+            }
           }
         }
       }
-    }
-  }else{
-    File file = File(cacheDir.path+'/'+fileName);
-    if(file.existsSync()){
-      // print('delete cache'+fileName);
-      await file.delete();
+    } else {
+      File file = File(cacheDir.path + '/' + fileName);
+      if (file.existsSync()) {
+        // print('delete cache'+fileName);
+        await file.delete();
+      }
     }
   }
-
 }
 
-
 Future clearGroupCache() async {
-  var cacheDir = await getTemporaryDirectory();
-  if(cacheDir.existsSync()){
-    List<FileSystemEntity> files = cacheDir.listSync();
-    for(var file in files){
-      if(file is File){
-        String fileName=file.path.split('/').last;
-        if(fileName.contains('groups-'+currentGroupId.toString()) || fileName.contains('group='+currentGroupId.toString())){
-          // print('deleting '+fileName);
-          file.deleteSync();
+  if (!kIsWeb) {
+    var cacheDir = await getTemporaryDirectory();
+    if (cacheDir.existsSync()) {
+      List<FileSystemEntity> files = cacheDir.listSync();
+      for (var file in files) {
+        if (file is File) {
+          String fileName = file.path.split('/').last;
+          if (fileName.contains('groups-' + currentGroupId.toString()) ||
+              fileName.contains('group=' + currentGroupId.toString())) {
+            // print('deleting '+fileName);
+            file.deleteSync();
+          }
         }
       }
     }
@@ -214,39 +230,51 @@ Future clearGroupCache() async {
 }
 
 Future clearAllCache() async {
-  // print('all cache');
-  var cacheDir = await getTemporaryDirectory();
-  if(cacheDir.existsSync()){
-    cacheDir.delete(recursive: true);
+  if (!kIsWeb) {
+    // print('all cache');
+    var cacheDir = await getTemporaryDirectory();
+    if (cacheDir.existsSync()) {
+      cacheDir.delete(recursive: true);
+    }
   }
 }
 
-Duration delayTime(){
+Duration delayTime() {
   return Duration(milliseconds: 700);
 }
 
-Future<http.Response> httpGet({@required BuildContext context, @required String uri, bool overwriteCache=false, bool useCache=true, bool useGuest=false}) async {
+Future<http.Response> httpGet(
+    {@required BuildContext context,
+    @required String uri,
+    bool overwriteCache = false,
+    bool useCache = true,
+    bool useGuest = false}) async {
   try {
-    if(useCache){
-      http.Response responseFromCache = await fromCache(uri: uri.substring(1), overwriteCache: overwriteCache);
-      if(responseFromCache!=null){
+    useCache = useCache && !kIsWeb;
+    if (useCache) {
+      http.Response responseFromCache = await fromCache(
+          uri: uri.substring(1), overwriteCache: overwriteCache);
+      if (responseFromCache != null) {
         return responseFromCache;
       }
     }
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
+      "Authorization": "Bearer " +
+          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
-    http.Response response = await http.get((useTest?TEST_URL:APP_URL) + uri, headers: header);
-    if (response.statusCode<300 && response.statusCode>=200) {
-      if(useCache) toCache(uri: uri.substring(1), response: response);
+    http.Response response = await http
+        .get(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
+    if (response.statusCode < 300 && response.statusCode >= 200) {
+      if (useCache) toCache(uri: uri.substring(1), response: response);
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         //TODO: lehet itt dobja a random hibat
         clearAllCache();
-        FlutterToast ft = FlutterToast(context);
+        FToast ft = FToast();
+        ft.init(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
@@ -255,9 +283,8 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                (r) => false);
-
-      }else if(error['error']=='user_not_member'){
+            (r) => false);
+      } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
       throw error['error'];
@@ -265,8 +292,9 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   } on FormatException {
     throw 'format_exception';
   } on SocketException {
-    http.Response response = await fromCache(uri: uri.substring(1), overwriteCache: false, alwaysReturnCache: true);
-    if(response!=null){
+    http.Response response = await fromCache(
+        uri: uri.substring(1), overwriteCache: false, alwaysReturnCache: true);
+    if (response != null) {
       return response;
     }
     throw 'cannot_connect';
@@ -275,27 +303,38 @@ Future<http.Response> httpGet({@required BuildContext context, @required String 
   }
 }
 
-Future<http.Response> httpPost({@required BuildContext context, @required String uri, Map<String, dynamic> body, bool useGuest=false}) async {
+Future<http.Response> httpPost(
+    {@required BuildContext context,
+    @required String uri,
+    Map<String, dynamic> body,
+    bool useGuest = false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
+      "Authorization": "Bearer " +
+          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
-    if(body!=null){
+    if (body != null) {
       String bodyEncoded = json.encode(body);
-      response = await http.post((useTest?TEST_URL:APP_URL) + uri, headers: header, body: bodyEncoded);
-    }else{
-      response = await http.post((useTest?TEST_URL:APP_URL) + uri, headers: header);
+      response = await http.post(
+          Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+          headers: header,
+          body: bodyEncoded);
+    } else {
+      response = await http.post(
+          Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+          headers: header);
     }
 
-    if (response.statusCode<300 && response.statusCode>=200) {
+    if (response.statusCode < 300 && response.statusCode >= 200) {
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         clearAllCache();
-        FlutterToast ft = FlutterToast(context);
+        FToast ft = FToast();
+        ft.init(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
@@ -304,8 +343,8 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                (r) => false);
-      }else if(error['error']=='user_not_member'){
+            (r) => false);
+      } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
       throw error['error'];
@@ -319,27 +358,35 @@ Future<http.Response> httpPost({@required BuildContext context, @required String
   }
 }
 
-Future<http.Response> httpPut({@required BuildContext context, @required String uri,  Map<String, dynamic> body, bool useGuest=false}) async {
+Future<http.Response> httpPut(
+    {@required BuildContext context,
+    @required String uri,
+    Map<String, dynamic> body,
+    bool useGuest = false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
+      "Authorization": "Bearer " +
+          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
-    if(body!=null){
+    if (body != null) {
       String bodyEncoded = json.encode(body);
-      response = await http.put((useTest?TEST_URL:APP_URL) + uri, headers: header, body: bodyEncoded);
-    }else{
-      response = await http.put((useTest?TEST_URL:APP_URL) + uri, headers: header);
+      response = await http.put(Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+          headers: header, body: bodyEncoded);
+    } else {
+      response = await http.put(Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+          headers: header);
     }
 
-    if (response.statusCode<300 && response.statusCode>=200) {
+    if (response.statusCode < 300 && response.statusCode >= 200) {
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         clearAllCache();
-        FlutterToast ft = FlutterToast(context);
+        FToast ft = FToast();
+        ft.init(context);
         ft.removeQueuedCustomToasts();
         ft.showToast(
             child: errorToast('login_required', context),
@@ -348,8 +395,8 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                (r) => false);
-      }else if(error['error']=='user_not_member'){
+            (r) => false);
+      } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
       throw error['error'];
@@ -363,21 +410,28 @@ Future<http.Response> httpPut({@required BuildContext context, @required String 
   }
 }
 
-Future<http.Response> httpDelete({@required BuildContext context, @required String uri, bool useGuest=false}) async {
+Future<http.Response> httpDelete(
+    {@required BuildContext context,
+    @required String uri,
+    bool useGuest = false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest?guestApiToken:(apiToken==null?'':apiToken))
+      "Authorization": "Bearer " +
+          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
-    http.Response response = await http.delete((useTest?TEST_URL:APP_URL) + uri, headers: header);
+    http.Response response = await http.delete(
+        Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+        headers: header);
 
-    if (response.statusCode<300 && response.statusCode>=200) {
+    if (response.statusCode < 300 && response.statusCode >= 200) {
       return response;
     } else {
       Map<String, dynamic> error = jsonDecode(response.body);
       if (error['error'] == 'Unauthenticated.') {
         clearAllCache();
-        FlutterToast ft = FlutterToast(context);
+        FToast ft = FToast();
+        ft.init(context);
         ft.showToast(
             child: errorToast('login_required', context),
             toastDuration: Duration(seconds: 2),
@@ -385,8 +439,8 @@ Future<http.Response> httpDelete({@required BuildContext context, @required Stri
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-                (r) => false);
-      }else if(error['error']=='user_not_member'){
+            (r) => false);
+      } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
       throw error['error'];

@@ -119,15 +119,14 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                         // Navigator.pop(context);
                         FocusScope.of(context).requestFocus(FocusNode());
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            child: FutureSuccessDialog(
+                            builder: (context) => FutureSuccessDialog(
                               future: _addGuest(_nicknameController.text),
                               onDataTrue: () async {
                                 _onAddGuest();
                               },
                               dataTrueText: 'add_guest_scf',
-                            ));
+                            ), barrierDismissible: false,
+                            context: context);
                       }
                     },
                     child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)

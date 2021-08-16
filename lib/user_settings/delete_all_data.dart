@@ -79,21 +79,19 @@ class _DeleteAllDataState extends State<DeleteAllData> {
                   child: Icon(Icons.delete_forever, color: Theme.of(context).colorScheme.onSecondary),
                   onPressed: () {
                     showDialog(
-                      context: context,
-                      child: ConfirmChoiceDialog(
+                      builder: (context) => ConfirmChoiceDialog(
                         choice: 'sure_user_delete',
-                      )
+                      ), context: context
                     ).then((value){
                       if(value??false){
                         showDialog(
-                          context: context,
-                          child: FutureSuccessDialog(
+                          builder: (context) => FutureSuccessDialog(
                             future: _deleteAllData(),
                             dataTrueText: 'user_delete_scf',
                             onDataTrue: (){
                               _onDeleteAllData();
                             },
-                          )
+                          ), context: context
                         );
                       }
                     });

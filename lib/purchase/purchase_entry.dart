@@ -172,11 +172,11 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
             type: MaterialType.transparency,
             child: InkWell(
               onLongPress: (){
-                showDialog(context: context, child: AddReactionDialog(
+                showDialog(builder: (context) => AddReactionDialog(
                   type: 'purchases',
                   reactions: widget.data.reactions,
                   reactToId: widget.data.purchaseId,
-                  callback: this.callbackForReaction,)
+                  callback: this.callbackForReaction,), context: context
                 );
               },
               onTap: () async {

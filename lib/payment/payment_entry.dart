@@ -142,12 +142,12 @@ class _PaymentEntryState extends State<PaymentEntry> {
             type: MaterialType.transparency,
             child: InkWell(
               onLongPress: (){
-                showDialog(context: context, child: AddReactionDialog(
+                showDialog(builder: (context) => AddReactionDialog(
                     type: 'payments',
                     reactions: widget.data.reactions,
                     reactToId: widget.data.paymentId,
                     callback: this.callbackForReaction,
-                  )
+                  ), context: context
                 );
               },
               onTap: () async {

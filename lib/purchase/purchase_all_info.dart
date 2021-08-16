@@ -138,8 +138,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                          GradientButton(
                            onPressed: (){
                              showDialog(
-                               context: context,
-                               child: ModifyPurchaseDialog(
+                               builder: (context) => ModifyPurchaseDialog(
                                  savedPurchase: SavedPurchase(
                                      buyerNickname: widget.data.buyerNickname,
                                      buyerId: widget.data.buyerId,
@@ -149,7 +148,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                                      name: widget.data.name,
                                      purchaseId: widget.data.purchaseId
                                  ),
-                               ),
+                               ), context: context,
                              )
                              .then((value){
                                if(value??false){
@@ -174,22 +173,20 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                         GradientButton(
                             onPressed: () {
                               showDialog(
-                                  context: context,
-                                  child: ConfirmChoiceDialog(
+                                  builder: (context) => ConfirmChoiceDialog(
                                     choice: 'want_delete',
-                                  )
+                                  ), context: context
                               ).then((value){
                                 if(value!=null && value){
                                   showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      child: FutureSuccessDialog(
+                                      builder: (context) => FutureSuccessDialog(
                                         future: _deleteElement(widget.data.purchaseId),
                                         dataTrueText: 'delete_scf',
                                         onDataTrue: () {
                                           _onDeleteElement();
                                         },
-                                      )
+                                      ), barrierDismissible: false,
+                                      context: context
                                   );
                                 }
                               });

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -32,7 +33,6 @@ class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
@@ -135,66 +135,68 @@ class _LoginPageState extends State<LoginPage> {
                     TextEditingController controller = TextEditingController();
                     await showDialog(
                       context: context,
-                      child: Form(
-                        key: formState,
-                        child: AlertDialog(
-                          title: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.headline6,),
-                          content: TextFormField(
-                            controller: controller,
-                            validator: (value){
-                              if (value.isEmpty) {
-                                return 'field_empty'.tr();
-                              }
-                              if (value.length < 3) {
-                                return 'minimal_length'.tr(args: ['3']);
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              hintText: 'example_name'.tr(),
-                              labelText: 'username'.tr(),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                    width: 2),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    width: 2),
-                              ),
-                              errorBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red, width: 2),
-                              ),
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                              LengthLimitingTextInputFormatter(15),
-                            ],
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).textTheme.bodyText1.color),
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-
-                          ),
-                          actions: [
-                            RaisedButton(
-                              onPressed: (){
-                                if(formState.currentState.validate()){
-                                  String username = controller.text;
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ForgotPasswordPage(username: username,))
-                                  );
+                      builder: (context){
+                        return Form(
+                          key: formState,
+                          child: AlertDialog(
+                            title: Text('forgot_password'.tr(), style: Theme.of(context).textTheme.headline6,),
+                            content: TextFormField(
+                              controller: controller,
+                              validator: (value){
+                                if (value.isEmpty) {
+                                  return 'field_empty'.tr();
                                 }
+                                if (value.length < 3) {
+                                  return 'minimal_length'.tr(args: ['3']);
+                                }
+                                return null;
                               },
-                              child: Icon(Icons.send, color: Theme.of(context).textTheme.button.color),
-                              color: Theme.of(context).colorScheme.secondary,
-                            )
-                          ],
-                        ),
-                      )
+                              decoration: InputDecoration(
+                                hintText: 'example_name'.tr(),
+                                labelText: 'username'.tr(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      width: 2),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2),
+                                ),
+                                errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                ),
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                                LengthLimitingTextInputFormatter(15),
+                              ],
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).textTheme.bodyText1.color),
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+
+                            ),
+                            actions: [
+                              RaisedButton(
+                                onPressed: (){
+                                  if(formState.currentState.validate()){
+                                    String username = controller.text;
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ForgotPasswordPage(username: username,))
+                                    );
+                                  }
+                                },
+                                child: Icon(Icons.send, color: Theme.of(context).textTheme.button.color),
+                                color: Theme.of(context).colorScheme.secondary,
+                              )
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -210,42 +212,16 @@ class _LoginPageState extends State<LoginPage> {
               showDialog(
                   barrierDismissible: false,
                   context: context,
-                  child: FutureSuccessDialog(
-                    future: _login(username, password),
-                    dataTrueText: 'login_scf',
-                    // dataFalse: Column(
-                    //   mainAxisSize: MainAxisSize.min,
-                    //   children: [
-                    //     Flexible(
-                    //         child: Text(
-                    //           'login_scf'.tr(),
-                    //           style: Theme.of(context)
-                    //               .textTheme
-                    //               .bodyText1
-                    //               .copyWith(color: Colors.white),
-                    //           textAlign: TextAlign.center,
-                    //         )),
-                    //     SizedBox(
-                    //       height: 15,
-                    //     ),
-                    //     FlatButton.icon(
-                    //       icon: Icon(Icons.check,
-                    //           color: Theme.of(context).colorScheme.onSecondary),
-                    //       onPressed: () {
-                    //         _onSelectGroupFalse();
-                    //       },
-                    //       label: Text(
-                    //         'okay'.tr(),
-                    //         style: Theme.of(context).textTheme.button,
-                    //       ),
-                    //       color: Theme.of(context).colorScheme.secondary,
-                    //     )
-                    //   ],
-                    // ),
-                    onDataTrue: () {
-                      _onSelectGroupTrue();
-                    },
-                  ));
+                  builder: (context){
+                    return FutureSuccessDialog(
+                      future: _login(username, password),
+                      dataTrueText: 'login_scf',
+                      onDataTrue: () {
+                        _onSelectGroupTrue();
+                      },
+                    );
+                  },
+              );
             }
           },
           child: Icon(Icons.send),
@@ -324,12 +300,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _login(String username, String password) async {
     try {
-      Map<String, String> body = {"username": username, "password": password, "fcm_token": await _firebaseMessaging.getToken()};
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      Map<String, String> body = {"username": username, "password": password, "fcm_token": kIsWeb?null:await _firebaseMessaging.getToken()};
       Map<String, String> header = {
         "Content-Type": "application/json"
       };
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post((useTest?TEST_URL:APP_URL) + '/login',
+      http.Response response = await http.post(Uri.parse((useTest?TEST_URL:APP_URL) + '/login'),
           headers: header, body: bodyEncoded);
       if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);

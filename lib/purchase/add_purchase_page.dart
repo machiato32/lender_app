@@ -483,7 +483,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
               if (!memberChipBool.containsValue(true)) {
-                FlutterToast ft = FlutterToast(context);
+                FToast ft = FToast();
+                ft.init(context);
                 ft.showToast(
                     child: errorToast('person_not_chosen', context),
                     toastDuration: Duration(seconds: 2),
@@ -497,9 +498,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                 if (value) members.add(key);
               });
               showDialog(
-                barrierDismissible: false,
-                context: context,
-                child: FutureSuccessDialog(
+                builder: (context) => FutureSuccessDialog(
                   future: _postPurchase(members, amount, name),
                   dataTrue: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -562,7 +561,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                       ),
                     ],
                   ),
-                )
+                ), barrierDismissible: false,
+                context: context
               );
             }
           },
