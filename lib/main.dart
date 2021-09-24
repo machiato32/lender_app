@@ -1,53 +1,53 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
+import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
+import 'package:csocsort_szamla/groups/create_group.dart';
+import 'package:csocsort_szamla/groups/group_settings_page.dart';
+import 'package:csocsort_szamla/groups/join_group.dart';
+import 'package:csocsort_szamla/history/history.dart';
 import 'package:csocsort_szamla/main/group_settings_speed_dial.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'dart:convert';
-import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:uni_links/uni_links.dart';
-import 'dart:async';
-import 'dart:developer';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:feature_discovery/feature_discovery.dart';
-import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 import 'balances.dart';
 import 'config.dart';
 import 'essentials/ad_management.dart';
-import 'essentials/widgets/error_message.dart';
+import 'essentials/app_state_notifier.dart';
+import 'essentials/app_theme.dart';
+import 'essentials/currencies.dart';
 import 'essentials/group_objects.dart';
 import 'essentials/http_handler.dart';
-import 'essentials/app_state_notifier.dart';
-import 'package:csocsort_szamla/auth/login_or_register_page.dart';
-import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
-import 'package:csocsort_szamla/history/history.dart';
-import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/groups/create_group.dart';
-import 'package:csocsort_szamla/groups/group_settings_page.dart';
-import 'package:csocsort_szamla/shopping/shopping_list.dart';
+import 'essentials/navigator_service.dart';
+import 'essentials/widgets/error_message.dart';
+import 'main/main_speed_dial.dart';
 import 'main/report_a_bug_page.dart';
 import 'main/trial_version_dialog.dart';
 import 'main/tutorial_dialog.dart';
-import 'main/main_speed_dial.dart';
-import 'essentials/app_theme.dart';
-import 'essentials/currencies.dart';
-import 'essentials/navigator_service.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
 
 final getIt = GetIt.instance;
 
@@ -68,16 +68,66 @@ void setup() {
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future myBackgroundMessageHandler(RemoteMessage message) async {
-  // if (message.containsKey('data')) {
-  //
-  // }
-  //
-  // print("background: "+message.toString());
-  //
-  // if (message.containsKey('notification')) {
-  // }
+  await Firebase.initializeApp();
+  onSelectNotification(message.data['payload']);
+}
 
-  // Or do other work.
+Future onSelectNotification(String payload) async {
+  print("Payload: " + payload);
+  try {
+    Map<String, dynamic> decoded = jsonDecode(payload);
+    int groupId = decoded['group_id'];
+    String groupName = decoded['group_name'];
+    String currency = decoded['group_currency'];
+    String page = decoded['screen'];
+    String details = decoded['details'];
+
+    //If this notification is about a user who just got accepted to a group
+    if (details == 'added_to_group') {
+      saveGroupId(groupId);
+      saveGroupName(groupName);
+      //If he doesn't have a group yet -> create the necessary lists
+      if (usersGroups == null) {
+        usersGroups = List<String>();
+        usersGroupIds = List<int>();
+      }
+      //Add the group to the list and save them to the cache
+      usersGroups.add(groupName);
+      usersGroupIds.add(groupId);
+      saveUsersGroups();
+      saveUsersGroupIds();
+      //If the group is one of the user's groups
+    } else if (usersGroupIds != null && usersGroupIds.contains(groupId)) {
+      saveGroupId(groupId);
+      saveGroupName(groupName);
+      if (currency != null) saveGroupCurrency(currency);
+    }
+    clearAllCache();
+    if (currentUserId != null) {
+      if (page == 'home') {
+        int selectedIndex = 0;
+        if (details == 'payment') {
+          selectedIndex = 1;
+        }
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
+            builder: (context) =>
+                MainPage(selectedHistoryIndex: selectedIndex)));
+      } else if (page == 'shopping') {
+        int selectedTab = 1;
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
+            builder: (context) => MainPage(selectedIndex: selectedTab)));
+      } else if (page == 'store') {
+        getIt.get<NavigationService>().navigateToAnyadForce(
+            MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+      } else if (page == 'group_settings') {
+        int selectedTab = 2;
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
+            builder: (context) => MainPage(selectedIndex: selectedTab)));
+      }
+    }
+  } catch (e) {
+    print(e.toString());
+  }
 }
 
 void main() async {
@@ -110,7 +160,7 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
-
+  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
@@ -129,7 +179,6 @@ void main() async {
 class LenderApp extends StatefulWidget {
   final String themeName;
   final String initURL;
-
   const LenderApp({@required this.themeName, this.initURL});
 
   @override
@@ -165,64 +214,6 @@ class _LenderAppState extends State<LenderApp> {
     });
   }
 
-  Future onSelectNotification(String payload) async {
-    print("Payload: " + payload);
-    try {
-      Map<String, dynamic> decoded = jsonDecode(payload);
-      int groupId = decoded['group_id'];
-      String groupName = decoded['group_name'];
-      String currency = decoded['group_currency'];
-      String page = decoded['screen'];
-      String details = decoded['details'];
-
-      //If this notification is about a user who just got accepted to a group
-      if (details == 'added_to_group') {
-        saveGroupId(groupId);
-        saveGroupName(groupName);
-        //If he doesn't have a group yet -> create the necessary lists
-        if (usersGroups == null) {
-          usersGroups = List<String>();
-          usersGroupIds = List<int>();
-        }
-        //Add the group to the list and save them to the cache
-        usersGroups.add(groupName);
-        usersGroupIds.add(groupId);
-        saveUsersGroups();
-        saveUsersGroupIds();
-        //If the group is one of the user's groups
-      } else if (usersGroupIds != null && usersGroupIds.contains(groupId)) {
-        saveGroupId(groupId);
-        saveGroupName(groupName);
-        if (currency != null) saveGroupCurrency(currency);
-      }
-      clearAllCache();
-      if (currentUserId != null) {
-        if (page == 'home') {
-          int selectedIndex = 0;
-          if (details == 'payment') {
-            selectedIndex = 1;
-          }
-          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-              builder: (context) =>
-                  MainPage(selectedHistoryIndex: selectedIndex)));
-        } else if (page == 'shopping') {
-          int selectedTab = 1;
-          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-              builder: (context) => MainPage(selectedIndex: selectedTab)));
-        } else if (page == 'store') {
-          getIt.get<NavigationService>().navigateToAnyadForce(
-              MaterialPageRoute(builder: (context) => InAppPurchasePage()));
-        } else if (page == 'group_settings') {
-          int selectedTab = 2;
-          getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-              builder: (context) => MainPage(selectedIndex: selectedTab)));
-        }
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   void _createNotificationChannels(
       String groupId, List<String> channels) async {
     AndroidNotificationChannelGroup androidNotificationChannelGroup =
@@ -243,6 +234,15 @@ class _LenderAppState extends State<LenderApp> {
             (channel + '_notification_explanation').tr(),
             groupId: groupId,
           ));
+    }
+  }
+
+  Future<void> setupInitialMessage() async {
+    RemoteMessage initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      onSelectNotification(initialMessage.data['payload']);
     }
   }
 
@@ -324,7 +324,7 @@ class _LenderAppState extends State<LenderApp> {
                 ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
           });
 
-          FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+          setupInitialMessage();
           FirebaseMessaging.onMessage.listen((RemoteMessage message) {
             print("onMessage: $message");
             Map<String, dynamic> decoded = jsonDecode(message.data['payload']);

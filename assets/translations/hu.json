@@ -362,5 +362,5 @@
     "group_needs_approval": "Admin beleegyezés",
     "group_needs_approval_explanation": "Döntsd el, hogy a csoportba való csatlakozáshoz szükséges-e az adminok beleegyezése",
 
-    "boost_group_boosted_explanation": "Ezt a csoportot már felfejlesztették \uD83D\uDE0E. Így elérhetőek a statisztik, valamint 30 főre emelkedett a maximális létszám."
+    "boost_group_boosted_explanation": "Ezt a csoportot már felfejlesztették \uD83D\uDE0E. Így elérhetőek a statisztikák, valamint 30 főre emelkedett a maximális létszám."
 }

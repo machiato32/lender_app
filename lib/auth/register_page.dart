@@ -2,15 +2,14 @@ import 'dart:io';
 
 import 'package:csocsort_szamla/auth/register_page_2.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 
 import '../essentials/app_theme.dart';
 
@@ -22,7 +21,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
@@ -44,13 +42,15 @@ class _RegisterPageState extends State<RegisterPage> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context))),
             ),
-          ),
-          title: Text('register'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
-        ),
+            title: Text('register'.tr(),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    letterSpacing: 0.25,
+                    fontSize: 24))),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
           },
           child: Center(
             child: ListView(
-              padding: EdgeInsets.only(left:20, right: 20),
+              padding: EdgeInsets.only(left: 20, right: 20),
               shrinkWrap: true,
               children: <Widget>[
                 Stack(
@@ -98,18 +98,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                     Container(
-                      margin: EdgeInsets.only(top:20),
+                      margin: EdgeInsets.only(top: 20),
                       child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: IconButton(
-                          onPressed: (){
-                            setState(() {
-                              _usernameExplanationController.expanded=!_usernameExplanationController.expanded;
-                            });
-                          },
-                          icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.secondary,)
-                        )
-                      ),
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _usernameExplanationController.expanded =
+                                      !_usernameExplanationController.expanded;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.info_outline,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ))),
                     )
                   ],
                 ),
@@ -120,13 +122,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _usernameExplanationController,
                   collapsed: Container(),
                   expanded: Container(
-                    constraints: BoxConstraints(maxHeight: 80),
-                    child: Row(
-                      children: [
-                        Flexible(child: Text('username_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2,)),
-                      ],
-                    )
-                  ),
+                      constraints: BoxConstraints(maxHeight: 80),
+                      child: Row(
+                        children: [
+                          Flexible(
+                              child: Text(
+                            'username_explanation'.tr(),
+                            style: Theme.of(context).textTheme.subtitle2,
+                          )),
+                        ],
+                      )),
                 ),
                 SizedBox(
                   height: 10,
@@ -204,27 +209,32 @@ class _RegisterPageState extends State<RegisterPage> {
                       color: Theme.of(context).textTheme.bodyText1.color),
                   cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
-
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Flexible(
                       child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             launch('https://lenderapp.net/privacy-policy');
                           },
-                          child: Text('accept_privacy_policy'.tr()+'*',
-                            style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline),
+                          child: Text(
+                            'accept_privacy_policy'.tr() + '*',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2
+                                .copyWith(decoration: TextDecoration.underline),
                             textAlign: TextAlign.center,
-                          )
-                      ),
+                          )),
                     ),
                     Checkbox(
                       value: _privacyPolicy,
                       activeColor: Theme.of(context).colorScheme.secondary,
-                      onChanged: (value){
+                      onChanged: (value) {
                         setState(() {
-                          _privacyPolicy=value;
+                          _privacyPolicy = value;
                         });
                       },
                     ),
@@ -234,25 +244,30 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GradientButton(
-                      child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
-                      onPressed: () {//TODO: check if username is already used
+                      child: Icon(
+                        Icons.send,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                      onPressed: () {
+                        //TODO: check if username is already used
                         FocusScope.of(context).unfocus();
                         if (_formKey.currentState.validate()) {
                           String username = _usernameController.text;
-                          if (_passwordController.text == _passwordConfirmController.text) {
-                            if(_privacyPolicy){
+                          if (_passwordController.text ==
+                              _passwordConfirmController.text) {
+                            if (_privacyPolicy) {
                               String password = _passwordConfirmController.text;
                               showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (context){
-                                    return FutureSuccessDialog(
-                                      future: _register(username, password),
-                                      dataTrueText: 'registration_scf',
-                                    );
-                                  },
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return FutureSuccessDialog(
+                                    future: _register(username, password),
+                                    dataTrueText: 'registration_scf',
+                                  );
+                                },
                               );
-                            }else{
+                            } else {
                               Widget toast = Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24.0, vertical: 12.0),
@@ -271,11 +286,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                       width: 12.0,
                                     ),
                                     Flexible(
-                                        child: Text("must_accept_privacy_policy".tr(),
+                                        child: Text(
+                                            "must_accept_privacy_policy".tr(),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1
-                                                .copyWith(color: Colors.white))),
+                                                .copyWith(
+                                                    color: Colors.white))),
                                   ],
                                 ),
                               );
@@ -283,15 +300,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               FToast ft = FToast();
                               ft.init(context);
                               ft.showToast(
-                                child: toast,
-                                toastDuration: Duration(seconds: 2),
-                                gravity: ToastGravity.BOTTOM
-                              );
+                                  child: toast,
+                                  toastDuration: Duration(seconds: 2),
+                                  gravity: ToastGravity.BOTTOM);
                             }
-
                           } else {
                             Widget toast = Container(
-                              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 12.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25.0),
                                 color: Colors.red,
@@ -307,12 +323,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                     width: 12.0,
                                   ),
                                   Flexible(
-                                      child: Text("passwords_not_match".tr(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .copyWith(color: Colors.white)
-                                      ),
+                                    child: Text("passwords_not_match".tr(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .copyWith(color: Colors.white)),
                                   ),
                                 ],
                               ),
@@ -320,10 +335,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             FToast ft = FToast();
                             ft.init(context);
                             ft.showToast(
-                              child: toast,
-                              toastDuration: Duration(seconds: 2),
-                              gravity: ToastGravity.BOTTOM
-                            );
+                                child: toast,
+                                toastDuration: Duration(seconds: 2),
+                                gravity: ToastGravity.BOTTOM);
                           }
                         }
                       },
@@ -338,27 +352,28 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _onRegister(String username, String password){
+  _onRegister(String username, String password) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => RegisterAlmostDonePage(
-          inviteURL: widget.inviteURL,
-          username: username,
-          password: password,
-        )
-    )
-    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RegisterAlmostDonePage(
+                  inviteURL: widget.inviteURL,
+                  username: username,
+                  password: password,
+                )));
   }
 
   Future<bool> _register(String username, String password) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      Future.delayed(delayTime()).then((value) => _onRegister(username, password));
+      Future.delayed(delayTime())
+          .then((value) => _onRegister(username, password));
       return true;
     } on FormatException {
-      throw 'format_exception'.tr()+' F01';
+      throw 'format_exception'.tr() + ' F01';
     } on SocketException {
-      throw 'cannot_connect'.tr()+ ' F02';
+      throw 'cannot_connect'.tr() + ' F02';
     } catch (_) {
       throw _;
     }
