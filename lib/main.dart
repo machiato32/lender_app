@@ -464,7 +464,9 @@ class _LenderAppState extends State<LenderApp> {
 class MainPage extends StatefulWidget {
   final int selectedHistoryIndex;
   final int selectedIndex;
-  MainPage({this.selectedHistoryIndex = 0, this.selectedIndex = 0});
+  final String scrollTo;
+  MainPage(
+      {this.selectedHistoryIndex = 0, this.selectedIndex = 0, this.scrollTo});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -479,6 +481,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<State> _isGuestBannerKey = GlobalKey<State>();
+
+  String scrollTo;
 
   Future<SharedPreferences> getPrefs() async {
     return await SharedPreferences.getInstance();
@@ -585,8 +589,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         length: 3, vsync: this, initialIndex: widget.selectedIndex);
     _groups = null;
     _groups = _getGroups();
-
+    scrollTo = widget.scrollTo;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Future.delayed(Duration(seconds: 1)).then((value) => scrollTo=null);
       bool showTutorial = true;
       await SharedPreferences.getInstance().then((prefs) {
         if (prefs.containsKey('show_tutorial')) {
@@ -738,7 +743,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         children: <Widget>[
                           Expanded(
                             child: Image(
-                              image: AssetImage('assets/dodo_color_glow3.png'),
+                              image: AssetImage('assets/dodo_color_glow.png'),
                             ),
                           ),
                           Text(
@@ -1015,7 +1020,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ShoppingList(
                           isOnline: isOnline,
                         ),
-                        GroupSettings(bannerKey: _isGuestBannerKey),
+                        GroupSettings(
+                          bannerKey: _isGuestBannerKey,
+                          scrollTo: scrollTo,
+                        ),
                       ]),
                 ),
                 adUnitForSite('home_screen'),

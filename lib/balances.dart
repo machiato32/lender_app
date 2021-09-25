@@ -1,19 +1,20 @@
-import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:share/share.dart';
 import 'dart:convert';
 
-import 'config.dart';
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/payments_needed.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/groups/dialogs/share_group_dialog.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'essentials/http_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'config.dart';
 import 'essentials/app_theme.dart';
-import 'essentials/widgets/gradient_button.dart';
 import 'essentials/currencies.dart';
+import 'essentials/group_objects.dart';
+import 'essentials/http_handler.dart';
+import 'essentials/widgets/gradient_button.dart';
 import 'main.dart';
 
 class Balances extends StatefulWidget {
@@ -28,7 +29,7 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
@@ -36,7 +37,8 @@ class _BalancesState extends State<Balances> {
         'taker_id': takerId
       };
 
-      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
+      await httpPost(
+          uri: '/payments', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -44,8 +46,9 @@ class _BalancesState extends State<Balances> {
   }
 
   Future<bool> _postPayments(List<PaymentData> payments) async {
-    for(PaymentData payment in payments){
-      if(await _postPayment(payment.amount*1.0, '\$\$auto_payment\$\$'.tr(), payment.takerId)){
+    for (PaymentData payment in payments) {
+      if (await _postPayment(
+          payment.amount * 1.0, '\$\$auto_payment\$\$'.tr(), payment.takerId)) {
         continue;
       }
     }
@@ -59,15 +62,14 @@ class _BalancesState extends State<Balances> {
     widget.callback();
   }
 
-
   Future<List<Member>> _getMoney() async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
-        context: context,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.groupCurrent,
+              args: [currentGroupId.toString()]),
+          context: context,
+          useGuest: useGuest);
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -76,13 +78,11 @@ class _BalancesState extends State<Balances> {
             nickname: member['nickname'],
             balance: (member['balance'] * 1.0),
             username: member['username'],
-            memberId: member['user_id']
-          )
-        );
+            memberId: member['user_id']));
       }
-      members.sort((member1, member2)=>member2.balance.compareTo(member1.balance));
+      members.sort(
+          (member1, member2) => member2.balance.compareTo(member1.balance));
       return members;
-
     } catch (_) {
       throw _;
     }
@@ -123,9 +123,18 @@ class _BalancesState extends State<Balances> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
-                      Member currentMember = (snapshot.data as List<Member>).firstWhere((element) => element.memberId==idToUse, orElse: () => null);
-                      double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
+                      int idToUse = (guestNickname != null &&
+                              guestGroupId == currentGroupId)
+                          ? guestUserId
+                          : currentUserId;
+                      Member currentMember = (snapshot.data as List<Member>)
+                          .firstWhere((element) => element.memberId == idToUse,
+                              orElse: () => null);
+                      double currencyThreshold =
+                          (currencies[currentGroupCurrency]['subunit'] == 1
+                                  ? 0.01
+                                  : 1) /
+                              2;
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
@@ -133,81 +142,124 @@ class _BalancesState extends State<Balances> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Visibility(
-                                visible: currentMember==null?false:(currentMember.balance<-currencyThreshold),
+                                visible: currentMember == null
+                                    ? false
+                                    : (currentMember.balance <
+                                        -currencyThreshold),
                                 child: GradientButton(
-                                  onPressed: (){
-                                    List<PaymentData> payments = paymentsNeeded(snapshot.data).where((payment) => payment.payerId==idToUse).toList();
+                                  onPressed: () {
+                                    List<PaymentData> payments =
+                                        paymentsNeeded(snapshot.data)
+                                            .where((payment) =>
+                                                payment.payerId == idToUse)
+                                            .toList();
                                     showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder:(BuildContext context){
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(15)
-                                          ),
-
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('payments_needed'.tr(),
-                                                  style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                _generatePaymentsNeeded(payments),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: payments.length>0?MainAxisAlignment.spaceAround:MainAxisAlignment.center,
-                                                  children: [
-                                                    GradientButton(
-                                                      onPressed: (){
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text('back'.tr(), style: Theme.of(context).textTheme.button,),
-                                                    ),
-                                                    Visibility(
-                                                      maintainSize: false,
-                                                      maintainState: false,
-                                                      maintainAnimation: false,
-                                                      maintainSemantics: false,
-                                                      replacement: SizedBox(height: 0,),
-                                                      visible: payments.length>0,
-                                                      child: GradientButton(
-                                                        onPressed: () async {
-                                                          showDialog(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        builder: (BuildContext context) {
+                                          return Dialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    'payments_needed'.tr(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline6
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.white),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  _generatePaymentsNeeded(
+                                                      payments),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        payments.length > 0
+                                                            ? MainAxisAlignment
+                                                                .spaceAround
+                                                            : MainAxisAlignment
+                                                                .center,
+                                                    children: [
+                                                      GradientButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text(
+                                                          'back'.tr(),
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .button,
+                                                        ),
+                                                      ),
+                                                      Visibility(
+                                                        maintainSize: false,
+                                                        maintainState: false,
+                                                        maintainAnimation:
+                                                            false,
+                                                        maintainSemantics:
+                                                            false,
+                                                        replacement: SizedBox(
+                                                          height: 0,
+                                                        ),
+                                                        visible:
+                                                            payments.length > 0,
+                                                        child: GradientButton(
+                                                          onPressed: () async {
+                                                            showDialog(
                                                               context: context,
-                                                              barrierDismissible: true,
-                                                              builder: (context){
+                                                              barrierDismissible:
+                                                                  true,
+                                                              builder:
+                                                                  (context) {
                                                                 return FutureSuccessDialog(
-                                                                  future: _postPayments(payments),
-                                                                  dataTrueText: 'payment_scf',
-                                                                  onDataTrue: (){
+                                                                  future: _postPayments(
+                                                                      payments),
+                                                                  dataTrueText:
+                                                                      'payment_scf',
+                                                                  onDataTrue:
+                                                                      () {
                                                                     _onPostPayments();
                                                                   },
                                                                 );
                                                               },
-                                                          );
-                                                        },
-                                                        child: Text('pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                                            );
+                                                          },
+                                                          child: Text(
+                                                            'pay'.tr(),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .button,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      }
-                                    );
+                                          );
+                                        });
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text('who_to_pay'.tr(), style: Theme.of(context).textTheme.button,),
+                                    child: Text(
+                                      'who_to_pay'.tr(),
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -219,7 +271,7 @@ class _BalancesState extends State<Balances> {
                       return ErrorMessage(
                         error: snapshot.error.toString(),
                         locationOfError: 'balances',
-                        callback: (){
+                        callback: () {
                           setState(() {
                             _money = null;
                             _money = _getMoney();
@@ -238,8 +290,7 @@ class _BalancesState extends State<Balances> {
     );
   }
 
-
-  Widget _generatePaymentsNeeded(List<PaymentData> payments){
+  Widget _generatePaymentsNeeded(List<PaymentData> payments) {
     return Flexible(
       child: ListView(
         shrinkWrap: true,
@@ -249,14 +300,17 @@ class _BalancesState extends State<Balances> {
           var style = Theme.of(context).textTheme.button;
           var dateColor = Theme.of(context).textTheme.button.color;
           var boxDecoration = BoxDecoration(
-            gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+            gradient: AppTheme.gradientFromTheme(Theme.of(context),
+                useSecondary: true),
             borderRadius: BorderRadius.circular(15),
-            boxShadow: ( Theme.of(context).brightness==Brightness.light)
-                ?[ BoxShadow(
-                  color: Colors.grey[500],
-                  offset: Offset(0.0, 1.5),
-                  blurRadius: 1.5,
-                )]
+            boxShadow: (Theme.of(context).brightness == Brightness.light)
+                ? [
+                    BoxShadow(
+                      color: Colors.grey[500],
+                      offset: Offset(0.0, 1.5),
+                      blurRadius: 1.5,
+                    )
+                  ]
                 : [],
           );
           var amount = payment.amount.money(currentGroupCurrency);
@@ -272,54 +326,54 @@ class _BalancesState extends State<Balances> {
                 children: <Widget>[
                   Flexible(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Row(
-                                    children: <Widget>[
-                                      icon,
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Flexible(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Flexible(
-                                                child: Text(
-                                                  payment.takerNickname,
-                                                  style: style.copyWith(fontSize: 22),
-                                                  overflow: TextOverflow.ellipsis,
-                                                )),
-                                            Flexible(
-                                                child: Text(
-                                                  'auto_payment'.tr(),
-                                                  style: TextStyle(
-                                                      color: dateColor, fontSize: 15),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Flexible(
+                              child: Row(
+                                children: <Widget>[
+                                  icon,
+                                  SizedBox(
+                                    width: 20,
                                   ),
-                                ),
-                                Text(
-                                  amount,
-                                  style: style,
-                                ),
-                              ],
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Flexible(
+                                            child: Text(
+                                          payment.takerNickname,
+                                          style: style.copyWith(fontSize: 22),
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                        Flexible(
+                                            child: Text(
+                                          'auto_payment'.tr(),
+                                          style: TextStyle(
+                                              color: dateColor, fontSize: 15),
+                                          overflow: TextOverflow.ellipsis,
+                                        ))
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                  ),
+                            Text(
+                              amount,
+                              style: style,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
                 ],
               ),
             ),
@@ -327,26 +381,26 @@ class _BalancesState extends State<Balances> {
         }).toList(),
       ),
     );
-
-
   }
 
   Future<String> _getInvitation() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent, args:[currentGroupId.toString()]),
-          context: context,
+        uri: generateUri(GetUriKeys.groupCurrent,
+            args: [currentGroupId.toString()]),
+        context: context,
       );
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['invitation'];
-
     } catch (_) {
       throw _;
     }
   }
 
   List<Widget> _generateBalances(List<Member> members) {
-    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
+        ? guestUserId
+        : currentUserId;
     List<Widget> widgets = members.map<Widget>((Member member) {
       if (member.memberId == idToUse) {
         TextStyle style = Theme.of(context).textTheme.button;
@@ -355,14 +409,17 @@ class _BalancesState extends State<Balances> {
             Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context),
+                      useSecondary: true),
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: ( Theme.of(context).brightness==Brightness.light)
-                      ?[ BoxShadow(
-                    color: Colors.grey[500],
-                    offset: Offset(0.0, 1.5),
-                    blurRadius: 1.5,
-                  )]
+                  boxShadow: (Theme.of(context).brightness == Brightness.light)
+                      ? [
+                          BoxShadow(
+                            color: Colors.grey[500],
+                            offset: Offset(0.0, 1.5),
+                            blurRadius: 1.5,
+                          )
+                        ]
                       : [],
                 ),
                 child: Row(
@@ -407,81 +464,93 @@ class _BalancesState extends State<Balances> {
         ],
       );
     }).toList();
-    if(members.length==1){
-      widgets.add(
-        Column(
-          children: [
-            SizedBox(height:20),
-            Text('you_seem_lonely'.tr(), style: Theme.of(context).textTheme.headline6,),
-            SizedBox(height:10),
-            Text('invite_friends'.tr(), style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
-            SizedBox(height:5),
-            FutureBuilder(
-              future: _getInvitation(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState ==
-                    ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientButton(
-                            onPressed: () {
-                              Share.share(
-                                  'https://www.lenderapp.net/join/' +
-                                      snapshot.data,
-                                  subject:
-                                  'invitation_to_lender'
-                                      .tr());
-                            },
-                            child: Icon(
-                              Icons.share,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSecondary,
-                            ),
+    if (members.length == 1) {
+      widgets.add(Column(
+        children: [
+          SizedBox(height: 20),
+          Text(
+            'you_seem_lonely'.tr(),
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: 10),
+          Text('invite_friends'.tr(),
+              style:
+                  Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
+          SizedBox(height: 5),
+          FutureBuilder(
+            future: _getInvitation(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ShareGroupDialog(
+                                      inviteCode: snapshot.data);
+                                });
+                          },
+                          child: Icon(
+                            Icons.share,
+                            color: Theme.of(context).colorScheme.onSecondary,
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return ErrorMessage(
-                      error: snapshot.error.toString(),
-                      locationOfError: 'invitation',
-                      callback: (){
-                        setState(() {
-                          // _invitation = null;
-                          // _invitation = _getInvitation();
-                        });
-                      },
-                    );
-                  }
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return ErrorMessage(
+                    error: snapshot.error.toString(),
+                    locationOfError: 'invitation',
+                    callback: () {
+                      setState(() {
+                        // _invitation = null;
+                        // _invitation = _getInvitation();
+                      });
+                    },
+                  );
                 }
-                return Center(
-                    child: CircularProgressIndicator()
-                );
-              },
-            ),
-            SizedBox(height:10),
-            Text('add_guests_offline'.tr(), style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
-            SizedBox(height:5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  child: Icon(Icons.person_add, color: Theme.of(context).colorScheme.onSecondary,),
-                  onPressed: (){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MainPage(selectedIndex:2)), (route) => false);
-                  },
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+          SizedBox(height: 10),
+          Text('add_guests_offline'.tr(),
+              style:
+                  Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
+          SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                child: Icon(
+                  Icons.person_add,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
-              ],
-            ),
-            SizedBox(height:10),
-            Text('you_seem_lonely_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,)
-          ],
-        )
-      );
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              MainPage(selectedIndex: 2, scrollTo: 'guests')),
+                      (route) => false);
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Text(
+            'you_seem_lonely_explanation'.tr(),
+            style: Theme.of(context).textTheme.subtitle2,
+            textAlign: TextAlign.center,
+          )
+        ],
+      ));
     }
     return widgets;
   }

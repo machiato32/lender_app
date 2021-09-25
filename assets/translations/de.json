@@ -97,7 +97,7 @@
     "members_explanation_admin": "Verwalte die Genehmigungen und Spitznamen der Mitglieder",
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
-    "rename_group_explanation": "Benenne die Gruppe neu, wenn dir der Name nicht gefällt",
+    "rename_group_explanation": "Benenne die Gruppe um, wenn dir der Name nicht gefällt",
     "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel oder sag den Anderen bescheid, dass du gerade Einkaufen bist",
     "history_explanation": "Verfolge, ziehe zurück und ändere deine früheren Transaktionen",
 
@@ -366,6 +366,10 @@
     "group_needs_approval": "Admin Genehmigung",
     "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten",
 
-    "boost_group_boosted_explanation": "Diese Gruppe wurde schon geboostet 😎. Das heißt, dass du dir die Statistiken ansehen kannst und dass die maximale Mitgliedszahl 30 ist."
+    "boost_group_boosted_explanation": "Diese Gruppe wurde schon geboostet 😎. Das heißt, dass du dir die Statistiken ansehen kannst und dass die maximale Mitgliedszahl 30 ist.",
 
+    "share": "Teile die Gruppe",
+    "share_url": "Oder lade deine Freunde mit einer Message ein",
+    "scan_code": "Lese den QR code",
+    "paste_code": "Oder füge die Einladung ein:"
 }
