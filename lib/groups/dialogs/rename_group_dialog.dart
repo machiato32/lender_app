@@ -1,16 +1,15 @@
 import 'dart:convert';
 
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../../essentials/http_handler.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
-import '../../essentials/http_handler.dart';
-import 'package:csocsort_szamla/config.dart';
-
 import '../../main.dart';
 
 class RenameGroupDialog extends StatefulWidget {
@@ -40,27 +39,21 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
     }
   }
 
-  void _onUpdateGroupName(){
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                MainPage()),
-            (r) => false);
-    _groupNameController.text ='';
+  void _onUpdateGroupName() {
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    _groupNameController.text = '';
     clearGroupCache();
-    deleteCache(uri:generateUri(GetUriKeys.groups));
+    deleteCache(uri: generateUri(GetUriKeys.groups));
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-    Form(
+    return Form(
       key: _groupNameFormKey,
       child: Dialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15)
-        ),
+        backgroundColor: Theme.of(context).cardTheme.color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -68,42 +61,35 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
             children: <Widget>[
               Text(
                 'rename_group'.tr(),
-                style:
-                    Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8),
+                padding: const EdgeInsets.only(left: 8, right: 8),
                 child: TextFormField(
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'field_empty'.tr();
                     }
                     if (value.length < 1) {
-                      return 'minimal_length'
-                          .tr(args: ['1']);
+                      return 'minimal_length'.tr(args: ['1']);
                     }
                     return null;
                   },
                   controller: _groupNameController,
                   decoration: InputDecoration(
-                    labelText: 'new_name'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface,
-                          width: 1),
+                    hintText: 'new_name'.tr(),
+                    fillColor: Theme.of(context).colorScheme.onSurface,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.group,
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary,
-                          width: 2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [
@@ -111,13 +97,8 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                   ],
                   style: TextStyle(
                       fontSize: 20,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .color),
-                  cursorColor: Theme.of(context)
-                      .colorScheme
-                      .secondary,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               SizedBox(
@@ -128,27 +109,24 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                 children: [
                   GradientButton(
                     onPressed: () {
-                      if (_groupNameFormKey.currentState
-                          .validate()) {
+                      if (_groupNameFormKey.currentState.validate()) {
                         FocusScope.of(context).unfocus();
-                        String groupName =
-                            _groupNameController.text;
+                        String groupName = _groupNameController.text;
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                              future: _updateGroupName(groupName),
-                              dataTrueText: 'nickname_scf',
-                              onDataTrue: () {
-                                _onUpdateGroupName();
-                              },
-                            ), barrierDismissible: false,
+                                  future: _updateGroupName(groupName),
+                                  dataTrueText: 'nickname_scf',
+                                  onDataTrue: () {
+                                    _onUpdateGroupName();
+                                  },
+                                ),
+                            barrierDismissible: false,
                             context: context);
                       }
                     },
                     child: Icon(
                       Icons.check,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSecondary,
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   ),
                 ],
@@ -158,6 +136,5 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
         ),
       ),
     );
-
   }
 }

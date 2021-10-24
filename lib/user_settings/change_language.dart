@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/rendering.dart';
-
 import 'package:csocsort_szamla/essentials/app_theme.dart';
-import 'package:flutter/widgets.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override
@@ -12,9 +11,6 @@ class LanguagePicker extends StatefulWidget {
 }
 
 class _LanguagePickerState extends State<LanguagePicker> {
-
-
-
   List<Widget> _getLocales() {
     return context.supportedLocales.map((locale) {
       return LanguageElement(
@@ -60,13 +56,12 @@ class LanguageElement extends StatefulWidget {
 }
 
 class _LanguageElementState extends State<LanguageElement> {
-  Future<bool> _changeLanguage(String localeCode){
-    Map<String, dynamic> body = {
-      'language': localeCode
-    };
+  Future<bool> _changeLanguage(String localeCode) {
+    Map<String, dynamic> body = {'language': localeCode};
     httpPut(context: context, uri: '/user', body: body);
     return Future.value(true);
   }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -79,28 +74,24 @@ class _LanguageElementState extends State<LanguageElement> {
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-            boxShadow: (Theme.of(context).brightness==Brightness.light)
-                ?[ BoxShadow(
-                  color: Colors.grey[500],
-                  offset: Offset(0.0, 1.5),
-                  blurRadius: 1.5,
-                )]
-                : [],
-          gradient: (widget.localeName == context.locale.languageCode)
-              ? AppTheme.gradientFromTheme(Theme.of(context))
-              : LinearGradient(colors: [Colors.white, Colors.white]),
-          borderRadius: BorderRadius.circular(15)
-        ),
+            // boxShadow: (Theme.of(context).brightness==Brightness.light)
+            //     ?[ BoxShadow(
+            //       color: Colors.grey[500],
+            //       offset: Offset(0.0, 1.5),
+            //       blurRadius: 1.5,
+            //     )]
+            //     : [],
+            gradient: (widget.localeName == context.locale.languageCode)
+                ? AppTheme.gradientFromTheme(Theme.of(context))
+                : LinearGradient(colors: [Colors.white, Colors.white]),
+            borderRadius: BorderRadius.circular(15)),
         child: Center(
-          child: Text(
-            widget.localeName.toUpperCase(),
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-              color: (widget.localeName == context.locale.languageCode)
-                  ? Theme.of(context).textTheme.button.color
-                  : Colors.black,
-            )
-          )
-        ),
+            child: Text(widget.localeName.toUpperCase(),
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      color: (widget.localeName == context.locale.languageCode)
+                          ? Theme.of(context).textTheme.button.color
+                          : Colors.black,
+                    ))),
       ),
     );
   }

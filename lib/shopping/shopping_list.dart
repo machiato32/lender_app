@@ -1,21 +1,20 @@
+import 'dart:convert';
+
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/shopping/im_shopping_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter/services.dart';
-
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import '../essentials/widgets/error_message.dart';
 import 'edit_request_dialog.dart';
@@ -36,15 +35,15 @@ class _ShoppingListState extends State<ShoppingList> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache=false}) async {
+  Future<List<ShoppingRequestData>> _getShoppingList(
+      {bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.requestsAll),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.requestsAll),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
       List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
@@ -53,13 +52,12 @@ class _ShoppingListState extends State<ShoppingList> {
       });
       shopping = shopping.reversed.toList();
       return shopping;
-
     } catch (_) {
       throw _;
     }
   }
 
-  _onPostShoppingRequest(){
+  _onPostShoppingRequest() {
     Navigator.pop(context);
     setState(() {
       _shoppingList = null;
@@ -70,9 +68,10 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postShoppingRequest(String name) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      await httpPost(uri: '/requests', context: context, body: body, useGuest: useGuest);
+      await httpPost(
+          uri: '/requests', context: context, body: body, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onPostShoppingRequest());
       return true;
     } catch (_) {
@@ -80,19 +79,18 @@ class _ShoppingListState extends State<ShoppingList> {
     }
   }
 
-
-
   Future<bool> _undoDeleteRequest(int id) async {
-    try{
-      await httpPost(context: context, uri: '/requests/restore/'+id.toString());
+    try {
+      await httpPost(
+          context: context, uri: '/requests/restore/' + id.toString());
       Future.delayed(delayTime()).then((value) => _onUndoDeleteRequest());
       return true;
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
-  void _onUndoDeleteRequest(){
+  void _onUndoDeleteRequest() {
     Scaffold.of(context).removeCurrentSnackBar();
     Navigator.pop(context, true);
   }
@@ -102,51 +100,59 @@ class _ShoppingListState extends State<ShoppingList> {
       _shoppingList = null;
       _shoppingList = _getShoppingList(overwriteCache: true);
     });
-    if(restoreId!=null){
+    if (restoreId != null) {
       Scaffold.of(context).removeCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        duration: Duration(seconds: 3),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'request_deleted'.tr(),
+              style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),
             ),
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-            duration: Duration(seconds: 3),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('request_deleted'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),),
-                InkWell(
-                  onTap: (){
-                    showDialog(
+            InkWell(
+              onTap: () {
+                showDialog(
                         builder: (context) => FutureSuccessDialog(
-                          future: _undoDeleteRequest(restoreId),
-                          dataTrueText: 'undo_scf',
-                          onDataTrue: (){
-                            _onUndoDeleteRequest();
-                          },
-                        ), context: context,
-                        barrierDismissible: false
-                    ).then((value) {
-                      if (value ?? false) callback();
-                    });
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(3),
-                      child: Row(
-                        children: [
-                          Icon(Icons.undo, color: Theme.of(context).textTheme.button.color,),
-                          SizedBox(width: 3),
-                          Text('undo'.tr(), style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),),
-                        ],
-                      )
-                  ),
-                )
-              ],
-            ),
-          )
-      );
+                              future: _undoDeleteRequest(restoreId),
+                              dataTrueText: 'undo_scf',
+                              onDataTrue: () {
+                                _onUndoDeleteRequest();
+                              },
+                            ),
+                        context: context,
+                        barrierDismissible: false)
+                    .then((value) {
+                  if (value ?? false) callback();
+                });
+              },
+              child: Container(
+                  padding: EdgeInsets.all(3),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.undo,
+                        color: Theme.of(context).textTheme.button.color,
+                      ),
+                      SizedBox(width: 3),
+                      Text(
+                        'undo'.tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(fontSize: 15),
+                      ),
+                    ],
+                  )),
+            )
+          ],
+        ),
+      ));
     }
   }
 
@@ -168,12 +174,11 @@ class _ShoppingListState extends State<ShoppingList> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        if(widget.isOnline) await deleteCache(uri: '/groups');
+        if (widget.isOnline) await deleteCache(uri: '/groups');
         setState(() {
           _shoppingList = null;
           _shoppingList = _getShoppingList(overwriteCache: true);
         });
-
       },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -195,34 +200,41 @@ class _ShoppingListState extends State<ShoppingList> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasData) {
-                            if(snapshot.data.length==0){
+                            if (snapshot.data.length == 0) {
                               return ListView(
                                 controller: _scrollController,
                                 padding: EdgeInsets.all(15),
                                 children: [
-                                  SizedBox(height: 15,),
-                                  Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    'nothing_to_show'.tr(),
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ],
                               );
                             }
-                            return ListView(
-                                children: [
-                                  Container(
-                                    transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(15),
-                                      child: Column(
-                                        children: _generateShoppingList(snapshot.data),
-                                      ),
-                                    ),
-                                  )
-                                ]
-                            );
+                            return ListView(children: [
+                              Container(
+                                transform:
+                                    Matrix4.translationValues(0.0, 0.0, 0.0),
+                                child: Padding(
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
+                                    children:
+                                        _generateShoppingList(snapshot.data),
+                                  ),
+                                ),
+                              )
+                            ]);
                           } else {
                             return ErrorMessage(
                               error: snapshot.error.toString(),
                               locationOfError: 'shopping_list',
-                              callback: (){
+                              callback: () {
                                 setState(() {
                                   _shoppingList = null;
                                   _shoppingList = _getShoppingList();
@@ -243,9 +255,11 @@ class _ShoppingListState extends State<ShoppingList> {
                 child: Card(
                   // color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
                   margin: EdgeInsets.only(left: 0, right: 0),
-                  elevation: 4,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30)),
                   ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -254,9 +268,9 @@ class _ShoppingListState extends State<ShoppingList> {
                       children: <Widget>[
                         Center(
                             child: Text(
-                              'shopping_list'.tr(),
-                              style: Theme.of(context).textTheme.headline6,
-                            )),
+                          'shopping_list'.tr(),
+                          style: Theme.of(context).textTheme.headline6,
+                        )),
                         SizedBox(
                           height: 10,
                         ),
@@ -277,7 +291,7 @@ class _ShoppingListState extends State<ShoppingList> {
                               Flexible(
                                 child: TextFormField(
                                   validator: (value) {
-                                    value=value.trim();
+                                    value = value.trim();
                                     if (value.isEmpty) {
                                       return 'field_empty'.tr();
                                     }
@@ -287,24 +301,31 @@ class _ShoppingListState extends State<ShoppingList> {
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    labelText: 'wish'.tr(),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                          Theme.of(context).colorScheme.onSurface),
+                                    hintText: 'wish'.tr(),
+                                    fillColor:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    filled: true,
+                                    prefixIcon: Icon(
+                                      Icons.shopping_cart,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color,
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).colorScheme.primary,
-                                          width: 2),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide: BorderSide.none,
                                     ),
                                   ),
                                   controller: _addRequestController,
                                   style: TextStyle(
                                       fontSize: 20,
-                                      color:
-                                      Theme.of(context).textTheme.bodyText1.color),
-                                  cursorColor: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color),
+                                  cursorColor:
+                                      Theme.of(context).colorScheme.secondary,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(255)
                                   ],
@@ -315,24 +336,29 @@ class _ShoppingListState extends State<ShoppingList> {
                               ),
                               GradientButton(
                                 // color: Theme.of(context).colorScheme.secondary,
-                                child: Icon(Icons.add,
-                                    color: Theme.of(context).colorScheme.onSecondary),
+                                child: Icon(Icons.add_shopping_cart,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
                                   if (_formKey.currentState.validate()) {
                                     String name = _addRequestController.text;
                                     showDialog(
-                                        builder: (context) => FutureSuccessDialog(
-                                          future: _postShoppingRequest(name),
-                                          dataTrueText: 'add_scf',
-                                          onDataTrue: () {
-                                            _onPostShoppingRequest();
-                                          },
-                                          onDataFalse: () {
-                                            Navigator.pop(context);
-                                            setState(() {});
-                                          },
-                                        ), barrierDismissible: false,
+                                        builder: (context) =>
+                                            FutureSuccessDialog(
+                                              future:
+                                                  _postShoppingRequest(name),
+                                              dataTrueText: 'add_scf',
+                                              onDataTrue: () {
+                                                _onPostShoppingRequest();
+                                              },
+                                              onDataFalse: () {
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                            ),
+                                        barrierDismissible: false,
                                         context: context);
                                   }
                                 },
@@ -340,17 +366,21 @@ class _ShoppingListState extends State<ShoppingList> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GradientButton(
-                              onPressed: (){
+                              onPressed: () {
                                 showDialog(
-                                    builder: (context) => ImShoppingDialog(), context: context,
+                                  builder: (context) => ImShoppingDialog(),
+                                  context: context,
                                 );
                               },
-                              child: Text('i_m_shopping'.tr(), style: Theme.of(context).textTheme.button),
+                              child: Text('i_m_shopping'.tr(),
+                                  style: Theme.of(context).textTheme.button),
                             ),
                           ],
                         ),
@@ -371,11 +401,13 @@ class _ShoppingListState extends State<ShoppingList> {
 
   List<Widget> _generateShoppingList(List<ShoppingRequestData> data) {
     data.sort((e1, e2) {
-      int e2Length=e2.reactions.where((reaction) => reaction.reaction=='❗').length;
-      int e1Length=e1.reactions.where((reaction) => reaction.reaction=='❗').length;
-      if(e2Length>e1Length) return 1;
-      if(e2Length<e1Length) return -1;
-      if(e1.updatedAt.isAfter(e2.updatedAt)) return -1;
+      int e2Length =
+          e2.reactions.where((reaction) => reaction.reaction == '❗').length;
+      int e1Length =
+          e1.reactions.where((reaction) => reaction.reaction == '❗').length;
+      if (e2Length > e1Length) return 1;
+      if (e2Length < e1Length) return -1;
+      if (e1.updatedAt.isAfter(e2.updatedAt)) return -1;
       return 1;
     });
     return data.map((element) {
@@ -397,12 +429,12 @@ class ShoppingRequestData {
 
   ShoppingRequestData(
       {this.updatedAt,
-        this.requesterId,
-        this.requesterUsername,
-        this.name,
-        this.requestId,
-        this.requesterNickname,
-        this.reactions});
+      this.requesterId,
+      this.requesterUsername,
+      this.name,
+      this.requestId,
+      this.requesterNickname,
+      this.reactions});
 
   factory ShoppingRequestData.fromJson(Map<String, dynamic> json) {
     return ShoppingRequestData(
@@ -414,13 +446,12 @@ class ShoppingRequestData {
         updatedAt: DateTime.parse(json['updated_at']).toLocal(),
         reactions: json['reactions']
             .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-            .toList()
-    );
+            .toList());
   }
 
   @override
   String toString() {
-    return name+'; '+updatedAt.toString()+'; '+reactions.join(', ');
+    return name + '; ' + updatedAt.toString() + '; ' + reactions.join(', ');
   }
 }
 
@@ -443,27 +474,30 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   String name;
   String user;
 
-  void callbackForReaction(String reaction){//TODO: currentNickname
-    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
-    Reaction oldReaction=widget.data.reactions.firstWhere((element) => element.userId==idToUse, orElse: () => null);
-    bool alreadyReacted = oldReaction!=null;
-    bool sameReaction = alreadyReacted?oldReaction.reaction==reaction:false;
-    if(sameReaction){
+  void callbackForReaction(String reaction) {
+    //TODO: currentNickname
+    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
+        ? guestUserId
+        : currentUserId;
+    Reaction oldReaction = widget.data.reactions
+        .firstWhere((element) => element.userId == idToUse, orElse: () => null);
+    bool alreadyReacted = oldReaction != null;
+    bool sameReaction =
+        alreadyReacted ? oldReaction.reaction == reaction : false;
+    if (sameReaction) {
       widget.data.reactions.remove(oldReaction);
-      setState(() {
-
-      });
-    }else if(!alreadyReacted){
-      widget.data.reactions.add(Reaction(nickname: idToUse==currentUserId?currentUsername:guestNickname, reaction: reaction, userId: idToUse));
-      setState(() {
-
-      });
-    }else{
-      widget.data.reactions.add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
+      setState(() {});
+    } else if (!alreadyReacted) {
+      widget.data.reactions.add(Reaction(
+          nickname: idToUse == currentUserId ? currentUsername : guestNickname,
+          reaction: reaction,
+          userId: idToUse));
+      setState(() {});
+    } else {
+      widget.data.reactions.add(Reaction(
+          nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
       widget.data.reactions.remove(oldReaction);
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -471,101 +505,124 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   Widget build(BuildContext context) {
     name = widget.data.name;
     user = widget.data.requesterUsername;
-    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
+        ? guestUserId
+        : currentUserId;
     if (widget.data.requesterId == idToUse) {
-      style = Theme.of(context).textTheme.button;
-      dateColor = Theme.of(context).textTheme.button.color;
-      icon = Icon(Icons.receipt_long, color: style.color, size: 30,);
+      style = Theme.of(context).textTheme.bodyText1;
+      dateColor = Theme.of(context).colorScheme.surface;
+      icon = Icon(
+        Icons.shopping_cart_outlined,
+        color: Theme.of(context).colorScheme.primary,
+        size: 30,
+      );
       boxDecoration = BoxDecoration(
-        boxShadow: (Theme.of(context).brightness==Brightness.light)
-            ?[ BoxShadow(
-                color: Colors.grey[500],
-                offset: Offset(0.0, 1.5),
-                blurRadius: 1.5,
-              )]
-            : [],
-        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
-        borderRadius: BorderRadius.circular(15),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey[500],
+        //     offset: Offset(0.0, 1.5),
+        //     blurRadius: 1.5,
+        //   )
+        // ],
+        color: Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(20),
       );
     } else {
       style = Theme.of(context).textTheme.bodyText1;
       dateColor = Theme.of(context).colorScheme.surface;
-      icon = Icon(
-        Icons.receipt_long_outlined,
-        color: style.color,
-        size: 30
+      icon = Icon(Icons.card_giftcard,
+          color: Theme.of(context).colorScheme.secondary, size: 30);
+      boxDecoration = BoxDecoration(
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey[500],
+        //     offset: Offset(0.0, 1.5),
+        //     blurRadius: 1.5,
+        //   )
+        // ],
+        color: Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(20),
       );
-      boxDecoration = BoxDecoration();
     }
     return Dismissible(
       key: UniqueKey(),
       secondaryBackground: Container(
         child: Align(
-          alignment: Alignment.centerRight,
-          child: Icon(widget.data.requesterId != idToUse?Icons.done:Icons.delete,
-            size: 30, color: Theme.of(context).textTheme.bodyText1.color,
-          )
-        ),
+            alignment: Alignment.centerRight,
+            child: Icon(
+              widget.data.requesterId != idToUse ? Icons.done : Icons.delete,
+              size: 30,
+              color: Theme.of(context).textTheme.bodyText1.color,
+            )),
       ),
-      dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
+      dismissThresholds: {
+        DismissDirection.startToEnd: 0.6,
+        DismissDirection.endToStart: 0.6
+      },
       background: Align(
           alignment: Alignment.centerLeft,
-          child: Icon(widget.data.requesterId != idToUse?Icons.attach_money:Icons.edit,
-            size: 30, color: Theme.of(context).textTheme.bodyText1.color,
-          )
-      ),
-      onDismissed: (direction){
-        if(widget.data.requesterId != idToUse){
+          child: Icon(
+            widget.data.requesterId != idToUse
+                ? Icons.attach_money
+                : Icons.edit,
+            size: 30,
+            color: Theme.of(context).textTheme.bodyText1.color,
+          )),
+      onDismissed: (direction) {
+        if (widget.data.requesterId != idToUse) {
           showDialog(
-              builder: (context) => FutureSuccessDialog(
-                future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
-                dataTrueText: 'fulfill_scf',
-                onDataTrue: () {
-                  _onDeleteFulfillShoppingRequest();
-                },
-              ), barrierDismissible: false,
-              context: context
-          ).then((value) {
+                  builder: (context) => FutureSuccessDialog(
+                        future: _deleteFulfillShoppingRequest(
+                            widget.data.requestId, context),
+                        dataTrueText: 'fulfill_scf',
+                        onDataTrue: () {
+                          _onDeleteFulfillShoppingRequest();
+                        },
+                      ),
+                  barrierDismissible: false,
+                  context: context)
+              .then((value) {
             widget.callback(restoreId: widget.data.requestId);
-            if(direction==DismissDirection.startToEnd && value==true){
+            if (direction == DismissDirection.startToEnd && value == true) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          AddPurchaseRoute(
+                      builder: (context) => AddPurchaseRoute(
                             type: PurchaseType.fromShopping,
-                            shoppingData:widget.data,
-                          )
-                  )
-              );
+                            shoppingData: widget.data,
+                          )));
             }
           });
-
-        }else{
-          if(direction == DismissDirection.endToStart){
+        } else {
+          if (direction == DismissDirection.endToStart) {
             showDialog(
-                builder: (context) => FutureSuccessDialog(
-                  future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
-                  dataTrueText: 'delete_scf',
-                  onDataTrue: () {
-                    _onDeleteFulfillShoppingRequest();
-                  },
-                ), barrierDismissible: false,
-                context: context
-            ).then((value) {
+                    builder: (context) => FutureSuccessDialog(
+                          future: _deleteFulfillShoppingRequest(
+                              widget.data.requestId, context),
+                          dataTrueText: 'delete_scf',
+                          onDataTrue: () {
+                            _onDeleteFulfillShoppingRequest();
+                          },
+                        ),
+                    barrierDismissible: false,
+                    context: context)
+                .then((value) {
               if (value ?? false)
                 widget.callback(restoreId: widget.data.requestId);
             });
-          }else if(direction==DismissDirection.startToEnd){
+          } else if (direction == DismissDirection.startToEnd) {
             showDialog(
-                builder: (context) => EditRequestDialog(textBefore: widget.data.name, requestId: widget.data.requestId,), context: context,
-            ).then((value){
-              if(value??false){
+              builder: (context) => EditRequestDialog(
+                textBefore: widget.data.name,
+                requestId: widget.data.requestId,
+              ),
+              context: context,
+            ).then((value) {
+              if (value ?? false) {
                 widget.callback();
               }
             });
           }
-
         }
       },
       child: Stack(
@@ -574,30 +631,33 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
             height: 65,
             width: MediaQuery.of(context).size.width,
             decoration: boxDecoration,
-            margin: EdgeInsets.only(top: widget.data.reactions.length==0?0:14,bottom: 4,),
+            margin: EdgeInsets.only(
+                top: widget.data.reactions.length == 0 ? 5 : 10,
+                bottom: 8,
+                left: 5,
+                right: 5),
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                onLongPress: (){
+                onLongPress: () {
                   showDialog(
-                    builder: (context) => AddReactionDialog(
-                      type: 'requests',
-                      reactions: widget.data.reactions,
-                      reactToId: widget.data.requestId,
-                      callback: this.callbackForReaction,
-                    ), context: context
-                  );
+                      builder: (context) => AddReactionDialog(
+                            type: 'requests',
+                            reactions: widget.data.reactions,
+                            reactToId: widget.data.requestId,
+                            callback: this.callbackForReaction,
+                          ),
+                      context: context);
                 },
                 onTap: () async {
                   showModalBottomSheetCustom(
                       context: context,
                       backgroundColor: Theme.of(context).cardTheme.color,
                       builder: (context) => SingleChildScrollView(
-                          child: ShoppingAllInfo(widget.data)
-                      )
-                  ).then((val) {
-                    if (val == 'deleted') widget.callback(restoreId: widget.data.requestId);
-                    if(val=='edited') widget.callback();
+                          child: ShoppingAllInfo(widget.data))).then((val) {
+                    if (val == 'deleted')
+                      widget.callback(restoreId: widget.data.requestId);
+                    if (val == 'edited') widget.callback();
                   });
                 },
                 borderRadius: BorderRadius.circular(15),
@@ -619,7 +679,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                 ),
                                 Flexible(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Flexible(
@@ -631,8 +692,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                       Flexible(
                                           child: Text(
                                         widget.data.requesterNickname,
-                                        style:
-                                            TextStyle(color: dateColor, fontSize: 15),
+                                        style: TextStyle(
+                                            color: dateColor, fontSize: 15),
                                         overflow: TextOverflow.ellipsis,
                                       ))
                                     ],
@@ -652,7 +713,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           PastReactionContainer(
             reactions: widget.data.reactions,
             reactedToId: widget.data.requestId,
-            isSecondaryColor:widget.data.requesterId == idToUse,
+            isSecondaryColor: widget.data.requesterId == idToUse,
             type: 'requests',
             callback: this.callbackForReaction,
           ),
@@ -661,23 +722,22 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     );
   }
 
-
-
-
-
   Future<bool> _deleteFulfillShoppingRequest(int id, var buildContext) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
-      Future.delayed(delayTime()).then((value) => _onDeleteFulfillShoppingRequest());
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
+      await httpDelete(
+          uri: '/requests/' + id.toString(),
+          context: context,
+          useGuest: useGuest);
+      Future.delayed(delayTime())
+          .then((value) => _onDeleteFulfillShoppingRequest());
       return true;
-
     } catch (_) {
       throw _;
     }
   }
 
-  void _onDeleteFulfillShoppingRequest(){
+  void _onDeleteFulfillShoppingRequest() {
     Navigator.pop(context, true);
   }
 }

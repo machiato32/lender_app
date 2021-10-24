@@ -1,11 +1,12 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'login_page.dart';
 import 'register_page.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   final String inviteURL;
@@ -17,8 +18,8 @@ class LoginOrRegisterPage extends StatefulWidget {
 
 class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   var _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _doubleTapped=false;
-  bool _tapped=false;
+  bool _doubleTapped = false;
+  bool _tapped = false;
   @override
   void initState() {
     super.initState();
@@ -27,29 +28,28 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
       DeviceOrientation.portraitDown,
     ]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if(useTest){
-        _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              duration: Duration(hours: 10),
-              content: Text('Test Mode', style: Theme.of(context).textTheme.button,),
-              action: SnackBarAction(
-                label: 'Back to Normal Mode',
-                textColor: Theme.of(context).textTheme.button.color,
-                onPressed: () {
-                  setState(() {
-                    useTest=!useTest;
-                    _tapped=false;
-                    _doubleTapped=false;
-                  });
-                },
-              ),
-            )
-        );
+      if (useTest) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          duration: Duration(hours: 10),
+          content: Text(
+            'Test Mode',
+            style: Theme.of(context).textTheme.button,
+          ),
+          action: SnackBarAction(
+            label: 'Back to Normal Mode',
+            textColor: Theme.of(context).textTheme.button.color,
+            onPressed: () {
+              setState(() {
+                useTest = !useTest;
+                _tapped = false;
+                _doubleTapped = false;
+              });
+            },
+          ),
+        ));
       }
-
     });
-
   }
 
   @override
@@ -66,50 +66,55 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: (Theme.of(context).brightness == Brightness.light)
+          ? Colors.white
+          : Colors.black,
       key: _scaffoldKey,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             GestureDetector(
-              onTap: (){
-                _tapped=true;
-                _doubleTapped=false;
+              onTap: () {
+                _tapped = true;
+                _doubleTapped = false;
               },
-              onDoubleTap: (){
-                if(_tapped){
-                  _doubleTapped=true;
+              onDoubleTap: () {
+                if (_tapped) {
+                  _doubleTapped = true;
                 }
               },
-              onLongPress: (){
-                if(_tapped && _doubleTapped){
+              onLongPress: () {
+                if (_tapped && _doubleTapped) {
                   setState(() {
-                    if(!useTest){
-                      _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(
-                            backgroundColor: Theme.of(context).colorScheme.secondary,
-                            duration: Duration(hours: 10),
-                            content: Text('Test Mode', style: Theme.of(context).textTheme.button,),
-                            action: SnackBarAction(
-                              label: 'Back to Normal Mode',
-                              textColor: Theme.of(context).textTheme.button.color,
-                              onPressed: () {
-                                setState(() {
-                                  useTest=!useTest;
-                                  _tapped=false;
-                                  _doubleTapped=false;
-                                });
-                              },
-                            ),
-                          )
-                      );
-                    }else{
+                    if (!useTest) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        duration: Duration(hours: 10),
+                        content: Text(
+                          'Test Mode',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                        action: SnackBarAction(
+                          label: 'Back to Normal Mode',
+                          textColor: Theme.of(context).textTheme.button.color,
+                          onPressed: () {
+                            setState(() {
+                              useTest = !useTest;
+                              _tapped = false;
+                              _doubleTapped = false;
+                            });
+                          },
+                        ),
+                      ));
+                    } else {
                       _scaffoldKey.currentState.removeCurrentSnackBar();
                     }
                     clearAllCache();
-                    useTest=!useTest;
-                    _tapped=false;
-                    _doubleTapped=false;
+                    useTest = !useTest;
+                    _tapped = false;
+                    _doubleTapped = false;
                   });
                 }
               },
@@ -145,8 +150,12 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
               children: [
                 GradientButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage(inviteURL: widget.inviteURL,)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginPage(
+                                  inviteURL: widget.inviteURL,
+                                )));
                   },
                   child: Text(
                     'login'.tr(),
@@ -161,8 +170,11 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
               children: [
                 GradientButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => RegisterPage(inviteURL: widget.inviteURL)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                RegisterPage(inviteURL: widget.inviteURL)));
                   },
                   child: Text('register'.tr(),
                       style: Theme.of(context).textTheme.button),

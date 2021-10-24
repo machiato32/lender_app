@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 const Duration _kBottomSheetDuration = Duration(milliseconds: 200);
 const double _kMinFlingVelocity = 700.0;
@@ -140,7 +140,7 @@ class _BottomSheetState extends State<BottomSheet> {
     final BottomSheetThemeData bottomSheetTheme =
         Theme.of(context).bottomSheetTheme;
     final Color color =
-        widget.backgroundColor ?? bottomSheetTheme.backgroundColor;
+        widget.backgroundColor ?? Theme.of(context).cardTheme.color;
 
     final Widget bottomSheet = Material(
       key: _childKey,
@@ -348,7 +348,9 @@ Future<T> showModalBottomSheetCustom<T>({
   assert(context != null);
   assert(builder != null);
   assert(debugCheckHasMaterialLocalizations(context));
-  backgroundColor=Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white;
+  if (backgroundColor == null) {
+    backgroundColor = Theme.of(context).cardTheme.color;
+  }
   return Navigator.push(
       context,
       _ModalBottomSheetRoute<T>(

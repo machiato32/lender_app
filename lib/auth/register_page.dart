@@ -75,17 +75,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       controller: _usernameController,
                       decoration: InputDecoration(
-                        hintText: 'example_name'.tr(),
-                        labelText: 'username'.tr(),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              width: 2),
+                        hintText: 'username'.tr(),
+                        fillColor: Theme.of(context).cardTheme.color,
+                        filled: true,
+                        prefixIcon: Icon(
+                          Icons.account_circle,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2),
+                        suffixIcon: Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
                         ),
                       ),
                       inputFormatters: [
@@ -98,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin: EdgeInsets.only(top: 9),
                       child: Align(
                           alignment: Alignment.bottomRight,
                           child: IconButton(
@@ -108,9 +111,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       !_usernameExplanationController.expanded;
                                 });
                               },
+                              splashRadius: 0.1,
+                              splashColor: Colors.transparent,
                               icon: Icon(
                                 Icons.info_outline,
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: Colors.transparent,
                               ))),
                     )
                   ],
@@ -148,16 +153,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'password'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
+                    hintText: 'password'.tr(),
+                    fillColor: Theme.of(context).cardTheme.color,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.password,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [
@@ -187,17 +192,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   controller: _passwordConfirmController,
                   decoration: InputDecoration(
-                    labelText: 'confirm_password'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          width: 2),
-                      //  when the TextFormField in unfocused
+                    hintText: 'confirm_password'.tr(),
+                    fillColor: Theme.of(context).cardTheme.color,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.password,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [

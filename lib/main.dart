@@ -591,7 +591,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _groups = _getGroups();
     scrollTo = widget.scrollTo;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Future.delayed(Duration(seconds: 1)).then((value) => scrollTo=null);
+      Future.delayed(Duration(seconds: 1)).then((value) => scrollTo = null);
       bool showTutorial = true;
       await SharedPreferences.getInstance().then((prefs) {
         if (prefs.containsKey('show_tutorial')) {
@@ -637,12 +637,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _selectedIndex != 1
-          ? Theme.of(context).scaffoldBackgroundColor
-          : Theme.of(context).cardTheme.color,
+      // backgroundColor: _selectedIndex != 1
+      //     ? Theme.of(context).scaffoldBackgroundColor
+      //     : Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
-        elevation: _selectedIndex == 1 ? 0 : 4,
+        // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -689,6 +689,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).cardTheme.color,
         onTap: (_index) {
           setState(() {
             _selectedIndex = _index;
@@ -729,9 +730,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       drawer: Drawer(
         elevation: 16,
         child: Ink(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Color.fromARGB(255, 50, 50, 50)
-              : Colors.white,
+          color:
+              // ? Color.fromARGB(255, 50, 50, 50)
+              Theme.of(context).cardTheme.color,
           child: Column(
             children: [
               Expanded(

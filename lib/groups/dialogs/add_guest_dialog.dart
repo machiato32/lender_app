@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../config.dart';
+import '../../essentials/http_handler.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
-import '../../essentials/http_handler.dart';
 import '../../main.dart';
 
 class AddGuestDialog extends StatefulWidget {
@@ -20,7 +20,7 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
   Future<bool> _addGuest(String username) async {
     try {
       Map<String, dynamic> body = {
-        "language":context.locale.languageCode,
+        "language": context.locale.languageCode,
         "username": username
       };
       await httpPost(
@@ -29,7 +29,6 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
           body: body);
       Future.delayed(delayTime()).then((value) => _onAddGuest());
       return true;
-
     } catch (_) {
       throw _;
     }
@@ -37,22 +36,16 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
 
   Future<void> _onAddGuest() async {
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MainPage()
-        ),
-            (route) => false
-    );
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     var _nicknameFormKey = GlobalKey<FormState>();
     return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15)
-      ),
+      backgroundColor: Theme.of(context).cardTheme.color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -80,19 +73,16 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   },
                   controller: _nicknameController,
                   decoration: InputDecoration(
-                    labelText: 'nickname'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                          Theme.of(context).colorScheme.onSurface,
-                          width: 1),
-                      //  when the TextFormField in unfocused
+                    hintText: 'nickname'.tr(),
+                    fillColor: Theme.of(context).colorScheme.onSurface,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.account_circle,
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                          Theme.of(context).colorScheme.primary,
-                          width: 2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [
@@ -100,16 +90,14 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   ],
                   style: TextStyle(
                       fontSize: 20,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .color),
-                  cursorColor:
-                  Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -120,18 +108,20 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                         FocusScope.of(context).requestFocus(FocusNode());
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                              future: _addGuest(_nicknameController.text),
-                              onDataTrue: () async {
-                                _onAddGuest();
-                              },
-                              dataTrueText: 'add_guest_scf',
-                            ), barrierDismissible: false,
+                                  future: _addGuest(_nicknameController.text),
+                                  onDataTrue: () async {
+                                    _onAddGuest();
+                                  },
+                                  dataTrueText: 'add_guest_scf',
+                                ),
+                            barrierDismissible: false,
                             context: context);
                       }
                     },
-                    child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
-
-                ),
+                    child: Icon(
+                      Icons.check,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    )),
               ],
             ),
           ],

@@ -1,8 +1,8 @@
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../config.dart';
@@ -23,11 +23,13 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
 
   Future<bool> _updateRequest(String newRequest) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      Map<String, dynamic> body = {
-        'name':newRequest
-      };
-      await httpPut(uri: '/requests/' + widget.requestId.toString(), context: context, body: body, useGuest: useGuest);
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
+      Map<String, dynamic> body = {'name': newRequest};
+      await httpPut(
+          uri: '/requests/' + widget.requestId.toString(),
+          context: context,
+          body: body,
+          useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onUpdateRequest());
       return true;
     } catch (_) {
@@ -35,7 +37,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
     }
   }
 
-  void _onUpdateRequest(){
+  void _onUpdateRequest() {
     deleteCache(uri: generateUri(GetUriKeys.requestsAll));
     Navigator.pop(context);
     Navigator.pop(context, true);
@@ -43,7 +45,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    _requestController.text=widget.textBefore;
+    _requestController.text = widget.textBefore;
     return Dialog(
       child: Container(
         padding: EdgeInsets.all(15),
@@ -52,9 +54,15 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Center(
-              child: Text('edit_request'.tr(), textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
+              child: Text(
+                'edit_request'.tr(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Form(
               key: _requestFormKey,
               child: Padding(
@@ -72,18 +80,15 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                   controller: _requestController,
                   decoration: InputDecoration(
                     hintText: 'edited_request'.tr(),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                          Theme.of(context).colorScheme.onSurface,
-                          width: 1),
-                      //  when the TextFormField in unfocused
+                    fillColor: Theme.of(context).colorScheme.onSurface,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.shopping_cart,
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                          Theme.of(context).colorScheme.primary,
-                          width: 2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [
@@ -91,16 +96,14 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                   ],
                   style: TextStyle(
                       fontSize: 20,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .color),
-                  cursorColor:
-                  Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).textTheme.bodyText1.color),
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -111,18 +114,20 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                         String newRequest = _requestController.text;
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                              future: _updateRequest(newRequest),
-                              onDataTrue: () {
-                                _onUpdateRequest();
-                              },
-                              dataTrueText: 'request_edit_scf',
-                            ), barrierDismissible: false,
+                                  future: _updateRequest(newRequest),
+                                  onDataTrue: () {
+                                    _onUpdateRequest();
+                                  },
+                                  dataTrueText: 'request_edit_scf',
+                                ),
+                            barrierDismissible: false,
                             context: context);
                       }
                     },
-                    child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
-
-                ),
+                    child: Icon(
+                      Icons.check,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    )),
               ],
             ),
           ],

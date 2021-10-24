@@ -219,238 +219,238 @@ class _JoinGroupState extends State<JoinGroup> {
               children: <Widget>[
                 Expanded(
                   child: ListView(
-                    padding: EdgeInsets.all(15),
+                    // padding: EdgeInsets.all(15),
                     children: <Widget>[
-                      Visibility(
-                        visible: widget.inviteURL == null,
-                        child: Column(
-                          children: [
-                            Text(
-                              'scan_code'.tr(),
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Icon(Icons.qr_code_scanner,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                                  onPressed: () async {
-                                    if (await Permission.camera
-                                            .request()
-                                            .isGranted &&
-                                        await Permission.storage
-                                            .request()
-                                            .isGranted) {
-                                      String cameraScanResult =
-                                          await scanner.scan();
-                                      setState(() {
-                                        _tokenController.text =
-                                            cameraScanResult;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'paste_code'.tr(),
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Visibility(
-                            visible: widget.inviteURL != null,
-                            child: Row(
-                              children: [
-                                Text(
-                                  'invitation'.tr(),
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                                  //  when the TextFormField in unfocused
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      width: 2),
-                                ),
-                              ),
-                              controller: _tokenController,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            'nickname_in_group'.tr(),
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                if (value.length < 1) {
-                                  return 'minimal_length'.tr(args: ['1']);
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'example_name'.tr(),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                                  //  when the TextFormField in unfocused
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      width: 2),
-                                ),
-                              ),
-                              controller: _nicknameController,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(15),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientButton(
-                            child: Text('join_group'.tr(),
-                                style: Theme.of(context).textTheme.button),
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                String token = _tokenController.text;
-                                String nickname =
-                                    _nicknameController.text[0].toUpperCase() +
-                                        _nicknameController.text.substring(1);
-                                showDialog(
-                                    builder: (context) => FutureSuccessDialog(
-                                          future: _joinGroup(token, nickname),
-                                          dataTrueText: 'join_scf',
-                                          onDataTrue: () {
-                                            _onJoinGroup();
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              Visibility(
+                                visible: widget.inviteURL == null,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'scan_code'.tr(),
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        GradientButton(
+                                          child: Icon(Icons.qr_code_scanner,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSecondary),
+                                          onPressed: () async {
+                                            if (await Permission.camera
+                                                    .request()
+                                                    .isGranted &&
+                                                await Permission.storage
+                                                    .request()
+                                                    .isGranted) {
+                                              String cameraScanResult =
+                                                  await scanner.scan();
+                                              setState(() {
+                                                _tokenController.text =
+                                                    cameraScanResult;
+                                              });
+                                            }
                                           },
-                                          dataFalse: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(
-                                                  child: Text(
-                                                'approve_still_needed'.tr(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    .copyWith(
-                                                        color: Colors.white),
-                                                textAlign: TextAlign.center,
-                                              )),
-                                              SizedBox(
-                                                height: 15,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  GradientButton(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.check,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .onSecondary),
-                                                        SizedBox(
-                                                          width: 3,
-                                                        ),
-                                                        Text(
-                                                          'okay'.tr(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .button,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    useShadow: false,
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
                                         ),
-                                    barrierDismissible: false,
-                                    context: context);
-                              }
-                            },
-                            // color: Theme.of(context).colorScheme.secondary,
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      'paste_code'.tr(),
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'invitation'.tr(),
+                                  fillColor:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.mail,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                controller: _tokenController,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color),
+                                cursorColor:
+                                    Theme.of(context).colorScheme.secondary,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
+                                  }
+                                  if (value.length < 1) {
+                                    return 'minimal_length'.tr(args: ['1']);
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'nickname_in_group'.tr(),
+                                  hintText: 'nickname_in_group'.tr(),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  fillColor:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.account_circle,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                controller: _nicknameController,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color),
+                                cursorColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(15),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GradientButton(
+                                    child: Text('join_group'.tr(),
+                                        style:
+                                            Theme.of(context).textTheme.button),
+                                    onPressed: () {
+                                      if (_formKey.currentState.validate()) {
+                                        String token = _tokenController.text;
+                                        String nickname = _nicknameController
+                                                .text[0]
+                                                .toUpperCase() +
+                                            _nicknameController.text
+                                                .substring(1);
+                                        showDialog(
+                                            builder: (context) =>
+                                                FutureSuccessDialog(
+                                                  future: _joinGroup(
+                                                      token, nickname),
+                                                  dataTrueText: 'join_scf',
+                                                  onDataTrue: () {
+                                                    _onJoinGroup();
+                                                  },
+                                                  dataFalse: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Flexible(
+                                                          child: Text(
+                                                        'approve_still_needed'
+                                                            .tr(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .white),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      )),
+                                                      SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          GradientButton(
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons.check,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onSecondary),
+                                                                SizedBox(
+                                                                  width: 3,
+                                                                ),
+                                                                Text(
+                                                                  'okay'.tr(),
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .button,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            useShadow: false,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                            barrierDismissible: false,
+                                            context: context);
+                                      }
+                                    },
+                                    // color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

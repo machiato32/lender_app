@@ -1,16 +1,16 @@
-import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/purchase/purchase_entry.dart';
-import 'package:csocsort_szamla/payment/payment_entry.dart';
-import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:csocsort_szamla/payment/payment_entry.dart';
+import 'package:csocsort_szamla/purchase/purchase_entry.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AllHistoryRoute extends StatefulWidget {
   ///Defines whether to show purchases (0) or payments (1)
@@ -30,36 +30,34 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<PurchaseData>> _getPurchases({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getPurchases(
+      {bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.purchasesAll),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.purchasesAll),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PurchaseData> purchaseData = [];
       for (var data in decoded) {
         purchaseData.add(PurchaseData.fromJson(data));
       }
       return purchaseData;
-
     } catch (_) {
       throw _;
     }
   }
 
-  Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
+  Future<List<PaymentData>> _getPayments({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.paymentsAll),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.paymentsAll),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
@@ -72,11 +70,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     }
   }
 
-  void callback({bool purchase=false, bool payment=false}) {
-    if(!purchase && !payment){ //IsGuestBanner callback
+  void callback({bool purchase = false, bool payment = false}) {
+    if (!purchase && !payment) {
+      //IsGuestBanner callback
       clearGroupCache();
       setState(() {
-        _payments=null;
+        _payments = null;
         _payments = _getPayments(overwriteCache: true);
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
@@ -84,17 +83,21 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       return;
     }
     setState(() {
-      if(payment){
+      if (payment) {
         deleteCache(uri: generateUri(GetUriKeys.paymentsAll));
         deleteCache(uri: generateUri(GetUriKeys.paymentsFirst6));
-        deleteCache(uri: 'payments?group=$currentGroupId&from_date', multipleArgs: true); //payments date
+        deleteCache(
+            uri: 'payments?group=$currentGroupId&from_date',
+            multipleArgs: true); //payments date
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
       }
-      if(purchase){
+      if (purchase) {
         deleteCache(uri: generateUri(GetUriKeys.purchasesAll));
         deleteCache(uri: generateUri(GetUriKeys.purchasesFirst6));
-        deleteCache(uri: 'purchases?group=$currentGroupId&from_date', multipleArgs: true); //purchases date
+        deleteCache(
+            uri: 'purchases?group=$currentGroupId&from_date',
+            multipleArgs: true); //purchases date
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
       }
@@ -105,7 +108,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.startingIndex);
+    _tabController = TabController(
+        length: 2, vsync: this, initialIndex: widget.startingIndex);
     _selectedIndex = widget.startingIndex;
 
     _purchases = null;
@@ -120,13 +124,16 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('history'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+        title: Text(
+          'history'.tr(),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))
-          ),
+              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
         ),
-        actions: [//TODO:daterange
+        actions: [
+          //TODO:daterange
           // IconButton(
           //   icon: Icon(Icons.search_rounded),
           //   onPressed: (){
@@ -136,6 +143,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).cardTheme.color,
         onTap: (_index) {
           setState(() {
             _selectedIndex = _index;
@@ -145,18 +153,18 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         currentIndex: _selectedIndex,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: 'purchases'.tr(),
+            icon: Icon(Icons.shopping_cart),
+            label: 'purchases'.tr(),
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money),
-              label: 'payments'.tr()
-          )
+              icon: Icon(Icons.attach_money), label: 'payments'.tr())
         ],
       ),
       body: Column(
         children: [
-          IsGuestBanner(callback: callback,),
+          IsGuestBanner(
+            callback: callback,
+          ),
           Expanded(
             child: TabBarView(
                 controller: _tabController,
@@ -170,14 +178,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                           return ListView(
                               controller: _purchaseScrollController,
                               key: PageStorageKey('purchaseList'),
-                              padding: EdgeInsets.all(10),
                               shrinkWrap: true,
                               children: _generatePurchase(snapshot.data));
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
                             locationOfError: 'purchase_history_page',
-                            callback: (){
+                            callback: () {
                               setState(() {
                                 _purchases = null;
                                 _purchases = _getPurchases();
@@ -200,14 +207,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                           return ListView(
                               controller: _paymentScrollController,
                               key: PageStorageKey('paymentList'),
-                              padding: EdgeInsets.all(10),
                               shrinkWrap: true,
                               children: _generatePayments(snapshot.data));
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
                             locationOfError: 'payment_history_page',
-                            callback: (){
+                            callback: () {
                               setState(() {
                                 _payments = null;
                                 _payments = _getPayments();
@@ -226,8 +232,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           ),
           Visibility(
               visible: MediaQuery.of(context).viewInsets.bottom == 0,
-              child: adUnitForSite('history')
-          ),
+              child: adUnitForSite('history')),
         ],
       ),
       //TODO:hide on top
@@ -235,8 +240,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         visible: true,
         child: FloatingActionButton(
           onPressed: () {
-            if (_selectedIndex == 0 &&
-                _purchaseScrollController.hasClients) {
+            if (_selectedIndex == 0 && _purchaseScrollController.hasClients) {
               _purchaseScrollController.animateTo(
                 0.0,
                 curve: Curves.easeOut,
@@ -266,99 +270,162 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     //Initial
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
     Widget initial;
-    if(now.difference(data[0].updatedAt).inDays>7){
-      int toSubtract = (now.difference(data[0].updatedAt).inDays/7).floor();
-      now=now.subtract(Duration(days: toSubtract*7));
-      initial =
-        Column(
-          children: [
-            Container(
-                padding: EdgeInsets.all(8),
-                child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
-            ),
-          ],
-        );
-    }else{
+    if (now.difference(data[0].updatedAt).inDays > 7) {
+      int toSubtract = (now.difference(data[0].updatedAt).inDays / 7).floor();
+      now = now.subtract(Duration(days: toSubtract * 7));
+      initial = Column(
+        children: [
+          Container(
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+              child: Text(
+                DateFormat('yyyy/MM/dd')
+                        .format(now.subtract(Duration(days: 7))) +
+                    ' - ' +
+                    DateFormat('yyyy/MM/dd')
+                        .format(now.subtract(Duration(days: 1))),
+                style: Theme.of(context).textTheme.subtitle2,
+              )),
+        ],
+      );
+    } else {
       initial = Center(
         child: Container(
-            padding: EdgeInsets.all(8),
-            child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
-        ),
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+            child: Text(
+              DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
+                  ' - ' +
+                  DateFormat('yyyy/MM/dd')
+                      .format(now.subtract(Duration(days: 1))),
+              style: Theme.of(context).textTheme.subtitle2,
+            )),
       );
     }
-
-    return [initial]..addAll(data.map((element) {
-      if(now.difference(element.updatedAt).inDays>7){
-        int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
-        now=now.subtract(Duration(days: toSubtract*7));
-        return
-        Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
+    List<Widget> allEntries = [initial];
+    List<PaymentEntry> weekEntries = [];
+    for (PaymentData data in data) {
+      if (now.difference(data.updatedAt).inDays > 7) {
+        int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
+        now = now.subtract(Duration(days: toSubtract * 7));
+        allEntries.add(Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: weekEntries,
             ),
-            PaymentEntry(
-              data: element,
-              callback: callback,
+          ),
+        ));
+        weekEntries = [];
+        allEntries.add(Center(
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
+                  ' - ' +
+                  DateFormat('yyyy/MM/dd')
+                      .format(now.subtract(Duration(days: 1))),
+              style: Theme.of(context).textTheme.subtitle2,
             ),
-          ],
-        );
+          ),
+        ));
+      } else {
+        weekEntries.add(PaymentEntry(
+          data: data,
+          callback: callback,
+        ));
       }
-      return PaymentEntry(
-        data: element,
-        callback: callback,
-      );
-    }).toList());
+    }
+    if (weekEntries.isNotEmpty) {
+      allEntries.add(Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: weekEntries,
+          ),
+        ),
+      ));
+    }
+    return allEntries;
   }
 
-  List<Widget> _generatePurchase(List<PurchaseData> data) {//TODO: ezt szebben
+  List<Widget> _generatePurchase(List<PurchaseData> data) {
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
     Widget initial;
-    if(now.difference(data[0].updatedAt).inDays>7){
-      int toSubtract = (now.difference(data[0].updatedAt).inDays/7).floor();
-      now=now.subtract(Duration(days: toSubtract*7));
-      initial =
-          Column(
-            children: [
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
-              ),
-            ],
-          );
-    }else{
+    if (now.difference(data[0].updatedAt).inDays > 7) {
+      int toSubtract = (now.difference(data[0].updatedAt).inDays / 7).floor();
+      now = now.subtract(Duration(days: toSubtract * 7));
+      initial = Column(
+        children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+            child: Text(
+              DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
+                  ' - ' +
+                  DateFormat('yyyy/MM/dd')
+                      .format(now.subtract(Duration(days: 1))),
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+          ),
+        ],
+      );
+    } else {
       initial = Center(
         child: Container(
-            padding: EdgeInsets.all(8),
-            child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
-        ),
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+            child: Text(
+              DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
+                  ' - ' +
+                  DateFormat('yyyy/MM/dd')
+                      .format(now.subtract(Duration(days: 1))),
+              style: Theme.of(context).textTheme.subtitle2,
+            )),
       );
     }
-    return [initial]..addAll(data.map((element) {
-      if(now.difference(element.updatedAt).inDays>7){
-        int toSubtract = (now.difference(element.updatedAt).inDays/7).floor();
-        now=now.subtract(Duration(days: toSubtract*7));
-        return
-          Column(
-            children: [
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: Text(DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7)))+' - '+DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))), style: Theme.of(context).textTheme.subtitle2,)
-              ),
-              PurchaseEntry(
-                data: element,
-                callback: callback,
-              ),
-            ],
-          );
+    List<Widget> allEntries = [initial];
+    List<PurchaseEntry> weekEntries = [];
+    for (PurchaseData data in data) {
+      if (now.difference(data.updatedAt).inDays > 7) {
+        int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
+        now = now.subtract(Duration(days: toSubtract * 7));
+        allEntries.add(Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: weekEntries,
+            ),
+          ),
+        ));
+        weekEntries = [];
+        allEntries.add(Center(
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
+                  ' - ' +
+                  DateFormat('yyyy/MM/dd')
+                      .format(now.subtract(Duration(days: 1))),
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+          ),
+        ));
+      } else {
+        weekEntries.add(PurchaseEntry(
+          data: data,
+          callback: callback,
+        ));
       }
-      return PurchaseEntry(
-        data: element,
-        callback: callback,
-      );
-    }).toList());
+    }
+    if (weekEntries.isNotEmpty) {
+      allEntries.add(Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: weekEntries,
+          ),
+        ),
+      ));
+    }
+    return allEntries;
   }
 }

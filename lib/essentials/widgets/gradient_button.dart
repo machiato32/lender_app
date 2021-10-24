@@ -7,37 +7,32 @@ class GradientButton extends StatelessWidget {
   final Widget child;
   final Function onPressed;
   final bool useShadow;
-  GradientButton({this.child, this.onPressed, this.useShadow=true});
+  GradientButton({this.child, this.onPressed, this.useShadow = true});
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 5, bottom: 5),
-      constraints: BoxConstraints(
-          minWidth: 88.0, minHeight: 36.0
-      ),
+      constraints: BoxConstraints(minWidth: 88.0, minHeight: 36.0),
       child: Ink(
         decoration: BoxDecoration(
-          gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+          gradient:
+              AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
           borderRadius: BorderRadius.circular(15),
-          boxShadow: (Theme.of(context).brightness==Brightness.light && useShadow)
-          ?[ BoxShadow(
-            color: Colors.grey[500],
-            offset: Offset(0.0, 1.5),
-            blurRadius: 1.5,
-          )]
-          : []
+          // boxShadow: (Theme.of(context).brightness==Brightness.light && useShadow)
+          // ?[ BoxShadow(
+          //   color: Colors.grey[500],
+          //   offset: Offset(0.0, 1.5),
+          //   blurRadius: 1.5,
+          // )]
+          // : []
         ),
         child: InkWell(
             borderRadius: BorderRadius.circular(15),
             onTap: this.onPressed,
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16),
-              child: Align(
-                alignment: Alignment.center,
-                child: this.child
-              ),
-            )
-        ),
+              child: Align(alignment: Alignment.center, child: this.child),
+            )),
       ),
     );
   }

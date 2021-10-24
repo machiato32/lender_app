@@ -1,30 +1,30 @@
-import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
-import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/services.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 import '../essentials/app_theme.dart';
 import '../essentials/widgets/error_message.dart';
 import '../essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/essentials/currencies.dart';
 
-class SavedPayment{
+class SavedPayment {
   String note;
   int payerId, takerId;
   double amount;
   int paymentId;
-  SavedPayment({this.note, this.payerId, this.takerId, this.amount, this.paymentId});
+  SavedPayment(
+      {this.note, this.payerId, this.takerId, this.amount, this.paymentId});
 }
 
 class AddPaymentRoute extends StatefulWidget {
@@ -40,31 +40,29 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<Member>> _getMembers({bool overwriteCache=false}) async {
+  Future<List<Member>> _getMembers({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.groupCurrent),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.groupCurrent),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
+      int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
+          ? guestUserId
+          : currentUserId;
       for (var member in decoded['data']['members']) {
-        if(member['user_id']!=idToUse){
+        if (member['user_id'] != idToUse) {
           members.add(Member(
               nickname: member['nickname'],
               balance: (member['balance'] * 1.0),
-              memberId: member['user_id']
-          )
-          );
+              memberId: member['user_id']));
         }
       }
       return members;
-
     } catch (_) {
       throw _;
     }
@@ -72,7 +70,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
   Future<bool> _postPayment(double amount, String note, Member toMember) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
@@ -80,13 +78,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         'taker_id': toMember.memberId
       };
 
-      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
+      await httpPost(
+          uri: '/payments', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -99,19 +98,19 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('payment'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+          title: Text(
+            'payment'.tr(),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          ),
           flexibleSpace: Container(
             decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))
-            ),
+                gradient: AppTheme.gradientFromTheme(Theme.of(context))),
           ),
         ),
-
-
         body: RefreshIndicator(
           onRefresh: () async {
             setState(() {
-              _members=_getMembers(overwriteCache: true);
+              _members = _getMembers(overwriteCache: true);
             });
           },
           child: GestureDetector(
@@ -122,11 +121,11 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             child: Column(
               children: [
                 IsGuestBanner(
-                  callback: (){
+                  callback: () {
                     setState(() {
                       clearGroupCache();
-                      _members=null;
-                      _members=_getMembers();
+                      _members = null;
+                      _members = _getMembers();
                     });
                   },
                 ),
@@ -145,24 +144,34 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               ),
                               TextField(
                                 decoration: InputDecoration(
-                                  labelText: 'note'.tr(),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.onSurface),
-                                    //  when the TextFormField in unfocused
+                                  hintText: 'note'.tr(),
+                                  fillColor:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.note,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
                                   ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.primary,
-                                        width: 2),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
-                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(50)
+                                ],
                                 controller: _noteController,
                                 style: TextStyle(
                                     fontSize: 20,
-                                    color: Theme.of(context).textTheme.bodyText1.color),
-                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color),
+                                cursorColor:
+                                    Theme.of(context).colorScheme.secondary,
                               ),
                               SizedBox(
                                 height: 20,
@@ -184,52 +193,72 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                     },
                                     controller: _amountController,
                                     decoration: InputDecoration(
-                                      labelText: 'amount'.tr(),
-                                      hintText: getSymbol(currentGroupCurrency),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Theme.of(context).colorScheme.onSurface),
-                                        //  when the TextFormField in unfocused
+                                      hintText: 'amount'.tr(),
+                                      fillColor: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.pin,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .color,
                                       ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Theme.of(context).colorScheme.primary,
-                                            width: 2),
+                                      suffixIcon: Icon(
+                                        Icons.calculate,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .color,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                        borderSide: BorderSide.none,
                                       ),
                                     ),
                                     style: TextStyle(
                                         fontSize: 20,
-                                        color: Theme.of(context).textTheme.bodyText1.color),
-                                    cursorColor: Theme.of(context).colorScheme.secondary,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .color),
+                                    cursorColor:
+                                        Theme.of(context).colorScheme.secondary,
                                     keyboardType:
-                                    TextInputType.numberWithOptions(decimal: true),
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9\\.]'))
                                     ],
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(top:20),
+                                    margin: EdgeInsets.only(top: 9),
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: IconButton(
-                                          icon: Icon(Icons.calculate, color: Theme.of(context).colorScheme.primary,),
-                                          onPressed: (){
+                                          splashRadius: 0.1,
+                                          icon: Icon(
+                                            Icons.calculate,
+                                            color: Colors.transparent,
+                                          ),
+                                          onPressed: () {
                                             showModalBottomSheetCustom(
                                               context: context,
                                               builder: (context) {
                                                 return SingleChildScrollView(
                                                     child: Calculator(
-                                                      callback: (String fromCalc){
-                                                        setState(() {
-                                                          _amountController.text=fromCalc;
-                                                        });
-                                                      },
-                                                    )
-                                                );
+                                                  callback: (String fromCalc) {
+                                                    setState(() {
+                                                      _amountController.text =
+                                                          fromCalc;
+                                                    });
+                                                  },
+                                                ));
                                               },
                                             );
-                                          }
-                                      ),
+                                          }),
                                     ),
                                   ),
                                 ],
@@ -247,45 +276,53 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                         return Wrap(
                                           spacing: 10,
                                           children: snapshot.data
-                                              .map<ChoiceChip>((Member member) =>
-                                                  ChoiceChip(
-                                                    label: Text(member.nickname),
-                                                    pressElevation: 30,
-                                                    selected: _chipChoiceValue ==
-                                                        member,
-                                                    onSelected: (bool newValue) {
-                                                      FocusScope.of(context).unfocus();
-                                                      setState(() {
-                                                        _chipChoiceValue = member;
-                                                        // _selectedMember = member;
-                                                      });
-                                                    },
-                                                    labelStyle: _chipChoiceValue ==
-                                                            member
-                                                        ? Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1
-                                                            .copyWith(
-                                                                color: Theme.of(context)
-                                                                    .colorScheme
-                                                                    .onSecondary)
-                                                        : Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1,
-                                                    backgroundColor: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
-                                                    selectedColor: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                  ))
+                                              .map<ChoiceChip>(
+                                                  (Member member) => ChoiceChip(
+                                                        label: Text(
+                                                            member.nickname),
+                                                        pressElevation: 30,
+                                                        selected:
+                                                            _chipChoiceValue ==
+                                                                member,
+                                                        onSelected:
+                                                            (bool newValue) {
+                                                          FocusScope.of(context)
+                                                              .unfocus();
+                                                          setState(() {
+                                                            _chipChoiceValue =
+                                                                member;
+                                                            // _selectedMember = member;
+                                                          });
+                                                        },
+                                                        labelStyle: _chipChoiceValue ==
+                                                                member
+                                                            ? Theme.of(context)
+                                                                .textTheme
+                                                                .bodyText1
+                                                                .copyWith(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onSecondary)
+                                                            : Theme.of(context)
+                                                                .textTheme
+                                                                .bodyText1,
+                                                        backgroundColor:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface,
+                                                        selectedColor:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .secondary,
+                                                      ))
                                               .toList(),
                                         );
                                       } else {
                                         return ErrorMessage(
                                           error: snapshot.error.toString(),
                                           locationOfError: 'add_payment',
-                                          callback: (){
+                                          callback: () {
                                             setState(() {
                                               _members = null;
                                               _members = _getMembers();
@@ -295,7 +332,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       }
                                     }
 
-                                    return Center(child: CircularProgressIndicator());
+                                    return Center(
+                                        child: CircularProgressIndicator());
                                   },
                                 ),
                               ),
@@ -308,8 +346,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   ),
                 ),
                 Visibility(
-                    visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                    child: adUnitForSite('payment'),
+                  visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                  child: adUnitForSite('payment'),
                 ),
               ],
             ),
@@ -333,63 +371,82 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
               String note = _noteController.text;
               showDialog(
                   builder: (context) => FutureSuccessDialog(
-                    future: _postPayment(amount, note, _chipChoiceValue),
-                    dataTrue: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                            child: Text("payment_scf".tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(color: Colors.white),
-                                textAlign: TextAlign.center)),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        future: _postPayment(amount, note, _chipChoiceValue),
+                        dataTrue: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            GradientButton(
-                              child:Row(
-                                children: [
-                                  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
-                                  SizedBox(width: 3,),
-                                  Text('okay'.tr(), style: Theme.of(context).textTheme.button,),
-                                ],
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              useShadow: false,
+                            Flexible(
+                                child: Text("payment_scf".tr(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .copyWith(color: Colors.white),
+                                    textAlign: TextAlign.center)),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientButton(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.check,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSecondary),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(
+                                        'okay'.tr(),
+                                        style:
+                                            Theme.of(context).textTheme.button,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                  useShadow: false,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientButton(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.add,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSecondary),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(
+                                        'add_new'.tr(),
+                                        style:
+                                            Theme.of(context).textTheme.button,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    _amountController.text = '';
+                                    _noteController.text = '';
+                                    _chipChoiceValue = null;
+                                    Navigator.pop(context);
+                                  },
+                                  useShadow: false,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              child:Row(
-                                children: [
-                                  Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-                                  SizedBox(width: 3,),
-                                  Text('add_new'.tr(), style: Theme.of(context).textTheme.button,),
-                                ],
-                              ),
-                              onPressed: () {
-                                _amountController.text = '';
-                                _noteController.text = '';
-                                _chipChoiceValue = null;
-                                Navigator.pop(context);
-                              },
-                              useShadow: false,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ), barrierDismissible: false,
+                      ),
+                  barrierDismissible: false,
                   context: context);
             }
           },

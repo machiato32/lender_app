@@ -1,23 +1,22 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
-import 'dart:convert';
+import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:expandable/expandable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-
 import '../essentials/app_theme.dart';
-import 'package:csocsort_szamla/essentials/currencies.dart';
 
 class RegisterAlmostDonePage extends StatefulWidget {
   final String inviteURL;
@@ -29,7 +28,6 @@ class RegisterAlmostDonePage extends StatefulWidget {
 }
 
 class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
-
   TextEditingController _passwordReminderController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -53,11 +51,13 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
         appBar: AppBar(
             flexibleSpace: Container(
               decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context))
-              ),
+                  gradient: AppTheme.gradientFromTheme(Theme.of(context))),
             ),
-            title: Text('register'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24))
-        ),
+            title: Text('register'.tr(),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    letterSpacing: 0.25,
+                    fontSize: 24))),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -69,7 +69,11 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
               Center(
-                child: Text('just_few_things_left'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
+                child: Text(
+                  'just_few_things_left'.tr(),
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
+                ),
               ),
               // SizedBox(height: 10,),
               // Center(
@@ -93,15 +97,19 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                     controller: _passwordReminderController,
                     decoration: InputDecoration(
                       labelText: 'password_reminder'.tr(),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            width: 2),
+                      fillColor: Theme.of(context).cardTheme.color,
+                      filled: true,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2),
+                      suffixIcon: Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
                       ),
                     ),
                     inputFormatters: [
@@ -114,17 +122,22 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                     cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                   Container(
-                    margin: EdgeInsets.only(top:20),
+                    margin: EdgeInsets.only(top: 9),
                     child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                _reminderExplanationController.expanded=!_reminderExplanationController.expanded;
-                              });
-                            },
-                            icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.secondary,)
-                        )
+                      alignment: Alignment.bottomRight,
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _reminderExplanationController.expanded =
+                                !_reminderExplanationController.expanded;
+                          });
+                        },
+                        splashRadius: 0.1,
+                        icon: Icon(
+                          Icons.info_outline,
+                          color: Colors.transparent,
+                        ),
+                      ),
                     ),
                   )
                 ],
@@ -139,10 +152,13 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                     constraints: BoxConstraints(maxHeight: 80),
                     child: Row(
                       children: [
-                        Flexible(child: Text('reminder_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2,)),
+                        Flexible(
+                            child: Text(
+                          'reminder_explanation'.tr(),
+                          style: Theme.of(context).textTheme.subtitle2,
+                        )),
                       ],
-                    )
-                ),
+                    )),
               ),
               SizedBox(
                 height: 10,
@@ -159,19 +175,38 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                   Flexible(
                     child: ButtonTheme(
                       alignedDropdown: true,
-                      child: DropdownButton(
-                        isExpanded: true,
-                        onChanged: (value){
-                          setState(() {
-                            _defaultCurrencyValue=value;
-                          });
-                        },
-                        value: _defaultCurrencyValue,
-                        style: Theme.of(context).textTheme.bodyText1,
-                        items: enumerateCurrencies().map((currency) => DropdownMenuItem(
-                          child: Text(currency.split(';')[0].trim()+" ("+currency.split(';')[1].trim()+")",),
-                          value: currency.split(';')[0].trim(),
-                        )).toList(),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            fillColor: Theme.of(context).cardTheme.color,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          dropdownColor: Theme.of(context).cardTheme.color,
+                          elevation: 0,
+                          isExpanded: true,
+                          onChanged: (value) {
+                            setState(() {
+                              _defaultCurrencyValue = value;
+                            });
+                          },
+                          value: _defaultCurrencyValue,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          items: enumerateCurrencies()
+                              .map((currency) => DropdownMenuItem(
+                                    child: Text(
+                                      currency.split(';')[0].trim() +
+                                          " (" +
+                                          currency.split(';')[1].trim() +
+                                          ")",
+                                    ),
+                                    value: currency.split(';')[0].trim(),
+                                  ))
+                              .toList(),
+                        ),
                       ),
                     ),
                   ),
@@ -185,21 +220,24 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                 children: [
                   Flexible(
                     child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           launch('https://policies.google.com/privacy');
                         },
-                        child: Text('personalised_ads'.tr(),
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(decoration: TextDecoration.underline),
+                        child: Text(
+                          'personalised_ads'.tr(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              .copyWith(decoration: TextDecoration.underline),
                           textAlign: TextAlign.center,
-                        )
-                    ),
+                        )),
                   ),
                   Checkbox(
                     value: _personalisedAds,
                     activeColor: Theme.of(context).colorScheme.secondary,
-                    onChanged: (value){
+                    onChanged: (value) {
                       setState(() {
-                        _personalisedAds=value;
+                        _personalisedAds = value;
                       });
                     },
                   ),
@@ -209,20 +247,28 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GradientButton(
-                    child: Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary,),
+                    child: Icon(
+                      Icons.send,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
                       if (_formKey.currentState.validate()) {
-                        String passwordReminder = _passwordReminderController.text;
+                        String passwordReminder =
+                            _passwordReminderController.text;
                         showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context){
-                              return FutureSuccessDialog(
-                                future: _register(widget.username, widget.password, passwordReminder, _defaultCurrencyValue),
-                                dataTrueText: 'registration_scf',
-                              );
-                            },
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return FutureSuccessDialog(
+                              future: _register(
+                                  widget.username,
+                                  widget.password,
+                                  passwordReminder,
+                                  _defaultCurrencyValue),
+                              dataTrueText: 'registration_scf',
+                            );
+                          },
                         );
                       }
                     },
@@ -236,21 +282,19 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
     );
   }
 
-  _onRegister(){
+  _onRegister() {
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
             builder: (context) => JoinGroup(
-              fromAuth: true,
-              inviteURL: widget.inviteURL,
-            )
-        ),
-            (r) => false
-    );
+                  fromAuth: true,
+                  inviteURL: widget.inviteURL,
+                )),
+        (r) => false);
   }
 
-  Future<bool> _register(
-      String username, String password, String reminder, String currency) async {
+  Future<bool> _register(String username, String password, String reminder,
+      String currency) async {
     try {
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       Map<String, dynamic> body = {
@@ -260,21 +304,23 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
         "password_confirmation": password,
         "password_reminder": reminder,
         "fcm_token": await _firebaseMessaging.getToken(),
-        "language":context.locale.languageCode,
-        "personalised_ads":_personalisedAds?1:0
+        "language": context.locale.languageCode,
+        "personalised_ads": _personalisedAds ? 1 : 0
       };
       Map<String, String> header = {
         "Content-Type": "application/json",
       };
 
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post(Uri.parse((useTest?TEST_URL:APP_URL) + '/register'),
-          headers: header, body: bodyEncoded);
+      http.Response response = await http.post(
+          Uri.parse((useTest ? TEST_URL : APP_URL) + '/register'),
+          headers: header,
+          body: bodyEncoded);
       if (response.statusCode == 201) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        showAds=false;
-        useGradients=true;
-        trialVersion=true;
+        showAds = false;
+        useGradients = true;
+        trialVersion = true;
         saveApiToken(decoded['api_token']);
         saveUsername(decoded['username']);
         saveUserId(decoded['id']);
@@ -286,9 +332,9 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
         throw error['error'];
       }
     } on FormatException {
-      throw 'format_exception'.tr()+' F01';
+      throw 'format_exception'.tr() + ' F01';
     } on SocketException {
-      throw 'cannot_connect'.tr()+ ' F02';
+      throw 'cannot_connect'.tr() + ' F02';
     } catch (_) {
       throw _;
     }

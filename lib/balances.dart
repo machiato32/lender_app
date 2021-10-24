@@ -303,15 +303,15 @@ class _BalancesState extends State<Balances> {
             gradient: AppTheme.gradientFromTheme(Theme.of(context),
                 useSecondary: true),
             borderRadius: BorderRadius.circular(15),
-            boxShadow: (Theme.of(context).brightness == Brightness.light)
-                ? [
-                    BoxShadow(
-                      color: Colors.grey[500],
-                      offset: Offset(0.0, 1.5),
-                      blurRadius: 1.5,
-                    )
-                  ]
-                : [],
+            // boxShadow: (Theme.of(context).brightness == Brightness.light)
+            //     ? [
+            //         BoxShadow(
+            //           color: Colors.grey[500],
+            //           offset: Offset(0.0, 1.5),
+            //           blurRadius: 1.5,
+            //         )
+            //       ]
+            //     : [],
           );
           var amount = payment.amount.money(currentGroupCurrency);
           return Container(
@@ -412,15 +412,15 @@ class _BalancesState extends State<Balances> {
                   gradient: AppTheme.gradientFromTheme(Theme.of(context),
                       useSecondary: true),
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: (Theme.of(context).brightness == Brightness.light)
-                      ? [
-                          BoxShadow(
-                            color: Colors.grey[500],
-                            offset: Offset(0.0, 1.5),
-                            blurRadius: 1.5,
-                          )
-                        ]
-                      : [],
+                  // boxShadow: (Theme.of(context).brightness == Brightness.light)
+                  //     ? [
+                  //         BoxShadow(
+                  //           color: Colors.grey[500],
+                  //           offset: Offset(0.0, 1.5),
+                  //           blurRadius: 1.5,
+                  //         )
+                  //       ]
+                  //     : [],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import '../essentials/app_theme.dart';
 import 'member_all_info.dart';
 
@@ -23,8 +24,10 @@ class _GroupMembersState extends State<GroupMembers> {
   Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
-          context: context, useCache: false);
+          uri: generateUri(GetUriKeys.groupCurrent,
+              args: [currentGroupId.toString()]),
+          context: context,
+          useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       for (var member in decoded['data']['members']) {
@@ -35,7 +38,6 @@ class _GroupMembersState extends State<GroupMembers> {
       members.remove(currentMember);
       members.insert(0, currentMember);
       return members;
-
     } catch (_) {
       throw _;
     }
@@ -180,15 +182,18 @@ class _MemberEntryState extends State<MemberEntry> {
       nicknameColor = Theme.of(context).textTheme.button.color;
       iconColor = style.color;
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+        gradient:
+            AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
         borderRadius: BorderRadius.circular(15),
-        boxShadow: (Theme.of(context).brightness==Brightness.light)
-            ?[ BoxShadow(
-              color: Colors.grey[500],
-              offset: Offset(0.0, 1.5),
-              blurRadius: 1.5,
-            )]
-            : [],
+        // boxShadow: (Theme.of(context).brightness == Brightness.light)
+        //     ? [
+        //         BoxShadow(
+        //           color: Colors.grey[500],
+        //           offset: Offset(0.0, 1.5),
+        //           blurRadius: 1.5,
+        //         )
+        //       ]
+        //     : [],
       );
     } else {
       iconColor = Theme.of(context).textTheme.bodyText1.color;
@@ -209,11 +214,11 @@ class _MemberEntryState extends State<MemberEntry> {
                 context: context,
                 backgroundColor: Theme.of(context).cardTheme.color,
                 builder: (context) => SingleChildScrollView(
-                  child: MemberAllInfo(
-                    member: widget.member,
-                    isCurrentUserAdmin: widget.isCurrentUserAdmin,
-                  ),
-                )).then((val) {
+                      child: MemberAllInfo(
+                        member: widget.member,
+                        isCurrentUserAdmin: widget.isCurrentUserAdmin,
+                      ),
+                    )).then((val) {
               if (val == 'madeAdmin') widget.callback();
             });
           },
@@ -239,8 +244,7 @@ class _MemberEntryState extends State<MemberEntry> {
                             ),
                             Flexible(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Flexible(
@@ -250,13 +254,12 @@ class _MemberEntryState extends State<MemberEntry> {
                                     overflow: TextOverflow.ellipsis,
                                   )),
                                   Flexible(
-                                    child: Text(
-                                      widget.member.nickname,
-                                      style: TextStyle(
-                                          color: nicknameColor, fontSize: 15),
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  )
+                                      child: Text(
+                                    widget.member.nickname,
+                                    style: TextStyle(
+                                        color: nicknameColor, fontSize: 15),
+                                    overflow: TextOverflow.ellipsis,
+                                  ))
                                 ],
                               ),
                             ),
@@ -266,12 +269,10 @@ class _MemberEntryState extends State<MemberEntry> {
                       Center(
                         child: Visibility(
                             visible: widget.member.isAdmin,
-                            child:
-                            Text(
+                            child: Text(
                               '👑  ', //itt van egy korona emoji lol
                               style: style,
-                            )
-                        ),
+                            )),
                       ),
                     ],
                   ),
