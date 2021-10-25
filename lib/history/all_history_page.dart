@@ -265,6 +265,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   }
 
   List<Widget> _generatePayments(List<PaymentData> data) {
+    print(data.length);
+    if(data.length==0){
+      return [Padding(
+        padding: EdgeInsets.all(25),
+        child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+      )];
+    }
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     //Initial
@@ -348,6 +355,12 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   }
 
   List<Widget> _generatePurchase(List<PurchaseData> data) {
+    if(data.length==0){
+      return [Padding(
+        padding: EdgeInsets.all(25),
+        child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+      )];
+    }
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
     DateTime now = DateTime(nowNow.year, nowNow.month, nowNow.day);
@@ -408,6 +421,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
               style: Theme.of(context).textTheme.subtitle2,
             ),
           ),
+        ));
+        weekEntries.add(PurchaseEntry(
+          data: data,
+          callback: callback,
         ));
       } else {
         weekEntries.add(PurchaseEntry(
