@@ -298,8 +298,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onSelectGroupTrue() {
     if (widget.inviteURL == null) {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainGroupPage()),
+          (r) => false);
     } else {
       Navigator.pushAndRemoveUntil(
           context,

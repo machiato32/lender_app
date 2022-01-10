@@ -92,18 +92,18 @@ Future onSelectNotification(String payload) async {
         }
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
             builder: (context) =>
-                MainPage(selectedHistoryIndex: selectedIndex)));
+                MainGroupPage(selectedHistoryIndex: selectedIndex)));
       } else if (page == 'shopping') {
         int selectedTab = 1;
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-            builder: (context) => MainPage(selectedIndex: selectedTab)));
+            builder: (context) => MainGroupPage(selectedIndex: selectedTab)));
       } else if (page == 'store') {
         getIt.get<NavigationService>().navigateToAnyadForce(
             MaterialPageRoute(builder: (context) => InAppPurchasePage()));
       } else if (page == 'group_settings') {
         int selectedTab = 2;
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-            builder: (context) => MainPage(selectedIndex: selectedTab)));
+            builder: (context) => MainGroupPage(selectedIndex: selectedTab)));
       }
     }
   } catch (e) {
@@ -384,7 +384,7 @@ class _LenderAppState extends State<LenderApp> {
           decoded['data']['last_active_group'] != null) {
         currentGroupId = decoded['data']['last_active_group'];
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-              builder: (context) => MainPage(),
+              builder: (context) => MainGroupPage(),
             ));
       }
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -434,7 +434,7 @@ class _LenderAppState extends State<LenderApp> {
                         ? JoinGroup(
                             fromAuth: true,
                           )
-                        : MainPage(),
+                        : MainGroupPage(),
           ),
         );
       },

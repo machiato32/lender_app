@@ -58,7 +58,7 @@ class _CreateGroupState extends State<CreateGroup> {
   void _onCreateGroup() async {
     await clearAllCache();
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   @override

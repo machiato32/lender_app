@@ -85,7 +85,7 @@ class _JoinGroupState extends State<JoinGroup> {
   void _onJoinGroup() async {
     await clearAllCache();
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   @override
@@ -100,7 +100,7 @@ class _JoinGroupState extends State<JoinGroup> {
         if (currentGroupName != null && currentGroupId != null) {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MainPage()),
+              MaterialPageRoute(builder: (context) => MainGroupPage()),
               (r) => false);
           return Future.value(false);
         }
@@ -127,7 +127,8 @@ class _JoinGroupState extends State<JoinGroup> {
                         color: Theme.of(context).colorScheme.onSecondary),
                     onPressed: () => Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => MainPage()),
+                        MaterialPageRoute(
+                            builder: (context) => MainGroupPage()),
                         (r) => false),
                   )
                 : null,

@@ -32,7 +32,7 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
 
   void _onUpdateUsername() {
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
     _usernameController.text = '';
     // clearAllCache();
   }

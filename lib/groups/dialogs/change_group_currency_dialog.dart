@@ -39,7 +39,7 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
     await deleteCache(uri: generateUri(GetUriKeys.groups));
     await deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   @override

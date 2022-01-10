@@ -527,8 +527,8 @@ class _BalancesState extends State<Balances> {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              MainPage(selectedIndex: 2, scrollTo: 'guests')),
+                          builder: (context) => MainGroupPage(
+                              selectedIndex: 2, scrollTo: 'guests')),
                       (route) => false);
                 },
               ),

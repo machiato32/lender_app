@@ -129,7 +129,7 @@ void memberNotInGroup(BuildContext context) {
     currentGroupName = usersGroups[0];
     currentGroupId = usersGroupIds[0];
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   } else {
     currentGroupName = null;
     currentGroupId = null;

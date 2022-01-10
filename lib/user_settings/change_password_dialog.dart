@@ -40,8 +40,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   }
 
   void _onUpdatePassword() {
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainGroupPage()),
+        (route) => false);
   }
 
   void initTextFields() {

@@ -11,6 +11,7 @@ import 'package:csocsort_szamla/history/history.dart';
 import 'package:csocsort_szamla/main/group_settings_speed_dial.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:csocsort_szamla/main/main_page.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -34,18 +35,19 @@ import '../main/report_a_bug_page.dart';
 import '../main/trial_version_dialog.dart';
 import '../main/tutorial_dialog.dart';
 
-class MainPage extends StatefulWidget {
+class MainGroupPage extends StatefulWidget {
   final int selectedHistoryIndex;
   final int selectedIndex;
   final String scrollTo;
-  MainPage(
+  MainGroupPage(
       {this.selectedHistoryIndex = 0, this.selectedIndex = 0, this.scrollTo});
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainGroupPageState createState() => _MainGroupPageState();
 }
 
-class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+class _MainGroupPageState extends State<MainGroupPage>
+    with TickerProviderStateMixin {
   SharedPreferences prefs;
   Future<List<Group>> _groups;
 
@@ -432,6 +434,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 builder: (context) => CreateGroup()));
                       },
                     ),
+                    ListTile(
+                      title: Text('asd'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainPage()));
+                      },
+                    )
                   ],
                 ),
               ),

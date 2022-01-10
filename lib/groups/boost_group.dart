@@ -50,7 +50,7 @@ class _BoostGroupState extends State<BoostGroup> {
   Future<void> _onPostBoost() async {
     await clearGroupCache();
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   @override

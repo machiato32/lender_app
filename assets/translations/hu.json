@@ -367,5 +367,9 @@
     "share": "Oszd meg a csoportot",
     "share_url": "Vagy hívd meg a barátaid üzenetben",
     "scan_code": "Olvasd be a QR kódot",
-    "paste_code": "Vagy másold ide a meghívót:"
+    "paste_code": "Vagy másold ide a meghívót:",
+
+    "sum_balance": "Az összes pénzed a Lenderben {}",
+    "num_groups": "{} csoportod van, ezek közül {}-ban pozitív az egyenleged.",
+    "num_friends": "{} barátod van, az ő tartozásuk feléd {}"
 }

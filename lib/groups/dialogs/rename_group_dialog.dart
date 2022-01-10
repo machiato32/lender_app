@@ -41,7 +41,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
 
   void _onUpdateGroupName() {
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
     _groupNameController.text = '';
     clearGroupCache();
     deleteCache(uri: generateUri(GetUriKeys.groups));

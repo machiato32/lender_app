@@ -317,14 +317,16 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   void _onRemoveMember() async {
     await clearGroupCache();
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   void _onRemoveMemberNull() async {
     await clearAllCache();
     if (currentGroupId != null) {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainGroupPage()),
+          (r) => false);
     } else {
       usersGroupIds.remove(currentGroupId);
       usersGroups.remove(currentGroupName);

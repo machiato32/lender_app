@@ -44,7 +44,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
     deleteGuestNickname();
     deleteGuestUserId();
     Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+        MaterialPageRoute(builder: (context) => MainGroupPage()), (r) => false);
   }
 
   Future<List<Member>> _getMembers() async {
