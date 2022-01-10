@@ -343,6 +343,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                           .requesterId)] = true;
                                         }
                                         return Wrap(
+                                          alignment: WrapAlignment.center,
                                           spacing: 10,
                                           children: snapshot.data
                                               .map<ChoiceChip>((Member
@@ -548,7 +549,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
               }
               double amount = double.parse(_amountController.text);
               String name = noteController.text;
-              List<Member> members = new List<Member>();
+              List<Member> members = [];
               memberChipBool.forEach((Member key, bool value) {
                 if (value) members.add(key);
               });

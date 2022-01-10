@@ -274,6 +274,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                         ConnectionState.done) {
                                       if (snapshot.hasData) {
                                         return Wrap(
+                                          alignment: WrapAlignment.center,
                                           spacing: 10,
                                           children: snapshot.data
                                               .map<ChoiceChip>(
