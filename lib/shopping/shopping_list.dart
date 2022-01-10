@@ -667,43 +667,50 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                     direction: Axis.horizontal,
                     children: <Widget>[
                       Flexible(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Flexible(
-                            child: Row(
-                              children: <Widget>[
-                                icon,
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Flexible(
-                                          child: Text(
-                                        name,
-                                        style: style.copyWith(fontSize: 22),
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                      Flexible(
-                                          child: Text(
-                                        widget.data.requesterNickname,
-                                        style: TextStyle(
-                                            color: dateColor, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ))
-                                    ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 10,
                                   ),
-                                ),
-                              ],
+                                  icon,
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Text(
+                                            name,
+                                            style: style.copyWith(fontSize: 22),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: Text(
+                                            widget.data.requesterNickname,
+                                            style: TextStyle(
+                                                color: dateColor, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      )),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -12,9 +12,9 @@ import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
 
 import '../essentials/app_theme.dart';
 import 'create_group.dart';
@@ -252,7 +252,15 @@ class _JoinGroupState extends State<JoinGroup> {
                                                     .request()
                                                     .isGranted) {
                                               String cameraScanResult =
-                                                  await scanner.scan();
+                                                  await FlutterBarcodeScanner
+                                                      .scanBarcode(
+                                                          '#${Theme.of(context).colorScheme.primary.value.toRadixString(16)}',
+                                                          'Cancel',
+                                                          true,
+                                                          ScanMode.QR);
+                                              if (cameraScanResult == '-1') {
+                                                cameraScanResult = '';
+                                              }
                                               setState(() {
                                                 _tokenController.text =
                                                     cameraScanResult;

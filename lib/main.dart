@@ -619,7 +619,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   void _handleDrawer() {
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
-    _scaffoldKey.currentState.openDrawer();
+    _scaffoldKey.currentState.openEndDrawer();
     _groups = null;
     _groups = _getGroups();
   }
@@ -642,6 +642,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       //     : Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
+        actions: [Container()],
         // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
         flexibleSpace: Container(
@@ -671,31 +672,38 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             );
           },
         ),
-        leading: DescribedFeatureOverlay(
-          tapTarget: Icon(Icons.menu, color: Colors.black),
-          featureId: 'drawer',
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          overflowMode: OverflowMode.extendBackground,
-          title: Text('discovery_drawer_title'.tr()),
-          description: Text('discovery_drawer_description'.tr()),
-          barrierDismissible: false,
-          child: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Theme.of(context).colorScheme.onSecondary,
-            ),
-            onPressed: _handleDrawer,
-          ),
-        ),
+        leading: null,
+        // leading: DescribedFeatureOverlay(
+        //   tapTarget: Icon(Icons.menu, color: Colors.black),
+        //   featureId: 'drawer',
+        //   backgroundColor: Theme.of(context).colorScheme.primary,
+        //   overflowMode: OverflowMode.extendBackground,
+        //   title: Text('discovery_drawer_title'.tr()),
+        //   description: Text('discovery_drawer_description'.tr()),
+        //   barrierDismissible: false,
+        //   child: IconButton(
+        //     icon: Icon(
+        //       Icons.menu,
+        //       color: Theme.of(context).colorScheme.onSecondary,
+        //     ),
+        //     onPressed: _handleDrawer,
+        //   ),
+        // ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).cardTheme.color,
+        type: BottomNavigationBarType.fixed,
         onTap: (_index) {
-          setState(() {
-            _selectedIndex = _index;
-            _tabController.animateTo(_index);
-            _scaffoldKey.currentState.removeCurrentSnackBar();
-          });
+          if (_index != 3) {
+            setState(() {
+              _selectedIndex = _index;
+              _tabController.animateTo(_index);
+              _scaffoldKey.currentState.removeCurrentSnackBar();
+            });
+          } else {
+            _handleDrawer();
+          }
+
           if (_selectedIndex == 1) {
             FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
           } else if (_selectedIndex == 2) {
@@ -717,17 +725,30 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           BottomNavigationBarItem(
               //TODO: change user currency
               icon: DescribedFeatureOverlay(
-                  featureId: 'group_settings',
-                  tapTarget:
-                      Icon(Icons.supervisor_account, color: Colors.black),
-                  title: Text('discover_group_settings_title'.tr()),
-                  description: Text('discover_group_settings_description'.tr()),
-                  overflowMode: OverflowMode.extendBackground,
-                  child: Icon(Icons.supervisor_account)),
-              label: 'group'.tr())
+                featureId: 'group_settings',
+                tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
+                title: Text('discover_group_settings_title'.tr()),
+                description: Text('discover_group_settings_description'.tr()),
+                overflowMode: OverflowMode.extendBackground,
+                child: Icon(Icons.supervisor_account),
+              ),
+              label: 'group'.tr()),
+          BottomNavigationBarItem(
+            icon: DescribedFeatureOverlay(
+              tapTarget: Icon(Icons.menu, color: Colors.black),
+              featureId: 'drawer',
+              // backgroundColor: Theme.of(context).colorScheme.primary,
+              overflowMode: OverflowMode.extendBackground,
+              title: Text('discovery_drawer_title'.tr()),
+              description: Text('discovery_drawer_description'.tr()),
+              barrierDismissible: false,
+              child: Icon(Icons.menu),
+            ),
+            label: 'more'.tr(),
+          )
         ],
       ),
-      drawer: Drawer(
+      endDrawer: Drawer(
         elevation: 16,
         child: Ink(
           color:
