@@ -8,10 +8,11 @@ import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/main.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../main_group_page.dart';
 
 class MemberToMergeDialog extends StatefulWidget {
   @override

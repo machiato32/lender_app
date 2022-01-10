@@ -7,7 +7,6 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
-import 'package:csocsort_szamla/main.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../essentials/app_theme.dart';
+import '../groups/main_group_page.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {

@@ -7,11 +7,11 @@ import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../main.dart';
+import 'main_group_page.dart';
 
 class BoostGroup extends StatefulWidget {
   @override
@@ -19,130 +19,151 @@ class BoostGroup extends StatefulWidget {
 }
 
 class _BoostGroupState extends State<BoostGroup> {
-
   Future<Map<String, dynamic>> _boostNumber;
 
   Future<Map<String, dynamic>> _getBoostNumber() async {
-    try{
-      http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groupBoost, args: [currentGroupId.toString()]), useCache: false);
+    try {
+      http.Response response = await httpGet(
+          context: context,
+          uri: generateUri(GetUriKeys.groupBoost,
+              args: [currentGroupId.toString()]),
+          useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
   Future<bool> _postBoost() async {
-    try{
-      await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/boost');
+    try {
+      await httpPost(
+          context: context,
+          uri: '/groups/' + currentGroupId.toString() + '/boost');
       Future.delayed(delayTime()).then((value) => _onPostBoost());
       return true;
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
   Future<void> _onPostBoost() async {
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                MainPage()
-        ),
-        (r) => false
-    );
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
   @override
   void initState() {
     super.initState();
-    _boostNumber=null;
-    _boostNumber=_getBoostNumber();
+    _boostNumber = null;
+    _boostNumber = _getBoostNumber();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _boostNumber,
-      builder: (context, snapshot){
-        if(snapshot.connectionState==ConnectionState.done) {
-          if (snapshot.hasData) {
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text('boost_group'.tr(), style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center,),
-                    SizedBox(height: 10),
-                    Text(
-                      snapshot.data['is_boosted']==0?'boost_group_explanation'.tr():'boost_group_boosted_explanation'.tr(),
-                      style: Theme.of(context).textTheme.subtitle2,
-                      textAlign: TextAlign.center,
-                    ),
-
-                    Visibility(
-                      visible: snapshot.data['is_boosted']==0,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Text('available'.tr(args:[snapshot.data['available_boosts'].toString()]), style: Theme.of(context).textTheme.subtitle2,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GradientButton(
-                                child: Icon(Icons.insights, color: Theme.of(context).colorScheme.onSecondary),
-                                onPressed: (){
-                                  if(snapshot.data['available_boosts']==0){
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) => InAppPurchasePage())
-                                    ).then((value){
-                                      setState(() {
-
-                                      });
-                                    });
-                                  }else{
-                                    showDialog(
-                                        builder: (context) => ConfirmChoiceDialog(
-                                          choice: 'sure_boost',
-                                        ), context: context
-                                    )
-                                        .then((value){
-                                      if(value??false){
-                                        showDialog(
-                                            builder: (context) => FutureSuccessDialog(
-                                              future: _postBoost(),
-                                              dataTrueText: 'boost_scf',
-                                              onDataTrue: (){
-                                                _onPostBoost();
-                                              },
-                                            ), barrierDismissible: false,
-                                            context: context
-                                        );
-                                      }
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          )
-                        ],
+        future: _boostNumber,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return Card(
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'boost_group'.tr(),
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      Text(
+                        snapshot.data['is_boosted'] == 0
+                            ? 'boost_group_explanation'.tr()
+                            : 'boost_group_boosted_explanation'.tr(),
+                        style: Theme.of(context).textTheme.subtitle2,
+                        textAlign: TextAlign.center,
+                      ),
+                      Visibility(
+                        visible: snapshot.data['is_boosted'] == 0,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Text(
+                              'available'.tr(args: [
+                                snapshot.data['available_boosts'].toString()
+                              ]),
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientButton(
+                                  child: Icon(Icons.insights,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary),
+                                  onPressed: () {
+                                    if (snapshot.data['available_boosts'] ==
+                                        0) {
+                                      Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      InAppPurchasePage()))
+                                          .then((value) {
+                                        setState(() {});
+                                      });
+                                    } else {
+                                      showDialog(
+                                              builder: (context) =>
+                                                  ConfirmChoiceDialog(
+                                                    choice: 'sure_boost',
+                                                  ),
+                                              context: context)
+                                          .then((value) {
+                                        if (value ?? false) {
+                                          showDialog(
+                                              builder: (context) =>
+                                                  FutureSuccessDialog(
+                                                    future: _postBoost(),
+                                                    dataTrueText: 'boost_scf',
+                                                    onDataTrue: () {
+                                                      _onPostBoost();
+                                                    },
+                                                  ),
+                                              barrierDismissible: false,
+                                              context: context);
+                                        }
+                                      });
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }else{
-            return ErrorMessage(error: snapshot.error.toString(), callback: (){setState(() { _boostNumber=null; _boostNumber=_getBoostNumber(); });});
+              );
+            } else {
+              return ErrorMessage(
+                  error: snapshot.error.toString(),
+                  callback: () {
+                    setState(() {
+                      _boostNumber = null;
+                      _boostNumber = _getBoostNumber();
+                    });
+                  });
+            }
           }
-        }
-        return LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.primary,);
-
-      }
-
-    );
+          return LinearProgressIndicator(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          );
+        });
   }
 }
-

@@ -6,7 +6,7 @@ import '../../config.dart';
 import '../../essentials/http_handler.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
-import '../../main.dart';
+import '../main_group_page.dart';
 
 class AddGuestDialog extends StatefulWidget {
   AddGuestDialog();

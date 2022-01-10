@@ -1,17 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import '../auth/login_or_register_page.dart';
 import '../config.dart';
 import '../groups/join_group.dart';
-import '../main.dart';
+import '../groups/main_group_page.dart';
 
 enum GetUriKeys {
   groupHasGuests,

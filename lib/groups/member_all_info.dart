@@ -1,22 +1,21 @@
 import 'dart:convert';
 
-import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/save_preferences.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
-import '../main.dart';
 import 'dialogs/change_nickname_dialog.dart';
 import 'dialogs/confirm_leave_dialog.dart';
 import 'join_group.dart';
+import 'main_group_page.dart';
 
 class MemberAllInfo extends StatefulWidget {
   final Member member;
@@ -38,17 +37,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
       await httpPut(
           uri: '/groups/' + currentGroupId.toString() + '/admins',
           context: context,
-          body: body
-      );
+          body: body);
       Future.delayed(delayTime()).then((value) => _onChangeAdmin());
       return true;
-
     } catch (_) {
       throw _;
     }
   }
 
-  void _onChangeAdmin(){
+  void _onChangeAdmin() {
     Navigator.pop(context);
     Navigator.pop(context, 'madeAdmin');
   }
@@ -77,9 +74,9 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               Text(' - '),
               Flexible(
                   child: Text(
-                    widget.member.username,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  )),
+                widget.member.username,
+                style: Theme.of(context).textTheme.bodyText1,
+              )),
             ],
           ),
           SizedBox(
@@ -92,9 +89,9 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               Text(' - '),
               Flexible(
                   child: Text(
-                    widget.member.nickname,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  )),
+                widget.member.nickname,
+                style: Theme.of(context).textTheme.bodyText1,
+              )),
             ],
           ),
           SizedBox(
@@ -108,7 +105,6 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                   style: Theme.of(context).textTheme.bodyText1,
                 )),
           ),
-
           SizedBox(
             height: 10,
           ),
@@ -124,12 +120,13 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 onChanged: (value) {
                   showDialog(
                       builder: (context) => FutureSuccessDialog(
-                        future: _changeAdmin(widget.member.memberId, value),
-                        dataTrueText: 'admin_scf',
-                        onDataTrue: () {
-                          _onChangeAdmin();
-                        },
-                      ), barrierDismissible: false,
+                            future: _changeAdmin(widget.member.memberId, value),
+                            dataTrueText: 'admin_scf',
+                            onDataTrue: () {
+                              _onChangeAdmin();
+                            },
+                          ),
+                      barrierDismissible: false,
                       context: context);
                 },
               )),
@@ -142,8 +139,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 GradientButton(
                   onPressed: () {
                     showDialog(
-                        builder: (context) => ChangeNicknameDialog(username: widget.member.username, memberId: widget.member.memberId,), context: context
-                    ).then((value) {if(value!=null && value=='madeAdmin') Navigator.pop(context, 'madeAdmin');});
+                            builder: (context) => ChangeNicknameDialog(
+                                  username: widget.member.username,
+                                  memberId: widget.member.memberId,
+                                ),
+                            context: context)
+                        .then((value) {
+                      if (value != null && value == 'madeAdmin')
+                        Navigator.pop(context, 'madeAdmin');
+                    });
                   },
                   child: Row(
                     children: [
@@ -151,7 +155,9 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         Icons.edit,
                         color: Theme.of(context).textTheme.button.color,
                       ),
-                      SizedBox(width: 3,),
+                      SizedBox(
+                        width: 3,
+                      ),
                       Text(
                         'edit_nickname'.tr(),
                         style: Theme.of(context).textTheme.button,
@@ -163,40 +169,43 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.isCurrentUserAdmin && widget.member.memberId!=currentUserId,
+            visible: widget.isCurrentUserAdmin &&
+                widget.member.memberId != currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
                   onPressed: () {
                     showDialog(
-                      builder: (context) => ConfirmLeaveDialog(
-                        title: 'kick_member',
-                        choice: 'really_kick',
-                      ), context: context
-                    ).then((value){
-                      if(value!=null && value){
+                            builder: (context) => ConfirmLeaveDialog(
+                                  title: 'kick_member',
+                                  choice: 'really_kick',
+                                ),
+                            context: context)
+                        .then((value) {
+                      if (value != null && value) {
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                              future: _removeMember(widget.member.memberId),
-                              dataTrueText: 'kick_member_scf',
-                              onDataTrue: (){
-                                _onRemoveMember();
-                              },
-                            ), barrierDismissible: false,
-                            context: context
-                        );
+                                  future: _removeMember(widget.member.memberId),
+                                  dataTrueText: 'kick_member_scf',
+                                  onDataTrue: () {
+                                    _onRemoveMember();
+                                  },
+                                ),
+                            barrierDismissible: false,
+                            context: context);
                       }
                     });
-
                   },
-                  child:Row(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.person_outline,
                         color: Theme.of(context).textTheme.button.color,
                       ),
-                      SizedBox(width: 3,),
+                      SizedBox(
+                        width: 3,
+                      ),
                       Text(
                         'kick_member'.tr(),
                         style: Theme.of(context).textTheme.button,
@@ -208,43 +217,46 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.member.memberId==currentUserId,
+            visible: widget.member.memberId == currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
                   onPressed: () {
-                    double currencyThreshold=(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2;
-                    if(widget.member.balance<=-currencyThreshold){
+                    double currencyThreshold =
+                        (currencies[currentGroupCurrency]['subunit'] == 1
+                                ? 0.01
+                                : 1) /
+                            2;
+                    if (widget.member.balance <= -currencyThreshold) {
                       FToast ft = FToast();
                       ft.init(context);
                       ft.showToast(
                           child: errorToast('balance_at_least_0', context),
                           toastDuration: Duration(seconds: 2),
-                          gravity: ToastGravity.BOTTOM
-                      );
+                          gravity: ToastGravity.BOTTOM);
                       return;
-                    }else{
+                    } else {
                       showDialog(
-                        builder: (context) => ConfirmLeaveDialog(
-                          title: 'leave_group',
-                          choice: 'really_leave',
-                        ), context: context
-                      ).then((value){
-                        if(value!=null && value){
+                              builder: (context) => ConfirmLeaveDialog(
+                                    title: 'leave_group',
+                                    choice: 'really_leave',
+                                  ),
+                              context: context)
+                          .then((value) {
+                        if (value != null && value) {
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                future: _removeMember(null),
-                                dataTrueText: 'leave_scf',
-                                onDataTrue: () async {
-                                  _onRemoveMemberNull();
-                                },
-                              ), barrierDismissible: false,
-                              context: context
-                          );
+                                    future: _removeMember(null),
+                                    dataTrueText: 'leave_scf',
+                                    onDataTrue: () async {
+                                      _onRemoveMemberNull();
+                                    },
+                                  ),
+                              barrierDismissible: false,
+                              context: context);
                         }
                       });
-
                     }
                   },
                   child: Row(
@@ -253,7 +265,9 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                         Icons.arrow_back,
                         color: Theme.of(context).textTheme.button.color,
                       ),
-                      SizedBox(width: 3,),
+                      SizedBox(
+                        width: 3,
+                      ),
                       Text(
                         'leave_group'.tr(),
                         style: Theme.of(context).textTheme.button,
@@ -270,25 +284,31 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   }
 
   Future<bool> _removeMember(int memberId) async {
-    Map<String, dynamic> body ={
-      "member_id":memberId??currentUserId,
-      "threshold":(currencies[currentGroupCurrency]['subunit']==1?0.01:1)/2
+    Map<String, dynamic> body = {
+      "member_id": memberId ?? currentUserId,
+      "threshold":
+          (currencies[currentGroupCurrency]['subunit'] == 1 ? 0.01 : 1) / 2
     };
 
-    http.Response response = await httpPost(context: context, uri: '/groups/'+currentGroupId.toString()+'/members/delete', body: body);
-    if(memberId==null){ // The member leaves on his own
-      if(response.body!=""){
+    http.Response response = await httpPost(
+        context: context,
+        uri: '/groups/' + currentGroupId.toString() + '/members/delete',
+        body: body);
+    if (memberId == null) {
+      // The member leaves on his own
+      if (response.body != "") {
         Map<String, dynamic> decoded = jsonDecode(response.body);
         saveGroupName(decoded['data']['group_name']);
         saveGroupId(decoded['data']['group_id']);
         saveGroupCurrency(decoded['data']['currency']);
-      }else{
+      } else {
         deleteGroupCurrency();
         deleteGroupId();
         deleteGroupName();
       }
       Future.delayed(delayTime()).then((value) => _onRemoveMemberNull());
-    }else{ // The member got kicked
+    } else {
+      // The member got kicked
       Future.delayed(delayTime()).then((value) => _onRemoveMember());
     }
     return true;
@@ -296,23 +316,16 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   void _onRemoveMember() async {
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MainPage()),
-            (r) => false);
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
+
   void _onRemoveMemberNull() async {
     await clearAllCache();
-    if(currentGroupId!=null){
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MainPage()
-          ),
-          (r) => false
-      );
-    }else{
+    if (currentGroupId != null) {
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    } else {
       usersGroupIds.remove(currentGroupId);
       usersGroups.remove(currentGroupName);
       saveUsersGroupIds();
@@ -320,11 +333,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => JoinGroup(fromAuth: true,)
-          ),
-          (r) => false
-      );
+              builder: (context) => JoinGroup(
+                    fromAuth: true,
+                  )),
+          (r) => false);
     }
   }
 }
-
