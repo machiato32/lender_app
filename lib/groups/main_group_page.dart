@@ -158,6 +158,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    // double width = MediaQuery.of(context).size.width;
+    // bool bigScreen = width > 800;
+    bool bigScreen = false;
     _selectedIndex = widget.selectedIndex;
     _tabController = TabController(
         length: 3, vsync: this, initialIndex: widget.selectedIndex);
@@ -214,13 +217,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    bool bigScreen = width > 800;
     return Scaffold(
       // backgroundColor: _selectedIndex != 1
       //     ? Theme.of(context).scaffoldBackgroundColor
       //     : Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
-        actions: width <= 1200 ? [Container()] : null,
+        actions: [Container()],
         // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
         flexibleSpace: Container(
@@ -269,101 +273,62 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         //         ),
         //       ),
       ),
-      bottomNavigationBar: width >= 1200
-          ? null
-          : BottomNavigationBar(
-              backgroundColor: Theme.of(context).cardTheme.color,
-              type: BottomNavigationBarType.fixed,
-              onTap: (_index) {
-                if (_index != 3) {
-                  setState(() {
-                    _selectedIndex = _index;
-                    _tabController.animateTo(_index);
-                    _scaffoldKey.currentState.removeCurrentSnackBar();
-                  });
-                } else {
-                  _handleDrawer();
-                }
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).cardTheme.color,
+        type: BottomNavigationBarType.fixed,
+        onTap: (_index) {
+          if (!bigScreen) {
+            if (_index != 3) {
+              setState(() {
+                _selectedIndex = _index;
+                _tabController.animateTo(_index);
+                _scaffoldKey.currentState.removeCurrentSnackBar();
+              });
+            } else {
+              _handleDrawer();
+            }
 
-                if (_selectedIndex == 1) {
-                  FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
-                } else if (_selectedIndex == 2) {
-                  FeatureDiscovery.discoverFeatures(
-                      context, ['group_settings']);
-                }
-              },
-              currentIndex: _selectedIndex,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), label: 'home'.tr()),
-                BottomNavigationBarItem(
-                    icon: DescribedFeatureOverlay(
-                        featureId: 'shopping_list',
-                        tapTarget:
-                            Icon(Icons.receipt_long, color: Colors.black),
-                        title: Text('discover_shopping_title'.tr()),
-                        description: Text('discover_shopping_description'.tr()),
-                        overflowMode: OverflowMode.extendBackground,
-                        child: Icon(Icons.receipt_long)),
-                    label: 'shopping_list'.tr()),
-                BottomNavigationBarItem(
-                    //TODO: change user currency
-                    icon: DescribedFeatureOverlay(
-                      featureId: 'group_settings',
-                      tapTarget:
-                          Icon(Icons.supervisor_account, color: Colors.black),
-                      title: Text('discover_group_settings_title'.tr()),
-                      description:
-                          Text('discover_group_settings_description'.tr()),
-                      overflowMode: OverflowMode.extendBackground,
-                      child: Icon(Icons.supervisor_account),
-                    ),
-                    label: 'group'.tr()),
-                BottomNavigationBarItem(
-                  icon: DescribedFeatureOverlay(
-                    tapTarget: Icon(Icons.menu, color: Colors.black),
-                    featureId: 'drawer',
-                    // backgroundColor: Theme.of(context).colorScheme.primary,
-                    overflowMode: OverflowMode.extendBackground,
-                    title: Text('discovery_drawer_title'.tr()),
-                    description: Text('discovery_drawer_description'.tr()),
-                    barrierDismissible: false,
-                    child: Icon(Icons.menu),
-                  ),
-                  label: 'more'.tr(),
-                )
-              ],
-            ),
+            if (_selectedIndex == 1) {
+              FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+            } else if (_selectedIndex == 2) {
+              FeatureDiscovery.discoverFeatures(context, ['group_settings']);
+            }
+          } else {
+            if (_index != 2) {
+              setState(() {
+                _selectedIndex = _index;
+                _tabController.animateTo(_index);
+                _scaffoldKey.currentState.removeCurrentSnackBar();
+              });
+            } else {
+              _handleDrawer();
+            }
+            if (_selectedIndex == 0) {
+              FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+            } else if (_selectedIndex == 1) {
+              FeatureDiscovery.discoverFeatures(context, ['group_settings']);
+            }
+          }
+        },
+        currentIndex: _selectedIndex,
+        items: bigScreen
+            ? (_bottomNavbarItems().take(1).toList()
+              ..addAll(_bottomNavbarItems().reversed.take(2).toList().reversed)
+              ..toList())
+            : _bottomNavbarItems(),
+      ),
       endDrawer: Drawer(child: _drawer()),
-      floatingActionButton: width < 1200
-          ? (_selectedIndex == 2
-              ? GroupSettingsSpeedDial()
-              : Visibility(
-                  visible: _selectedIndex == 0,
-                  child: MainPageSpeedDial(
-                    callback: this.callback,
-                  ),
-                ))
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                AspectRatio(
-                  aspectRatio: width / 3 / height,
-                  child: MainPageSpeedDial(
-                    callback: this.callback,
-                    noOpacity: true,
-                  ),
-                ),
-                AspectRatio(
-                    aspectRatio: width / 10 / height,
-                    child: GroupSettingsSpeedDial(
-                      noOpacity: true,
-                    )),
-              ],
+      floatingActionButton: _selectedIndex == (bigScreen ? 1 : 2)
+          ? GroupSettingsSpeedDial()
+          : Visibility(
+              visible: _selectedIndex == 0,
+              child: MainPageSpeedDial(
+                callback: this.callback,
+              ),
             ),
+
       body: !kIsWeb && Platform.isWindows
-          ? _body(true)
+          ? _body(true, bigScreen)
           : ConnectivityWidget(
               offlineBanner: kIsWeb
                   ? Container()
@@ -382,15 +347,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
               builder: (context, isOnline) {
                 isOnline = isOnline || kIsWeb; //TODO: index html dolgok
-                return _body(isOnline);
+                return _body(isOnline, bigScreen);
               },
             ),
     );
   }
 
-  Widget _body(bool isOnline) {
+  Widget _body(bool isOnline, bool bigScreen) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height - 60;
+    double height = MediaQuery.of(context).size.height - 110;
     // print(width);
     return Column(
       children: [
@@ -399,88 +364,73 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           callback: callback,
         ),
         Expanded(
-          child: width < 1200
-              ? TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _tabController,
-                  children: [
-                    RefreshIndicator(
-                      onRefresh: () async {
-                        if (isOnline) await callback();
-                        setState(() {});
+          child: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: !bigScreen
+                ? _tabWidgets(isOnline, bigScreen)
+                : [
+                    Table(
+                      columnWidths: {
+                        0: FractionColumnWidth(1 / 2),
+                        1: FractionColumnWidth(1 / 2),
                       },
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          Balances(
-                            callback: callback,
-                          ),
-                          History(
-                            selectedIndex: widget.selectedHistoryIndex,
-                            callback: callback,
-                          ),
-                        ],
-                      ),
+                      children: [
+                        TableRow(
+                          children: _tabWidgets(isOnline, bigScreen)
+                              .take(2)
+                              .map(
+                                (e) => AspectRatio(
+                                  aspectRatio: width / 2 / height,
+                                  child: e,
+                                ),
+                              )
+                              .toList(),
+                        )
+                      ],
                     ),
-                    ShoppingList(
-                      isOnline: isOnline,
-                    ),
-                    GroupSettings(
-                      bannerKey: _isGuestBannerKey,
-                      scrollTo: scrollTo,
-                    ),
+                    _tabWidgets(isOnline, bigScreen).reversed.first,
+                    Container(),
                   ],
-                )
-              : Table(
-                  columnWidths: {
-                    0: FractionColumnWidth(1 / 3),
-                    1: FractionColumnWidth(1 / 3),
-                    2: FractionColumnWidth(1 / 3),
-                  },
-                  children: [
-                    TableRow(children: [
-                      RefreshIndicator(
-                        onRefresh: () async {
-                          if (isOnline) await callback();
-                          setState(() {});
-                        },
-                        child: AspectRatio(
-                          aspectRatio: width / 3 / height,
-                          child: ListView(
-                            controller: ScrollController(),
-                            shrinkWrap: true,
-                            children: [
-                              Balances(
-                                callback: callback,
-                              ),
-                              History(
-                                selectedIndex: widget.selectedHistoryIndex,
-                                callback: callback,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      AspectRatio(
-                        aspectRatio: width / 3 / height,
-                        child: ShoppingList(
-                          isOnline: isOnline,
-                        ),
-                      ),
-                      AspectRatio(
-                        aspectRatio: width / 3 / height,
-                        child: GroupSettings(
-                          bannerKey: _isGuestBannerKey,
-                          scrollTo: scrollTo,
-                        ),
-                      ),
-                    ])
-                  ],
-                ),
+          ),
         ),
         adUnitForSite('home_screen'),
       ],
     );
+  }
+
+  List<Widget> _tabWidgets(bool isOnline, bool bigScreen) {
+    return [
+      RefreshIndicator(
+        onRefresh: () async {
+          if (isOnline) await callback();
+          setState(() {});
+        },
+        child: ListView(
+          controller: ScrollController(),
+          shrinkWrap: true,
+          children: [
+            Balances(
+              callback: callback,
+              bigScreen: bigScreen,
+            ),
+            History(
+              selectedIndex: widget.selectedHistoryIndex,
+              callback: callback,
+            ),
+          ],
+        ),
+      ),
+      ShoppingList(
+        isOnline: isOnline,
+        bigScreen: bigScreen,
+      ),
+      GroupSettings(
+        bannerKey: _isGuestBannerKey,
+        scrollTo: scrollTo,
+        bigScreen: bigScreen,
+      ),
+    ];
   }
 
   Widget _drawer() {
@@ -709,5 +659,44 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  List<BottomNavigationBarItem> _bottomNavbarItems() {
+    return [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr()),
+      BottomNavigationBarItem(
+          icon: DescribedFeatureOverlay(
+              featureId: 'shopping_list',
+              tapTarget: Icon(Icons.receipt_long, color: Colors.black),
+              title: Text('discover_shopping_title'.tr()),
+              description: Text('discover_shopping_description'.tr()),
+              overflowMode: OverflowMode.extendBackground,
+              child: Icon(Icons.receipt_long)),
+          label: 'shopping_list'.tr()),
+      BottomNavigationBarItem(
+          //TODO: change user currency
+          icon: DescribedFeatureOverlay(
+            featureId: 'group_settings',
+            tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
+            title: Text('discover_group_settings_title'.tr()),
+            description: Text('discover_group_settings_description'.tr()),
+            overflowMode: OverflowMode.extendBackground,
+            child: Icon(Icons.supervisor_account),
+          ),
+          label: 'group'.tr()),
+      BottomNavigationBarItem(
+        icon: DescribedFeatureOverlay(
+          tapTarget: Icon(Icons.menu, color: Colors.black),
+          featureId: 'drawer',
+          // backgroundColor: Theme.of(context).colorScheme.primary,
+          overflowMode: OverflowMode.extendBackground,
+          title: Text('discovery_drawer_title'.tr()),
+          description: Text('discovery_drawer_description'.tr()),
+          barrierDismissible: false,
+          child: Icon(Icons.menu),
+        ),
+        label: 'more'.tr(),
+      )
+    ];
   }
 }

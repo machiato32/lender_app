@@ -60,12 +60,14 @@ class _SettingsState extends State<Settings> {
                         AspectRatio(
                           aspectRatio: width / 2 / height,
                           child: ListView(
+                            controller: ScrollController(),
                             children: _settings().take(3).toList(),
                           ),
                         ),
                         AspectRatio(
                           aspectRatio: width / 2 / height,
                           child: ListView(
+                            controller: ScrollController(),
                             children: _settings().reversed.take(5).toList(),
                           ),
                         )

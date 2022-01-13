@@ -11,6 +11,7 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -296,14 +297,18 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
   Future<bool> _register(String username, String password, String reminder,
       String currency) async {
     try {
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      dynamic token;
+      if (!kIsWeb && Platform.isAndroid) {
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+        token = await _firebaseMessaging.getToken();
+      }
       Map<String, dynamic> body = {
         "username": username,
         "default_currency": currency,
         "password": password,
         "password_confirmation": password,
         "password_reminder": reminder,
-        "fcm_token": await _firebaseMessaging.getToken(),
+        "fcm_token": token,
         "language": context.locale.languageCode,
         "personalised_ads": _personalisedAds ? 1 : 0
       };

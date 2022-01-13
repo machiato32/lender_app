@@ -14,8 +14,7 @@ import 'in_app_purchase_page.dart';
 
 class GroupSettingsSpeedDial extends StatefulWidget {
   final Function callback;
-  final bool noOpacity;
-  GroupSettingsSpeedDial({this.callback, this.noOpacity = false});
+  GroupSettingsSpeedDial({this.callback});
   @override
   _GroupSettingsSpeedDialState createState() => _GroupSettingsSpeedDialState();
 }
@@ -82,7 +81,6 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   Widget _generateSpeedDial(bool boosted, {DateTime created}) {
     return SpeedDial(
-      overlayOpacity: widget.noOpacity ? 0 : 0.8,
       child: Icon(Icons.show_chart),
       overlayColor: (Theme.of(context).brightness == Brightness.dark)
           ? Colors.black

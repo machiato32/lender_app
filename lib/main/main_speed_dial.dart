@@ -9,8 +9,7 @@ import '../essentials/app_theme.dart';
 
 class MainPageSpeedDial extends StatefulWidget {
   final Function callback;
-  final bool noOpacity;
-  MainPageSpeedDial({this.callback, this.noOpacity = false});
+  MainPageSpeedDial({this.callback});
   @override
   _MainPageSpeedDialState createState() => _MainPageSpeedDialState();
 }
@@ -19,7 +18,6 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
-      overlayOpacity: widget.noOpacity ? 0 : 0.8,
       child: DescribedFeatureOverlay(
         featureId: 'add_payment_expense',
         tapTarget: Icon(

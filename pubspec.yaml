@@ -56,6 +56,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  msix: ^2.8.1
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -73,6 +75,14 @@ flutter:
     - assets/translations/
     - assets/tutorial/
 
+msix_config:
+  display_name: Lender
+  publisher_display_name: DevsWithTheDodos
+  identity_name: 26756DevsWithTheDodos.Lender
+  msix_version: 1.0.0.0
+  logo_path: ./assets/dodo_color_glow.png
+  publisher: CN=82952EEE-FBE0-4538-ACE4-293472CC6306
+  store: true
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
