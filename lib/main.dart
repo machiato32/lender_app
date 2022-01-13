@@ -114,15 +114,16 @@ Future onSelectNotification(String payload) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await Firebase.initializeApp();
-  await FirebaseMessaging.instance.getToken();
   if (!kIsWeb) {
     if (Platform.isAndroid) {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+      Admob.initialize();
+      FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+      await Firebase.initializeApp();
+      await FirebaseMessaging.instance.getToken();
     }
   }
 
-  Admob.initialize();
   setup();
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -141,7 +142,6 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
-  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),

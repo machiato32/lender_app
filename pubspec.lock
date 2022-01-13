@@ -581,13 +581,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  qrscan:
-    dependency: "direct main"
-    description:
-      name: qrscan
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.2"
   rive:
     dependency: "direct main"
     description:

@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
@@ -7,6 +9,7 @@ import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/purchase_all_info.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PurchaseData {
@@ -164,120 +167,122 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       boxDecoration = BoxDecoration();
     }
 
-    return Stack(children: [
-      Container(
-        height: 80,
-        width: MediaQuery.of(context).size.width,
-        decoration: boxDecoration,
-        margin: EdgeInsets.only(
-            top: widget.data.reactions.length == 0 ? 0 : 14,
-            bottom: 4,
-            left: 4,
-            right: 4),
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onLongPress: () {
-              showDialog(
-                  builder: (context) => AddReactionDialog(
-                        type: 'purchases',
-                        reactions: widget.data.reactions,
-                        reactToId: widget.data.purchaseId,
-                        callback: this.callbackForReaction,
-                      ),
-                  context: context);
-            },
-            onTap: () async {
-              showModalBottomSheetCustom(
-                  context: context,
-                  backgroundColor: Theme.of(context).cardTheme.color,
-                  builder: (context) => SingleChildScrollView(
-                      child: PurchaseAllInfo(widget.data))).then((val) {
-                if (val == 'deleted')
-                  widget.callback(purchase: true, payment: false);
-              });
-            },
-            borderRadius: BorderRadius.circular(15),
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Flexible(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Flexible(
-                              child: Row(
-                                children: <Widget>[
-                                  icon,
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Flexible(
-                                            child: Text(
-                                          note,
-                                          style: style.copyWith(fontSize: 21),
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
-                                        Flexible(
-                                            child: Text(
-                                          names,
-                                          style: TextStyle(
-                                              color: dateColor, fontSize: 15),
-                                          overflow: TextOverflow.ellipsis,
-                                        ))
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                  amount,
-                                  style: style,
-                                ),
-                                Visibility(
-                                    visible: received && bought,
-                                    child: Text(
-                                      selfAmount,
-                                      style: style,
-                                    )),
-                              ],
-                            )
-                          ],
+    return Stack(
+      children: [
+        Container(
+          height: !kIsWeb && Platform.isWindows ? 85 : 80,
+          width: MediaQuery.of(context).size.width,
+          decoration: boxDecoration,
+          margin: EdgeInsets.only(
+              top: widget.data.reactions.length == 0 ? 0 : 14,
+              bottom: 4,
+              left: 4,
+              right: 4),
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onLongPress: () {
+                showDialog(
+                    builder: (context) => AddReactionDialog(
+                          type: 'purchases',
+                          reactions: widget.data.reactions,
+                          reactToId: widget.data.purchaseId,
+                          callback: this.callbackForReaction,
                         ),
-                      ),
-                    ],
-                  )),
-                ],
+                    context: context);
+              },
+              onTap: () async {
+                showModalBottomSheetCustom(
+                    context: context,
+                    backgroundColor: Theme.of(context).cardTheme.color,
+                    builder: (context) => SingleChildScrollView(
+                        child: PurchaseAllInfo(widget.data))).then((val) {
+                  if (val == 'deleted')
+                    widget.callback(purchase: true, payment: false);
+                });
+              },
+              borderRadius: BorderRadius.circular(15),
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Flex(
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    Flexible(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Row(
+                                  children: <Widget>[
+                                    icon,
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Flexible(
+                                              child: Text(
+                                            note,
+                                            style: style.copyWith(fontSize: 21),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                          Flexible(
+                                              child: Text(
+                                            names,
+                                            style: TextStyle(
+                                                color: dateColor, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                    amount,
+                                    style: style,
+                                  ),
+                                  Visibility(
+                                      visible: received && bought,
+                                      child: Text(
+                                        selfAmount,
+                                        style: style,
+                                      )),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      PastReactionContainer(
-        reactions: widget.data.reactions,
-        reactedToId: widget.data.purchaseId,
-        isSecondaryColor: bought,
-        type: 'purchases',
-        callback: this.callbackForReaction,
-      ),
-    ]);
+        PastReactionContainer(
+          reactions: widget.data.reactions,
+          reactedToId: widget.data.purchaseId,
+          isSecondaryColor: bought,
+          type: 'purchases',
+          callback: this.callbackForReaction,
+        ),
+      ],
+    );
   }
 }

@@ -91,6 +91,7 @@ class _GroupSettingState extends State<GroupSettings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
+          controller: ScrollController(),
           child: Column(
             children: <Widget>[
               FutureBuilder(

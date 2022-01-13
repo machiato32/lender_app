@@ -628,7 +628,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       child: Stack(
         children: [
           Container(
-            height: 65,
+            height: 75,
             width: MediaQuery.of(context).size.width,
             decoration: boxDecoration,
             margin: EdgeInsets.only(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
@@ -15,8 +16,8 @@ import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -192,7 +193,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   void _handleDrawer() {
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
+    print('drawer');
     _scaffoldKey.currentState.openEndDrawer();
+    // _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
   }
@@ -209,13 +212,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       // backgroundColor: _selectedIndex != 1
       //     ? Theme.of(context).scaffoldBackgroundColor
       //     : Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
-        actions: [Container()],
+        actions: width <= 1200 ? [Container()] : null,
         // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
         flexibleSpace: Container(
@@ -245,386 +250,464 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             );
           },
         ),
-        leading: null,
-        // leading: DescribedFeatureOverlay(
-        //   tapTarget: Icon(Icons.menu, color: Colors.black),
-        //   featureId: 'drawer',
-        //   backgroundColor: Theme.of(context).colorScheme.primary,
-        //   overflowMode: OverflowMode.extendBackground,
-        //   title: Text('discovery_drawer_title'.tr()),
-        //   description: Text('discovery_drawer_description'.tr()),
-        //   barrierDismissible: false,
-        //   child: IconButton(
-        //     icon: Icon(
-        //       Icons.menu,
-        //       color: Theme.of(context).colorScheme.onSecondary,
-        //     ),
-        //     onPressed: _handleDrawer,
-        //   ),
-        // ),
+        // leading: width < 1200
+        //     ? null
+        //     : DescribedFeatureOverlay(
+        //         tapTarget: Icon(Icons.menu, color: Colors.black),
+        //         featureId: 'drawer',
+        //         backgroundColor: Theme.of(context).colorScheme.primary,
+        //         overflowMode: OverflowMode.extendBackground,
+        //         title: Text('discovery_drawer_title'.tr()),
+        //         description: Text('discovery_drawer_description'.tr()),
+        //         barrierDismissible: false,
+        //         child: IconButton(
+        //           icon: Icon(
+        //             Icons.menu,
+        //             color: Theme.of(context).colorScheme.onSecondary,
+        //           ),
+        //           onPressed: _handleDrawer,
+        //         ),
+        //       ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).cardTheme.color,
-        type: BottomNavigationBarType.fixed,
-        onTap: (_index) {
-          if (_index != 3) {
-            setState(() {
-              _selectedIndex = _index;
-              _tabController.animateTo(_index);
-              _scaffoldKey.currentState.removeCurrentSnackBar();
-            });
-          } else {
-            _handleDrawer();
-          }
+      bottomNavigationBar: width >= 1200
+          ? null
+          : BottomNavigationBar(
+              backgroundColor: Theme.of(context).cardTheme.color,
+              type: BottomNavigationBarType.fixed,
+              onTap: (_index) {
+                if (_index != 3) {
+                  setState(() {
+                    _selectedIndex = _index;
+                    _tabController.animateTo(_index);
+                    _scaffoldKey.currentState.removeCurrentSnackBar();
+                  });
+                } else {
+                  _handleDrawer();
+                }
 
-          if (_selectedIndex == 1) {
-            FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
-          } else if (_selectedIndex == 2) {
-            FeatureDiscovery.discoverFeatures(context, ['group_settings']);
-          }
-        },
-        currentIndex: _selectedIndex,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr()),
-          BottomNavigationBarItem(
-              icon: DescribedFeatureOverlay(
-                  featureId: 'shopping_list',
-                  tapTarget: Icon(Icons.receipt_long, color: Colors.black),
-                  title: Text('discover_shopping_title'.tr()),
-                  description: Text('discover_shopping_description'.tr()),
-                  overflowMode: OverflowMode.extendBackground,
-                  child: Icon(Icons.receipt_long)),
-              label: 'shopping_list'.tr()),
-          BottomNavigationBarItem(
-              //TODO: change user currency
-              icon: DescribedFeatureOverlay(
-                featureId: 'group_settings',
-                tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
-                title: Text('discover_group_settings_title'.tr()),
-                description: Text('discover_group_settings_description'.tr()),
-                overflowMode: OverflowMode.extendBackground,
-                child: Icon(Icons.supervisor_account),
-              ),
-              label: 'group'.tr()),
-          BottomNavigationBarItem(
-            icon: DescribedFeatureOverlay(
-              tapTarget: Icon(Icons.menu, color: Colors.black),
-              featureId: 'drawer',
-              // backgroundColor: Theme.of(context).colorScheme.primary,
-              overflowMode: OverflowMode.extendBackground,
-              title: Text('discovery_drawer_title'.tr()),
-              description: Text('discovery_drawer_description'.tr()),
-              barrierDismissible: false,
-              child: Icon(Icons.menu),
+                if (_selectedIndex == 1) {
+                  FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+                } else if (_selectedIndex == 2) {
+                  FeatureDiscovery.discoverFeatures(
+                      context, ['group_settings']);
+                }
+              },
+              currentIndex: _selectedIndex,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home), label: 'home'.tr()),
+                BottomNavigationBarItem(
+                    icon: DescribedFeatureOverlay(
+                        featureId: 'shopping_list',
+                        tapTarget:
+                            Icon(Icons.receipt_long, color: Colors.black),
+                        title: Text('discover_shopping_title'.tr()),
+                        description: Text('discover_shopping_description'.tr()),
+                        overflowMode: OverflowMode.extendBackground,
+                        child: Icon(Icons.receipt_long)),
+                    label: 'shopping_list'.tr()),
+                BottomNavigationBarItem(
+                    //TODO: change user currency
+                    icon: DescribedFeatureOverlay(
+                      featureId: 'group_settings',
+                      tapTarget:
+                          Icon(Icons.supervisor_account, color: Colors.black),
+                      title: Text('discover_group_settings_title'.tr()),
+                      description:
+                          Text('discover_group_settings_description'.tr()),
+                      overflowMode: OverflowMode.extendBackground,
+                      child: Icon(Icons.supervisor_account),
+                    ),
+                    label: 'group'.tr()),
+                BottomNavigationBarItem(
+                  icon: DescribedFeatureOverlay(
+                    tapTarget: Icon(Icons.menu, color: Colors.black),
+                    featureId: 'drawer',
+                    // backgroundColor: Theme.of(context).colorScheme.primary,
+                    overflowMode: OverflowMode.extendBackground,
+                    title: Text('discovery_drawer_title'.tr()),
+                    description: Text('discovery_drawer_description'.tr()),
+                    barrierDismissible: false,
+                    child: Icon(Icons.menu),
+                  ),
+                  label: 'more'.tr(),
+                )
+              ],
             ),
-            label: 'more'.tr(),
-          )
-        ],
-      ),
-      endDrawer: Drawer(
-        elevation: 16,
-        child: Ink(
-          color:
-              // ? Color.fromARGB(255, 50, 50, 50)
-              Theme.of(context).cardTheme.color,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: <Widget>[
-                    DrawerHeader(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Image(
-                              image: AssetImage('assets/dodo_color_glow.png'),
-                            ),
+      endDrawer: Drawer(child: _drawer()),
+      floatingActionButton: width < 1200
+          ? (_selectedIndex == 2
+              ? GroupSettingsSpeedDial()
+              : Visibility(
+                  visible: _selectedIndex == 0,
+                  child: MainPageSpeedDial(
+                    callback: this.callback,
+                  ),
+                ))
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                AspectRatio(
+                  aspectRatio: width / 3 / height,
+                  child: MainPageSpeedDial(
+                    callback: this.callback,
+                    noOpacity: true,
+                  ),
+                ),
+                AspectRatio(
+                    aspectRatio: width / 10 / height,
+                    child: GroupSettingsSpeedDial(
+                      noOpacity: true,
+                    )),
+              ],
+            ),
+      body: !kIsWeb && Platform.isWindows
+          ? _body(true)
+          : ConnectivityWidget(
+              offlineBanner: kIsWeb
+                  ? Container()
+                  : Container(
+                      padding: EdgeInsets.all(8),
+                      width: double.infinity,
+                      color: Colors.red,
+                      child: Text(
+                        'no_connection'.tr(),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+              builder: (context, isOnline) {
+                isOnline = isOnline || kIsWeb; //TODO: index html dolgok
+                return _body(isOnline);
+              },
+            ),
+    );
+  }
+
+  Widget _body(bool isOnline) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height - 60;
+    // print(width);
+    return Column(
+      children: [
+        IsGuestBanner(
+          key: _isGuestBannerKey,
+          callback: callback,
+        ),
+        Expanded(
+          child: width < 1200
+              ? TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: _tabController,
+                  children: [
+                    RefreshIndicator(
+                      onRefresh: () async {
+                        if (isOnline) await callback();
+                        setState(() {});
+                      },
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Balances(
+                            callback: callback,
                           ),
-                          Text(
-                            'LENDER',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(letterSpacing: 2.5),
-                          ),
-                          Text(
-                            'hi'.tr() + ' ' + currentUsername + '!',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                          History(
+                            selectedIndex: widget.selectedHistoryIndex,
+                            callback: callback,
                           ),
                         ],
                       ),
                     ),
-                    FutureBuilder(
-                      future: _groups,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            return Theme(
-                              data: Theme.of(context)
-                                  .copyWith(dividerColor: Colors.transparent),
-                              child: ExpansionTile(
-                                title: Text('groups'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1),
-                                leading: Icon(Icons.group,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                children: _generateListTiles(snapshot.data),
-                              ),
-                            );
-                          } else {
-                            return ErrorMessage(
-                              error: snapshot.error.toString(),
-                              locationOfError: 'home_groups',
-                              callback: () {
-                                setState(() {
-                                  _groups = null;
-                                  _groups = _getGroups();
-                                });
-                              },
-                            );
-                          }
-                        }
-                        return LinearProgressIndicator(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                        );
-                      },
+                    ShoppingList(
+                      isOnline: isOnline,
                     ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.group_add,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                      ),
-                      title: Text(
-                        'join_group'.tr(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => JoinGroup()));
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.create,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                      ),
-                      title: Text(
-                        'create_group'.tr(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateGroup()));
-                      },
+                    GroupSettings(
+                      bannerKey: _isGuestBannerKey,
+                      scrollTo: scrollTo,
                     ),
                   ],
-                ),
-              ),
-              FutureBuilder(
-                future: _getSumBalance(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      String currency = snapshot.data['currency'];
-                      double balance = snapshot.data['balance'] * 1.0;
-                      return Text('Σ: ' + balance.printMoney(currency),
-                          style: Theme.of(context).textTheme.bodyText1);
-                    }
-                  }
-                  return Text(
-                    'Σ: ...',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 16),
-                  );
-                },
-              ),
-              Divider(),
-              ListTile(
-                dense: true,
-                onTap: () {
-                  if (trialVersion) {
-                    showDialog(
-                        builder: (context) => TrialVersionDialog(),
-                        context: context);
-                  } else {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InAppPurchasePage()));
-                  }
-                },
-                leading: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                        Theme.of(context).textTheme.bodyText1.color,
-                        BlendMode.srcIn),
-                    child: Image.asset(
-                      'assets/dodo_color.png',
-                      width: 25,
-                    )),
-                subtitle: trialVersion
-                    ? Text(
-                        'trial_version'.tr().toUpperCase(),
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            color: Theme.of(context).colorScheme.primary),
-                      )
-                    : null,
-                title: Text(
-                  'in_app_purchase'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              ),
-              ListTile(
-                dense: true,
-                leading: DescribedFeatureOverlay(
-                  tapTarget: Icon(Icons.settings, color: Colors.black),
-                  featureId: 'settings',
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  overflowMode: OverflowMode.extendBackground,
-                  allowShowingDuplicate: true,
-                  contentLocation: ContentLocation.above,
-                  title: Text('discovery_settings_title'.tr()),
-                  description: Text('discovery_settings_description'.tr()),
-                  child: Icon(
-                    Icons.settings,
-                    color: Theme.of(context).textTheme.bodyText1.color,
-                  ),
-                ),
-                title: Text(
-                  'settings'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Settings()));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.bug_report,
-                  color: Colors.red,
-                ),
-                dense: true,
-                title: Text(
-                  'report_a_bug'.tr(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ReportABugPage()));
-                },
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.exit_to_app,
-                  color: Theme.of(context).textTheme.bodyText1.color,
-                ),
-                dense: true,
-                title: Text(
-                  'logout'.tr(),
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                onTap: () async {
-                  _logout();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginOrRegisterPage()),
-                      (r) => false);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: _selectedIndex == 2
-          ? GroupSettingsSpeedDial()
-          : Visibility(
-              visible: _selectedIndex == 0,
-              child: MainPageSpeedDial(
-                callback: this.callback,
-              ),
-            ),
-      body: ConnectivityWidget(
-          offlineBanner: kIsWeb
-              ? Container()
-              : Container(
-                  padding: EdgeInsets.all(8),
-                  width: double.infinity,
-                  color: Colors.red,
-                  child: Text(
-                    'no_connection'.tr(),
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  )),
-          builder: (context, isOnline) {
-            isOnline = isOnline || kIsWeb; //TODO: index html dolgok
-            return Column(
-              children: [
-                IsGuestBanner(
-                  key: _isGuestBannerKey,
-                  callback: callback,
-                ),
-                Expanded(
-                  child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
-                      controller: _tabController,
-                      children: [
-                        RefreshIndicator(
-                          onRefresh: () async {
-                            if (isOnline) await callback();
-                            setState(() {});
-                          },
+                )
+              : Table(
+                  columnWidths: {
+                    0: FractionColumnWidth(1 / 3),
+                    1: FractionColumnWidth(1 / 3),
+                    2: FractionColumnWidth(1 / 3),
+                  },
+                  children: [
+                    TableRow(children: [
+                      RefreshIndicator(
+                        onRefresh: () async {
+                          if (isOnline) await callback();
+                          setState(() {});
+                        },
+                        child: AspectRatio(
+                          aspectRatio: width / 3 / height,
                           child: ListView(
+                            controller: ScrollController(),
                             shrinkWrap: true,
-                            children: <Widget>[
+                            children: [
                               Balances(
                                 callback: callback,
                               ),
                               History(
                                 selectedIndex: widget.selectedHistoryIndex,
                                 callback: callback,
-                              )
+                              ),
                             ],
                           ),
                         ),
-                        ShoppingList(
+                      ),
+                      AspectRatio(
+                        aspectRatio: width / 3 / height,
+                        child: ShoppingList(
                           isOnline: isOnline,
                         ),
-                        GroupSettings(
+                      ),
+                      AspectRatio(
+                        aspectRatio: width / 3 / height,
+                        child: GroupSettings(
                           bannerKey: _isGuestBannerKey,
                           scrollTo: scrollTo,
                         ),
-                      ]),
+                      ),
+                    ])
+                  ],
                 ),
-                adUnitForSite('home_screen'),
+        ),
+        adUnitForSite('home_screen'),
+      ],
+    );
+  }
+
+  Widget _drawer() {
+    return Ink(
+      color:
+          // ? Color.fromARGB(255, 50, 50, 50)
+          Theme.of(context).cardTheme.color,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              controller: ScrollController(),
+              children: <Widget>[
+                DrawerHeader(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Image(
+                          image: AssetImage('assets/dodo_color_glow.png'),
+                        ),
+                      ),
+                      Text(
+                        'LENDER',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            .copyWith(letterSpacing: 2.5),
+                      ),
+                      Text(
+                        'hi'.tr() + ' ' + currentUsername + '!',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    ],
+                  ),
+                ),
+                FutureBuilder(
+                  future: _groups,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return Theme(
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Text('groups'.tr(),
+                                style: Theme.of(context).textTheme.bodyText1),
+                            leading: Icon(Icons.group,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .color),
+                            children: _generateListTiles(snapshot.data),
+                          ),
+                        );
+                      } else {
+                        return ErrorMessage(
+                          error: snapshot.error.toString(),
+                          locationOfError: 'home_groups',
+                          callback: () {
+                            setState(() {
+                              _groups = null;
+                              _groups = _getGroups();
+                            });
+                          },
+                        );
+                      }
+                    }
+                    return LinearProgressIndicator(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.group_add,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'join_group'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => JoinGroup()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.create,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                  title: Text(
+                    'create_group'.tr(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CreateGroup()));
+                  },
+                ),
               ],
-            );
-          }),
+            ),
+          ),
+          FutureBuilder(
+            future: _getSumBalance(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  String currency = snapshot.data['currency'];
+                  double balance = snapshot.data['balance'] * 1.0;
+                  return Text('Σ: ' + balance.printMoney(currency),
+                      style: Theme.of(context).textTheme.bodyText1);
+                }
+              }
+              return Text(
+                'Σ: ...',
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 16),
+              );
+            },
+          ),
+          Divider(),
+          Visibility(
+            visible: !kIsWeb && Platform.isAndroid,
+            child: ListTile(
+              dense: true,
+              onTap: () {
+                if (trialVersion) {
+                  showDialog(
+                      builder: (context) => TrialVersionDialog(),
+                      context: context);
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InAppPurchasePage()));
+                }
+              },
+              leading: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).textTheme.bodyText1.color,
+                      BlendMode.srcIn),
+                  child: Image.asset(
+                    'assets/dodo_color.png',
+                    width: 25,
+                  )),
+              subtitle: trialVersion
+                  ? Text(
+                      'trial_version'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                          color: Theme.of(context).colorScheme.primary),
+                    )
+                  : null,
+              title: Text(
+                'in_app_purchase'.tr(),
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+          ),
+          ListTile(
+            dense: true,
+            leading: DescribedFeatureOverlay(
+              tapTarget: Icon(Icons.settings, color: Colors.black),
+              featureId: 'settings',
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              overflowMode: OverflowMode.extendBackground,
+              allowShowingDuplicate: true,
+              contentLocation: ContentLocation.above,
+              title: Text('discovery_settings_title'.tr()),
+              description: Text('discovery_settings_description'.tr()),
+              child: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.bodyText1.color,
+              ),
+            ),
+            title: Text(
+              'settings'.tr(),
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Settings()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.bug_report,
+              color: Colors.red,
+            ),
+            dense: true,
+            title: Text(
+              'report_a_bug'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ReportABugPage()));
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.exit_to_app,
+              color: Theme.of(context).textTheme.bodyText1.color,
+            ),
+            dense: true,
+            title: Text(
+              'logout'.tr(),
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            onTap: () async {
+              _logout();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginOrRegisterPage()),
+                  (r) => false);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

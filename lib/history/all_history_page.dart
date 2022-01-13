@@ -122,6 +122,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height - 60;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -142,94 +144,56 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           // )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).cardTheme.color,
-        onTap: (_index) {
-          setState(() {
-            _selectedIndex = _index;
-            _tabController.animateTo(_index);
-          });
-        },
-        currentIndex: _selectedIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'purchases'.tr(),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money), label: 'payments'.tr())
-        ],
-      ),
+      bottomNavigationBar: width > 800
+          ? null
+          : BottomNavigationBar(
+              backgroundColor: Theme.of(context).cardTheme.color,
+              onTap: (_index) {
+                setState(() {
+                  _selectedIndex = _index;
+                  _tabController.animateTo(_index);
+                });
+              },
+              currentIndex: _selectedIndex,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_cart),
+                  label: 'purchases'.tr(),
+                ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.attach_money), label: 'payments'.tr())
+              ],
+            ),
       body: Column(
         children: [
           IsGuestBanner(
             callback: callback,
           ),
-          Expanded(
-            child: TabBarView(
-                controller: _tabController,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  FutureBuilder(
-                    future: _purchases,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return ListView(
-                              controller: _purchaseScrollController,
-                              key: PageStorageKey('purchaseList'),
-                              shrinkWrap: true,
-                              children: _generatePurchase(snapshot.data));
-                        } else {
-                          return ErrorMessage(
-                            error: snapshot.error.toString(),
-                            locationOfError: 'purchase_history_page',
-                            callback: () {
-                              setState(() {
-                                _purchases = null;
-                                _purchases = _getPurchases();
-                              });
-                            },
-                          );
-                        }
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
-                        heightFactor: 2,
-                      );
-                    },
+          width < 800
+              ? Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: _purchasePayment(),
                   ),
-                  FutureBuilder(
-                    future: _payments,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return ListView(
-                              controller: _paymentScrollController,
-                              key: PageStorageKey('paymentList'),
-                              shrinkWrap: true,
-                              children: _generatePayments(snapshot.data));
-                        } else {
-                          return ErrorMessage(
-                            error: snapshot.error.toString(),
-                            locationOfError: 'payment_history_page',
-                            callback: () {
-                              setState(() {
-                                _payments = null;
-                                _payments = _getPayments();
-                              });
-                            },
-                          );
-                        }
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
-                        heightFactor: 2,
-                      );
-                    },
-                  ),
-                ]),
-          ),
+                )
+              : Table(
+                  columnWidths: {
+                    0: FractionColumnWidth(0.5),
+                    1: FractionColumnWidth(0.5),
+                  },
+                  children: [
+                    TableRow(
+                        children: _purchasePayment()
+                            .map(
+                              (e) => AspectRatio(
+                                aspectRatio: width / 2 / height,
+                                child: e,
+                              ),
+                            )
+                            .toList())
+                  ],
+                ),
           Visibility(
               visible: MediaQuery.of(context).viewInsets.bottom == 0,
               child: adUnitForSite('history')),
@@ -237,7 +201,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       ),
       //TODO:hide on top
       floatingActionButton: Visibility(
-        visible: true,
+        visible: width < 800,
         child: FloatingActionButton(
           onPressed: () {
             if (_selectedIndex == 0 && _purchaseScrollController.hasClients) {
@@ -264,13 +228,82 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     );
   }
 
+  List<Widget> _purchasePayment() {
+    return [
+      FutureBuilder(
+        future: _purchases,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return ListView(
+                  controller: _purchaseScrollController,
+                  key: PageStorageKey('purchaseList'),
+                  shrinkWrap: true,
+                  children: _generatePurchase(snapshot.data));
+            } else {
+              return ErrorMessage(
+                error: snapshot.error.toString(),
+                locationOfError: 'purchase_history_page',
+                callback: () {
+                  setState(() {
+                    _purchases = null;
+                    _purchases = _getPurchases();
+                  });
+                },
+              );
+            }
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+            heightFactor: 2,
+          );
+        },
+      ),
+      FutureBuilder(
+        future: _payments,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return ListView(
+                  controller: _paymentScrollController,
+                  key: PageStorageKey('paymentList'),
+                  shrinkWrap: true,
+                  children: _generatePayments(snapshot.data));
+            } else {
+              return ErrorMessage(
+                error: snapshot.error.toString(),
+                locationOfError: 'payment_history_page',
+                callback: () {
+                  setState(() {
+                    _payments = null;
+                    _payments = _getPayments();
+                  });
+                },
+              );
+            }
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+            heightFactor: 2,
+          );
+        },
+      ),
+    ];
+  }
+
   List<Widget> _generatePayments(List<PaymentData> data) {
     print(data.length);
-    if(data.length==0){
-      return [Padding(
-        padding: EdgeInsets.all(25),
-        child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-      )];
+    if (data.length == 0) {
+      return [
+        Padding(
+          padding: EdgeInsets.all(25),
+          child: Text(
+            'nothing_to_show'.tr(),
+            style: Theme.of(context).textTheme.bodyText1,
+            textAlign: TextAlign.center,
+          ),
+        )
+      ];
     }
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();
@@ -355,11 +388,17 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   }
 
   List<Widget> _generatePurchase(List<PurchaseData> data) {
-    if(data.length==0){
-      return [Padding(
-        padding: EdgeInsets.all(25),
-        child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-      )];
+    if (data.length == 0) {
+      return [
+        Padding(
+          padding: EdgeInsets.all(25),
+          child: Text(
+            'nothing_to_show'.tr(),
+            style: Theme.of(context).textTheme.bodyText1,
+            textAlign: TextAlign.center,
+          ),
+        )
+      ];
     }
     Function callback = this.callback;
     DateTime nowNow = DateTime.now();

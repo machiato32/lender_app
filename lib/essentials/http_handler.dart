@@ -25,6 +25,7 @@ enum GetUriKeys {
   groupGuests,
   groupUnapprovedMembers,
   groupExportXls,
+  groupExportPdf,
   purchasesAll,
   paymentsAll,
   purchasesFirst6,
@@ -46,7 +47,8 @@ List<String> getUris = [
   '/groups/{}/boost',
   '/groups/{}/guests',
   '/groups/{}/members/unapproved',
-  '/groups/{}/export/get_link',
+  '/groups/{}/export/get_link_xls',
+  '/groups/{}/export/get_link_pdf',
   '/purchases?group={}',
   '/payments?group={}',
   '/purchases?group={}&limit=6',
@@ -154,7 +156,8 @@ Future<http.Response> fromCache(
       return null;
     }
     // print(cacheDir.listSync());
-    File file = File(cacheDir.path + '/' + fileName);
+    String s = Platform.isWindows ? '\\' : '/';
+    File file = File(cacheDir.path + s + fileName);
     if (alwaysReturnCache ||
         (!overwriteCache &&
             (file.existsSync() &&
@@ -174,9 +177,11 @@ Future<http.Response> fromCache(
 
 Future toCache({@required String uri, @required http.Response response}) async {
   // print('to cache');
-  String fileName = uri.replaceAll('/', '-');
+  String fileName =
+      uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
   var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path + '/' + fileName);
+  String s = Platform.isWindows ? '\\' : '/';
+  File file = File(cacheDir.path + s + fileName);
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
 }
 
@@ -256,9 +261,12 @@ Future<http.Response> httpGet(
       http.Response responseFromCache = await fromCache(
           uri: uri.substring(1), overwriteCache: overwriteCache);
       if (responseFromCache != null) {
+        print('de cache!');
         return responseFromCache;
       }
     }
+    print(uri);
+    print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " +

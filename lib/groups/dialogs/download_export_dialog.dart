@@ -12,6 +12,18 @@ class DownloadExportDialog extends StatefulWidget {
 }
 
 class _DownloadExportDialogState extends State<DownloadExportDialog> {
+  Future<bool> _downloadPdf() async {
+    try {
+      http.Response response = await httpGet(
+          context: context, uri: generateUri(GetUriKeys.groupExportPdf));
+      String url = response.body;
+      Future.delayed(delayTime()).then((value) => _onDownloadPdf(url));
+      return true;
+    } catch (_) {
+      throw _;
+    }
+  }
+
   Future<bool> _downloadXls() async {
     try {
       http.Response response = await httpGet(
@@ -22,6 +34,11 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onDownloadPdf(String url) {
+    Navigator.pop(context);
+    launch(url);
   }
 
   void _onDownloadXls(String url) {
@@ -67,12 +84,13 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                       color: Theme.of(context).colorScheme.onSecondary),
                   onPressed: () {
                     showDialog(
-                        context: context,
-                        builder: (context) {
-                          return FutureSuccessDialog(
-                            future: _downloadXls(),
-                          );
-                        });
+                      context: context,
+                      builder: (context) {
+                        return FutureSuccessDialog(
+                          future: _downloadXls(),
+                        );
+                      },
+                    );
                   },
                 ),
               ],
@@ -95,16 +113,21 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    RaisedButton(
-                      color: Theme.of(context).colorScheme.secondary,
+                    GradientButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return FutureSuccessDialog(
+                              future: _downloadPdf(),
+                            );
+                          },
+                        );
+                      },
                       child: Icon(Icons.picture_as_pdf,
                           color: Theme.of(context).colorScheme.onSecondary),
                     ),
                   ],
-                ),
-                Text(
-                  'coming_soon'.tr(),
-                  style: Theme.of(context).textTheme.subtitle2,
                 )
               ],
             ),
