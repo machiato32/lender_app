@@ -158,9 +158,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    // double width = MediaQuery.of(context).size.width;
-    // bool bigScreen = width > 800;
-    bool bigScreen = false;
     _selectedIndex = widget.selectedIndex;
     _tabController = TabController(
         length: 3, vsync: this, initialIndex: widget.selectedIndex);
@@ -217,7 +214,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    bool bigScreen = width > 800;
+    bool bigScreen = width > tabletViewWidth;
     return Scaffold(
       // backgroundColor: _selectedIndex != 1
       //     ? Theme.of(context).scaffoldBackgroundColor
@@ -355,7 +352,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Widget _body(bool isOnline, bool bigScreen) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height - 110;
+    double height = MediaQuery.of(context).size.height -
+        _scaffoldKey.currentState.appBarMaxHeight -
+        56;
+    List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
     // print(width);
     return Column(
       children: [
@@ -368,7 +368,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             physics: NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: !bigScreen
-                ? _tabWidgets(isOnline, bigScreen)
+                ? tabWidgets
                 : [
                     Table(
                       columnWidths: {
@@ -377,7 +377,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       },
                       children: [
                         TableRow(
-                          children: _tabWidgets(isOnline, bigScreen)
+                          children: tabWidgets
                               .take(2)
                               .map(
                                 (e) => AspectRatio(
@@ -389,7 +389,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         )
                       ],
                     ),
-                    _tabWidgets(isOnline, bigScreen).reversed.first,
+                    tabWidgets.reversed.first,
                     Container(),
                   ],
           ),
@@ -399,7 +399,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Widget> _tabWidgets(bool isOnline, bool bigScreen) {
+  List<Widget> _tabWidgets(bool isOnline, bool bigScreen, double height) {
     return [
       RefreshIndicator(
         onRefresh: () async {
@@ -429,6 +429,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         bannerKey: _isGuestBannerKey,
         scrollTo: scrollTo,
         bigScreen: bigScreen,
+        height: height,
       ),
     ];
   }

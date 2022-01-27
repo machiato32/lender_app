@@ -123,7 +123,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height - 60;
+    double height = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        56; //Height without status bar and appbar
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -144,7 +146,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           // )
         ],
       ),
-      bottomNavigationBar: width > 800
+      bottomNavigationBar: width > tabletViewWidth
           ? null
           : BottomNavigationBar(
               backgroundColor: Theme.of(context).cardTheme.color,
@@ -169,7 +171,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           IsGuestBanner(
             callback: callback,
           ),
-          width < 800
+          width < tabletViewWidth
               ? Expanded(
                   child: TabBarView(
                     controller: _tabController,
@@ -177,22 +179,24 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                     children: _purchasePayment(),
                   ),
                 )
-              : Table(
-                  columnWidths: {
-                    0: FractionColumnWidth(0.5),
-                    1: FractionColumnWidth(0.5),
-                  },
-                  children: [
-                    TableRow(
-                        children: _purchasePayment()
-                            .map(
-                              (e) => AspectRatio(
-                                aspectRatio: width / 2 / height,
-                                child: e,
-                              ),
-                            )
-                            .toList())
-                  ],
+              : Expanded(
+                  child: Table(
+                    columnWidths: {
+                      0: FractionColumnWidth(0.5),
+                      1: FractionColumnWidth(0.5),
+                    },
+                    children: [
+                      TableRow(
+                          children: _purchasePayment()
+                              .map(
+                                (e) => AspectRatio(
+                                  aspectRatio: width / 2 / height,
+                                  child: e,
+                                ),
+                              )
+                              .toList())
+                    ],
+                  ),
                 ),
           Visibility(
               visible: MediaQuery.of(context).viewInsets.bottom == 0,
@@ -201,7 +205,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       ),
       //TODO:hide on top
       floatingActionButton: Visibility(
-        visible: width < 800,
+        visible: width < tabletViewWidth,
         child: FloatingActionButton(
           onPressed: () {
             if (_selectedIndex == 0 && _purchaseScrollController.hasClients) {

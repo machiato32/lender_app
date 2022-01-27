@@ -130,7 +130,7 @@ class _ColorElementState extends State<ColorElement> {
               _prefs.setString('theme', widget.themeName);
             });
             _postColor(widget.themeName);
-          } else {
+          } else if (isIAPPlatformEnabled) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => InAppPurchasePage()));
           }

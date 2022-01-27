@@ -17,9 +17,11 @@ import 'invitation.dart';
 
 class GroupSettings extends StatefulWidget {
   final bool bigScreen;
+  final double height;
   final GlobalKey<State> bannerKey;
   final String scrollTo;
-  GroupSettings({this.bannerKey, this.scrollTo, this.bigScreen = false});
+  GroupSettings(
+      {this.bannerKey, this.scrollTo, this.bigScreen = false, this.height});
   @override
   _GroupSettingState createState() => _GroupSettingState();
 }
@@ -79,7 +81,7 @@ class _GroupSettingState extends State<GroupSettings> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height - 110;
+    double height = widget.height ?? MediaQuery.of(context).size.height;
     return RefreshIndicator(
       onRefresh: () async {
         await deleteCache(uri: '/groups');

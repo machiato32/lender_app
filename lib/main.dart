@@ -42,7 +42,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void setup() {
+void getItSetup() {
   getIt.registerSingleton<NavigationService>(NavigationService());
 }
 
@@ -115,16 +115,27 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   if (!kIsWeb) {
-    if (Platform.isAndroid) {
+    isIAPPlatformEnabled = Platform.isAndroid;
+    isAdPlatformEnabled = Platform.isAndroid;
+    isFirebasePlatformEnabled = Platform.isAndroid;
+    if (isIAPPlatformEnabled) {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+    }
+    if (isAdPlatformEnabled) {
       Admob.initialize();
+    }
+    if (isFirebasePlatformEnabled) {
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
       await Firebase.initializeApp();
       await FirebaseMessaging.instance.getToken();
     }
+  } else {
+    isIAPPlatformEnabled = false;
+    isAdPlatformEnabled = false;
+    isFirebasePlatformEnabled = false;
   }
 
-  setup();
+  getItSetup();
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String themeName = '';
