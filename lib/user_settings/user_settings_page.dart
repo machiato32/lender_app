@@ -24,7 +24,8 @@ class _SettingsState extends State<Settings> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        56; //Height without status bar and appbar
+        56 -
+        adHeight; //Height without status bar and appbar
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(

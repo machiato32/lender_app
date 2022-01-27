@@ -1,6 +1,6 @@
-import 'package:admob_flutter/admob_flutter.dart';
-import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/config.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 Map<String, String> appUnitIds = {
   'create_group':'example',
@@ -13,13 +13,20 @@ Map<String, String> appUnitIds = {
   'settings':'example'
 };
 
-Widget adUnitForSite({@required String site, AdmobBannerSize size = AdmobBannerSize.BANNER}){
+Widget adUnitForSite(String site) {
+  BannerAd ad = BannerAd(
+    adUnitId: appUnitIds[site],
+    size: AdSize.banner,
+    request: AdRequest(),
+    listener: BannerAdListener(),
+  );
+  ad.load();
   return Visibility(
-    visible: showAds,
-    child: AdmobBanner(
-      adUnitId: appUnitIds[site],
-      adSize: size,
-      nonPersonalizedAds: true,
+    visible: showAds && isAdPlatformEnabled,
+    child: Container(
+      width: ad.size.width.toDouble(),
+      height: ad.size.height.toDouble(),
+      child: AdWidget(ad: ad),
     ),
   );
 }

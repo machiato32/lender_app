@@ -354,7 +354,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height -
         _scaffoldKey.currentState.appBarMaxHeight -
-        56;
+        56 -
+        adHeight;
     List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
     // print(width);
     return Column(

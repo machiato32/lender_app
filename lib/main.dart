@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
@@ -17,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -122,7 +122,7 @@ void main() async {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
     }
     if (isAdPlatformEnabled) {
-      Admob.initialize();
+      MobileAds.instance.initialize();
     }
     if (isFirebasePlatformEnabled) {
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
@@ -146,8 +146,6 @@ void main() async {
     themeName = preferences.getString('theme');
   }
   await loadAllPrefs();
-  print(usersGroupIds);
-  print(usersGroups);
 
   String initURL;
   try {
@@ -241,122 +239,120 @@ class _LenderAppState extends State<LenderApp> {
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      if (Platform.isIOS || Platform.isAndroid) {
-        final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
-        _subscription = purchaseUpdates.listen((purchases) {
-          // List<PurchaseDetails> purchasesList = purchases as List<PurchaseDetails>;
-          for (PurchaseDetails details in purchases) {
-            if (details.status == PurchaseStatus.purchased) {
-              String url = (!useTest ? APP_URL : TEST_URL) + '/user';
-              Map<String, String> header = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
-              };
-              Map<String, dynamic> body = {};
-              switch (details.productID) {
-                case 'remove_ads':
-                  showAds = false;
-                  body['ad_free'] = 1;
-                  break;
-                case 'gradients':
-                  useGradients = true;
-                  body['gradients_enabled'] = 1;
-                  break;
-                case 'ad_gradient_bundle':
-                  showAds = false;
-                  body['ad_free'] = 1;
-                  useGradients = true;
-                  body['gradients_enabled'] = 1;
-                  break;
-                case 'group_boost':
-                  body['boosts'] = 2;
-                  break;
-                case 'big_lender_bundle':
-                  showAds = false;
-                  body['ad_free'] = 1;
-                  useGradients = true;
-                  body['gradients_enabled'] = 1;
-                  body['boosts'] = 1;
-                  break;
-              }
-              try {
-                http.put(Uri.parse(url),
-                    headers: header, body: jsonEncode(body));
-              } catch (_) {
-                throw _;
-              }
-              InAppPurchase.instance.completePurchase(details);
+    if (isIAPPlatformEnabled) {
+      final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
+      _subscription = purchaseUpdates.listen((purchases) {
+        // List<PurchaseDetails> purchasesList = purchases as List<PurchaseDetails>;
+        for (PurchaseDetails details in purchases) {
+          if (details.status == PurchaseStatus.purchased) {
+            String url = (!useTest ? APP_URL : TEST_URL) + '/user';
+            Map<String, String> header = {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
+            };
+            Map<String, dynamic> body = {};
+            switch (details.productID) {
+              case 'remove_ads':
+                showAds = false;
+                body['ad_free'] = 1;
+                break;
+              case 'gradients':
+                useGradients = true;
+                body['gradients_enabled'] = 1;
+                break;
+              case 'ad_gradient_bundle':
+                showAds = false;
+                body['ad_free'] = 1;
+                useGradients = true;
+                body['gradients_enabled'] = 1;
+                break;
+              case 'group_boost':
+                body['boosts'] = 2;
+                break;
+              case 'big_lender_bundle':
+                showAds = false;
+                body['ad_free'] = 1;
+                useGradients = true;
+                body['gradients_enabled'] = 1;
+                body['boosts'] = 1;
+                break;
             }
-          }
-          // _handlePurchaseUpdates(purchases);
-        });
-        var initializationSettingsAndroid =
-            new AndroidInitializationSettings('@drawable/dodo_white');
-        var initializationSettingsIOS = new IOSInitializationSettings();
-        var initializationSettings = new InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-
-        flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-        flutterLocalNotificationsPlugin.initialize(initializationSettings,
-            onSelectNotification: onSelectNotification);
-
-        initUniLinks();
-        _link = widget.initURL;
-        Future.delayed(Duration(seconds: 1)).then((value) {
-          Future.delayed(Duration(seconds: 2)).then((value) {
-            _createNotificationChannels(
-                'group_system', ['other', 'group_update']);
-            _createNotificationChannels('purchase',
-                ['purchase_created', 'purchase_modified', 'purchase_deleted']);
-            _createNotificationChannels('payment',
-                ['payment_created', 'payment_modified', 'payment_deleted']);
-            _createNotificationChannels('shopping',
-                ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
-          });
-
-          setupInitialMessage();
-          FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-            print("onMessage: $message");
-            Map<String, dynamic> decoded = jsonDecode(message.data['payload']);
-            print(decoded);
-            var androidPlatformChannelSpecifics =
-                new AndroidNotificationDetails(
-                    decoded['channel_id'], //only this is needed
-                    (decoded['channel_id'] +
-                        '_notification'), // these don't do anything
-                    (decoded['channel_id'] + '_notification_explanation'),
-                    styleInformation: BigTextStyleInformation(''));
-            var iOSPlatformChannelSpecifics =
-                new IOSNotificationDetails(presentSound: false);
-            var platformChannelSpecifics = new NotificationDetails(
-                android: androidPlatformChannelSpecifics,
-                iOS: iOSPlatformChannelSpecifics);
-            flutterLocalNotificationsPlugin.show(
-                int.parse(message.data['id']) ?? 0,
-                message.notification.title,
-                message.notification.body,
-                platformChannelSpecifics,
-                payload: message.data['payload']);
-          });
-          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-            onSelectNotification(message.data['payload']);
-          });
-          if (currentUserId != null) {
-            _getUserData();
-          }
-          _supportedVersion().then((value) {
-            if (!(value ?? true)) {
-              getIt
-                  .get<NavigationService>()
-                  .navigateToAnyadForce(MaterialPageRoute(
-                    builder: (context) => VersionNotSupportedPage(),
-                  ));
+            try {
+              http.put(Uri.parse(url), headers: header, body: jsonEncode(body));
+            } catch (_) {
+              throw _;
             }
-          });
+            InAppPurchase.instance.completePurchase(details);
+          }
+        }
+        // _handlePurchaseUpdates(purchases);
+      });
+    }
+    if (isFirebasePlatformEnabled) {
+      var initializationSettingsAndroid =
+          new AndroidInitializationSettings('@drawable/dodo_white');
+      var initializationSettingsIOS = new IOSInitializationSettings();
+      var initializationSettings = new InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS);
+
+      flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: onSelectNotification);
+
+      initUniLinks();
+      _link = widget.initURL;
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        Future.delayed(Duration(seconds: 2)).then((value) {
+          _createNotificationChannels(
+              'group_system', ['other', 'group_update']);
+          _createNotificationChannels('purchase',
+              ['purchase_created', 'purchase_modified', 'purchase_deleted']);
+          _createNotificationChannels('payment',
+              ['payment_created', 'payment_modified', 'payment_deleted']);
+          _createNotificationChannels('shopping',
+              ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
         });
-      }
+
+        setupInitialMessage();
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          print("onMessage: $message");
+          Map<String, dynamic> decoded = jsonDecode(message.data['payload']);
+          print(decoded);
+          var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+              decoded['channel_id'], //only this is needed
+              (decoded['channel_id'] +
+                  '_notification'), // these don't do anything
+              (decoded['channel_id'] + '_notification_explanation'),
+              styleInformation: BigTextStyleInformation(''));
+          var iOSPlatformChannelSpecifics =
+              new IOSNotificationDetails(presentSound: false);
+          var platformChannelSpecifics = new NotificationDetails(
+              android: androidPlatformChannelSpecifics,
+              iOS: iOSPlatformChannelSpecifics);
+          flutterLocalNotificationsPlugin.show(
+              int.parse(message.data['id']) ?? 0,
+              message.notification.title,
+              message.notification.body,
+              platformChannelSpecifics,
+              payload: message.data['payload']);
+        });
+        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          onSelectNotification(message.data['payload']);
+        });
+        if (currentUserId != null) {
+          _getUserData();
+        }
+        _supportedVersion().then((value) {
+          if (!(value ?? true)) {
+            getIt
+                .get<NavigationService>()
+                .navigateToAnyadForce(MaterialPageRoute(
+                  builder: (context) => VersionNotSupportedPage(),
+                ));
+          }
+        });
+      });
     }
   }
 

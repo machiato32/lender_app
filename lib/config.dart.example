@@ -22,3 +22,6 @@ bool trialVersion=false;
 bool isIAPPlatformEnabled = false;
 bool isAdPlatformEnabled = false;
 bool isFirebasePlatformEnabled = false;
+
+double tabletViewWidth = 800;
+double adHeight = (isAdPlatformEnabled && showAds) ? 50 : 0;
