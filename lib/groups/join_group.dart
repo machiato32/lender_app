@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
@@ -227,7 +228,8 @@ class _JoinGroupState extends State<JoinGroup> {
                           child: Column(
                             children: [
                               Visibility(
-                                visible: widget.inviteURL == null,
+                                visible: widget.inviteURL == null &&
+                                    (Platform.isAndroid || Platform.isIOS),
                                 child: Column(
                                   children: [
                                     Text(

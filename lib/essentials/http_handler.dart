@@ -25,6 +25,7 @@ enum GetUriKeys {
   groupGuests,
   groupUnapprovedMembers,
   groupExportXls,
+  groupExportPdf,
   purchasesAll,
   paymentsAll,
   purchasesFirst6,
@@ -46,7 +47,8 @@ List<String> getUris = [
   '/groups/{}/boost',
   '/groups/{}/guests',
   '/groups/{}/members/unapproved',
-  '/groups/{}/export/get_link',
+  '/groups/{}/export/get_link_xls',
+  '/groups/{}/export/get_link_pdf',
   '/purchases?group={}',
   '/payments?group={}',
   '/purchases?group={}&limit=6',
@@ -143,18 +145,25 @@ void memberNotInGroup(BuildContext context) {
   }
 }
 
+Future<Directory> _getCacheDir() async {
+  String s = Platform.isWindows ? '\\' : '/';
+  return Directory((await getTemporaryDirectory()).path + s + 'lender');
+}
+
 Future<http.Response> fromCache(
     {@required String uri,
     @required bool overwriteCache,
     bool alwaysReturnCache = false}) async {
   try {
-    String fileName = uri.replaceAll('/', '-');
-    var cacheDir = await getTemporaryDirectory();
+    String s = Platform.isWindows ? '\\' : '/';
+    String fileName =
+        uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+    var cacheDir = await _getCacheDir();
     if (!cacheDir.existsSync()) {
       return null;
     }
     // print(cacheDir.listSync());
-    File file = File(cacheDir.path + '/' + fileName);
+    File file = File(cacheDir.path + s + fileName);
     if (alwaysReturnCache ||
         (!overwriteCache &&
             (file.existsSync() &&
@@ -174,9 +183,13 @@ Future<http.Response> fromCache(
 
 Future toCache({@required String uri, @required http.Response response}) async {
   // print('to cache');
-  String fileName = uri.replaceAll('/', '-');
-  var cacheDir = await getTemporaryDirectory();
-  File file = File(cacheDir.path + '/' + fileName);
+  String s = Platform.isWindows ? '\\' : '/';
+  String fileName =
+      uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+  var cacheDir = await _getCacheDir();
+  print('itt');
+  cacheDir.create();
+  File file = File(cacheDir.path + s + fileName);
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
 }
 
@@ -187,14 +200,16 @@ Future toCache({@required String uri, @required http.Response response}) async {
 Future deleteCache({@required String uri, bool multipleArgs = false}) async {
   if (!kIsWeb) {
     uri = uri.substring(1);
-    String fileName = uri.replaceAll('/', '-');
-    var cacheDir = await getTemporaryDirectory();
+    String fileName =
+        uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+    String s = Platform.isWindows ? '\\' : '/';
+    var cacheDir = await _getCacheDir();
     if (multipleArgs) {
       if (cacheDir.existsSync()) {
         List<FileSystemEntity> files = cacheDir.listSync();
         for (var file in files) {
           if (file is File) {
-            String fileName = file.path.split('/').last;
+            String fileName = file.path.split(s).last;
             if (fileName.contains(uri)) {
               file.deleteSync();
             }
@@ -202,7 +217,7 @@ Future deleteCache({@required String uri, bool multipleArgs = false}) async {
         }
       }
     } else {
-      File file = File(cacheDir.path + '/' + fileName);
+      File file = File(cacheDir.path + s + fileName);
       if (file.existsSync()) {
         // print('delete cache'+fileName);
         await file.delete();
@@ -213,12 +228,13 @@ Future deleteCache({@required String uri, bool multipleArgs = false}) async {
 
 Future clearGroupCache() async {
   if (!kIsWeb) {
-    var cacheDir = await getTemporaryDirectory();
+    var cacheDir = await _getCacheDir();
+    String s = Platform.isWindows ? '\\' : '/';
     if (cacheDir.existsSync()) {
       List<FileSystemEntity> files = cacheDir.listSync();
       for (var file in files) {
         if (file is File) {
-          String fileName = file.path.split('/').last;
+          String fileName = file.path.split(s).last;
           if (fileName.contains('groups-' + currentGroupId.toString()) ||
               fileName.contains('group=' + currentGroupId.toString())) {
             // print('deleting '+fileName);
@@ -233,9 +249,26 @@ Future clearGroupCache() async {
 Future clearAllCache() async {
   if (!kIsWeb) {
     // print('all cache');
-    var cacheDir = await getTemporaryDirectory();
+    String s = Platform.isWindows ? '\\' : '/';
+    var cacheDir = await _getCacheDir();
     if (cacheDir.existsSync()) {
-      cacheDir.delete(recursive: true);
+      for (File file in cacheDir.listSync()) {
+        if (file is File) {
+          file.deleteSync();
+          // print(delet)
+        }
+      }
+      // cacheDir.delete(recursive: true);
+      // for (String uri in getUris) {
+      //   uri =
+      //       uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+      //   File file = File(cacheDir.path + s + uri);
+      //   print(file.path);
+      //   if (file.existsSync()) {
+      //     file.deleteSync();
+      //     print(file.path);
+      //   }
+      // }
     }
   }
 }
@@ -256,9 +289,12 @@ Future<http.Response> httpGet(
       http.Response responseFromCache = await fromCache(
           uri: uri.substring(1), overwriteCache: overwriteCache);
       if (responseFromCache != null) {
+        print('de cache!');
         return responseFromCache;
       }
     }
+    print(uri);
+    print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " +

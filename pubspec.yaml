@@ -12,7 +12,7 @@ description: Csocsort
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.0.9+68
+version: 1.0.10+69
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -42,7 +42,6 @@ dependencies:
   fl_chart: ^0.36.2
   rive: ^0.6.8
   pretty_qr_code: ^2.0.2
-  qrscan: ^0.3.2
   permission_handler: ^8.1.6
   flutter_barcode_scanner: ^2.0.0
   flutter:
@@ -57,6 +56,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  msix: ^2.8.1
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,6 +75,14 @@ flutter:
     - assets/translations/
     - assets/tutorial/
 
+msix_config:
+  display_name: Lender
+  publisher_display_name: DevsWithTheDodos
+  identity_name: 26756DevsWithTheDodos.Lender
+  msix_version: 1.0.0.0
+  logo_path: ./assets/dodo_color_glow.png
+  publisher: CN=82952EEE-FBE0-4538-ACE4-293472CC6306
+#  store: true
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

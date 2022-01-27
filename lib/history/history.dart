@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/history/all_history_page.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/purchase/purchase_entry.dart';
-import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../essentials/widgets/error_message.dart';
 import '../essentials/widgets/gradient_button.dart';
@@ -26,15 +26,15 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PurchaseData>> _purchases;
   TabController _tabController;
 
-  Future<List<PurchaseData>> _getPurchases({bool overwriteCache=false}) async {
+  Future<List<PurchaseData>> _getPurchases(
+      {bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.purchasesFirst6),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.purchasesFirst6),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PurchaseData> purchaseData = [];
@@ -42,21 +42,19 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
         purchaseData.add(PurchaseData.fromJson(data));
       }
       return purchaseData;
-
     } catch (_) {
       throw _;
     }
   }
 
-  Future<List<PaymentData>> _getPayments({bool overwriteCache=false}) async {
+  Future<List<PaymentData>> _getPayments({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.paymentsFirst6),
-        context: context,
-        overwriteCache: overwriteCache,
-        useGuest: useGuest
-      );
+          uri: generateUri(GetUriKeys.paymentsFirst6),
+          context: context,
+          overwriteCache: overwriteCache,
+          useGuest: useGuest);
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
       for (var data in decoded) {
@@ -68,24 +66,25 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }
   }
 
-  void callback({bool purchase=false, bool payment=false}) {
+  void callback({bool purchase = false, bool payment = false}) {
+    print('lolol');
     widget.callback();
     setState(() {
-      if(payment){
+      if (payment) {
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
       }
-      if(purchase){
+      if (purchase) {
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
       }
     });
-
   }
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
+    _tabController = TabController(
+        length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _payments = null;
     _payments = _getPayments();
     _purchases = null;
@@ -150,10 +149,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
-                          if(snapshot.data.length==0){
+                          if (snapshot.data.length == 0) {
                             return Padding(
                               padding: EdgeInsets.all(25),
-                              child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                              child: Text(
+                                'nothing_to_show'.tr(),
+                                style: Theme.of(context).textTheme.bodyText1,
+                                textAlign: TextAlign.center,
+                              ),
                             );
                           }
                           return Column(
@@ -178,9 +181,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      AllHistoryRoute(startingIndex: _tabController.index)
-                                              )
-                                          );
+                                                      AllHistoryRoute(
+                                                          startingIndex:
+                                                              _tabController
+                                                                  .index)));
                                         },
                                         child: Row(
                                           children: [
@@ -191,24 +195,27 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                                   .button
                                                   .color,
                                             ),
-                                            SizedBox(width: 4,),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
                                             Text(
                                               'more'.tr(),
-                                              style: Theme.of(context).textTheme.button,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button,
                                             ),
                                           ],
                                         ),
                                       ),
                                     ],
-                                  )
-                              )
+                                  ))
                             ],
                           );
                         } else {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
                             locationOfError: 'purchase_history',
-                            callback: (){
+                            callback: () {
                               setState(() {
                                 _purchases = null;
                                 _purchases = _getPurchases();
@@ -225,10 +232,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
-                          if(snapshot.data.length==0){
+                          if (snapshot.data.length == 0) {
                             return Padding(
                               padding: EdgeInsets.all(25),
-                              child: Text('nothing_to_show'.tr(), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+                              child: Text(
+                                'nothing_to_show'.tr(),
+                                style: Theme.of(context).textTheme.bodyText1,
+                                textAlign: TextAlign.center,
+                              ),
                             );
                           }
                           return Column(
@@ -239,8 +250,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               Container(
                                 height: 490,
                                 child: Column(
-                                    children: _generatePayments(snapshot.data)
-                                ),
+                                    children: _generatePayments(snapshot.data)),
                               ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
@@ -248,13 +258,16 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GradientButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AllHistoryRoute(startingIndex: _tabController.index,)));
-                                        },
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllHistoryRoute(
+                                                      startingIndex:
+                                                          _tabController.index,
+                                                    )));
+                                      },
                                       child: Row(
                                         children: [
                                           Icon(
@@ -264,10 +277,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                                 .button
                                                 .color,
                                           ),
-                                          SizedBox(width: 4,),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
                                           Text(
                                             'more'.tr(),
-                                            style: Theme.of(context).textTheme.button,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button,
                                           ),
                                         ],
                                       ),
@@ -281,7 +298,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                           return ErrorMessage(
                             error: snapshot.error.toString(),
                             locationOfError: 'payment_history',
-                            callback: (){
+                            callback: () {
                               setState(() {
                                 _payments = null;
                                 _payments = _getPayments();

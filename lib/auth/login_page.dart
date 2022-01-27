@@ -324,11 +324,15 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _login(String username, String password) async {
     try {
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      dynamic token;
+      if (!kIsWeb && Platform.isAndroid) {
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+        token = await _firebaseMessaging.getToken();
+      }
       Map<String, String> body = {
         "username": username,
         "password": password,
-        "fcm_token": kIsWeb ? null : await _firebaseMessaging.getToken()
+        "fcm_token": kIsWeb ? null : token
       };
       Map<String, String> header = {"Content-Type": "application/json"};
       String bodyEncoded = jsonEncode(body);

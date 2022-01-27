@@ -20,8 +20,9 @@ import '../essentials/widgets/error_message.dart';
 import 'edit_request_dialog.dart';
 
 class ShoppingList extends StatefulWidget {
+  final bool bigScreen;
   final bool isOnline;
-  ShoppingList({this.isOnline});
+  ShoppingList({this.isOnline, this.bigScreen});
   @override
   _ShoppingListState createState() => _ShoppingListState();
 }
@@ -254,13 +255,16 @@ class _ShoppingListState extends State<ShoppingList> {
                 color: Colors.transparent,
                 child: Card(
                   // color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
-                  margin: EdgeInsets.only(left: 0, right: 0),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30)),
-                  ),
+                  margin: widget.bigScreen
+                      ? null
+                      : EdgeInsets.only(left: 0, right: 0),
+                  shape: widget.bigScreen
+                      ? null
+                      : RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
+                        ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                     child: Column(
@@ -628,7 +632,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       child: Stack(
         children: [
           Container(
-            height: 65,
+            height: 75,
             width: MediaQuery.of(context).size.width,
             decoration: boxDecoration,
             margin: EdgeInsets.only(

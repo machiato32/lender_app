@@ -162,7 +162,7 @@ class _BoostGroupState extends State<BoostGroup> {
             }
           }
           return LinearProgressIndicator(
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.primary,
           );
         });
   }

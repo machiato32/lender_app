@@ -16,9 +16,12 @@ import 'group_members.dart';
 import 'invitation.dart';
 
 class GroupSettings extends StatefulWidget {
+  final bool bigScreen;
+  final double height;
   final GlobalKey<State> bannerKey;
   final String scrollTo;
-  GroupSettings({this.bannerKey, this.scrollTo});
+  GroupSettings(
+      {this.bannerKey, this.scrollTo, this.bigScreen = false, this.height});
   @override
   _GroupSettingState createState() => _GroupSettingState();
 }
@@ -77,6 +80,8 @@ class _GroupSettingState extends State<GroupSettings> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = widget.height ?? MediaQuery.of(context).size.height;
     return RefreshIndicator(
       onRefresh: () async {
         await deleteCache(uri: '/groups');
@@ -91,6 +96,7 @@ class _GroupSettingState extends State<GroupSettings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
+          controller: ScrollController(),
           child: Column(
             children: <Widget>[
               FutureBuilder(
@@ -98,158 +104,40 @@ class _GroupSettingState extends State<GroupSettings> {
                   builder: (context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
+                        List<Widget> columnWidgets = _columnWidgets(snapshot);
+                        if (widget.bigScreen) {
+                          return Table(
+                            columnWidths: {
+                              0: FractionColumnWidth(0.5),
+                              1: FractionColumnWidth(0.5),
+                            },
+                            children: [
+                              TableRow(children: [
+                                AspectRatio(
+                                  aspectRatio: width / 2 / height,
+                                  child: ListView(
+                                    controller: ScrollController(),
+                                    children: columnWidgets.take(4).toList(),
+                                  ),
+                                ),
+                                AspectRatio(
+                                  aspectRatio: width / 2 / height,
+                                  child: ListView(
+                                    controller: ScrollController(),
+                                    children: columnWidgets.reversed
+                                        .take(2)
+                                        .toList()
+                                        .reversed
+                                        .toList(),
+                                  ),
+                                ),
+                              ])
+                            ],
+                          );
+                        }
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Visibility(
-                              visible: snapshot.data,
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Center(
-                                        child: Text(
-                                          'rename_group'.tr(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Center(
-                                          child: Text(
-                                        'rename_group_explanation'.tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2,
-                                        textAlign: TextAlign.center,
-                                      )),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GradientButton(
-                                            child: Icon(
-                                              Icons.edit,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary,
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                  builder: (context) =>
-                                                      RenameGroupDialog(),
-                                                  context: context);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Invitation(isAdmin: snapshot.data),
-                            BoostGroup(),
-                            Visibility(
-                              visible: snapshot.data,
-                              child: FutureBuilder(
-                                future: _hasGuests,
-                                builder: (context, hasGuestsSnapshot) {
-                                  if (hasGuestsSnapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    if (snapshot.hasData) {
-                                      return Column(
-                                        key: guestsKey,
-                                        children: [
-                                          ManageGuests(
-                                              hasGuests: hasGuestsSnapshot.data,
-                                              bannerKey: widget.bannerKey),
-                                        ],
-                                      );
-                                    } else {
-                                      return ErrorMessage(
-                                        error: hasGuestsSnapshot.error,
-                                        locationOfError: 'has_guests',
-                                        callback: () {
-                                          _hasGuests = null;
-                                          _hasGuests = _getHasGuests();
-                                        },
-                                      );
-                                    }
-                                  }
-                                  return LinearProgressIndicator(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primary,
-                                  );
-                                },
-                              ),
-                            ),
-                            Visibility(
-                              visible: snapshot.data,
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Center(
-                                        child: Text(
-                                          'change_group_currency'.tr(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Center(
-                                          child: Text(
-                                        'change_group_currency_explanation'
-                                            .tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2,
-                                        textAlign: TextAlign.center,
-                                      )),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GradientButton(
-                                            child: Icon(
-                                              Icons.monetization_on,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary,
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                  builder: (context) =>
-                                                      ChangeGroupCurrencyDialog(),
-                                                  context: context);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GroupMembers(),
-                          ],
+                          children: columnWidgets,
                         );
                       } else {
                         return ErrorMessage(
@@ -273,5 +161,139 @@ class _GroupSettingState extends State<GroupSettings> {
         ),
       ),
     );
+  }
+
+  List<Widget> _columnWidgets(AsyncSnapshot<bool> snapshot) {
+    return [
+      Visibility(
+        visible: snapshot.data,
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: Text(
+                    'rename_group'.tr(),
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                    child: Text(
+                  'rename_group_explanation'.tr(),
+                  style: Theme.of(context).textTheme.subtitle2,
+                  textAlign: TextAlign.center,
+                )),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      child: Icon(
+                        Icons.edit,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            builder: (context) => RenameGroupDialog(),
+                            context: context);
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      Invitation(isAdmin: snapshot.data),
+      BoostGroup(),
+      Visibility(
+        visible: snapshot.data,
+        child: FutureBuilder(
+          future: _hasGuests,
+          builder: (context, hasGuestsSnapshot) {
+            if (hasGuestsSnapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return Column(
+                  key: guestsKey,
+                  children: [
+                    ManageGuests(
+                        hasGuests: hasGuestsSnapshot.data,
+                        bannerKey: widget.bannerKey),
+                  ],
+                );
+              } else {
+                return ErrorMessage(
+                  error: hasGuestsSnapshot.error,
+                  locationOfError: 'has_guests',
+                  callback: () {
+                    _hasGuests = null;
+                    _hasGuests = _getHasGuests();
+                  },
+                );
+              }
+            }
+            return LinearProgressIndicator(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            );
+          },
+        ),
+      ),
+      Visibility(
+        visible: snapshot.data,
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: Text(
+                    'change_group_currency'.tr(),
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                    child: Text(
+                  'change_group_currency_explanation'.tr(),
+                  style: Theme.of(context).textTheme.subtitle2,
+                  textAlign: TextAlign.center,
+                )),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      child: Icon(
+                        Icons.monetization_on,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            builder: (context) => ChangeGroupCurrencyDialog(),
+                            context: context);
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      GroupMembers(),
+    ];
   }
 }

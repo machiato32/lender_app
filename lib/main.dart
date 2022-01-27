@@ -42,7 +42,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void setup() {
+void getItSetup() {
   getIt.registerSingleton<NavigationService>(NavigationService());
 }
 
@@ -114,16 +114,28 @@ Future onSelectNotification(String payload) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await Firebase.initializeApp();
-  await FirebaseMessaging.instance.getToken();
   if (!kIsWeb) {
-    if (Platform.isAndroid) {
+    isIAPPlatformEnabled = Platform.isAndroid;
+    isAdPlatformEnabled = Platform.isAndroid;
+    isFirebasePlatformEnabled = Platform.isAndroid;
+    if (isIAPPlatformEnabled) {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
     }
+    if (isAdPlatformEnabled) {
+      Admob.initialize();
+    }
+    if (isFirebasePlatformEnabled) {
+      FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+      await Firebase.initializeApp();
+      await FirebaseMessaging.instance.getToken();
+    }
+  } else {
+    isIAPPlatformEnabled = false;
+    isAdPlatformEnabled = false;
+    isFirebasePlatformEnabled = false;
   }
 
-  Admob.initialize();
-  setup();
+  getItSetup();
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String themeName = '';
@@ -141,7 +153,6 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
-  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   runApp(EasyLocalization(
     child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
