@@ -146,8 +146,8 @@ void memberNotInGroup(BuildContext context) {
 }
 
 Future<Directory> _getCacheDir() async {
-  String s = Platform.isWindows ? '\\' : '/';
-  return Directory((await getTemporaryDirectory()).path + s + 'lender');
+  String delimiter = Platform.isWindows ? '\\' : '/';
+  return Directory((await getTemporaryDirectory()).path + delimiter + 'lender');
 }
 
 Future<http.Response> fromCache(
@@ -187,7 +187,7 @@ Future toCache({@required String uri, @required http.Response response}) async {
   String fileName =
       uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
   var cacheDir = await _getCacheDir();
-  print('itt');
+  //print('itt');
   cacheDir.create();
   File file = File(cacheDir.path + s + fileName);
   file.writeAsString(response.body, flush: true, mode: FileMode.write);
@@ -249,7 +249,6 @@ Future clearGroupCache() async {
 Future clearAllCache() async {
   if (!kIsWeb) {
     // print('all cache');
-    String s = Platform.isWindows ? '\\' : '/';
     var cacheDir = await _getCacheDir();
     if (cacheDir.existsSync()) {
       for (File file in cacheDir.listSync()) {
@@ -289,12 +288,12 @@ Future<http.Response> httpGet(
       http.Response responseFromCache = await fromCache(
           uri: uri.substring(1), overwriteCache: overwriteCache);
       if (responseFromCache != null) {
-        print('de cache!');
+        //print('de cache!');
         return responseFromCache;
       }
     }
-    print(uri);
-    print('nem cache...');
+    //print(uri);
+    //print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " +
