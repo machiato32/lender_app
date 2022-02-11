@@ -14,19 +14,22 @@ Map<String, String> appUnitIds = {
 };
 
 Widget adUnitForSite(String site) {
-  BannerAd ad = BannerAd(
-    adUnitId: appUnitIds[site],
-    size: AdSize.banner,
-    request: AdRequest(),
-    listener: BannerAdListener(),
-  );
-  ad.load();
-  return Visibility(
-    visible: showAds && isAdPlatformEnabled,
-    child: Container(
-      width: ad.size.width.toDouble(),
-      height: ad.size.height.toDouble(),
-      child: AdWidget(ad: ad),
-    ),
-  );
+    if (isAdPlatformEnabled) {
+      BannerAd ad = BannerAd(
+        adUnitId: appUnitIds[site],
+        size: AdSize.banner,
+        request: AdRequest(),
+        listener: BannerAdListener(),
+      );
+      ad.load();
+      return Visibility(
+        visible: showAds && isAdPlatformEnabled,
+        child: Container(
+          width: ad.size.width.toDouble(),
+          height: ad.size.height.toDouble(),
+          child: AdWidget(ad: ad),
+        ),
+      );
+    }
+    return Container();
 }
