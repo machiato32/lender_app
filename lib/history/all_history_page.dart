@@ -22,6 +22,8 @@ class AllHistoryRoute extends StatefulWidget {
 
 class _AllHistoryRouteState extends State<AllHistoryRoute>
     with TickerProviderStateMixin {
+  DateTime _startDate;
+  DateTime _endDate;
   Future<List<PurchaseData>> _purchases;
   Future<List<PaymentData>> _payments;
 
@@ -34,11 +36,23 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       {bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.purchasesAll),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+      http.Response response;
+      if (_startDate != null && _endDate != null) {
+        String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
+        String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
+        response = await httpGet(
+            uri: generateUri(GetUriKeys.purchasesDate,
+                args: [currentGroupId.toString(), startDate, endDate]),
+            context: context,
+            overwriteCache: overwriteCache,
+            useGuest: useGuest);
+      } else {
+        response = await httpGet(
+            uri: generateUri(GetUriKeys.purchasesAll),
+            context: context,
+            overwriteCache: overwriteCache,
+            useGuest: useGuest);
+      }
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PurchaseData> purchaseData = [];
       for (var data in decoded) {
@@ -53,11 +67,23 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   Future<List<PaymentData>> _getPayments({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.paymentsAll),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+      http.Response response;
+      if (_startDate != null && _endDate != null) {
+        String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
+        String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
+        response = await httpGet(
+            uri: generateUri(GetUriKeys.paymentsDate,
+                args: [currentGroupId.toString(), startDate, endDate]),
+            context: context,
+            overwriteCache: overwriteCache,
+            useGuest: useGuest);
+      } else {
+        response = await httpGet(
+            uri: generateUri(GetUriKeys.paymentsAll),
+            context: context,
+            overwriteCache: overwriteCache,
+            useGuest: useGuest);
+      }
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<PaymentData> paymentData = [];
@@ -137,13 +163,49 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
               gradient: AppTheme.gradientFromTheme(Theme.of(context))),
         ),
         actions: [
-          //TODO:daterange
-          // IconButton(
-          //   icon: Icon(Icons.search_rounded),
-          //   onPressed: (){
-          //
-          //   },
-          // )
+          IconButton(
+            icon: Icon(
+                _startDate != null ? Icons.highlight_off : Icons.date_range),
+            onPressed: () async {
+              if (_startDate != null) {
+                setState(() {
+                  _startDate = null;
+                  _endDate = null;
+                  _purchases = null;
+                  _purchases = _getPurchases();
+
+                  _payments = null;
+                  _payments = _getPayments();
+                });
+              } else {
+                DateTimeRange range = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime.parse('2020-01-17'),
+                    lastDate: DateTime.now(),
+                    currentDate: DateTime.now(),
+                    initialDateRange: DateTimeRange(
+                        start: DateTime.now().subtract(Duration(days: 30)),
+                        end: DateTime.now()),
+                    builder: (context, child) {
+                      return Theme(
+                        data: AppTheme.getDateRangePickerTheme(context),
+                        child: child,
+                      );
+                    });
+                if (range != null) {
+                  _startDate = range.start;
+                  _endDate = range.end;
+                  setState(() {
+                    _purchases = null;
+                    _purchases = _getPurchases();
+
+                    _payments = null;
+                    _payments = _getPayments();
+                  });
+                }
+              }
+            },
+          )
         ],
       ),
       bottomNavigationBar: width > tabletViewWidth
@@ -347,6 +409,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     List<Widget> allEntries = [initial];
     List<PaymentEntry> weekEntries = [];
     for (PaymentData data in data) {
+      print(data.updatedAt.toString() + ' ' + data.note);
       if (now.difference(data.updatedAt).inDays > 7) {
         int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
         now = now.subtract(Duration(days: toSubtract * 7));
@@ -359,6 +422,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           ),
         ));
         weekEntries = [];
+        weekEntries.add(PaymentEntry(
+          data: data,
+          callback: callback,
+        ));
         allEntries.add(Center(
           child: Container(
             padding: EdgeInsets.all(8),

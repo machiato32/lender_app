@@ -350,4 +350,28 @@ class AppTheme {
           ));
     }
   }
+
+  static ThemeData getDateRangePickerTheme(BuildContext context) {
+    return Theme.of(context).copyWith(
+        primaryColor: Theme.of(context).colorScheme.primary,
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              onSurface: Theme.of(context).brightness == Brightness.light
+                  ? Colors.grey[800]
+                  : Theme.of(context).colorScheme.onSecondary,
+              onPrimary: Colors.white,
+              surface: Theme.of(context).colorScheme.primary,
+            ),
+        scaffoldBackgroundColor:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
+        textTheme: Theme.of(context).textTheme.copyWith(
+              bodyText2: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(fontWeight: FontWeight.normal),
+              headline5: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ));
+  }
 }
