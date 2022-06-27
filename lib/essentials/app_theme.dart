@@ -186,17 +186,17 @@ class AppTheme {
     return theme.colorScheme.error == Colors.transparent
         ? useSecondary
             ? LinearGradient(colors: [
+                theme.colorScheme.secondary,
                 theme.colorScheme.onPrimary,
-                theme.colorScheme.secondary
               ])
             : theme.colorScheme.secondary == theme.colorScheme.onPrimary
                 ? LinearGradient(colors: [
                     theme.colorScheme.primary,
-                    theme.colorScheme.primary
+                    theme.colorScheme.primary,
                   ])
                 : LinearGradient(colors: [
+                    theme.colorScheme.secondary,
                     theme.colorScheme.onPrimary,
-                    theme.colorScheme.secondary
                   ])
         : LinearGradient(stops: [
             0.1,
@@ -206,12 +206,12 @@ class AppTheme {
             0.75,
             0.9
           ], colors: [
-            theme.colorScheme.onPrimary,
-            theme.colorScheme.error,
-            theme.colorScheme.primaryVariant,
-            theme.colorScheme.onError,
+            theme.colorScheme.secondary,
             theme.colorScheme.secondaryVariant,
-            theme.colorScheme.secondary
+            theme.colorScheme.onError,
+            theme.colorScheme.primaryVariant,
+            theme.colorScheme.error,
+            theme.colorScheme.onPrimary,
           ]);
   }
 

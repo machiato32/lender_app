@@ -81,6 +81,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   Widget _generateSpeedDial(bool boosted, {DateTime created}) {
     return SpeedDial(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       child: Icon(Icons.show_chart),
       overlayColor: (Theme.of(context).brightness == Brightness.dark)
           ? Colors.black
@@ -88,6 +89,12 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
       curve: Curves.bounceIn,
       children: [
         SpeedDialChild(
+            foregroundColor: boosted
+                ? Theme.of(context).colorScheme.onSecondary
+                : Colors.black,
+            backgroundColor: boosted
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey[400],
             labelWidget: GestureDetector(
               onTap: () {
                 if (boosted) {
@@ -148,9 +155,6 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
               ),
             ),
             child: Icon(Icons.assessment),
-            backgroundColor: boosted
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.grey[400],
             onTap: () {
               if (boosted) {
                 Navigator.push(
@@ -166,6 +170,8 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
               }
             }),
         SpeedDialChild(
+            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             labelWidget: GestureDetector(
               onTap: () {
                 showDialog(

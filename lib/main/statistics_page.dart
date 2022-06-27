@@ -130,23 +130,19 @@ class _StatisticsPageState extends State<StatisticsPage> {
       spots: (map.keys.map<FlSpot>((DateTime key) {
         return FlSpot(key.millisecondsSinceEpoch.toDouble(), map[key]);
       }).toList()),
-      colors: [
-        (index == 0)
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.secondary
-      ],
+      color: (index == 0)
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       barWidth: 2.5,
-      isCurved: true,
+      isCurved: false,
       preventCurveOverShooting: true,
       isStrokeCapRound: true,
       dotData: FlDotData(show: false),
       belowBarData: BarAreaData(
         show: true,
-        colors: [
-          (index == 0)
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
-              : Theme.of(context).colorScheme.secondary.withOpacity(0.2)
-        ],
+        color: (index == 0)
+            ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+            : Theme.of(context).colorScheme.secondary.withOpacity(0.2),
       ),
     );
   }
@@ -173,7 +169,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
     int bottomDivider;
     Duration bottomDuration = Duration(milliseconds: maxX - minX);
     if (bottomDuration.inDays > 30) {
-      bottomDivider = 35;
+      bottomDivider = 15;
     } else {
       bottomDivider = (bottomDuration.inDays / 3).round();
       if (bottomDivider < 1) {
@@ -182,108 +178,183 @@ class _StatisticsPageState extends State<StatisticsPage> {
     }
 
     return LineChartData(
-        minY: minY,
-        maxY: maxY,
-        borderData: FlBorderData(show: false),
-        lineTouchData: LineTouchData(
-            enabled: true,
-            handleBuiltInTouches: true,
-            getTouchedSpotIndicator:
-                (LineChartBarData barData, List<int> spotIndexes) {
-              return spotIndexes.map((index) {
-                return TouchedSpotIndicatorData(
-                  FlLine(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  FlDotData(
-                    show: false,
-                  ),
+      minY: minY,
+      maxY: maxY,
+      minX: minX.toDouble(),
+      maxX: maxX.toDouble(),
+      borderData: FlBorderData(show: false),
+      lineTouchData: LineTouchData(
+          enabled: true,
+          handleBuiltInTouches: true,
+          getTouchedSpotIndicator:
+              (LineChartBarData barData, List<int> spotIndexes) {
+            return spotIndexes.map((index) {
+              return TouchedSpotIndicatorData(
+                FlLine(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                FlDotData(
+                  show: true,
+                ),
+              );
+            }).toList();
+          },
+          touchTooltipData: LineTouchTooltipData(
+            showOnTopOfTheChartBoxArea: true,
+            tooltipRoundedRadius: 15,
+            tooltipBgColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[800]
+                : Colors.grey[200],
+            getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
+              lineBarsSpot.sort((a, b) => a.barIndex.compareTo(b.barIndex));
+              return lineBarsSpot.map((lineBarSpot) {
+                String date = DateFormat('yyyy-MM-dd').format(
+                    DateTime.fromMillisecondsSinceEpoch(lineBarSpot.x.toInt()));
+                return LineTooltipItem(
+                  (lineBarSpot.barIndex == 0 ? date + '\n' : '') +
+                      (lineBarSpot.barIndex == 0
+                          ? keywords[0].tr() + ' '
+                          : keywords[1].tr() + ' ') +
+                      lineBarSpot.y.printMoney(currentGroupCurrency),
+                  Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      .copyWith(height: lineBarSpot.barIndex == 0 ? 1.5 : 1),
                 );
               }).toList();
             },
-            touchTooltipData: LineTouchTooltipData(
-              tooltipRoundedRadius: 15,
-              tooltipBgColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[800]
-                  : Colors.grey[200],
-              getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
-                lineBarsSpot.sort((a, b) => a.barIndex.compareTo(b.barIndex));
-                return lineBarsSpot.map((lineBarSpot) {
-                  String date = DateFormat('yyyy-MM-dd').format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          lineBarSpot.x.toInt()));
-                  return LineTooltipItem(
-                    (lineBarSpot.barIndex == 0 ? date + '\n' : '') +
-                        (lineBarSpot.barIndex == 0
-                            ? keywords[0].tr() + ' '
-                            : keywords[1].tr() + ' ') +
-                        lineBarSpot.y.printMoney(currentGroupCurrency),
-                    Theme.of(context)
-                        .textTheme
-                        .subtitle2
-                        .copyWith(height: lineBarSpot.barIndex == 0 ? 1.5 : 1),
-                  );
-                }).toList();
-              },
-            )),
-        backgroundColor: Theme.of(context).cardTheme.color,
-        lineBarsData: [
-          _generateLineChartBarData(maps[0], 0),
-          _generateLineChartBarData(maps[1], 1)
-        ],
-        titlesData: FlTitlesData(
-            bottomTitles: SideTitles(
-              showTitles: true,
-              getTextStyles: (value) {
-                return Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    .copyWith(fontSize: 15);
-              },
-              getTitles: (value) {
-                DateTime date =
-                    DateTime.fromMillisecondsSinceEpoch(value.toInt());
+          )),
+      backgroundColor: Theme.of(context).cardTheme.color,
+      lineBarsData: [
+        _generateLineChartBarData(maps[0], 0),
+        _generateLineChartBarData(maps[1], 1)
+      ],
+      titlesData: FlTitlesData(
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, titleMeta) {
+              String text = '';
+              DateTime date =
+                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              if (bottomDuration.inDays < 65) {
                 if (date.day == 1) {
-                  if (bottomDuration.inDays < 150) {
-                    return DateFormat.MMM().format(date);
-                  }
-                  return DateFormat('MM').format(date);
+                  text = DateFormat.d().format(date);
                 }
                 if (date.day % bottomDivider == 0 && date.day < 29) {
                   if (!(date.month == 2 && date.day > 26)) {
-                    return DateFormat.d().format(date);
+                    text = DateFormat.d().format(date);
                   }
                 }
-                return '';
-              },
-              margin: 8,
-              interval: Duration(days: 1).inMilliseconds.toDouble(),
-            ),
-            leftTitles: SideTitles(
-              showTitles: true,
-              getTextStyles: (value) {
-                return Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    .copyWith(fontSize: 13);
-              },
-              getTitles: (value) => value.money(currentGroupCurrency),
-              reservedSize: 28,
-              margin: 20,
-              interval: sideInterval,
-            )),
-        gridData: FlGridData(
-          show: false,
-          drawVerticalLine: false,
-          getDrawingHorizontalLine: (value) {
+                if ((value == minX || value == maxX) &&
+                    (date.day % bottomDivider > 3 &&
+                        date.day % bottomDivider < bottomDivider - 2)) {
+                  if (date.day < 29 && date.day > 2) {
+                    if (!(date.month == 2 && date.day > 26)) {
+                      text = DateFormat.d().format(date);
+                    }
+                  }
+                }
+              }
+              return Text(text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(fontSize: 15));
+            },
+            interval: Duration(days: 1).inMilliseconds.toDouble(),
+          ),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, titleMeta) {
+              String text = '';
+              DateTime date =
+                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              if ((bottomDuration.inDays < 270 && date.day == 1) ||
+                  (date.month % 3 == 1 && date.day == 1)) {
+                if (date.month == 1) {
+                  text = DateFormat.y().format(date);
+                } else {
+                  if (bottomDuration.inDays < 90) {
+                    text = DateFormat.MMM().format(date);
+                  } else {
+                    text = DateFormat.MMM().format(date);
+                  }
+                }
+              }
+              return Text(text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(fontSize: 15));
+            },
+            interval: Duration(days: 1).inMilliseconds.toDouble(),
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, titleMeta) {
+              if (value == maxY && value % sideInterval != 0) {
+                return Container();
+              }
+              return Padding(
+                padding: const EdgeInsets.all(0),
+                child: Text(
+                  value.money(currentGroupCurrency),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(fontSize: 13),
+                ),
+              );
+            },
+            reservedSize: maxY.toString().length * 7.0,
+            interval: sideInterval,
+          ),
+        ),
+        rightTitles: AxisTitles(),
+      ),
+      gridData: FlGridData(
+        show: true,
+        // drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[800]
+                : Colors.grey[200],
+            strokeWidth: 1,
+          );
+        },
+        checkToShowVerticalLine: (value) {
+          DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+          return date.day == 1;
+        },
+        getDrawingVerticalLine: (value) {
+          DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+          if (date.month == 1) {
             return FlLine(
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.grey[800]
-                  : Colors.grey[200],
-              strokeWidth: 1,
+                  : Colors.grey[300],
+              // dashArray: [5, 2],
+              strokeWidth: 3,
             );
-          },
-        ));
+          }
+          return FlLine(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[800]
+                : Colors.grey[300],
+            dashArray: [5, 2],
+            strokeWidth: 2,
+          );
+        },
+        verticalInterval: Duration(days: 1).inMilliseconds.toDouble(),
+        horizontalInterval: sideInterval,
+      ),
+    );
   }
 
   Widget _sumOf(double amount, int type) {
@@ -378,37 +449,56 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
-                                      primaryColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      colorScheme: Theme.of(context).colorScheme.copyWith(
+                                    primaryColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    colorScheme: Theme.of(context)
+                                        .colorScheme
+                                        .copyWith(
                                           onSurface:
-                                              Theme.of(context).brightness == Brightness.light
+                                              Theme.of(context).brightness ==
+                                                      Brightness.light
                                                   ? Colors.grey[800]
                                                   : Theme.of(context)
                                                       .colorScheme
                                                       .onSecondary,
-                                          onPrimary: Colors.white),
-                                      textTheme: Theme.of(context).textTheme.copyWith(
-                                          bodyText2: Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? Theme.of(context).textTheme.bodyText2.copyWith(
-                                                  fontWeight: FontWeight.normal)
-                                              : Theme.of(context)
+                                          onPrimary: Colors.white,
+                                          surface: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                    scaffoldBackgroundColor:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
+                                    textTheme:
+                                        Theme.of(context).textTheme.copyWith(
+                                              bodyText2: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
-                                                  .copyWith(fontWeight: FontWeight.normal),
-                                          headline5: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                          headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.normal),
+                                              headline5: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
+                                              headline4: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
+                                            ),
+                                  ),
                                   child: child,
                                 );
                               });
-                          _startDate = range.start;
-                          _endDate = range.end;
-                          setState(() {
-                            _paymentStats = _getPaymentStats();
-                            _purchaseStats = _getPurchaseStats();
-                            _groupStats = _getGroupStats();
-                          });
+                          if (range != null) {
+                            _startDate = range.start;
+                            _endDate = range.end;
+                            setState(() {
+                              _paymentStats = _getPaymentStats();
+                              _purchaseStats = _getPurchaseStats();
+                              _groupStats = _getGroupStats();
+                            });
+                          }
                         },
                       ),
                     ],
