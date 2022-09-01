@@ -16,7 +16,6 @@ class _TutorialDialogState extends State<TutorialDialog> {
     return StatefulBuilder(
       builder: (context, setState) {
         return Dialog(
-          backgroundColor: Theme.of(context).cardTheme.color,
           child: Padding(
             padding: EdgeInsets.all(15),
             child: Column(
@@ -25,7 +24,8 @@ class _TutorialDialogState extends State<TutorialDialog> {
                 Center(
                   child: Text(
                     title[index].tr() + ((index == 0) ? '! 😎' : ''),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -47,7 +47,9 @@ class _TutorialDialogState extends State<TutorialDialog> {
                       height: 10,
                     ),
                     Text(content[index].tr(),
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant),
                         textAlign: TextAlign.center),
                   ],
                 ),
@@ -66,7 +68,7 @@ class _TutorialDialogState extends State<TutorialDialog> {
                           });
                         },
                         child: Icon(Icons.navigate_before,
-                            color: Theme.of(context).textTheme.button.color),
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                     GradientButton(
@@ -81,7 +83,7 @@ class _TutorialDialogState extends State<TutorialDialog> {
                       },
                       child: Icon(
                           index == 3 ? Icons.check : Icons.navigate_next,
-                          color: Theme.of(context).textTheme.button.color),
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ],
                 ),

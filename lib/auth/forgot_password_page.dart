@@ -16,9 +16,10 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-
   Future<String> _getPasswordReminder(String username) async {
-    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.passwordReminder, args: [username]));
+    http.Response response = await httpGet(
+        context: context,
+        uri: generateUri(GetUriKeys.passwordReminder, args: [username]));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     print(decoded);
     return decoded['data'];
@@ -28,32 +29,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))
-          ),
-        ),
-        title: Text('forgot_password'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24)),
+        title: Text('forgot_password'.tr()),
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
-          Text('your_password_reminder'.tr(),),
-          SizedBox(height: 20,),
+          Text(
+            'your_password_reminder'.tr(),
+            style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           FutureBuilder(
             future: _getPasswordReminder(widget.username),
-            builder: (context, snapshot){
-              if(snapshot.connectionState==ConnectionState.done){
-                if(snapshot.hasData){
-                  return Text(snapshot.data, style: Theme.of(context).textTheme.bodyText1,);
-                }else{
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  return Text(
+                    snapshot.data,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  );
+                } else {
                   return ErrorMessage(
                     error: snapshot.error.toString(),
                     locationOfError: 'password_reminder',
-                    callback: (){
-                      setState(() {
-
-                      });
+                    callback: () {
+                      setState(() {});
                     },
                   );
                 }
@@ -66,4 +69,3 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
-

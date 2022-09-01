@@ -16,11 +16,10 @@ class ManageGuests extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget toastMessage = Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 24.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: Colors.red,
+        color: Theme.of(context).colorScheme.errorContainer,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -28,10 +27,8 @@ class ManageGuests extends StatelessWidget {
           Flexible(
               child: Text('needs_choose_guest'.tr(),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(color: Colors.white))),
+                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onErrorContainer))),
         ],
       ),
     );
@@ -44,8 +41,10 @@ class ManageGuests extends StatelessWidget {
             Center(
               child: Text(
                 'manage_guests'.tr(),
-                style:
-                Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -54,42 +53,41 @@ class ManageGuests extends StatelessWidget {
             ),
             Center(
                 child: Text(
-                  'manage_guests_explanation'.tr(),
-                  style:
-                  Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                )
-            ),
+              'manage_guests_explanation'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+              textAlign: TextAlign.center,
+            )),
             SizedBox(
               height: 10,
             ),
             Divider(),
             Visibility(
-              visible: hasGuests,
-              child: GuestSwitcher(bannerKey: bannerKey)
-            ),
+                visible: hasGuests, child: GuestSwitcher(bannerKey: bannerKey)),
             SizedBox(
               height: 10,
             ),
             Center(
                 child: Text(
-                  'add_guest'.tr(),
-                  style:
-                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
-                  textAlign: TextAlign.center,
-                )
-            ),
+              'add_guest'.tr(),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
+              textAlign: TextAlign.center,
+            )),
             SizedBox(
               height: 10,
             ),
             Center(
                 child: Text(
-                  'add_guest_explanation'.tr(),
-                  style:
-                  Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                )
-            ),
+              'add_guest_explanation'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+              textAlign: TextAlign.center,
+            )),
             SizedBox(
               height: 10,
             ),
@@ -97,9 +95,14 @@ class ManageGuests extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.person_add, color: Theme.of(context).colorScheme.onSecondary,),
-                  onPressed: (){
-                    showDialog(builder: (context) => AddGuestDialog(), context: context);
+                  child: Icon(
+                    Icons.person_add,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        builder: (context) => AddGuestDialog(),
+                        context: context);
                   },
                 ),
               ],
@@ -113,23 +116,22 @@ class ManageGuests extends StatelessWidget {
                   ),
                   Center(
                       child: Text(
-                        'merge_guest'.tr(),
-                        style:
-                        Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      )
-                  ),
+                    'merge_guest'.tr(),
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 20),
+                    textAlign: TextAlign.center,
+                  )),
                   SizedBox(
                     height: 10,
                   ),
                   Center(
                       child: Text(
-                        'merge_guest_explanation'.tr(),
-                        style:
-                        Theme.of(context).textTheme.subtitle2,
-                        textAlign: TextAlign.center,
-                      )
-                  ),
+                    'merge_guest_explanation'.tr(),
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface),
+                    textAlign: TextAlign.center,
+                  )),
                   SizedBox(
                     height: 10,
                   ),
@@ -137,18 +139,19 @@ class ManageGuests extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GradientButton(
-                        child: Icon(Icons.call_merge, color: Theme.of(context).colorScheme.onSecondary,),
-                        onPressed: (){
-                          if(guestApiToken!=null){
+                        child: Icon(
+                          Icons.call_merge,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        onPressed: () {
+                          if (guestApiToken != null) {
                             showDialog(
-                                builder: (context) => MemberToMergeDialog(), context: context
-                            );
-                          }else{
+                                builder: (context) => MemberToMergeDialog(),
+                                context: context);
+                          } else {
                             FToast ft = FToast();
                             ft.init(context);
-                            ft.showToast(
-                                child: toastMessage
-                            );
+                            ft.showToast(child: toastMessage);
                           }
                         },
                       ),
@@ -157,7 +160,6 @@ class ManageGuests extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
       ),

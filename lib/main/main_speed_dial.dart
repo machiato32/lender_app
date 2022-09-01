@@ -18,7 +18,8 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.tertiary,
+      foregroundColor: Theme.of(context).colorScheme.onTertiary,
       child: DescribedFeatureOverlay(
         featureId: 'add_payment_expense',
         tapTarget: Icon(
@@ -26,8 +27,20 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
           color: Colors.black,
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text('discovery_add_floating_title'.tr()),
-        description: Text('discovery_add_floating_description'.tr()),
+        title: Text(
+          'discovery_add_floating_title'.tr(),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+        ),
+        description: Text(
+          'discovery_add_floating_description'.tr(),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+        ),
         contentLocation: ContentLocation.above,
         overflowMode: OverflowMode.extendBackground,
         child: Icon(Icons.add),
@@ -42,15 +55,16 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
       },
       children: [
         SpeedDialChild(
-          foregroundColor: Theme.of(context).colorScheme.onSecondary,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
+          backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
           labelWidget: GestureDetector(
             onTap: () {
-              Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddPaymentRoute()))
-                  .then((value) => widget.callback());
+              //TODO
+              // Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) => AddPaymentRoute()))
+              //     .then((value) => widget.callback());
             },
             child: Padding(
               padding: EdgeInsets.only(right: 18.0),
@@ -65,19 +79,15 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                         EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                     //                  margin: EdgeInsets.only(right: 18.0),
                     decoration: BoxDecoration(
-                      gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                      // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.7),
-                          offset: Offset(0.8, 0.8),
-                          blurRadius: 2.4,
-                        )
-                      ],
                     ),
                     child: Text('payment'.tr(),
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: Theme.of(context).textTheme.button.color,
+                        style: Theme.of(context).textTheme.bodyMedium.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
                             fontSize: 18)),
                   ),
                   SizedBox(
@@ -85,10 +95,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                   ),
                   Text(
                     'payment_explanation'.tr(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(fontSize: 13),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -102,18 +109,19 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
           },
         ),
         SpeedDialChild(
-            foregroundColor: Theme.of(context).colorScheme.onSecondary,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
             labelWidget: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddPurchaseRoute(
-                              type: null,
-                            ))).then((value) {
-                  widget.callback();
-                });
+                //TODO
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => AddPurchaseRoute(
+                //               type: null,
+                //             ))).then((value) {
+                //   widget.callback();
+                // });
               },
               child: Padding(
                 padding: EdgeInsets.only(right: 18.0),
@@ -127,30 +135,26 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                       padding:
                           EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
-                        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                        // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
                         borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.7),
-                            offset: Offset(0.8, 0.8),
-                            blurRadius: 2.4,
-                          )
-                        ],
                       ),
                       child: Text('purchase'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                              color: Theme.of(context).textTheme.button.color,
-                              fontSize: 18)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer,
+                                  fontSize: 18)),
                     ),
                     SizedBox(
                       height: 5,
                     ),
                     Text(
                       'purchase_explanation'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(fontSize: 13),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

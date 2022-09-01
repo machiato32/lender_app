@@ -66,10 +66,8 @@ class _GroupSettingState extends State<GroupSettings> {
     _hasGuests = _getHasGuests();
     WidgetsFlutterBinding.ensureInitialized();
     _hasGuests.whenComplete(() {
-      print('asd');
       Future.delayed(Duration(milliseconds: 1000)).then((value) {
         if (widget.scrollTo == 'guests') {
-          print('lol');
           print(guestsKey.currentContext);
           Scrollable.ensureVisible(guestsKey.currentContext);
         }
@@ -175,7 +173,8 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                   child: Text(
                     'rename_group'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -185,7 +184,10 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                     child: Text(
                   'rename_group_explanation'.tr(),
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 )),
                 SizedBox(
@@ -197,7 +199,7 @@ class _GroupSettingState extends State<GroupSettings> {
                     GradientButton(
                       child: Icon(
                         Icons.edit,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       onPressed: () {
                         showDialog(
@@ -256,7 +258,8 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                   child: Text(
                     'change_group_currency'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -266,7 +269,10 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                     child: Text(
                   'change_group_currency_explanation'.tr(),
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 )),
                 SizedBox(
@@ -278,7 +284,7 @@ class _GroupSettingState extends State<GroupSettings> {
                     GradientButton(
                       child: Icon(
                         Icons.monetization_on,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       onPressed: () {
                         showDialog(

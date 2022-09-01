@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -19,42 +20,35 @@ class GuestSwitcher extends StatefulWidget {
 }
 
 class _GuestSwitcherState extends State<GuestSwitcher> {
-
   Member _selectedGuest;
   Future<List<Member>> _guests;
-  bool _first=true;
+  bool _first = true;
 
   Future<List<Member>> _getGuests() async {
     try {
-
       http.Response response = await httpGet(
-        uri: generateUri(GetUriKeys.groupGuests),
-        context: context,
-        useCache: false
-      );
+          uri: generateUri(GetUriKeys.groupGuests),
+          context: context,
+          useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       for (var member in decoded['data']) {
-        members.add(
-          Member(
+        members.add(Member(
             apiToken: member['api_token'],
             nickname: member['username'],
-            memberId: member['user_id']
-          )
-        );
-
+            memberId: member['user_id']));
       }
       return members;
-
     } catch (_) {
       throw _;
     }
   }
+
   @override
   void initState() {
     super.initState();
-    _guests=null;
-    _guests=_getGuests();
+    _guests = null;
+    _guests = _getGuests();
   }
 
   @override
@@ -64,8 +58,8 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
         Center(
           child: Text(
             'guest_switcher'.tr(),
-            style:
-            Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
+            style: Theme.of(context).textTheme.titleSmall.copyWith(
+                color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
             textAlign: TextAlign.center,
           ),
         ),
@@ -74,79 +68,57 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
         ),
         Center(
             child: Text(
-              'guest_switcher_explanation'.tr(),
-              style:
-              Theme.of(context).textTheme.subtitle2,
-              textAlign: TextAlign.center,
-            )
-        ),
+          'guest_switcher_explanation'.tr(),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              .copyWith(color: Theme.of(context).colorScheme.onSurface),
+          textAlign: TextAlign.center,
+        )),
         Center(
           child: FutureBuilder(
             future: _guests,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
-                  if(_first==true){
-                    _selectedGuest = (snapshot.data as List<Member>).firstWhere((element) => element.nickname==guestNickname && guestGroupId==currentGroupId, orElse: () => null);
-                    _first=false;
+                  if (_first == true) {
+                    _selectedGuest = (snapshot.data as List<Member>).firstWhere(
+                        (element) =>
+                            element.nickname == guestNickname &&
+                            guestGroupId == currentGroupId,
+                        orElse: () => null);
+                    _first = false;
                   }
-                   return Wrap(
-                    spacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: snapshot.data
-                        .map<ChoiceChip>((Member member) =>
-                        ChoiceChip(
-                          label: Text(member.nickname),
-                          pressElevation: 30,
-                          selected: _selectedGuest == member,
-                          onSelected: (bool newValue) {
-                            FocusScope.of(context).unfocus();
-                            clearGroupCache();
-                            if(_selectedGuest!=member){
-                              _selectedGuest = member;
-                              saveGuestGroupId(currentGroupId);
-                              saveGuestApiToken(member.apiToken);
-                              saveGuestNickname(member.nickname);
-                              saveGuestUserId(member.memberId);
-                            }else{
-                              _selectedGuest = null;
-                              deleteGuestGroupId();
-                              deleteGuestApiToken();
-                              deleteGuestNickname();
-                              deleteGuestUserId();
-                            }
-                            setState(() {
-                              widget.bannerKey.currentState.setState(() {
-
-                              });
-                            });
-                          },
-                          labelStyle: _selectedGuest ==
-                              member
-                              ? Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSecondary)
-                              : Theme.of(context)
-                              .textTheme
-                              .bodyText1,
-                          backgroundColor: Theme.of(context)
-                              .colorScheme
-                              .onSurface,
-                          selectedColor: Theme.of(context)
-                              .colorScheme
-                              .secondary,
-                        ))
-                        .toList(),
-                  );
+                  return MemberChips(
+                      allowMultiple: false,
+                      allMembers: snapshot.data,
+                      membersChanged: (members) {
+                        Member member = members.isEmpty ? null : members[0];
+                        FocusScope.of(context).unfocus();
+                        clearGroupCache();
+                        if (member != null) {
+                          _selectedGuest = member;
+                          saveGuestGroupId(currentGroupId);
+                          saveGuestApiToken(member.apiToken);
+                          saveGuestNickname(member.nickname);
+                          saveGuestUserId(member.memberId);
+                        } else {
+                          _selectedGuest = null;
+                          deleteGuestGroupId();
+                          deleteGuestApiToken();
+                          deleteGuestNickname();
+                          deleteGuestUserId();
+                        }
+                        setState(() {
+                          widget.bannerKey.currentState.setState(() {});
+                        });
+                      },
+                      membersChosen: [_selectedGuest]);
                 } else {
                   return ErrorMessage(
                     error: snapshot.error.toString(),
                     locationOfError: 'guest_switcher',
-                    callback: (){
+                    callback: () {
                       setState(() {
                         _guests = null;
                         _guests = _getGuests();
@@ -160,7 +132,6 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
             },
           ),
         ),
-
       ],
     );
   }

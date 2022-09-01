@@ -2,7 +2,9 @@ import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../config.dart';
 import '../app_theme.dart';
 
 class VersionNotSupportedPage extends StatelessWidget {
@@ -11,14 +13,11 @@ class VersionNotSupportedPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))
-          ),
-        ),
         title: Text(
           'version_not_supported'.tr(),
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, letterSpacing: 0.25, fontSize: 24),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
       body: Padding(
@@ -26,19 +25,31 @@ class VersionNotSupportedPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('version_not_supported_explanation'.tr(), style: Theme.of(context).textTheme.bodyText1,),
+            Text(
+              'version_not_supported_explanation'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+            ),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Text('download_new_version'.tr(), style: Theme.of(context).textTheme.button,),
-                  onPressed: (){
-                    launch('https://play.google.com/store/apps/details?id=csocsort.hu.machiato32.csocsort_szamla');
+                  child: Text(
+                    'download_new_version'.tr(),
+                    style: Theme.of(context).textTheme.labelLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  onPressed: () {
+                    launchUrlString('https://lenderapp.net');
                   },
                 ),
               ],
             ),
-
           ],
         ),
       ),

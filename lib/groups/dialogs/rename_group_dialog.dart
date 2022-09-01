@@ -52,8 +52,6 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
     return Form(
       key: _groupNameFormKey,
       child: Dialog(
-        backgroundColor: Theme.of(context).cardTheme.color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -61,7 +59,8 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
             children: <Widget>[
               Text(
                 'rename_group'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               SizedBox(
                 height: 10,
@@ -81,11 +80,9 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                   controller: _groupNameController,
                   decoration: InputDecoration(
                     hintText: 'new_name'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.group,
-                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -95,10 +92,6 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(20),
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               SizedBox(

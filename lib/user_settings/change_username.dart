@@ -15,7 +15,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child:  Card(
+      child: Card(
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -23,8 +23,8 @@ class _ChangeUsernameState extends State<ChangeUsername> {
               Center(
                 child: Text(
                   'change_username'.tr(),
-                  style:
-                  Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -33,11 +33,11 @@ class _ChangeUsernameState extends State<ChangeUsername> {
               ),
               Center(
                   child: Text(
-                    'change_username_explanation'.tr(),
-                    style:
-                    Theme.of(context).textTheme.subtitle2,
-                    textAlign: TextAlign.center,
-                  )),
+                'change_username_explanation'.tr(),
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              )),
               SizedBox(
                 height: 10,
               ),
@@ -45,9 +45,12 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GradientButton(
-                    child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onSecondary,),
-                    onPressed: (){
-                      showDialog(builder: (context) => ChangeUsernameDialog(), context: context);
+                    child: Icon(Icons.edit,
+                        color: Theme.of(context).colorScheme.onPrimary),
+                    onPressed: () {
+                      showDialog(
+                          builder: (context) => ChangeUsernameDialog(),
+                          context: context);
                     },
                   ),
                 ],

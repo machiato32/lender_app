@@ -75,7 +75,8 @@ class _BoostGroupState extends State<BoostGroup> {
                     children: [
                       Text(
                         'boost_group'.tr(),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 10),
@@ -83,7 +84,8 @@ class _BoostGroupState extends State<BoostGroup> {
                         snapshot.data['is_boosted'] == 0
                             ? 'boost_group_explanation'.tr()
                             : 'boost_group_boosted_explanation'.tr(),
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Theme.of(context).textTheme.titleSmall.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center,
                       ),
                       Visibility(
@@ -95,7 +97,13 @@ class _BoostGroupState extends State<BoostGroup> {
                               'available'.tr(args: [
                                 snapshot.data['available_boosts'].toString()
                               ]),
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +112,7 @@ class _BoostGroupState extends State<BoostGroup> {
                                   child: Icon(Icons.insights,
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .onSecondary),
+                                          .onPrimary),
                                   onPressed: () {
                                     if (snapshot.data['available_boosts'] ==
                                         0) {

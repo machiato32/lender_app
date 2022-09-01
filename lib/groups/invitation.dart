@@ -47,7 +47,7 @@ class _InvitationState extends State<Invitation> {
           context: context,
           useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      List<Member> members = List<Member>();
+      List<Member> members = <Member>[];
       for (Map<String, dynamic> member in decoded['data']) {
         members.add(Member.fromJson(member));
       }
@@ -102,7 +102,10 @@ class _InvitationState extends State<Invitation> {
           children: <Widget>[
             Text(
               'invitation'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             SizedBox(
               height: 10,
@@ -110,7 +113,10 @@ class _InvitationState extends State<Invitation> {
             Center(
                 child: Text(
               'invitation_explanation'.tr(),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -140,7 +146,7 @@ class _InvitationState extends State<Invitation> {
                                 child: Icon(
                                   Icons.share,
                                   color:
-                                      Theme.of(context).colorScheme.onSecondary,
+                                      Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                             ],
@@ -170,7 +176,12 @@ class _InvitationState extends State<Invitation> {
                                                   'approve_members'.tr(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6,
+                                                      .titleLarge
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
                                                   textAlign: TextAlign.center,
                                                 ),
                                                 SizedBox(
@@ -181,7 +192,12 @@ class _InvitationState extends State<Invitation> {
                                                       .tr(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .subtitle2,
+                                                      .titleSmall
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ],
@@ -192,7 +208,12 @@ class _InvitationState extends State<Invitation> {
                                                   'group_needs_approval'.tr(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6,
+                                                      .titleLarge
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
                                                   textAlign: TextAlign.center,
                                                 ),
                                                 SizedBox(
@@ -203,7 +224,12 @@ class _InvitationState extends State<Invitation> {
                                                       .tr(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .subtitle2,
+                                                      .titleSmall
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ],
@@ -256,7 +282,11 @@ class _InvitationState extends State<Invitation> {
                                           'needs_approval'.tr(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .titleSmall
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface),
                                         ),
                                         dense: true,
                                       ),
@@ -309,8 +339,9 @@ class _InvitationState extends State<Invitation> {
         height: 65,
         margin: EdgeInsets.only(top: 4),
         decoration: BoxDecoration(
-          gradient:
-              AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+          // gradient:
+          //     AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(15),
           boxShadow: (Theme.of(context).brightness == Brightness.light)
               ? [
@@ -347,7 +378,7 @@ class _InvitationState extends State<Invitation> {
                     child: Row(
                       children: <Widget>[
                         Icon(
-                          Icons.account_box_rounded,
+                          Icons.account_circle,
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                         SizedBox(
@@ -363,19 +394,23 @@ class _InvitationState extends State<Invitation> {
                                 member.username,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .button
-                                    .copyWith(fontSize: 20),
+                                    .bodyLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary),
                                 overflow: TextOverflow.ellipsis,
                               )),
                               Flexible(
                                   child: Text(
                                 member.nickname,
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .button
-                                        .color,
-                                    fontSize: 15),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary),
                                 overflow: TextOverflow.ellipsis,
                               ))
                             ],
@@ -433,12 +468,15 @@ class _ApproveMemberState extends State<ApproveMember> {
           Row(
             children: <Widget>[
               Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.secondary),
               Text(' - '),
               Flexible(
                   child: Text(
                 widget.member.username,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               )),
             ],
           ),
@@ -448,12 +486,15 @@ class _ApproveMemberState extends State<ApproveMember> {
           Row(
             children: <Widget>[
               Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.secondary),
               Text(' - '),
               Flexible(
                   child: Text(
                 widget.member.nickname,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               )),
             ],
           ),
@@ -476,14 +517,15 @@ class _ApproveMemberState extends State<ApproveMember> {
                   children: [
                     Icon(
                       Icons.check,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                     SizedBox(
                       width: 3,
                     ),
                     Text(
                       'approve'.tr(),
-                      style: Theme.of(context).textTheme.button,
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ],
                 ),
@@ -506,14 +548,15 @@ class _ApproveMemberState extends State<ApproveMember> {
                   children: [
                     Icon(
                       Icons.clear,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                     SizedBox(
                       width: 3,
                     ),
                     Text(
                       'disapprove'.tr(),
-                      style: Theme.of(context).textTheme.button,
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ],
                 ),

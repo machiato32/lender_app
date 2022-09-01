@@ -70,12 +70,12 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
           Row(
             children: <Widget>[
               Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                widget.member.username,
-                style: Theme.of(context).textTheme.bodyText1,
+                ' - ' + widget.member.username,
+                style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
             ],
           ),
@@ -85,12 +85,12 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
           Row(
             children: <Widget>[
               Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                widget.member.nickname,
-                style: Theme.of(context).textTheme.bodyText1,
+                ' - ' + widget.member.nickname,
+                style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
             ],
           ),
@@ -102,7 +102,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
                 child: Text(
                   'Admin',
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 )),
           ),
           SizedBox(
@@ -114,7 +115,8 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 value: widget.member.isAdmin,
                 title: Text(
                   'Admin',
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (value) {
@@ -153,14 +155,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     children: [
                       Icon(
                         Icons.edit,
-                        color: Theme.of(context).textTheme.button.color,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'edit_nickname'.tr(),
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
@@ -201,14 +204,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     children: [
                       Icon(
                         Icons.person_outline,
-                        color: Theme.of(context).textTheme.button.color,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'kick_member'.tr(),
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
@@ -263,14 +267,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     children: [
                       Icon(
                         Icons.arrow_back,
-                        color: Theme.of(context).textTheme.button.color,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'leave_group'.tr(),
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),

@@ -30,7 +30,8 @@ class _LanguagePickerState extends State<LanguagePicker> {
             Center(
                 child: Text(
               'change_language'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             )),
             SizedBox(height: 10),
             Center(
@@ -74,23 +75,20 @@ class _LanguageElementState extends State<LanguageElement> {
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-            // boxShadow: (Theme.of(context).brightness==Brightness.light)
-            //     ?[ BoxShadow(
-            //       color: Colors.grey[500],
-            //       offset: Offset(0.0, 1.5),
-            //       blurRadius: 1.5,
-            //     )]
-            //     : [],
-            gradient: (widget.localeName == context.locale.languageCode)
-                ? AppTheme.gradientFromTheme(Theme.of(context))
-                : LinearGradient(colors: [Colors.white, Colors.white]),
+            // gradient: (widget.localeName == context.locale.languageCode)
+            //     ? AppTheme.gradientFromTheme(Theme.of(context))
+            //     : LinearGradient(colors: [Colors.white, Colors.white]),
+            color: (widget.localeName == context.locale.languageCode)
+                ? Theme.of(context).colorScheme.secondary
+                : ElevationOverlay.applyOverlay(
+                    context, Theme.of(context).colorScheme.surface, 10),
             borderRadius: BorderRadius.circular(15)),
         child: Center(
             child: Text(widget.localeName.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                style: Theme.of(context).textTheme.labelLarge.copyWith(
                       color: (widget.localeName == context.locale.languageCode)
-                          ? Theme.of(context).textTheme.button.color
-                          : Colors.black,
+                          ? Theme.of(context).colorScheme.onSecondary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ))),
       ),
     );

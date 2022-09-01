@@ -37,6 +37,7 @@ enum GetUriKeys {
   purchasesDate,
   paymentsDate
 }
+
 List<String> getUris = [
   '/groups/{}/has_guests',
   '/groups/{}',
@@ -90,14 +91,14 @@ Widget errorToast(String msg, BuildContext context) {
     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25.0),
-      color: Colors.red,
+      color: Theme.of(context).colorScheme.error,
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           Icons.clear,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.onError,
         ),
         SizedBox(
           width: 12.0,
@@ -106,8 +107,8 @@ Widget errorToast(String msg, BuildContext context) {
             child: Text(msg.tr(),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(color: Colors.white))),
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onError))),
       ],
     ),
   );

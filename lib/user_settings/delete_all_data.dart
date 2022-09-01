@@ -14,9 +14,8 @@ class DeleteAllData extends StatefulWidget {
 }
 
 class _DeleteAllDataState extends State<DeleteAllData> {
-
   Future<bool> _deleteAllData() async {
-    try{
+    try {
       await httpDelete(context: context, uri: '/user');
       clearAllCache();
       deleteUserId();
@@ -28,20 +27,16 @@ class _DeleteAllDataState extends State<DeleteAllData> {
       deleteGroupCurrency();
       Future.delayed(delayTime()).then((value) => _onDeleteAllData());
       return true;
-    }catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
-  void _onDeleteAllData(){
-
+  void _onDeleteAllData() {
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-            builder: (context) => LoginOrRegisterPage()
-        ),
-            (r) => false
-    );
+        MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
+        (r) => false);
   }
 
   @override
@@ -54,18 +49,19 @@ class _DeleteAllDataState extends State<DeleteAllData> {
           children: [
             Center(
                 child: Text(
-                  'delete_all_data'.tr(),
-                  style: Theme.of(context).textTheme.headline6,
-                  textAlign: TextAlign.center,
-                )
-            ),
+              'delete_all_data'.tr(),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            )),
             SizedBox(
               height: 10,
             ),
             Center(
               child: Text(
                 'delete_all_data_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -76,23 +72,25 @@ class _DeleteAllDataState extends State<DeleteAllData> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.delete_forever, color: Theme.of(context).colorScheme.onSecondary),
+                  child: Icon(Icons.delete_forever,
+                      color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
                     showDialog(
-                      builder: (context) => ConfirmChoiceDialog(
-                        choice: 'sure_user_delete',
-                      ), context: context
-                    ).then((value){
-                      if(value??false){
+                            builder: (context) => ConfirmChoiceDialog(
+                                  choice: 'sure_user_delete',
+                                ),
+                            context: context)
+                        .then((value) {
+                      if (value ?? false) {
                         showDialog(
-                          builder: (context) => FutureSuccessDialog(
-                            future: _deleteAllData(),
-                            dataTrueText: 'user_delete_scf',
-                            onDataTrue: (){
-                              _onDeleteAllData();
-                            },
-                          ), context: context
-                        );
+                            builder: (context) => FutureSuccessDialog(
+                                  future: _deleteAllData(),
+                                  dataTrueText: 'user_delete_scf',
+                                  onDataTrue: () {
+                                    _onDeleteAllData();
+                                  },
+                                ),
+                            context: context);
                       }
                     });
                   },

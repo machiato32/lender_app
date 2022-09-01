@@ -14,8 +14,8 @@ class TrialVersionDialog extends StatelessWidget {
           children: <Widget>[
             Text(
               'trial_version'.tr(),
-              style:
-              Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -23,8 +23,8 @@ class TrialVersionDialog extends StatelessWidget {
             ),
             Text(
               'trial_version_explanation'.tr(),
-              style:
-              Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -39,9 +39,7 @@ class TrialVersionDialog extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.check,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSecondary,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ],

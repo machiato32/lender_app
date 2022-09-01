@@ -25,8 +25,11 @@ class PaymentAllInfo extends StatefulWidget {
 class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deletePayment(int id) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
+      await httpDelete(
+          uri: '/payments/' + id.toString(),
+          context: context,
+          useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onDeletePayment());
       return true;
     } catch (_) {
@@ -34,14 +37,13 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
     }
   }
 
-  void _onDeletePayment(){
+  void _onDeletePayment() {
     Navigator.pop(context);
     Navigator.pop(context, 'deleted');
   }
 
   @override
   Widget build(BuildContext context) {
-    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     String note = '';
     if (widget.data.note == '' || widget.data.note == null) {
       note = 'no_note'.tr();
@@ -55,12 +57,14 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.note, color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+              Icon(Icons.note, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                note,
-                style: Theme.of(context).textTheme.bodyText1,
+                ' - ' + note,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               )),
             ],
           ),
@@ -70,12 +74,14 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           Row(
             children: <Widget>[
               Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                widget.data.payerNickname,
-                style: Theme.of(context).textTheme.bodyText1,
+                ' - ' + widget.data.payerNickname,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               )),
             ],
           ),
@@ -86,12 +92,14 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                widget.data.takerNickname,
-                style: Theme.of(context).textTheme.bodyText1,
+                ' - ' + widget.data.takerNickname,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               )),
             ],
           ),
@@ -101,11 +109,13 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           Row(
             children: <Widget>[
               Icon(Icons.attach_money,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
-                  child: Text(widget.data.amount.printMoney(currentGroupCurrency),
-                      style: Theme.of(context).textTheme.bodyText1)),
+                  child: Text(
+                      ' - ' +
+                          widget.data.amount.printMoney(currentGroupCurrency),
+                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
@@ -115,103 +125,106 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             children: <Widget>[
               Icon(
                 Icons.date_range,
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              Text(' - '),
               Flexible(
                   child: Text(
-                      DateFormat('yyyy/MM/dd - HH:mm')
-                          .format(widget.data.updatedAt),
-                      style: Theme.of(context).textTheme.bodyText1)),
+                      ' - ' +
+                          DateFormat('yyyy/MM/dd - HH:mm')
+                              .format(widget.data.updatedAt),
+                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == idToUse,
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GradientButton(
-                        onPressed: (){
-                          showDialog(
+            visible: widget.data.payerId == idToUse(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                GradientButton(
+                    onPressed: () {
+                      showDialog(
                               builder: (context) => ModifyPaymentDialog(
-                                savedPayment: SavedPayment(
-                                    amount: widget.data.amount,
-                                    note: widget.data.note,
-                                    payerId: widget.data.payerId,
-                                    takerId: widget.data.takerId,
-                                    paymentId: widget.data.paymentId
+                                    savedPayment: SavedPayment(
+                                        amount: widget.data.amount,
+                                        note: widget.data.note,
+                                        payerId: widget.data.payerId,
+                                        takerId: widget.data.takerId,
+                                        paymentId: widget.data.paymentId),
+                                  ),
+                              context: context)
+                          .then((value) {
+                        if (value ?? false) {
+                          Navigator.pop(context, 'deleted');
+                        }
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit,
+                            color: Theme.of(context).colorScheme.onPrimary),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Flexible(
+                          child: Text(
+                            'modify'.tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
+                            overflow: TextOverflow.clip,
+                          ),
+                        ),
+                      ],
+                    )),
+                GradientButton(
+                  onPressed: () {
+                    showDialog(
+                      builder: (context) => ConfirmChoiceDialog(
+                        choice: 'want_delete',
+                      ),
+                      context: context,
+                    ).then((value) {
+                      if (value != null && value) {
+                        showDialog(
+                            builder: (context) => FutureSuccessDialog(
+                                  future: _deletePayment(widget.data.paymentId),
+                                  dataTrueText: 'delete_scf',
+                                  onDataTrue: () {
+                                    _onDeletePayment();
+                                  },
                                 ),
-                              ), context: context
-                          )
-                              .then((value){
-                            if(value??false){
-                              Navigator.pop(context, 'deleted');
-                            }
-                          });
-
-
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, color: Theme.of(context).textTheme.button.color),
-                            SizedBox(width: 3,),
-                            Text('modify'.tr(), style: Theme.of(context).textTheme.button,),
-                          ],
-                        )
+                            barrierDismissible: false,
+                            context: context);
+                      }
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete,
+                          color: Theme.of(context).colorScheme.onPrimary),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        'revoke'.tr(),
+                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GradientButton(
-                          onPressed: () {
-
-                            showDialog(
-                              builder: (context) => ConfirmChoiceDialog(
-                                choice: 'want_delete',
-                              ), context: context,
-                            ).then((value){
-                              if(value!=null && value){
-                                showDialog(
-                                    builder: (context) => FutureSuccessDialog(
-                                      future: _deletePayment(widget.data.paymentId),
-                                      dataTrueText: 'delete_scf',
-                                      onDataTrue: () {
-                                        _onDeletePayment();
-                                      },
-                                    ), barrierDismissible: false,
-                                    context: context
-                                );
-                              }
-                            });
-
-
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete, color: Theme.of(context).textTheme.button.color),
-                              SizedBox(width: 3,),
-                              Text(
-                                'revoke'.tr(),
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                            ],
-                          ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                )
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

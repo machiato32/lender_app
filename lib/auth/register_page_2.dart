@@ -7,6 +7,7 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/currency_picker_dropdown.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../essentials/app_theme.dart';
 
@@ -39,6 +41,12 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
 
   bool _personalisedAds = false;
 
+  void _changeCurrencyValue(String currency) {
+    setState(() {
+      _defaultCurrencyValue = currency;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -50,15 +58,8 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-            ),
-            title: Text('register'.tr(),
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                    letterSpacing: 0.25,
-                    fontSize: 24))),
+          title: Text('register'.tr()),
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -72,14 +73,13 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
               Center(
                 child: Text(
                   'just_few_things_left'.tr(),
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 ),
               ),
-              // SizedBox(height: 10,),
-              // Center(
-              //   child: Text('just_few_things_left_explanation'.tr(), style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.center,),
-              // ),
               SizedBox(
                 height: 20,
               ),
@@ -98,15 +98,12 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                     controller: _passwordReminderController,
                     decoration: InputDecoration(
                       labelText: 'password_reminder'.tr(),
-                      fillColor: Theme.of(context).cardTheme.color,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
-                        color: Theme.of(context).colorScheme.primary,
                       ),
                       suffixIcon: Icon(
                         Icons.info_outline,
-                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -117,10 +114,6 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                       // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
                       LengthLimitingTextInputFormatter(50),
                     ],
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 9),
@@ -156,7 +149,12 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                         Flexible(
                             child: Text(
                           'reminder_explanation'.tr(),
-                          style: Theme.of(context).textTheme.subtitle2,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                         )),
                       ],
                     )),
@@ -168,47 +166,16 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                 children: <Widget>[
                   Text(
                     'your_currency'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                   SizedBox(
                     width: 20,
                   ),
                   Flexible(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            fillColor: Theme.of(context).cardTheme.color,
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          dropdownColor: Theme.of(context).cardTheme.color,
-                          elevation: 0,
-                          isExpanded: true,
-                          onChanged: (value) {
-                            setState(() {
-                              _defaultCurrencyValue = value;
-                            });
-                          },
-                          value: _defaultCurrencyValue,
-                          style: Theme.of(context).textTheme.bodyText1,
-                          items: enumerateCurrencies()
-                              .map((currency) => DropdownMenuItem(
-                                    child: Text(
-                                      currency.split(';')[0].trim() +
-                                          " (" +
-                                          currency.split(';')[1].trim() +
-                                          ")",
-                                    ),
-                                    value: currency.split(';')[0].trim(),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
+                    child: CurrencyPickerDropdown(
+                      currencyChanged: _changeCurrencyValue,
+                      defaultCurrencyValue: _defaultCurrencyValue,
                     ),
                   ),
                 ],
@@ -222,14 +189,18 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                   Flexible(
                     child: InkWell(
                         onTap: () {
-                          launch('https://policies.google.com/privacy');
+                          launchUrlString(
+                              'https://policies.google.com/privacy');
                         },
                         child: Text(
                           'personalised_ads'.tr(),
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle2
-                              .copyWith(decoration: TextDecoration.underline),
+                              .titleSmall
+                              .copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                           textAlign: TextAlign.center,
                         )),
                   ),
@@ -250,7 +221,7 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                   GradientButton(
                     child: Icon(
                       Icons.send,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();

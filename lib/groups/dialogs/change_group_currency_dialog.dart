@@ -7,6 +7,7 @@ import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../essentials/widgets/currency_picker_dropdown.dart';
 import '../main_group_page.dart';
 
 class ChangeGroupCurrencyDialog extends StatefulWidget {
@@ -45,8 +46,6 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Theme.of(context).cardTheme.color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -54,46 +53,21 @@ class _ChangeGroupCurrencyDialogState extends State<ChangeGroupCurrencyDialog> {
           children: <Widget>[
             Text(
               'change_group_currency'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 10,
             ),
             Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                      fillColor: Theme.of(context).colorScheme.onSurface,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    dropdownColor: Theme.of(context).colorScheme.onSurface,
-                    elevation: 0,
-                    value: _currencyCode,
-                    onChanged: (value) {
-                      setState(() {
-                        _currencyCode = value;
-                      });
-                    },
-                    items: enumerateCurrencies()
-                        .map((currency) => DropdownMenuItem(
-                              child: Text(
-                                currency.split(';')[0].trim() +
-                                    " (" +
-                                    currency.split(';')[1].trim() +
-                                    ")",
-                              ),
-                              value: currency.split(';')[0].trim(),
-                              onTap: () {},
-                            ))
-                        .toList(),
-                  ),
-                )),
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: CurrencyPickerDropdown(
+                  defaultCurrencyValue: _currencyCode,
+                  currencyChanged: (currency) {
+                    _currencyCode = currency;
+                  }),
+            ),
             SizedBox(
               height: 5,
             ),

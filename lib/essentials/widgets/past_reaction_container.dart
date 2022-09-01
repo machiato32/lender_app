@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'add_reaction_dialog.dart';
@@ -85,8 +86,10 @@ class PastReactionContainer extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     color: (Theme.of(context).brightness == Brightness.light)
-                        ? Colors.grey[200]
-                        : Colors.grey[800],
+                        ? Colors.grey[200].harmonizeWith(
+                            Theme.of(context).colorScheme.primary)
+                        : ElevationOverlay.applyOverlay(
+                            context, Theme.of(context).colorScheme.surface, 15),
                     // boxShadow:  (Theme.of(context).brightness==Brightness.light && !isSecondaryColor)
                     //     ?[
                     //       BoxShadow(
@@ -101,17 +104,14 @@ class PastReactionContainer extends StatelessWidget {
                       children: orderedReactions.map((e) {
                     if (e != null && double.tryParse(e) != null) {
                       return Text(e,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2
-                              .copyWith(fontSize: 22));
+                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant));
                     }
                     return Text(
                       e,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          .copyWith(fontSize: 18),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     );
                   }).toList())),
             ),

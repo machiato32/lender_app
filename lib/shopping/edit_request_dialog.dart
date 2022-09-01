@@ -57,7 +57,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
               child: Text(
                 'edit_request'.tr(),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
             SizedBox(
@@ -80,11 +80,11 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                   controller: _requestController,
                   decoration: InputDecoration(
                     hintText: 'edited_request'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
+                    // fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.shopping_cart,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -94,10 +94,6 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(255),
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -126,7 +122,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
                     },
                     child: Icon(
                       Icons.check,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     )),
               ],
             ),

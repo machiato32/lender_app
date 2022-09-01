@@ -18,10 +18,19 @@ bool showAds=false;
 bool useGradients=true;
 bool personalisedAds=false;
 bool trialVersion=false;
+String currentThemeName = "greenLightTheme";
+
+///The userId to use in the current situation. Used when guests could be
+///used as well.
+int idToUse() {
+  return (guestNickname != null && guestGroupId == currentGroupId)
+      ? guestUserId
+      : currentUserId;
+}
 
 bool isIAPPlatformEnabled = false;
 bool isAdPlatformEnabled = false;
 bool isFirebasePlatformEnabled = false;
 
-double tabletViewWidth = 800;
+double tabletViewWidth = 880;
 double adHeight = (isAdPlatformEnabled && showAds) ? 50 : 0;

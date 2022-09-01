@@ -17,7 +17,6 @@ class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Theme.of(context).cardTheme.color,
       child: Container(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -26,7 +25,8 @@ class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
           children: <Widget>[
             Text(
               widget.title.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -34,7 +34,8 @@ class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
             ),
             Text(
               widget.choice.tr(),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -48,7 +49,8 @@ class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
                     Navigator.pop(context, true);
                   },
                   child: Text('yes'.tr(),
-                      style: Theme.of(context).textTheme.button),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary)),
                   useShadow: false,
                 ),
                 GradientButton(
@@ -56,7 +58,8 @@ class _ConfirmLeaveDialogState extends State<ConfirmLeaveDialog> {
                     Navigator.pop(context, false);
                   },
                   child: Text('no'.tr(),
-                      style: Theme.of(context).textTheme.button),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary)),
                   useShadow: false,
                 )
               ],

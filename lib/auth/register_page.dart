@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../essentials/app_theme.dart';
 
@@ -42,15 +43,14 @@ class _RegisterPageState extends State<RegisterPage> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-            ),
-            title: Text('register'.tr(),
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                    letterSpacing: 0.25,
-                    fontSize: 24))),
+          // flexibleSpace: Container(
+          //   decoration: BoxDecoration(
+          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+          // ),
+          title: Text(
+            'register'.tr(),
+          ),
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -76,15 +76,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: 'username'.tr(),
-                        fillColor: Theme.of(context).cardTheme.color,
                         filled: true,
                         prefixIcon: Icon(
                           Icons.account_circle,
-                          color: Theme.of(context).colorScheme.primary,
                         ),
                         suffixIcon: Icon(
                           Icons.info_outline,
-                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -95,28 +92,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
                         LengthLimitingTextInputFormatter(15),
                       ],
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 9),
                       child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _usernameExplanationController.expanded =
-                                      !_usernameExplanationController.expanded;
-                                });
-                              },
-                              splashRadius: 0.1,
-                              splashColor: Colors.transparent,
-                              icon: Icon(
-                                Icons.info_outline,
-                                color: Colors.transparent,
-                              ))),
+                        alignment: Alignment.bottomRight,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _usernameExplanationController.expanded =
+                                  !_usernameExplanationController.expanded;
+                            });
+                          },
+                          splashRadius: 0.1,
+                          splashColor: Colors.transparent,
+                          icon: Icon(
+                            Icons.info_outline,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -133,7 +128,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           Flexible(
                               child: Text(
                             'username_explanation'.tr(),
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant),
                           )),
                         ],
                       )),
@@ -154,11 +155,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     hintText: 'password'.tr(),
-                    fillColor: Theme.of(context).cardTheme.color,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.password,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -169,10 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
                   ],
                   obscureText: true,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
                 SizedBox(
                   height: 30,
@@ -193,11 +188,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordConfirmController,
                   decoration: InputDecoration(
                     hintText: 'confirm_password'.tr(),
-                    fillColor: Theme.of(context).cardTheme.color,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.password,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -208,10 +201,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
                   ],
                   obscureText: true,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
                 SizedBox(
                   height: 20,
@@ -222,14 +211,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     Flexible(
                       child: InkWell(
                           onTap: () {
-                            launch('https://lenderapp.net/privacy-policy');
+                            launchUrlString(
+                                'https://lenderapp.net/privacy-policy');
                           },
                           child: Text(
                             'accept_privacy_policy'.tr() + '*',
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle2
-                                .copyWith(decoration: TextDecoration.underline),
+                                .titleSmall
+                                .copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface),
                             textAlign: TextAlign.center,
                           )),
                     ),
@@ -250,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     GradientButton(
                       child: Icon(
                         Icons.send,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       onPressed: () {
                         //TODO: check if username is already used
@@ -277,14 +271,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     horizontal: 24.0, vertical: 12.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(25.0),
-                                  color: Colors.red,
+                                  color: Theme.of(context).colorScheme.error,
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
                                       Icons.clear,
-                                      color: Colors.white,
+                                      color:
+                                          Theme.of(context).colorScheme.onError,
                                     ),
                                     SizedBox(
                                       width: 12.0,
@@ -294,9 +289,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                             "must_accept_privacy_policy".tr(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 .copyWith(
-                                                    color: Colors.white))),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onError))),
                                   ],
                                 ),
                               );
@@ -314,14 +311,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                   horizontal: 24.0, vertical: 12.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25.0),
-                                color: Colors.red,
+                                color: Theme.of(context).colorScheme.error,
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.clear,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.onError,
                                   ),
                                   SizedBox(
                                     width: 12.0,
@@ -330,8 +328,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: Text("passwords_not_match".tr(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
-                                            .copyWith(color: Colors.white)),
+                                            .bodyLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onError)),
                                   ),
                                 ],
                               ),

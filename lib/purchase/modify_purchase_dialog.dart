@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/widgets/member_chips.dart';
+
 class ModifyPurchaseDialog extends StatefulWidget {
   final SavedPurchase savedPurchase;
   ModifyPurchaseDialog({@required this.savedPurchase});
@@ -105,7 +107,8 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
               Center(
                   child: Text(
                 'modify_purchase'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -114,7 +117,8 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
               Center(
                   child: Text(
                 'modify_purchase_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -134,11 +138,9 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                   },
                   decoration: InputDecoration(
                     hintText: 'note'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.note,
-                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -147,10 +149,6 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                   ),
                   inputFormatters: [LengthLimitingTextInputFormatter(50)],
                   controller: _noteController,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               Visibility(
@@ -172,15 +170,12 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                       },
                       decoration: InputDecoration(
                         hintText: 'full_amount'.tr(),
-                        fillColor: Theme.of(context).colorScheme.onSurface,
                         filled: true,
                         prefixIcon: Icon(
                           Icons.pin,
-                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         suffixIcon: Icon(
                           Icons.calculate,
-                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -188,10 +183,6 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                         ),
                       ),
                       controller: _amountController,
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
@@ -260,42 +251,20 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                             shrinkWrap: true,
                             children: [
                               Center(
-                                child: Wrap(
-                                  spacing: 10,
-                                  children: snapshot.data
-                                      .map<ChoiceChip>((Member member) =>
-                                          ChoiceChip(
-                                            shadowColor: Colors.transparent,
-                                            elevation: 0,
-                                            label: Text(member.nickname),
-                                            pressElevation: 30,
-                                            selected: memberChipBool[member],
-                                            onSelected: (bool newValue) {
-                                              FocusScope.of(context).unfocus();
-                                              setState(() {
-                                                memberChipBool[member] =
-                                                    newValue;
-                                              });
-                                            },
-                                            labelStyle: memberChipBool[member]
-                                                ? Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onSecondary)
-                                                : Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1,
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
-                                            selectedColor: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ))
+                                child: MemberChips(
+                                  allowMultiple: true,
+                                  allMembers: snapshot.data,
+                                  membersChosen: snapshot.data
+                                      .where((member) => memberChipBool[member])
                                       .toList(),
+                                  membersChanged: (members) {
+                                    setState(() {
+                                      for (Member member in snapshot.data) {
+                                        memberChipBool[member] =
+                                            members.contains(member);
+                                      }
+                                    });
+                                  },
                                 ),
                               ),
                             ],
@@ -333,7 +302,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                         });
                       },
                       child: Icon(Icons.navigate_before,
-                          color: Theme.of(context).textTheme.button.color),
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ),
                   GradientButton(
@@ -373,7 +342,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                       }
                     },
                     child: Icon(_index == 2 ? Icons.check : Icons.navigate_next,
-                        color: Theme.of(context).textTheme.button.color),
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],
               ),

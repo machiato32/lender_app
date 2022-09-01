@@ -13,8 +13,8 @@ class AboutUs extends StatelessWidget {
             Center(
               child: Text(
                 'about_us'.tr(),
-                style:
-                Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -23,12 +23,11 @@ class AboutUs extends StatelessWidget {
             ),
             Center(
                 child: Text(
-                  'about_us_explanation'.tr(),
-                  style:
-                  Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                )
-            ),
+              'about_us_explanation'.tr(),
+              style: Theme.of(context).textTheme.titleSmall.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            )),
             SizedBox(
               height: 20,
             ),
@@ -36,21 +35,32 @@ class AboutUs extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.info, color: Theme.of(context).colorScheme.onSecondary),
-                  onPressed: (){
+                  child: Icon(Icons.info,
+                      color: Theme.of(context).colorScheme.onSecondary),
+                  onPressed: () {
                     showAboutDialog(
                       context: context,
                       applicationName: 'Lender',
                       children: <Widget>[
-                        Text('about_us_text'.tr(),
+                        Text(
+                          'about_us_text'.tr(),
+                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
                           textAlign: TextAlign.justify,
                         )
                       ],
-                      applicationIcon: Container(child: Image(image: AssetImage('assets/dodo_color.png'),), width: 24, height: 24,),
-                      routeSettings: RouteSettings(
-                        // arguments: ,
+                      applicationIcon: Container(
+                        child: Image(
+                          image: AssetImage('assets/dodo_color.png'),
+                        ),
+                        width: 24,
+                        height: 24,
                       ),
-
+                      routeSettings: RouteSettings(
+                          // arguments: ,
+                          ),
                     );
                   },
                 )

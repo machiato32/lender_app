@@ -17,7 +17,6 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -26,7 +25,8 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             Center(
               child: Text(
                 'share'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             SizedBox(
@@ -36,9 +36,7 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
               data: widget.inviteCode,
               roundEdges: true,
               size: MediaQuery.of(context).size.width > 300 ? 250 : 120,
-              elementColor: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
+              elementColor: Theme.of(context).colorScheme.onSurfaceVariant,
               image: AssetImage('assets/dodo_color_glow3.png'),
             ),
             SizedBox(
@@ -46,22 +44,24 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             ),
             Text(
               'share_url'.tr(),
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                    onPressed: () {
-                      Share.share(
-                          'https://www.lenderapp.net/join/' + widget.inviteCode,
-                          subject: 'invitation_to_lender'.tr());
-                    },
-                    child: Icon(
-                      Icons.share,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    )),
+                  onPressed: () {
+                    Share.share(
+                        'https://www.lenderapp.net/join/' + widget.inviteCode,
+                        subject: 'invitation_to_lender'.tr());
+                  },
+                  child: Icon(
+                    Icons.share,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
               ],
             ),
           ],

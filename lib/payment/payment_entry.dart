@@ -52,19 +52,20 @@ class PaymentData {
 }
 
 class PaymentEntry extends StatefulWidget {
+  final bool isTappable;
   final PaymentData data;
   final Function({bool purchase, bool payment}) callback;
 
-  const PaymentEntry({this.data, this.callback});
+  const PaymentEntry({this.data, this.callback, this.isTappable = true});
 
   @override
   _PaymentEntryState createState() => _PaymentEntryState();
 }
 
 class _PaymentEntryState extends State<PaymentEntry> {
-  Color dateColor;
   Icon icon;
-  TextStyle style;
+  TextStyle mainTextStyle;
+  TextStyle subTextStyle;
   BoxDecoration boxDecoration;
   String date;
   String note;
@@ -73,11 +74,9 @@ class _PaymentEntryState extends State<PaymentEntry> {
 
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
-    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-        ? guestUserId
-        : currentUserId;
-    Reaction oldReaction = widget.data.reactions
-        .firstWhere((element) => element.userId == idToUse, orElse: () => null);
+    Reaction oldReaction = widget.data.reactions.firstWhere(
+        (element) => element.userId == idToUse(),
+        orElse: () => null);
     bool alreadyReacted = oldReaction != null;
     bool sameReaction =
         alreadyReacted ? oldReaction.reaction == reaction : false;
@@ -86,13 +85,16 @@ class _PaymentEntryState extends State<PaymentEntry> {
       setState(() {});
     } else if (!alreadyReacted) {
       widget.data.reactions.add(Reaction(
-          nickname: idToUse == currentUserId ? currentUsername : guestNickname,
+          nickname:
+              idToUse() == currentUserId ? currentUsername : guestNickname,
           reaction: reaction,
-          userId: idToUse));
+          userId: idToUse()));
       setState(() {});
     } else {
       widget.data.reactions.add(Reaction(
-          nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
+          nickname: oldReaction.nickname,
+          reaction: reaction,
+          userId: idToUse()));
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -104,33 +106,36 @@ class _PaymentEntryState extends State<PaymentEntry> {
     note = (widget.data.note == '' || widget.data.note == null)
         ? 'no_note'.tr()
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
-    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-        ? guestUserId
-        : currentUserId;
-    if (widget.data.payerId == idToUse) {
-      icon = Icon(Icons.call_made,
-          color: Theme.of(context).textTheme.button.color);
-      style = Theme.of(context).textTheme.button;
-      dateColor = Theme.of(context).textTheme.button.color;
-      boxDecoration = BoxDecoration(
-        gradient:
-            AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
-        borderRadius: BorderRadius.circular(15),
-        // boxShadow: ( Theme.of(context).brightness==Brightness.light)
-        //     ?[ BoxShadow(
-        //       color: Colors.grey[500],
-        //       offset: Offset(0.0, 1.5),
-        //       blurRadius: 1.5,
-        //     )]
-        //     : [],
-      );
+    if (widget.data.payerId == idToUse()) {
       takerName = widget.data.takerNickname;
       amount = widget.data.amount.printMoney(currentGroupCurrency);
+      icon =
+          Icon(Icons.call_made, color: Theme.of(context).colorScheme.onPrimary);
+      boxDecoration = BoxDecoration(
+        gradient: AppTheme.gradientFromTheme(currentThemeName),
+        borderRadius: BorderRadius.circular(15),
+        // color: Theme.of(context).colorScheme.primary,
+      );
+      mainTextStyle = Theme.of(context)
+          .textTheme
+          .bodyLarge
+          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
+      subTextStyle = Theme.of(context)
+          .textTheme
+          .bodySmall
+          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
     } else {
       icon = Icon(Icons.call_received,
-          color: Theme.of(context).textTheme.bodyText1.color);
-      style = Theme.of(context).textTheme.bodyText1;
-      dateColor = Theme.of(context).colorScheme.surface;
+          color: Theme.of(context).colorScheme.onSurface);
+
+      mainTextStyle = Theme.of(context)
+          .textTheme
+          .bodyLarge
+          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+      subTextStyle = Theme.of(context)
+          .textTheme
+          .bodySmall
+          .copyWith(color: Theme.of(context).colorScheme.onSurface);
       takerName = widget.data.payerNickname;
       amount = (-widget.data.amount).printMoney(currentGroupCurrency);
       boxDecoration = BoxDecoration();
@@ -149,82 +154,69 @@ class _PaymentEntryState extends State<PaymentEntry> {
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onLongPress: () {
-                showDialog(
-                    builder: (context) => AddReactionDialog(
-                          type: 'payments',
-                          reactions: widget.data.reactions,
-                          reactToId: widget.data.paymentId,
-                          callback: this.callbackForReaction,
-                        ),
-                    context: context);
-              },
-              onTap: () async {
-                showModalBottomSheetCustom(
-                    context: context,
-                    backgroundColor: Theme.of(context).cardTheme.color,
-                    builder: (context) => SingleChildScrollView(
-                        child: PaymentAllInfo(widget.data))).then((val) {
-                  if (val == 'deleted')
-                    widget.callback(purchase: false, payment: true);
-                });
-              },
+              onLongPress: !widget.isTappable
+                  ? null
+                  : () {
+                      showDialog(
+                          builder: (context) => AddReactionDialog(
+                                type: 'payments',
+                                reactions: widget.data.reactions,
+                                reactToId: widget.data.paymentId,
+                                callback: this.callbackForReaction,
+                              ),
+                          context: context);
+                    },
+              onTap: !widget.isTappable
+                  ? null
+                  : () async {
+                      showModalBottomSheetCustom(
+                          context: context,
+                          backgroundColor: Theme.of(context).cardTheme.color,
+                          builder: (context) => SingleChildScrollView(
+                              child: PaymentAllInfo(widget.data))).then(
+                          (returnValue) {
+                        if (returnValue == 'deleted')
+                          widget.callback(purchase: false, payment: true);
+                      });
+                    },
               borderRadius: BorderRadius.circular(15),
               child: Padding(
                 padding: EdgeInsets.all(15),
-                child: Flex(
-                  direction: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Flexible(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Flexible(
-                                child: Row(
-                                  children: <Widget>[
-                                    icon,
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Flexible(
-                                              child: Text(
-                                            takerName,
-                                            style: style.copyWith(fontSize: 21),
-                                            overflow: TextOverflow.ellipsis,
-                                          )),
-                                          Flexible(
-                                              child: Text(
-                                            note,
-                                            style: TextStyle(
-                                                color: dateColor, fontSize: 15),
-                                            overflow: TextOverflow.ellipsis,
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                amount,
-                                style: style,
-                              ),
-                            ],
+                      child: Row(
+                        children: <Widget>[
+                          icon,
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                      ],
-                    )),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  takerName,
+                                  style: mainTextStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  note,
+                                  style: subTextStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      amount,
+                      style: mainTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -235,7 +227,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
             reactedToId: widget.data.paymentId,
             reactions: widget.data.reactions,
             callback: this.callbackForReaction,
-            isSecondaryColor: widget.data.payerId == idToUse,
+            isSecondaryColor: widget.data.payerId == idToUse(),
             type: 'payments')
       ],
     );

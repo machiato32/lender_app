@@ -6,6 +6,7 @@ import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -42,15 +43,12 @@ class _LoginPageState extends State<LoginPage> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                    gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-              ),
-              title: Text('login'.tr(),
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      letterSpacing: 0.25,
-                      fontSize: 24))),
+            // flexibleSpace: Container(
+            //   decoration: BoxDecoration(
+            //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+            // ),
+            title: Text('login'.tr()),
+          ),
           body: Center(
             child: ListView(
               padding: EdgeInsets.only(left: 20, right: 20),
@@ -74,11 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      fillColor: Theme.of(context).cardTheme.color,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.account_circle,
-                        color: Theme.of(context).colorScheme.primary,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -90,10 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                       FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
                       LengthLimitingTextInputFormatter(15),
                     ],
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).textTheme.bodyText1.color),
-                    cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 SizedBox(
@@ -109,11 +101,9 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     hintText: 'password'.tr(),
-                    fillColor: Theme.of(context).cardTheme.color,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.password,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -121,10 +111,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   obscureText: true,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
                   ],
@@ -133,12 +119,10 @@ class _LoginPageState extends State<LoginPage> {
                   height: 40,
                 ),
                 Center(
-                  child: FlatButton(
+                  child: OutlinedButton(
                     child: Text('forgot_password'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText2
-                            .copyWith(fontSize: 15)),
+                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                            color: Theme.of(context).colorScheme.primary)),
                     onPressed: () async {
                       GlobalKey<FormState> formState = GlobalKey<FormState>();
                       TextEditingController controller =
@@ -166,12 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 decoration: InputDecoration(
                                   hintText: 'username'.tr(),
-                                  fillColor: Theme.of(context).cardTheme.color,
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.account_circle,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -183,37 +164,33 @@ class _LoginPageState extends State<LoginPage> {
                                       RegExp('[a-z0-9]')),
                                   LengthLimitingTextInputFormatter(15),
                                 ],
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
                               ),
                               actions: [
-                                RaisedButton(
-                                  onPressed: () {
-                                    if (formState.currentState.validate()) {
-                                      String username = controller.text;
-                                      Navigator.pop(context);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GradientButton(
+                                      onPressed: () {
+                                        if (formState.currentState.validate()) {
+                                          String username = controller.text;
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
                                               builder: (context) =>
                                                   ForgotPasswordPage(
-                                                    username: username,
-                                                  )));
-                                    }
-                                  },
-                                  child: Icon(Icons.send,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .button
-                                          .color),
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                                username: username,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Icon(Icons.send,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -227,6 +204,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           floatingActionButton: FloatingActionButton(
+            foregroundColor: Theme.of(context).colorScheme.onTertiary,
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 String username = _usernameController.text.toLowerCase();

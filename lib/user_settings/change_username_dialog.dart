@@ -51,7 +51,8 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
             children: <Widget>[
               Text(
                 'change_username'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -72,11 +73,9 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
                   controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'new_name'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.account_circle,
-                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -86,10 +85,6 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(20),
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               SizedBox(

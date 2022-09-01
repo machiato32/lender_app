@@ -5,6 +5,7 @@ import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
+import 'package:csocsort_szamla/essentials/widgets/currency_picker_dropdown.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -26,7 +27,7 @@ class _CreateGroupState extends State<CreateGroup> {
       text: currentUsername[0].toUpperCase() + currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
-  String _defaultValue = "EUR";
+  String _defaultCurrencyValue = "EUR";
 
   Future<bool> _createGroup(
       String groupName, String nickname, String currency) async {
@@ -67,16 +68,12 @@ class _CreateGroupState extends State<CreateGroup> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          ),
+          // flexibleSpace: Container(
+          //   decoration: BoxDecoration(
+          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+          // ),
           title: Text(
             'create'.tr(),
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onSecondary,
-                letterSpacing: 0.25,
-                fontSize: 24),
           ),
         ),
         body: GestureDetector(
@@ -107,15 +104,9 @@ class _CreateGroupState extends State<CreateGroup> {
                               },
                               decoration: InputDecoration(
                                 hintText: 'group_name'.tr(),
-                                fillColor:
-                                    Theme.of(context).colorScheme.onSurface,
                                 filled: true,
                                 prefixIcon: Icon(
                                   Icons.group,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color,
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -123,14 +114,6 @@ class _CreateGroupState extends State<CreateGroup> {
                                 ),
                               ),
                               controller: _groupName,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(20),
                               ],
@@ -151,15 +134,9 @@ class _CreateGroupState extends State<CreateGroup> {
                               decoration: InputDecoration(
                                 hintText: 'nickname_in_group'.tr(),
                                 labelText: 'nickname_in_group'.tr(),
-                                fillColor:
-                                    Theme.of(context).colorScheme.onSurface,
                                 filled: true,
                                 prefixIcon: Icon(
                                   Icons.account_circle,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color,
                                 ),
                                 border: UnderlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -167,14 +144,6 @@ class _CreateGroupState extends State<CreateGroup> {
                                 ),
                               ),
                               controller: _nicknameController,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(15),
                               ],
@@ -186,58 +155,25 @@ class _CreateGroupState extends State<CreateGroup> {
                               children: <Widget>[
                                 Text(
                                   'currency_of_group'.tr(),
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant),
                                 ),
                                 SizedBox(
                                   width: 20,
                                 ),
                                 Flexible(
-                                  child: ButtonTheme(
-                                    alignedDropdown: true,
-                                    child: DropdownButtonFormField(
-                                      decoration: InputDecoration(
-                                        fillColor: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                      ),
-                                      dropdownColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      elevation: 0,
-                                      isExpanded: true,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _defaultValue = value;
-                                        });
-                                      },
-                                      value: _defaultValue,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                      items: enumerateCurrencies()
-                                          .map((currency) => DropdownMenuItem(
-                                                child: Text(
-                                                  currency
-                                                          .split(';')[0]
-                                                          .trim() +
-                                                      " (" +
-                                                      currency
-                                                          .split(';')[1]
-                                                          .trim() +
-                                                      ")",
-                                                ),
-                                                value: currency
-                                                    .split(';')[0]
-                                                    .trim(),
-                                                onTap: () {},
-                                              ))
-                                          .toList(),
-                                    ),
+                                  child: CurrencyPickerDropdown(
+                                    currencyChanged: (newValue) {
+                                      setState(() {
+                                        _defaultCurrencyValue = newValue;
+                                      });
+                                    },
+                                    defaultCurrencyValue: _defaultCurrencyValue,
                                   ),
                                 ),
                               ],
@@ -260,8 +196,10 @@ class _CreateGroupState extends State<CreateGroup> {
                                       showDialog(
                                           builder: (context) =>
                                               FutureSuccessDialog(
-                                                future: _createGroup(token,
-                                                    nickname, _defaultValue),
+                                                future: _createGroup(
+                                                    token,
+                                                    nickname,
+                                                    _defaultCurrencyValue),
                                                 onDataTrue: () {
                                                   _onCreateGroup();
                                                 },

@@ -203,7 +203,7 @@
     "accept_privacy_policy": "I accept the privacy policy",
     "must_accept_privacy_policy": "You have to accept the privacy policy!",
 
-    "gradient_available_in_paid_version": "You can buy the gradient themes through the app.",
+    "gradient_available_in_paid_version": "You can buy the gradient and dynamic themes through the app",
 
     "version_not_supported": "The version is not supported",
     "version_not_supported_explanation": "We updated Lender to a new version. With this change some of the features in your versions will not work.",
@@ -219,9 +219,9 @@
     "group_boost": "Group-boosting Dodos",
     "group_boost_explanation": "Boost the group member limit to 30 and unlock its statistics.\nThe bundle contains Dodos enough for 2 groups.",
     "ad_gradient_bundle": "Small Lender bundle",
-    "ad_gradient_bundle_explanation":"Enjoy Lender in its full beauty.\nRemove ads, unlock gradient themes.",
-    "gradients": "Gradient themes",
-    "gradients_explanation": "Enjoy Lender in all of its colors.\nUnlock the gradient themes. (Our favorite is the orange one 😉)",
+    "ad_gradient_bundle_explanation":"Enjoy Lender in its full beauty.\nRemove ads, unlock gradient and dynamic themes.",
+    "gradients": "Gradient and dynamic themes",
+    "gradients_explanation": "Enjoy Lender in all of its colors.\nUnlock the gradient and dynamic themes. (Our favorite is the orange one 😉)",
     "big_lender_bundle": "Big Lender Bundle",
     "big_lender_bundle_explanation": "This is the small Lender bundle, but we added group-boosting Dodos enough for 1 group.",
 
@@ -282,7 +282,7 @@
     "use_personalised_ads_explanation": "If you want to see personalised ads",
 
     "trial_version": "Trial time",
-    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These include the ad-free experience, the usage of gradient themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These include the ad-free experience, the usage of gradient and dynamic themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
 
     "calculator": "Calculator",
     "calculator_explanation": "A simple calculator if you need it 😉",
@@ -371,5 +371,9 @@
     "share": "Share the group",
     "share_url": "Or invite your friends with a message",
     "scan_code": "Read the QR code",
-    "paste_code": "Or paste the invitation:"
+    "paste_code": "Or paste the invitation:",
+
+    "gradient_themes" : "Gradient themes",
+    "dynamic_themes" : "Dynamic themes",
+    "dynamic_themes_explanation" : "These themes will dynamically change when you change your system color preference (if available)"
 }

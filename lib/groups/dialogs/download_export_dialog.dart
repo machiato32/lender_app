@@ -49,7 +49,6 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      // backgroundColor: Theme.of(context),
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -57,31 +56,35 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
           children: [
             Text(
               'download_export'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
             Text('download_export_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center),
             Divider(),
             SizedBox(height: 15),
             Text(
               'download_xls'.tr(),
-              style:
-                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  fontSize: 20,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
             Text('download_xls_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
                   child: Icon(Icons.table_chart,
-                      color: Theme.of(context).colorScheme.onSecondary),
+                      color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -100,15 +103,15 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
               children: [
                 Text(
                   'download_pdf'.tr(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      .copyWith(fontSize: 20),
+                  style: Theme.of(context).textTheme.titleLarge.copyWith(
+                      fontSize: 20,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10),
                 Text('download_pdf_explanation'.tr(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -125,7 +128,7 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                         );
                       },
                       child: Icon(Icons.picture_as_pdf,
-                          color: Theme.of(context).colorScheme.onSecondary),
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ],
                 )

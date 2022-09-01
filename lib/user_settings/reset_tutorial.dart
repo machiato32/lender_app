@@ -21,17 +21,18 @@ class _ResetTutorialState extends State<ResetTutorial> {
           children: [
             Center(
                 child: Text(
-                  'reset_tutorial'.tr(),
-                  style: Theme.of(context).textTheme.headline6,
-                )
-            ),
+              'reset_tutorial'.tr(),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+            )),
             SizedBox(
               height: 10,
             ),
             Center(
               child: Text(
                 'reset_tutorial_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -42,10 +43,18 @@ class _ResetTutorialState extends State<ResetTutorial> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary),
+                  child: Icon(Icons.check,
+                      color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
-                    FeatureDiscovery.clearPreferences(context, ['drawer', 'shopping_list', 'group_settings', 'add_payment_expense', 'settings']);
-                    SharedPreferences.getInstance().then((value) => value.setBool('show_tutorial', true));
+                    FeatureDiscovery.clearPreferences(context, [
+                      'drawer',
+                      'shopping_list',
+                      'group_settings',
+                      'add_payment_expense',
+                      'settings'
+                    ]);
+                    SharedPreferences.getInstance()
+                        .then((value) => value.setBool('show_tutorial', true));
                     Navigator.pop(context);
                   },
                 ),

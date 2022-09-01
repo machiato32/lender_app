@@ -132,25 +132,36 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   List<Widget> _generateListTiles(List<Group> groups) {
     return groups.map((group) {
-      return ListTile(
-        title: Text(
-          group.groupName,
-          style: (group.groupName == currentGroupName)
-              ? Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Theme.of(context).colorScheme.secondary)
-              : Theme.of(context).textTheme.bodyText1,
+      return Padding(
+        padding: EdgeInsets.only(left: 12),
+        child: Material(
+          type: MaterialType.transparency,
+          child: ListTile(
+            tileColor: (group.groupName == currentGroupName)
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(28)),
+            ),
+            title: Text(
+              group.groupName,
+              style: (group.groupName == currentGroupName)
+                  ? Theme.of(context).textTheme.labelLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer)
+                  : Theme.of(context).textTheme.labelLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ),
+            onTap: () async {
+              saveGroupName(group.groupName);
+              saveGroupId(group.groupId);
+              saveGroupCurrency(group.groupCurrency);
+              setState(() {
+                _selectedIndex = 0;
+                _tabController.animateTo(_selectedIndex);
+              });
+            },
+          ),
         ),
-        onTap: () async {
-          saveGroupName(group.groupName);
-          saveGroupId(group.groupId);
-          saveGroupCurrency(group.groupCurrency);
-          setState(() {
-            _selectedIndex = 0;
-            _tabController.animateTo(_selectedIndex);
-          });
-        },
       );
     }).toList();
   }
@@ -224,10 +235,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         actions: [Container()],
         // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        ),
+        // flexibleSpace: currentThemeName.contains('Gradient')
+        //     ? Container(
+        //         decoration: BoxDecoration(
+        //             gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+        //       )
+        //     : null,
         title: FutureBuilder(
           future: _getCurrentGroup(),
           builder: (context, snapshot) {
@@ -235,86 +248,70 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               if (snapshot.hasData) {
                 return Text(
                   snapshot.data,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      letterSpacing: 0.25,
-                      fontSize: 24),
+                  style: TextStyle(letterSpacing: 0.25, fontSize: 24),
                 );
               }
             }
             return Text(
               currentGroupName ?? 'error'.tr(),
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  letterSpacing: 0.25,
-                  fontSize: 24),
+              style: TextStyle(letterSpacing: 0.25, fontSize: 24),
             );
           },
         ),
-        // leading: width < 1200
-        //     ? null
-        //     : DescribedFeatureOverlay(
-        //         tapTarget: Icon(Icons.menu, color: Colors.black),
-        //         featureId: 'drawer',
-        //         backgroundColor: Theme.of(context).colorScheme.primary,
-        //         overflowMode: OverflowMode.extendBackground,
-        //         title: Text('discovery_drawer_title'.tr()),
-        //         description: Text('discovery_drawer_description'.tr()),
-        //         barrierDismissible: false,
-        //         child: IconButton(
-        //           icon: Icon(
-        //             Icons.menu,
-        //             color: Theme.of(context).colorScheme.onSecondary,
-        //           ),
-        //           onPressed: _handleDrawer,
-        //         ),
-        //       ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).cardTheme.color,
-        type: BottomNavigationBarType.fixed,
-        onTap: (_index) {
-          if (!bigScreen) {
-            if (_index != 3) {
-              setState(() {
-                _selectedIndex = _index;
-                _tabController.animateTo(_index);
-                _scaffoldKey.currentState.removeCurrentSnackBar();
-              });
-            } else {
-              _handleDrawer();
-            }
+      bottomNavigationBar: bigScreen
+          ? null
+          : NavigationBar(
+              onDestinationSelected: (_index) {
+                if (!bigScreen) {
+                  if (_index != 3) {
+                    setState(() {
+                      _selectedIndex = _index;
+                      _tabController.animateTo(_index);
+                      _scaffoldKey.currentState.removeCurrentSnackBar();
+                    });
+                  } else {
+                    _handleDrawer();
+                  }
 
-            if (_selectedIndex == 1) {
-              FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
-            } else if (_selectedIndex == 2) {
-              FeatureDiscovery.discoverFeatures(context, ['group_settings']);
-            }
-          } else {
-            if (_index != 2) {
-              setState(() {
-                _selectedIndex = _index;
-                _tabController.animateTo(_index);
-                _scaffoldKey.currentState.removeCurrentSnackBar();
-              });
-            } else {
-              _handleDrawer();
-            }
-            if (_selectedIndex == 0) {
-              FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
-            } else if (_selectedIndex == 1) {
-              FeatureDiscovery.discoverFeatures(context, ['group_settings']);
-            }
-          }
-        },
-        currentIndex: _selectedIndex,
-        items: bigScreen
-            ? (_bottomNavbarItems().take(1).toList()
-              ..addAll(_bottomNavbarItems().reversed.take(2).toList().reversed)
-              ..toList())
-            : _bottomNavbarItems(),
+                  if (_selectedIndex == 1) {
+                    FeatureDiscovery.discoverFeatures(
+                        context, ['shopping_list']);
+                  } else if (_selectedIndex == 2) {
+                    FeatureDiscovery.discoverFeatures(
+                        context, ['group_settings']);
+                  }
+                } else {
+                  if (_index != 2) {
+                    setState(() {
+                      _selectedIndex = _index;
+                      _tabController.animateTo(_index);
+                      _scaffoldKey.currentState.removeCurrentSnackBar();
+                    });
+                  } else {
+                    _handleDrawer();
+                  }
+                  if (_selectedIndex == 0) {
+                    FeatureDiscovery.discoverFeatures(
+                        context, ['shopping_list']);
+                  } else if (_selectedIndex == 1) {
+                    FeatureDiscovery.discoverFeatures(
+                        context, ['group_settings']);
+                  }
+                }
+              },
+              selectedIndex: _selectedIndex,
+              destinations: bigScreen
+                  ? (_bottomNavbarItems().take(1).toList()
+                    ..addAll(
+                        _bottomNavbarItems().reversed.take(2).toList().reversed)
+                    ..toList())
+                  : _bottomNavbarItems(),
+            ),
+      endDrawer: Drawer(
+        child: _drawer(),
+        // backgroundColor: Colors.pink,
       ),
-      endDrawer: Drawer(child: _drawer()),
       floatingActionButton: _selectedIndex == (bigScreen ? 1 : 2)
           ? GroupSettingsSpeedDial()
           : Visibility(
@@ -354,49 +351,96 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        56 - //appbar
-        56 - //bottomNavbar
+        10 - //appbar
+        (bigScreen ? 0 : 56) - //bottomNavbar
         adHeight;
     List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
     // print(width);
-    return Column(
+    return Row(
       children: [
-        IsGuestBanner(
-          key: _isGuestBannerKey,
-          callback: callback,
-        ),
+        bigScreen
+            ? NavigationRail(
+                labelType: NavigationRailLabelType.all,
+                destinations: _navigationRailItems(),
+                onDestinationSelected: (_index) {
+                  if (!bigScreen) {
+                    if (_index != 3) {
+                      setState(() {
+                        _selectedIndex = _index;
+                        _tabController.animateTo(_index);
+                        _scaffoldKey.currentState.removeCurrentSnackBar();
+                      });
+                    } else {
+                      _handleDrawer();
+                    }
+
+                    if (_selectedIndex == 1) {
+                      FeatureDiscovery.discoverFeatures(
+                          context, ['shopping_list']);
+                    } else if (_selectedIndex == 2) {
+                      FeatureDiscovery.discoverFeatures(
+                          context, ['group_settings']);
+                    }
+                  } else {
+                    if (_index != 2) {
+                      setState(() {
+                        _selectedIndex = _index;
+                        _tabController.animateTo(_index);
+                        _scaffoldKey.currentState.removeCurrentSnackBar();
+                      });
+                    } else {
+                      _handleDrawer();
+                    }
+                    if (_selectedIndex == 2) {
+                      FeatureDiscovery.discoverFeatures(
+                          context, ['group_settings']);
+                    }
+                  }
+                },
+                selectedIndex: _selectedIndex)
+            : Container(),
         Expanded(
-          child: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: !bigScreen
-                ? tabWidgets
-                : [
-                    Table(
-                      columnWidths: {
-                        0: FractionColumnWidth(1 / 2),
-                        1: FractionColumnWidth(1 / 2),
-                      },
-                      children: [
-                        TableRow(
-                          children: tabWidgets
-                              .take(2)
-                              .map(
-                                (e) => AspectRatio(
-                                  aspectRatio: width / 2 / height,
-                                  child: e,
-                                ),
+          child: Column(
+            children: [
+              IsGuestBanner(
+                key: _isGuestBannerKey,
+                callback: callback,
+              ),
+              Expanded(
+                child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: _tabController,
+                  children: !bigScreen
+                      ? tabWidgets
+                      : [
+                          Table(
+                            columnWidths: {
+                              0: FractionColumnWidth(1 / 2),
+                              1: FractionColumnWidth(1 / 2),
+                            },
+                            children: [
+                              TableRow(
+                                children: tabWidgets
+                                    .take(2)
+                                    .map(
+                                      (e) => AspectRatio(
+                                        aspectRatio: width / 2 / height,
+                                        child: e,
+                                      ),
+                                    )
+                                    .toList(),
                               )
-                              .toList(),
-                        )
-                      ],
-                    ),
-                    tabWidgets.reversed.first,
-                    Container(),
-                  ],
+                            ],
+                          ),
+                          tabWidgets.reversed.first,
+                          Container(),
+                        ],
+                ),
+              ),
+              adUnitForSite('home_screen'),
+            ],
           ),
         ),
-        adUnitForSite('home_screen'),
       ],
     );
   }
@@ -438,9 +482,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Widget _drawer() {
     return Ink(
-      color:
-          // ? Color.fromARGB(255, 50, 50, 50)
-          Theme.of(context).cardTheme.color,
+      decoration: BoxDecoration(
+        color: ElevationOverlay.applyOverlay(
+            context, Theme.of(context).colorScheme.surface, 1),
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(16),
+        ),
+      ),
       child: Column(
         children: [
           Expanded(
@@ -457,16 +505,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ),
                       ),
                       Text(
-                        'LENDER',
+                        'Lender',
                         style: Theme.of(context)
                             .textTheme
-                            .headline6
-                            .copyWith(letterSpacing: 2.5),
+                            .headlineSmall
+                            .copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
                       ),
                       Text(
                         'hi'.tr() + ' ' + currentUsername + '!',
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: Theme.of(context).colorScheme.secondary),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ],
                   ),
@@ -477,17 +528,36 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                         return Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            title: Text('groups'.tr(),
-                                style: Theme.of(context).textTheme.bodyText1),
-                            leading: Icon(Icons.group,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .color),
-                            children: _generateListTiles(snapshot.data),
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
+                            cardTheme: CardTheme(
+                              elevation: 0,
+                              color: Colors.transparent,
+                              margin: EdgeInsets.only(left: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(28),
+                                ),
+                              ),
+                            ),
+                          ),
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            child: ExpansionTile(
+                              title: Text('groups'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant)),
+                              leading: Icon(Icons.group,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
+                              children: _generateListTiles(snapshot.data),
+                            ),
                           ),
                         );
                       } else {
@@ -508,33 +578,53 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     );
                   },
                 ),
-                ListTile(
-                  leading: Icon(
-                    Icons.group_add,
-                    color: Theme.of(context).textTheme.bodyText1.color,
+                Padding(
+                  padding: EdgeInsets.only(left: 12),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(28)),
+                    ),
+                    leading: Icon(
+                      Icons.group_add,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(
+                      'join_group'.tr(),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => JoinGroup()));
+                    },
                   ),
-                  title: Text(
-                    'join_group'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => JoinGroup()));
-                  },
                 ),
-                ListTile(
-                  leading: Icon(
-                    Icons.create,
-                    color: Theme.of(context).textTheme.bodyText1.color,
+                Padding(
+                  padding: EdgeInsets.only(left: 12),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(28)),
+                    ),
+                    leading: Icon(
+                      Icons.create,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(
+                      'create_group'.tr(),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateGroup()));
+                    },
                   ),
-                  title: Text(
-                    'create_group'.tr(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => CreateGroup()));
-                  },
                 ),
               ],
             ),
@@ -547,154 +637,301 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   String currency = snapshot.data['currency'];
                   double balance = snapshot.data['balance'] * 1.0;
                   return Text('Σ: ' + balance.printMoney(currency),
-                      style: Theme.of(context).textTheme.bodyText1);
+                      style: Theme.of(context).textTheme.bodyMedium.copyWith(
+                          color: Theme.of(context).colorScheme.secondary));
                 }
               }
               return Text(
                 'Σ: ...',
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 16),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    .copyWith(color: Theme.of(context).colorScheme.secondary),
               );
             },
           ),
           Divider(),
           Visibility(
             visible: !kIsWeb && Platform.isAndroid,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.horizontal(left: Radius.circular(28)),
+                ),
+                dense: true,
+                onTap: () {
+                  if (trialVersion) {
+                    showDialog(
+                        builder: (context) => TrialVersionDialog(),
+                        context: context);
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InAppPurchasePage()));
+                  }
+                },
+                leading: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn),
+                    child: Image.asset(
+                      'assets/dodo_color.png',
+                      width: 25,
+                    )),
+                subtitle: trialVersion
+                    ? Text(
+                        'trial_version'.tr().toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                      )
+                    : null,
+                title: Text(
+                  'in_app_purchase'.tr(),
+                  style: Theme.of(context).textTheme.labelLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
             child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(28)),
+              ),
               dense: true,
-              onTap: () {
-                if (trialVersion) {
-                  showDialog(
-                      builder: (context) => TrialVersionDialog(),
-                      context: context);
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InAppPurchasePage()));
-                }
-              },
-              leading: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).textTheme.bodyText1.color,
-                      BlendMode.srcIn),
-                  child: Image.asset(
-                    'assets/dodo_color.png',
-                    width: 25,
-                  )),
-              subtitle: trialVersion
-                  ? Text(
-                      'trial_version'.tr().toUpperCase(),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                          color: Theme.of(context).colorScheme.primary),
-                    )
-                  : null,
+              leading: DescribedFeatureOverlay(
+                tapTarget: Icon(Icons.settings, color: Colors.black),
+                featureId: 'settings',
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                overflowMode: OverflowMode.extendBackground,
+                allowShowingDuplicate: true,
+                contentLocation: ContentLocation.above,
+                title: Text(
+                  'discovery_settings_title'.tr(),
+                  style: Theme.of(context).textTheme.titleLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onTertiary),
+                ),
+                description: Text(
+                  'discovery_settings_description'.tr(),
+                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onTertiary),
+                ),
+                child: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
               title: Text(
-                'in_app_purchase'.tr(),
-                style: Theme.of(context).textTheme.bodyText1,
+                'settings'.tr(),
+                style: Theme.of(context).textTheme.labelLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
             ),
           ),
-          ListTile(
-            dense: true,
-            leading: DescribedFeatureOverlay(
-              tapTarget: Icon(Icons.settings, color: Colors.black),
-              featureId: 'settings',
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              overflowMode: OverflowMode.extendBackground,
-              allowShowingDuplicate: true,
-              contentLocation: ContentLocation.above,
-              title: Text('discovery_settings_title'.tr()),
-              description: Text('discovery_settings_description'.tr()),
-              child: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1.color,
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(28)),
               ),
+              leading: Icon(
+                Icons.bug_report,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              dense: true,
+              title: Text(
+                'report_a_bug'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.error),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ReportABugPage()));
+              },
             ),
-            title: Text(
-              'settings'.tr(),
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Settings()));
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.bug_report,
-              color: Colors.red,
-            ),
-            dense: true,
-            title: Text(
-              'report_a_bug'.tr(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReportABugPage()));
-            },
           ),
           Divider(),
-          ListTile(
-            leading: Icon(
-              Icons.exit_to_app,
-              color: Theme.of(context).textTheme.bodyText1.color,
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(28)),
+              ),
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              dense: true,
+              title: Text(
+                'logout'.tr(),
+                style: Theme.of(context).textTheme.labelLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+              onTap: () async {
+                _logout();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginOrRegisterPage()),
+                    (r) => false);
+              },
             ),
-            dense: true,
-            title: Text(
-              'logout'.tr(),
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            onTap: () async {
-              _logout();
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LoginOrRegisterPage()),
-                  (r) => false);
-            },
           ),
         ],
       ),
     );
   }
 
-  List<BottomNavigationBarItem> _bottomNavbarItems() {
+  List<NavigationRailDestination> _navigationRailItems() {
     return [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr()),
-      BottomNavigationBarItem(
+      NavigationRailDestination(
+        icon: Icon(
+          Icons.home,
+        ),
+        label: Text('home'.tr()),
+      ),
+      NavigationRailDestination(
+        icon: DescribedFeatureOverlay(
+          featureId: 'group_settings',
+          tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
+          targetColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(
+            'discover_group_settings_title'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
+          description: Text(
+            'discover_group_settings_description'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
+          overflowMode: OverflowMode.extendBackground,
+          child: Icon(Icons.supervisor_account),
+        ),
+        label: Text('group'.tr()),
+      ),
+      NavigationRailDestination(
+        icon: DescribedFeatureOverlay(
+          tapTarget: Icon(Icons.menu, color: Colors.black),
+          featureId: 'drawer',
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          overflowMode: OverflowMode.extendBackground,
+          title: Text(
+            'discovery_drawer_title'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
+          description: Text(
+            'discovery_drawer_description'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
+          barrierDismissible: false,
+          child: Icon(Icons.menu),
+        ),
+        label: Text('more'.tr()),
+      ),
+    ];
+  }
+
+  List<Widget> _bottomNavbarItems() {
+    return [
+      NavigationDestination(
+        icon: Icon(
+          Icons.home,
+        ),
+        label: 'home'.tr(),
+      ),
+      NavigationDestination(
           icon: DescribedFeatureOverlay(
               featureId: 'shopping_list',
               tapTarget: Icon(Icons.receipt_long, color: Colors.black),
-              title: Text('discover_shopping_title'.tr()),
-              description: Text('discover_shopping_description'.tr()),
+              targetColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              title: Text(
+                'discover_shopping_title'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+              ),
+              description: Text(
+                'discover_shopping_description'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+              ),
               overflowMode: OverflowMode.extendBackground,
               child: Icon(Icons.receipt_long)),
           label: 'shopping_list'.tr()),
-      BottomNavigationBarItem(
+      NavigationDestination(
           //TODO: change user currency
           icon: DescribedFeatureOverlay(
             featureId: 'group_settings',
             tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
-            title: Text('discover_group_settings_title'.tr()),
-            description: Text('discover_group_settings_description'.tr()),
+            targetColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            title: Text(
+              'discover_group_settings_title'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+            ),
+            description: Text(
+              'discover_group_settings_description'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+            ),
             overflowMode: OverflowMode.extendBackground,
             child: Icon(Icons.supervisor_account),
           ),
           label: 'group'.tr()),
-      BottomNavigationBarItem(
+      NavigationDestination(
         icon: DescribedFeatureOverlay(
           tapTarget: Icon(Icons.menu, color: Colors.black),
           featureId: 'drawer',
-          // backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           overflowMode: OverflowMode.extendBackground,
-          title: Text('discovery_drawer_title'.tr()),
-          description: Text('discovery_drawer_description'.tr()),
+          title: Text(
+            'discovery_drawer_title'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
+          description: Text(
+            'discovery_drawer_description'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
+          ),
           barrierDismissible: false,
           child: Icon(Icons.menu),
         ),

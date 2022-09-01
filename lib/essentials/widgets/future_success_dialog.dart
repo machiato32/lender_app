@@ -45,7 +45,6 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
   Artboard _riveArtboard;
   RiveAnimationController _controller;
 
-
   @override
   void initState() {
     super.initState();
@@ -64,7 +63,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
     }
 
     rootBundle.load('assets/pipa.riv').then(
-          (data) async {
+      (data) async {
         final file = RiveFile();
 
         // Load the RiveFile from the binary data.
@@ -79,7 +78,6 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
         }
       },
     );
-
   }
 
   Widget _buildDataTrue() {
@@ -89,17 +87,18 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
       // }
       // return Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.primary, size: 50,);
       return _riveArtboard == null
-          ? Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.secondary, size: 50,)
+          ? Icon(
+              Icons.check_circle_outline,
+              color: Theme.of(context).colorScheme.secondary,
+              size: 50,
+            )
           : ColorFiltered(
-            colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.secondary, BlendMode.srcIn),
-            child: Container(
-                height: 60,
-                width: 60,
-                child: Rive(artboard: _riveArtboard)
-              ),
-          );
-
-  }
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.secondary, BlendMode.srcIn),
+              child: Container(
+                  height: 60, width: 60, child: Rive(artboard: _riveArtboard)),
+            );
+    }
     return widget.dataTrue;
   }
 
@@ -115,8 +114,8 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
               widget.dataFalseText.tr(),
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
-                  .copyWith(color: Colors.white),
+                  .labelLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onError),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -125,7 +124,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
             FlatButton.icon(
               icon: Icon(
                 Icons.clear,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onError,
               ),
               onPressed: () {
                 _onDataFalse();
@@ -158,7 +157,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
               snapshot.error.toString().tr(),
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
+                  .bodyLarge
                   .copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             )),
@@ -168,7 +167,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
             FlatButton.icon(
               icon: Icon(
                 Icons.clear,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onError,
               ),
               onPressed: () {
                 _onNoData();
@@ -177,10 +176,10 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                 'back'.tr(),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(color: Colors.white),
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onError),
               ),
-              color: Colors.red,
+              color: Theme.of(context).colorScheme.error,
             )
           ],
         ),

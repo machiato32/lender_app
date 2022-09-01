@@ -4,10 +4,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -151,19 +153,28 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
-  runApp(EasyLocalization(
-    child: ChangeNotifierProvider<AppStateNotifier>(
+  runApp(
+    EasyLocalization(
+      child: ChangeNotifierProvider<AppStateNotifier>(
         create: (context) => AppStateNotifier(),
         child: LenderApp(
           themeName: themeName,
           initURL: initURL,
-        )),
-    supportedLocales: [Locale('en'), Locale('de'), Locale('it'), Locale('hu')],
-    path: 'assets/translations',
-    fallbackLocale: Locale('en'),
-    useOnlyLangCode: true,
-    saveLocale: true,
-  ));
+        ),
+      ),
+      supportedLocales: [
+        Locale('en'),
+        Locale('de'),
+        Locale('it'),
+        Locale('hu')
+      ],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en'),
+      useOnlyLangCode: true,
+      saveLocale: true,
+      useFallbackTranslations: true,
+    ),
+  );
 }
 
 class LenderApp extends StatefulWidget {
@@ -177,6 +188,7 @@ class LenderApp extends StatefulWidget {
 
 class _LenderAppState extends State<LenderApp> {
   bool _first = true;
+  bool _dynamicColorLoaded = false;
   //deeplink
   StreamSubscription _sub;
   String _link;
@@ -343,17 +355,15 @@ class _LenderAppState extends State<LenderApp> {
         if (currentUserId != null) {
           _getUserData();
         }
-        _supportedVersion().then((value) {
-          if (!(value ?? true)) {
-            getIt
-                .get<NavigationService>()
-                .navigateToAnyadForce(MaterialPageRoute(
-                  builder: (context) => VersionNotSupportedPage(),
-                ));
-          }
-        });
       });
     }
+    _supportedVersion().then((value) {
+      if (!(value ?? true)) {
+        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
+              builder: (context) => VersionNotSupportedPage(),
+            ));
+      }
+    });
   }
 
   Future<bool> _supportedVersion() async {
@@ -415,35 +425,44 @@ class _LenderAppState extends State<LenderApp> {
   Widget build(BuildContext context) {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
-        if (_first) {
-          appState.updateThemeNoNotify(widget.themeName);
-          _first = false;
-        }
-        return FeatureDiscovery(
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Lender',
-            theme: appState.theme,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            navigatorKey: getIt.get<NavigationService>().navigatorKey,
-            home: currentUserId == null
-                ? LoginOrRegisterPage(
-                    inviteURL: _link,
-                  )
-                : (_link != null)
-                    ? JoinGroup(
-                        inviteURL: _link,
-                        fromAuth: (currentGroupId == null) ? true : false,
-                      )
-                    : (currentGroupId == null)
-                        ? JoinGroup(
-                            fromAuth: true,
-                          )
-                        : MainPage(),
-          ),
-        );
+        return DynamicColorBuilder(
+            builder: (ColorScheme lightDynamic, ColorScheme darkDynamic) {
+          if (lightDynamic != null && !_dynamicColorLoaded) {
+            AppTheme.addDynamicThemes(lightDynamic, darkDynamic);
+            appState.updateThemeNoNotify(widget.themeName);
+            _dynamicColorLoaded = true;
+          }
+
+          if (_first) {
+            appState.updateThemeNoNotify(widget.themeName);
+            _first = false;
+          }
+          return FeatureDiscovery(
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Lender',
+              theme: appState.theme,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              navigatorKey: getIt.get<NavigationService>().navigatorKey,
+              home: currentUserId == null
+                  ? LoginOrRegisterPage(
+                      inviteURL: _link,
+                    )
+                  : (_link != null)
+                      ? JoinGroup(
+                          inviteURL: _link,
+                          fromAuth: (currentGroupId == null) ? true : false,
+                        )
+                      : (currentGroupId == null)
+                          ? JoinGroup(
+                              fromAuth: true,
+                            )
+                          : MainPage(),
+            ),
+          );
+        });
       },
     );
   }

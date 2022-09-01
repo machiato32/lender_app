@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 
 import '../essentials/widgets/error_message.dart';
 import 'edit_request_dialog.dart';
+import 'shopping_list_entry.dart';
 
 class ShoppingList extends StatefulWidget {
   final bool bigScreen;
@@ -273,7 +274,12 @@ class _ShoppingListState extends State<ShoppingList> {
                         Center(
                             child: Text(
                           'shopping_list'.tr(),
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                         )),
                         SizedBox(
                           height: 10,
@@ -281,7 +287,13 @@ class _ShoppingListState extends State<ShoppingList> {
                         Center(
                           child: Text(
                             'shopping_list_explanation'.tr(),
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -290,82 +302,84 @@ class _ShoppingListState extends State<ShoppingList> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Flexible(
-                                child: TextFormField(
-                                  validator: (value) {
-                                    value = value.trim();
-                                    if (value.isEmpty) {
-                                      return 'field_empty'.tr();
-                                    }
-                                    if (value.length < 2) {
-                                      return 'minimal_length'.tr(args: ['2']);
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: 'wish'.tr(),
-                                    fillColor:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    filled: true,
-                                    prefixIcon: Icon(
-                                      Icons.shopping_cart,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1
-                                          .color,
+                          child: Table(
+                            columnWidths: {
+                              0: FlexColumnWidth(),
+                              1: FractionColumnWidth(0.3),
+                            },
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              TableRow(
+                                children: <Widget>[
+                                  TextFormField(
+                                    validator: (value) {
+                                      value = value.trim();
+                                      if (value.isEmpty) {
+                                        return 'field_empty'.tr();
+                                      }
+                                      if (value.length < 2) {
+                                        return 'minimal_length'.tr(args: ['2']);
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: 'wish'.tr(),
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.shopping_cart,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                        borderSide: BorderSide.none,
+                                      ),
                                     ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide: BorderSide.none,
-                                    ),
+                                    controller: _addRequestController,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(255)
+                                    ],
                                   ),
-                                  controller: _addRequestController,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1
-                                          .color),
-                                  cursorColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(255)
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              GradientButton(
-                                // color: Theme.of(context).colorScheme.secondary,
-                                child: Icon(Icons.add_shopping_cart,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSecondary),
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  if (_formKey.currentState.validate()) {
-                                    String name = _addRequestController.text;
-                                    showDialog(
-                                        builder: (context) =>
-                                            FutureSuccessDialog(
-                                              future:
-                                                  _postShoppingRequest(name),
-                                              dataTrueText: 'add_scf',
-                                              onDataTrue: () {
-                                                _onPostShoppingRequest();
-                                              },
-                                              onDataFalse: () {
-                                                Navigator.pop(context);
-                                                setState(() {});
-                                              },
-                                            ),
-                                        barrierDismissible: false,
-                                        context: context);
-                                  }
-                                },
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GradientButton(
+                                        // color: Theme.of(context).colorScheme.secondary,
+                                        child: Icon(Icons.add_shopping_cart,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary),
+                                        onPressed: () {
+                                          FocusScope.of(context).unfocus();
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            String name =
+                                                _addRequestController.text;
+                                            showDialog(
+                                                builder: (context) =>
+                                                    FutureSuccessDialog(
+                                                      future:
+                                                          _postShoppingRequest(
+                                                              name),
+                                                      dataTrueText: 'add_scf',
+                                                      onDataTrue: () {
+                                                        _onPostShoppingRequest();
+                                                      },
+                                                      onDataFalse: () {
+                                                        Navigator.pop(context);
+                                                        setState(() {});
+                                                      },
+                                                    ),
+                                                barrierDismissible: false,
+                                                context: context);
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -376,7 +390,7 @@ class _ShoppingListState extends State<ShoppingList> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GradientButton(
+                            OutlinedButton(
                               onPressed: () {
                                 showDialog(
                                   builder: (context) => ImShoppingDialog(),
@@ -384,7 +398,13 @@ class _ShoppingListState extends State<ShoppingList> {
                                 );
                               },
                               child: Text('i_m_shopping'.tr(),
-                                  style: Theme.of(context).textTheme.button),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
                             ),
                           ],
                         ),
@@ -420,335 +440,5 @@ class _ShoppingListState extends State<ShoppingList> {
         callback: this.callback,
       );
     }).toList();
-  }
-}
-
-class ShoppingRequestData {
-  int requestId;
-  String name;
-  String requesterUsername, requesterNickname;
-  int requesterId;
-  DateTime updatedAt;
-  List<Reaction> reactions;
-
-  ShoppingRequestData(
-      {this.updatedAt,
-      this.requesterId,
-      this.requesterUsername,
-      this.name,
-      this.requestId,
-      this.requesterNickname,
-      this.reactions});
-
-  factory ShoppingRequestData.fromJson(Map<String, dynamic> json) {
-    return ShoppingRequestData(
-        requestId: json['request_id'],
-        requesterId: json['requester_id'],
-        requesterUsername: json['requester_username'],
-        requesterNickname: json['requester_nickname'],
-        name: json['name'],
-        updatedAt: DateTime.parse(json['updated_at']).toLocal(),
-        reactions: json['reactions']
-            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-            .toList());
-  }
-
-  @override
-  String toString() {
-    return name + '; ' + updatedAt.toString() + '; ' + reactions.join(', ');
-  }
-}
-
-class ShoppingListEntry extends StatefulWidget {
-  final ShoppingRequestData data;
-  final Function callback;
-
-  const ShoppingListEntry({this.data, this.callback});
-
-  @override
-  _ShoppingListEntryState createState() => _ShoppingListEntryState();
-}
-
-class _ShoppingListEntryState extends State<ShoppingListEntry> {
-  Color dateColor;
-  Icon icon;
-  TextStyle style;
-  BoxDecoration boxDecoration;
-
-  String name;
-  String user;
-
-  void callbackForReaction(String reaction) {
-    //TODO: currentNickname
-    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-        ? guestUserId
-        : currentUserId;
-    Reaction oldReaction = widget.data.reactions
-        .firstWhere((element) => element.userId == idToUse, orElse: () => null);
-    bool alreadyReacted = oldReaction != null;
-    bool sameReaction =
-        alreadyReacted ? oldReaction.reaction == reaction : false;
-    if (sameReaction) {
-      widget.data.reactions.remove(oldReaction);
-      setState(() {});
-    } else if (!alreadyReacted) {
-      widget.data.reactions.add(Reaction(
-          nickname: idToUse == currentUserId ? currentUsername : guestNickname,
-          reaction: reaction,
-          userId: idToUse));
-      setState(() {});
-    } else {
-      widget.data.reactions.add(Reaction(
-          nickname: oldReaction.nickname, reaction: reaction, userId: idToUse));
-      widget.data.reactions.remove(oldReaction);
-      setState(() {});
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    name = widget.data.name;
-    user = widget.data.requesterUsername;
-    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-        ? guestUserId
-        : currentUserId;
-    if (widget.data.requesterId == idToUse) {
-      style = Theme.of(context).textTheme.bodyText1;
-      dateColor = Theme.of(context).colorScheme.surface;
-      icon = Icon(
-        Icons.shopping_cart_outlined,
-        color: Theme.of(context).colorScheme.primary,
-        size: 30,
-      );
-      boxDecoration = BoxDecoration(
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.grey[500],
-        //     offset: Offset(0.0, 1.5),
-        //     blurRadius: 1.5,
-        //   )
-        // ],
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(20),
-      );
-    } else {
-      style = Theme.of(context).textTheme.bodyText1;
-      dateColor = Theme.of(context).colorScheme.surface;
-      icon = Icon(Icons.card_giftcard,
-          color: Theme.of(context).colorScheme.secondary, size: 30);
-      boxDecoration = BoxDecoration(
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.grey[500],
-        //     offset: Offset(0.0, 1.5),
-        //     blurRadius: 1.5,
-        //   )
-        // ],
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(20),
-      );
-    }
-    return Dismissible(
-      key: UniqueKey(),
-      secondaryBackground: Container(
-        child: Align(
-            alignment: Alignment.centerRight,
-            child: Icon(
-              widget.data.requesterId != idToUse ? Icons.done : Icons.delete,
-              size: 30,
-              color: Theme.of(context).textTheme.bodyText1.color,
-            )),
-      ),
-      dismissThresholds: {
-        DismissDirection.startToEnd: 0.6,
-        DismissDirection.endToStart: 0.6
-      },
-      background: Align(
-          alignment: Alignment.centerLeft,
-          child: Icon(
-            widget.data.requesterId != idToUse
-                ? Icons.attach_money
-                : Icons.edit,
-            size: 30,
-            color: Theme.of(context).textTheme.bodyText1.color,
-          )),
-      onDismissed: (direction) {
-        if (widget.data.requesterId != idToUse) {
-          showDialog(
-                  builder: (context) => FutureSuccessDialog(
-                        future: _deleteFulfillShoppingRequest(
-                            widget.data.requestId, context),
-                        dataTrueText: 'fulfill_scf',
-                        onDataTrue: () {
-                          _onDeleteFulfillShoppingRequest();
-                        },
-                      ),
-                  barrierDismissible: false,
-                  context: context)
-              .then((value) {
-            widget.callback(restoreId: widget.data.requestId);
-            if (direction == DismissDirection.startToEnd && value == true) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddPurchaseRoute(
-                            type: PurchaseType.fromShopping,
-                            shoppingData: widget.data,
-                          )));
-            }
-          });
-        } else {
-          if (direction == DismissDirection.endToStart) {
-            showDialog(
-                    builder: (context) => FutureSuccessDialog(
-                          future: _deleteFulfillShoppingRequest(
-                              widget.data.requestId, context),
-                          dataTrueText: 'delete_scf',
-                          onDataTrue: () {
-                            _onDeleteFulfillShoppingRequest();
-                          },
-                        ),
-                    barrierDismissible: false,
-                    context: context)
-                .then((value) {
-              if (value ?? false)
-                widget.callback(restoreId: widget.data.requestId);
-            });
-          } else if (direction == DismissDirection.startToEnd) {
-            showDialog(
-              builder: (context) => EditRequestDialog(
-                textBefore: widget.data.name,
-                requestId: widget.data.requestId,
-              ),
-              context: context,
-            ).then((value) {
-              if (value ?? false) {
-                widget.callback();
-              }
-            });
-          }
-        }
-      },
-      child: Stack(
-        children: [
-          Container(
-            height: 75,
-            width: MediaQuery.of(context).size.width,
-            decoration: boxDecoration,
-            margin: EdgeInsets.only(
-                top: widget.data.reactions.length == 0 ? 5 : 10,
-                bottom: 8,
-                left: 5,
-                right: 5),
-            child: Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                onLongPress: () {
-                  showDialog(
-                      builder: (context) => AddReactionDialog(
-                            type: 'requests',
-                            reactions: widget.data.reactions,
-                            reactToId: widget.data.requestId,
-                            callback: this.callbackForReaction,
-                          ),
-                      context: context);
-                },
-                onTap: () async {
-                  showModalBottomSheetCustom(
-                      context: context,
-                      backgroundColor: Theme.of(context).cardTheme.color,
-                      builder: (context) => SingleChildScrollView(
-                          child: ShoppingAllInfo(widget.data))).then((val) {
-                    if (val == 'deleted')
-                      widget.callback(restoreId: widget.data.requestId);
-                    if (val == 'edited') widget.callback();
-                  });
-                },
-                borderRadius: BorderRadius.circular(15),
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Flex(
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      Flexible(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Flexible(
-                              child: Row(
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  icon,
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: Text(
-                                            name,
-                                            style: style.copyWith(fontSize: 22),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                            widget.data.requesterNickname,
-                                            style: TextStyle(
-                                                color: dateColor, fontSize: 15),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          PastReactionContainer(
-            reactions: widget.data.reactions,
-            reactedToId: widget.data.requestId,
-            isSecondaryColor: widget.data.requesterId == idToUse,
-            type: 'requests',
-            callback: this.callbackForReaction,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<bool> _deleteFulfillShoppingRequest(int id, var buildContext) async {
-    try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/requests/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
-      Future.delayed(delayTime())
-          .then((value) => _onDeleteFulfillShoppingRequest());
-      return true;
-    } catch (_) {
-      throw _;
-    }
-  }
-
-  void _onDeleteFulfillShoppingRequest() {
-    Navigator.pop(context, true);
   }
 }

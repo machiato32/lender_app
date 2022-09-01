@@ -111,21 +111,17 @@ class _JoinGroupState extends State<JoinGroup> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-            ),
+            // flexibleSpace: Container(
+            //   decoration: BoxDecoration(
+            //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+            // ),
             title: Text(
               'join'.tr(),
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  letterSpacing: 0.25,
-                  fontSize: 24),
             ),
             leading: (currentGroupName != null)
                 ? IconButton(
                     icon: Icon(Icons.arrow_back,
-                        color: Theme.of(context).colorScheme.onSecondary),
+                        color: Theme.of(context).colorScheme.onSurface),
                     onPressed: () => Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => MainPage()),
@@ -136,6 +132,9 @@ class _JoinGroupState extends State<JoinGroup> {
           drawer: !(widget.fromAuth || currentGroupName != null)
               ? null
               : Drawer(
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(right: Radius.circular(16))),
                   elevation: 16,
                   child: Column(
                     children: [
@@ -147,24 +146,27 @@ class _JoinGroupState extends State<JoinGroup> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'LENDER',
+                                    'Lender',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline6
-                                        .copyWith(letterSpacing: 2.5),
+                                        .headlineSmall
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   Text(
-                                    currentUsername,
+                                    'hi'.tr() + ' ' + currentUsername + '!',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         .copyWith(
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .secondary),
+                                                .primary),
                                   ),
                                 ],
                               ),
@@ -176,11 +178,17 @@ class _JoinGroupState extends State<JoinGroup> {
                       ListTile(
                         leading: Icon(
                           Icons.settings,
-                          color: Theme.of(context).textTheme.bodyText1.color,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         title: Text(
                           'settings'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
                         ),
                         onTap: () {
                           Navigator.push(
@@ -192,11 +200,17 @@ class _JoinGroupState extends State<JoinGroup> {
                       ListTile(
                         leading: Icon(
                           Icons.exit_to_app,
-                          color: Theme.of(context).textTheme.bodyText1.color,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         title: Text(
                           'logout'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
                         ),
                         onTap: () {
                           _logout();
@@ -234,18 +248,25 @@ class _JoinGroupState extends State<JoinGroup> {
                                   children: [
                                     Text(
                                       'scan_code'.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant),
                                     ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         GradientButton(
-                                          child: Icon(Icons.qr_code_scanner,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary),
+                                          child: Icon(
+                                            Icons.qr_code_scanner,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                          ),
                                           onPressed: () async {
                                             if (await Permission.camera
                                                     .request()
@@ -277,8 +298,13 @@ class _JoinGroupState extends State<JoinGroup> {
                                     ),
                                     Text(
                                       'paste_code'.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant),
                                     ),
                                     SizedBox(
                                       height: 10,
@@ -295,15 +321,9 @@ class _JoinGroupState extends State<JoinGroup> {
                                 },
                                 decoration: InputDecoration(
                                   hintText: 'invitation'.tr(),
-                                  fillColor:
-                                      Theme.of(context).colorScheme.onSurface,
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.mail,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -311,14 +331,6 @@ class _JoinGroupState extends State<JoinGroup> {
                                   ),
                                 ),
                                 controller: _tokenController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
                               ),
                               SizedBox(
                                 height: 20,
@@ -338,15 +350,9 @@ class _JoinGroupState extends State<JoinGroup> {
                                   hintText: 'nickname_in_group'.tr(),
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.always,
-                                  fillColor:
-                                      Theme.of(context).colorScheme.onSurface,
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.account_circle,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color,
                                   ),
                                   border: UnderlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -354,14 +360,6 @@ class _JoinGroupState extends State<JoinGroup> {
                                   ),
                                 ),
                                 controller: _nicknameController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(15),
                                 ],
@@ -374,8 +372,13 @@ class _JoinGroupState extends State<JoinGroup> {
                                 children: [
                                   GradientButton(
                                     child: Text('join_group'.tr(),
-                                        style:
-                                            Theme.of(context).textTheme.button),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary)),
                                     onPressed: () {
                                       if (_formKey.currentState.validate()) {
                                         String token = _tokenController.text;
@@ -403,7 +406,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                                             .tr(),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1
+                                                            .bodyLarge
                                                             .copyWith(
                                                                 color: Colors
                                                                     .white),
@@ -426,7 +429,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                                                     color: Theme.of(
                                                                             context)
                                                                         .colorScheme
-                                                                        .onSecondary),
+                                                                        .onPrimary),
                                                                 SizedBox(
                                                                   width: 3,
                                                                 ),
@@ -479,13 +482,17 @@ class _JoinGroupState extends State<JoinGroup> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Center(
-                                child: Text(
-                              'no_group_yet'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(fontSize: 15),
-                            )),
+                              child: Text(
+                                'no_group_yet'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant),
+                              ),
+                            ),
                             SizedBox(
                               height: 10,
                             ),
@@ -494,8 +501,13 @@ class _JoinGroupState extends State<JoinGroup> {
                               children: [
                                 GradientButton(
                                   child: Text('create_group'.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.button),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary)),
                                   onPressed: () {
                                     Navigator.push(
                                         context,

@@ -132,7 +132,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       }).toList()),
       color: (index == 0)
           ? Theme.of(context).colorScheme.primary
-          : Theme.of(context).colorScheme.secondary,
+          : Theme.of(context).colorScheme.tertiary,
       barWidth: 2.5,
       isCurved: false,
       preventCurveOverShooting: true,
@@ -142,7 +142,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         show: true,
         color: (index == 0)
             ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
-            : Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+            : Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
       ),
     );
   }
@@ -202,9 +202,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
           touchTooltipData: LineTouchTooltipData(
             showOnTopOfTheChartBoxArea: true,
             tooltipRoundedRadius: 15,
-            tooltipBgColor: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[200],
+            tooltipBgColor: ElevationOverlay.applyOverlay(
+                context, Theme.of(context).colorScheme.surface, 10),
             getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
               lineBarsSpot.sort((a, b) => a.barIndex.compareTo(b.barIndex));
               return lineBarsSpot.map((lineBarSpot) {
@@ -216,15 +215,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
                           ? keywords[0].tr() + ' '
                           : keywords[1].tr() + ' ') +
                       lineBarSpot.y.printMoney(currentGroupCurrency),
-                  Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      .copyWith(height: lineBarSpot.barIndex == 0 ? 1.5 : 1),
+                  Theme.of(context).textTheme.bodySmall.copyWith(
+                      height: lineBarSpot.barIndex == 0 ? 1.5 : 1,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 );
               }).toList();
             },
           )),
-      backgroundColor: Theme.of(context).cardTheme.color,
+      // backgroundColor: Theme.of(context).cardTheme.color,
       lineBarsData: [
         _generateLineChartBarData(maps[0], 0),
         _generateLineChartBarData(maps[1], 1)
@@ -257,10 +255,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 }
               }
               return Text(text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(fontSize: 15));
+                  style: Theme.of(context).textTheme.bodySmall.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant));
             },
             interval: Duration(days: 1).inMilliseconds.toDouble(),
           ),
@@ -285,10 +281,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 }
               }
               return Text(text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(fontSize: 15));
+                  style: Theme.of(context).textTheme.bodySmall.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant));
             },
             interval: Duration(days: 1).inMilliseconds.toDouble(),
           ),
@@ -304,10 +298,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 padding: const EdgeInsets.all(0),
                 child: Text(
                   value.money(currentGroupCurrency),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(fontSize: 13),
+                  style: Theme.of(context).textTheme.bodySmall.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
               );
             },
@@ -322,9 +314,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         // drawVerticalLine: false,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[200],
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             strokeWidth: 1,
           );
         },
@@ -336,17 +326,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
           DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
           if (date.month == 1) {
             return FlLine(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[800]
-                  : Colors.grey[300],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               // dashArray: [5, 2],
               strokeWidth: 3,
             );
           }
           return FlLine(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             dashArray: [5, 2],
             strokeWidth: 2,
           );
@@ -365,7 +351,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
           children: [
             Text(
               'sum_of'.tr() + ' ',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             Container(
               width: 15,
@@ -373,7 +360,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               decoration: BoxDecoration(
                   color: type == 1
                       ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.secondary,
+                      : Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(15)),
             ),
           ],
@@ -381,7 +368,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
         Flexible(
             child: Text(
           amount.printMoney(currentGroupCurrency),
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ))
       ],
     );
@@ -391,13 +381,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+        // ),
         title: Text(
           'statistics'.tr(),
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
         ),
       ),
       body: ListView(
@@ -409,7 +398,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 children: [
                   Text(
                     'select_date'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -417,7 +407,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   ),
                   Text(
                     'select_date_explanation'.tr(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -427,7 +418,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     DateFormat.yMMMd().format(_startDate) +
                         ' - ' +
                         DateFormat.yMMMd().format(_endDate),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   SizedBox(
                     height: 10,
@@ -447,11 +439,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               initialDateRange: DateTimeRange(
                                   start: _startDate, end: _endDate),
                               builder: (context, child) {
-                                return Theme(
-                                  data:
-                                      AppTheme.getDateRangePickerTheme(context),
-                                  child: child,
-                                );
+                                return child;
                               });
                           if (range != null) {
                             _startDate = range.start;
@@ -477,7 +465,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 children: [
                   Text(
                     'payments_stats'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -485,7 +474,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   ),
                   Text(
                     'payments_stats_explanation'.tr(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -523,8 +513,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'you_payed'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),
@@ -537,7 +532,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                     decoration: BoxDecoration(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
+                                            .tertiary,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                   ),
@@ -546,8 +541,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'you_took'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),
@@ -584,7 +584,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 children: [
                   Text(
                     'purchases_stats'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -592,7 +593,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   ),
                   Text(
                     'purchases_stats_explanation'.tr(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -631,8 +633,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'you_bought'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),
@@ -645,7 +652,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                     decoration: BoxDecoration(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
+                                            .tertiary,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                   ),
@@ -654,8 +661,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'you_received'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),
@@ -692,7 +704,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 children: [
                   Text(
                     'group_stats'.tr(),
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -700,7 +713,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   ),
                   Text(
                     'group_stats_explanation'.tr(),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -739,8 +753,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'purchases_stats'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),
@@ -753,7 +772,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                     decoration: BoxDecoration(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
+                                            .tertiary,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                   ),
@@ -762,8 +781,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                   ),
                                   Text(
                                     'payments_stats'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant),
                                   )
                                 ],
                               ),

@@ -26,7 +26,7 @@ class Balances extends StatefulWidget {
 }
 
 class _BalancesState extends State<Balances> {
-  Future<List<Member>> _money;
+  Future<List<Member>> _members;
 
   Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
@@ -63,7 +63,7 @@ class _BalancesState extends State<Balances> {
     widget.callback();
   }
 
-  Future<List<Member>> _getMoney() async {
+  Future<List<Member>> _getMembers() async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
@@ -92,15 +92,15 @@ class _BalancesState extends State<Balances> {
   @override
   void initState() {
     super.initState();
-    _money = null;
-    _money = _getMoney();
+    _members = null;
+    _members = _getMembers();
   }
 
   @override
   void didUpdateWidget(Balances oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _money = null;
-    _money = _getMoney();
+    _members = null;
+    _members = _getMembers();
   }
 
   @override
@@ -114,23 +114,22 @@ class _BalancesState extends State<Balances> {
             Center(
               child: Text(
                 'balances'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
             SizedBox(height: 40),
             Center(
               child: FutureBuilder(
-                future: _money,
-                builder: (context, snapshot) {
+                future: _members,
+                builder: (context, AsyncSnapshot<List<Member>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      int idToUse = (guestNickname != null &&
-                              guestGroupId == currentGroupId)
-                          ? guestUserId
-                          : currentUserId;
-                      Member currentMember = (snapshot.data as List<Member>)
-                          .firstWhere((element) => element.memberId == idToUse,
-                              orElse: () => null);
+                      Member currentMember = snapshot.data.firstWhere(
+                          (element) => element.memberId == idToUse(),
+                          orElse: () => null);
                       double currencyThreshold =
                           (currencies[currentGroupCurrency]['subunit'] == 1
                                   ? 0.01
@@ -139,20 +138,24 @@ class _BalancesState extends State<Balances> {
                       return Column(
                         children: [
                           Column(children: _generateBalances(snapshot.data)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Visibility(
-                                visible: currentMember == null
-                                    ? false
-                                    : (currentMember.balance <
-                                        -currencyThreshold),
-                                child: GradientButton(
+                          Visibility(
+                              visible: snapshot.data.length < 2,
+                              child: _oneMemberWidget()),
+                          Visibility(
+                            visible: currentMember == null
+                                ? false
+                                : (currentMember.balance < -currencyThreshold),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                OutlinedButton(
                                   onPressed: () {
                                     List<PaymentData> payments =
                                         paymentsNeeded(snapshot.data)
                                             .where((payment) =>
-                                                payment.payerId == idToUse)
+                                                payment.payerId == idToUse())
                                             .toList();
                                     showDialog(
                                         context: context,
@@ -171,10 +174,12 @@ class _BalancesState extends State<Balances> {
                                                     'payments_needed'.tr(),
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline6
+                                                        .titleLarge
                                                         .copyWith(
-                                                            color:
-                                                                Colors.white),
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .onSurface),
                                                   ),
                                                   SizedBox(
                                                     height: 10,
@@ -199,10 +204,15 @@ class _BalancesState extends State<Balances> {
                                                         },
                                                         child: Text(
                                                           'back'.tr(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .button,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .button
+                                                              .copyWith(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .onPrimary),
                                                         ),
                                                       ),
                                                       Visibility(
@@ -243,7 +253,12 @@ class _BalancesState extends State<Balances> {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .button,
+                                                                .button
+                                                                .copyWith(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onPrimary),
                                                           ),
                                                         ),
                                                       ),
@@ -259,12 +274,18 @@ class _BalancesState extends State<Balances> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       'who_to_pay'.tr(),
-                                      style: Theme.of(context).textTheme.button,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           )
                         ],
                       );
@@ -274,8 +295,8 @@ class _BalancesState extends State<Balances> {
                         locationOfError: 'balances',
                         callback: () {
                           setState(() {
-                            _money = null;
-                            _money = _getMoney();
+                            _members = null;
+                            _members = _getMembers();
                           });
                         },
                       );
@@ -292,86 +313,14 @@ class _BalancesState extends State<Balances> {
   }
 
   Widget _generatePaymentsNeeded(List<PaymentData> payments) {
-    return Flexible(
-      child: ListView(
-        shrinkWrap: true,
-        children: payments.map<Widget>((PaymentData payment) {
-          var icon = Icon(Icons.call_made,
-              color: Theme.of(context).textTheme.button.color);
-          var style = Theme.of(context).textTheme.button;
-          var dateColor = Theme.of(context).textTheme.button.color;
-          var boxDecoration = BoxDecoration(
-            gradient: AppTheme.gradientFromTheme(Theme.of(context),
-                useSecondary: true),
-            borderRadius: BorderRadius.circular(15),
-          );
-          var amount = payment.amount.money(currentGroupCurrency);
-          return Container(
-            height: 65,
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(bottom: 4),
-            decoration: boxDecoration,
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Flexible(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Flexible(
-                              child: Row(
-                                children: <Widget>[
-                                  icon,
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Flexible(
-                                            child: Text(
-                                          payment.takerNickname,
-                                          style: style.copyWith(fontSize: 22),
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
-                                        Flexible(
-                                            child: Text(
-                                          'auto_payment'.tr(),
-                                          style: TextStyle(
-                                              color: dateColor, fontSize: 15),
-                                          overflow: TextOverflow.ellipsis,
-                                        ))
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              amount,
-                              style: style,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-      ),
+    return ListView(
+      shrinkWrap: true,
+      children: payments.map<Widget>((PaymentData payment) {
+        return PaymentEntry(
+          data: payment,
+          isTappable: false,
+        );
+      }).toList(),
     );
   }
 
@@ -390,161 +339,136 @@ class _BalancesState extends State<Balances> {
   }
 
   List<Widget> _generateBalances(List<Member> members) {
-    int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-        ? guestUserId
-        : currentUserId;
-    List<Widget> widgets = members.map<Widget>((Member member) {
-      if (member.memberId == idToUse) {
-        TextStyle style = Theme.of(context).textTheme.button;
-        return Column(
-          children: <Widget>[
-            Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(Theme.of(context),
+    return members.map<Widget>((Member member) {
+      return Container(
+          padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+          decoration: member.memberId == idToUse()
+              ? BoxDecoration(
+                  gradient: AppTheme.gradientFromTheme(currentThemeName,
                       useSecondary: true),
+                  // color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(15),
-                  // boxShadow: (Theme.of(context).brightness == Brightness.light)
-                  //     ? [
-                  //         BoxShadow(
-                  //           color: Colors.grey[500],
-                  //           offset: Offset(0.0, 1.5),
-                  //           blurRadius: 1.5,
-                  //         )
-                  //       ]
-                  //     : [],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      member.nickname,
-                      style: style,
-                    ),
-                    Text(
-                      member.balance.money(currentGroupCurrency),
-                      style: style,
-                    )
-                  ],
-                )),
-            SizedBox(
-              height: 3,
-            )
-          ],
-        );
-      }
-      return Column(
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    member.nickname,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  Text(
-                    member.balance.money(currentGroupCurrency),
-                    style: Theme.of(context).textTheme.bodyText1,
-                  )
-                ],
-              )),
-          SizedBox(
-            height: 3,
-          )
-        ],
-      );
-    }).toList();
-    if (members.length == 1) {
-      widgets.add(Column(
-        children: [
-          SizedBox(height: 20),
-          Text(
-            'you_seem_lonely'.tr(),
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          SizedBox(height: 10),
-          Text('invite_friends'.tr(),
-              style:
-                  Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
-          SizedBox(height: 5),
-          FutureBuilder(
-            future: _getInvitation(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasData) {
-                  return Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return ShareGroupDialog(
-                                      inviteCode: snapshot.data);
-                                });
-                          },
-                          child: Icon(
-                            Icons.share,
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return ErrorMessage(
-                    error: snapshot.error.toString(),
-                    locationOfError: 'invitation',
-                    callback: () {
-                      setState(() {
-                        // _invitation = null;
-                        // _invitation = _getInvitation();
-                      });
-                    },
-                  );
-                }
-              }
-              return Center(child: CircularProgressIndicator());
-            },
-          ),
-          SizedBox(height: 10),
-          Text('add_guests_offline'.tr(),
-              style:
-                  Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 17)),
-          SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                child: Icon(
-                  Icons.person_add,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MainPage(
-                              selectedIndex: widget.bigScreen ? 1 : 2,
-                              scrollTo: 'guests')),
-                      (route) => false);
-                },
+                )
+              : null,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                member.nickname,
+                style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                    color: member.memberId == idToUse()
+                        ? Theme.of(context).colorScheme.onSecondary
+                        : Theme.of(context).colorScheme.onSurface),
               ),
+              Text(
+                member.balance.money(currentGroupCurrency),
+                style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                    color: member.memberId == idToUse()
+                        ? Theme.of(context).colorScheme.onSecondary
+                        : Theme.of(context).colorScheme.onSurface),
+              )
             ],
-          ),
-          SizedBox(height: 10),
-          Text(
-            'you_seem_lonely_explanation'.tr(),
-            style: Theme.of(context).textTheme.subtitle2,
-            textAlign: TextAlign.center,
-          )
-        ],
-      ));
-    }
-    return widgets;
+          ));
+    }).toList();
+  }
+
+  Widget _oneMemberWidget() {
+    return Column(
+      children: [
+        SizedBox(height: 20),
+        Text(
+          'you_seem_lonely'.tr(),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              .copyWith(color: Theme.of(context).colorScheme.onSurface),
+        ),
+        SizedBox(height: 10),
+        Text('invite_friends'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                .copyWith(color: Theme.of(context).colorScheme.onSurface)),
+        SizedBox(height: 5),
+        FutureBuilder(
+          future: _getInvitation(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return ShareGroupDialog(
+                                    inviteCode: snapshot.data);
+                              });
+                        },
+                        child: Icon(
+                          Icons.share,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return ErrorMessage(
+                  error: snapshot.error.toString(),
+                  locationOfError: 'invitation',
+                  callback: () {
+                    setState(() {
+                      // _invitation = null;
+                      // _invitation = _getInvitation();
+                    });
+                  },
+                );
+              }
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
+        SizedBox(height: 10),
+        Text('add_guests_offline'.tr(),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                .copyWith(color: Theme.of(context).colorScheme.onSurface)),
+        SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GradientButton(
+              child: Icon(
+                Icons.person_add,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MainPage(
+                            selectedIndex: widget.bigScreen ? 1 : 2,
+                            scrollTo: 'guests')),
+                    (route) => false);
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        Text(
+          'you_seem_lonely_explanation'.tr(),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              .copyWith(color: Theme.of(context).colorScheme.onSurface),
+          textAlign: TextAlign.center,
+        )
+      ],
+    );
   }
 }

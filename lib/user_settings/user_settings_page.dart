@@ -28,15 +28,15 @@ class _SettingsState extends State<Settings> {
         adHeight; //Height without status bar and appbar
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+        // ),
         title: Text(
           'settings'.tr(),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSecondary,
-          ),
+          // style: TextStyle(
+          //   color: Theme.of(context).colorScheme.onSecondary,
+          // ),
         ),
       ),
       body: GestureDetector(

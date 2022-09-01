@@ -66,9 +66,6 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: (Theme.of(context).brightness == Brightness.light)
-          ? Colors.white
-          : Colors.black,
       key: _scaffoldKey,
       body: Center(
         child: Column(
@@ -128,8 +125,8 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 'title'.tr().toUpperCase(),
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
-                    .copyWith(letterSpacing: 2.5),
+                    .headlineMedium
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
             SizedBox(
@@ -138,8 +135,10 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
             Flexible(
                 child: Text(
               'subtitle'.tr().toUpperCase(),
-              style:
-                  Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -159,7 +158,8 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                   },
                   child: Text(
                     'login'.tr(),
-                    style: Theme.of(context).textTheme.button,
+                    style: Theme.of(context).textTheme.labelLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -177,7 +177,8 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                                 RegisterPage(inviteURL: widget.inviteURL)));
                   },
                   child: Text('register'.tr(),
-                      style: Theme.of(context).textTheme.button),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary)),
                 ),
               ],
             ),

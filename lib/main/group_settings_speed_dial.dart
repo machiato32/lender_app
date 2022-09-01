@@ -43,12 +43,14 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                   children: [
                     Text(
                       'statistics_not_available'.tr(),
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10),
                     Text('statistics_not_available_explanation'.tr(),
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Theme.of(context).textTheme.titleSmall.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center),
                     SizedBox(height: 15),
                     Row(
@@ -57,7 +59,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                         GradientButton(
                           child: ColorFiltered(
                               colorFilter: ColorFilter.mode(
-                                  Theme.of(context).colorScheme.onSecondary,
+                                  Theme.of(context).colorScheme.onPrimary,
                                   BlendMode.srcIn),
                               child: Image.asset(
                                 'assets/dodo_color.png',
@@ -81,8 +83,9 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   Widget _generateSpeedDial(bool boosted, {DateTime created}) {
     return SpeedDial(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      child: Icon(Icons.show_chart),
+      backgroundColor: Theme.of(context).colorScheme.tertiary,
+      child: Icon(Icons.show_chart,
+          color: Theme.of(context).colorScheme.onTertiary),
       overlayColor: (Theme.of(context).brightness == Brightness.dark)
           ? Colors.black
           : Colors.white,
@@ -90,25 +93,26 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
       children: [
         SpeedDialChild(
             foregroundColor: boosted
-                ? Theme.of(context).colorScheme.onSecondary
-                : Colors.black,
+                ? Theme.of(context).colorScheme.onTertiaryContainer
+                : Theme.of(context).colorScheme.onError,
             backgroundColor: boosted
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey[400],
+                ? Theme.of(context).colorScheme.tertiaryContainer
+                : Theme.of(context).colorScheme.error,
             labelWidget: GestureDetector(
               onTap: () {
-                if (boosted) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StatisticsPage(
-                                groupCreation: created == null
-                                    ? DateTime.parse('2020-01-17')
-                                    : created,
-                              )));
-                } else {
-                  showNoStatisticsDialog();
-                }
+                //TODO
+                // if (boosted) {
+                //   Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => StatisticsPage(
+                //                 groupCreation: created == null
+                //                     ? DateTime.parse('2020-01-17')
+                //                     : created,
+                //               )));
+                // } else {
+                //   showNoStatisticsDialog();
+                // }
               },
               child: Padding(
                 padding: EdgeInsets.only(right: 18.0),
@@ -122,33 +126,30 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       padding:
                           EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
-                        gradient: boosted
-                            ? AppTheme.gradientFromTheme(Theme.of(context))
-                            : LinearGradient(
-                                colors: [Colors.grey[400], Colors.grey[400]]),
+                        // gradient: boosted
+                        //     ? AppTheme.gradientFromTheme(Theme.of(context))
+                        //     : LinearGradient(
+                        //         colors: [Colors.grey[400], Colors.grey[400]]),
+                        color: boosted
+                            ? Theme.of(context).colorScheme.tertiaryContainer
+                            : Theme.of(context).colorScheme.error,
                         borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.7),
-                            offset: Offset(0.8, 0.8),
-                            blurRadius: 2.4,
-                          )
-                        ],
                       ),
                       child: Text('statistics'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                              color: Theme.of(context).textTheme.button.color,
-                              fontSize: 18)),
+                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                color: boosted
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer
+                                    : Theme.of(context).colorScheme.onError,
+                              )),
                     ),
                     SizedBox(
                       height: 5,
                     ),
                     Text(
                       'statistics_explanation'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(fontSize: 13),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -170,14 +171,15 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
               }
             }),
         SpeedDialChild(
-            foregroundColor: Theme.of(context).colorScheme.onSecondary,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
             labelWidget: GestureDetector(
               onTap: () {
-                showDialog(
-                  builder: (context) => DownloadExportDialog(),
-                  context: context,
-                );
+                //TODO
+                // showDialog(
+                //   builder: (context) => DownloadExportDialog(),
+                //   context: context,
+                // );
               },
               child: Padding(
                 padding: EdgeInsets.only(right: 18.0),
@@ -191,19 +193,15 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       padding:
                           EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
-                        gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                        // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
                         borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.7),
-                            offset: Offset(0.8, 0.8),
-                            blurRadius: 2.4,
-                          )
-                        ],
                       ),
                       child: Text('export'.tr(),
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                              color: Theme.of(context).textTheme.button.color,
+                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer,
                               fontSize: 18)),
                     ),
                     SizedBox(
@@ -211,10 +209,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                     ),
                     Text(
                       'export_explanation'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(fontSize: 13),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

@@ -68,7 +68,10 @@ class _GroupMembersState extends State<GroupMembers> {
             Center(
                 child: Text(
               'members'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
             )),
             FutureBuilder(
               future: _members,
@@ -89,7 +92,13 @@ class _GroupMembersState extends State<GroupMembers> {
                                 Center(
                                     child: Text(
                                   'members_explanation'.tr(),
-                                  style: Theme.of(context).textTheme.subtitle2,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
                                   textAlign: TextAlign.center,
                                 )),
                               ],
@@ -105,7 +114,13 @@ class _GroupMembersState extends State<GroupMembers> {
                                 Center(
                                     child: Text(
                                   'members_explanation_admin'.tr(),
-                                  style: Theme.of(context).textTheme.subtitle2,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
                                   textAlign: TextAlign.center,
                                 )),
                               ],
@@ -171,34 +186,39 @@ class MemberEntry extends StatefulWidget {
 }
 
 class _MemberEntryState extends State<MemberEntry> {
-  TextStyle style;
+  TextStyle mainTextStyle;
+  TextStyle subTextStyle;
   BoxDecoration boxDecoration;
-  Color nicknameColor, iconColor;
+  Color iconColor;
 
   @override
   Widget build(BuildContext context) {
     if (widget.member.memberId == currentUserId) {
-      style = Theme.of(context).textTheme.button;
-      nicknameColor = Theme.of(context).textTheme.button.color;
-      iconColor = style.color;
+      mainTextStyle = Theme.of(context)
+          .textTheme
+          .bodyLarge
+          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
+      subTextStyle = Theme.of(context)
+          .textTheme
+          .bodySmall
+          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
+      iconColor = Theme.of(context).colorScheme.onSecondary;
       boxDecoration = BoxDecoration(
         gradient:
-            AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+            AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
+        // color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(15),
-        // boxShadow: (Theme.of(context).brightness == Brightness.light)
-        //     ? [
-        //         BoxShadow(
-        //           color: Colors.grey[500],
-        //           offset: Offset(0.0, 1.5),
-        //           blurRadius: 1.5,
-        //         )
-        //       ]
-        //     : [],
       );
     } else {
-      iconColor = Theme.of(context).textTheme.bodyText1.color;
-      style = Theme.of(context).textTheme.bodyText1;
-      nicknameColor = Theme.of(context).colorScheme.surface;
+      mainTextStyle = Theme.of(context)
+          .textTheme
+          .bodyLarge
+          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+      subTextStyle = Theme.of(context)
+          .textTheme
+          .bodySmall
+          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+      iconColor = Theme.of(context).colorScheme.onSurface;
       boxDecoration = BoxDecoration();
     }
     return Container(
@@ -250,14 +270,13 @@ class _MemberEntryState extends State<MemberEntry> {
                                   Flexible(
                                       child: Text(
                                     widget.member.username,
-                                    style: style.copyWith(fontSize: 20),
+                                    style: mainTextStyle,
                                     overflow: TextOverflow.ellipsis,
                                   )),
                                   Flexible(
                                       child: Text(
                                     widget.member.nickname,
-                                    style: TextStyle(
-                                        color: nicknameColor, fontSize: 15),
+                                    style: subTextStyle,
                                     overflow: TextOverflow.ellipsis,
                                   ))
                                 ],
@@ -271,7 +290,7 @@ class _MemberEntryState extends State<MemberEntry> {
                             visible: widget.member.isAdmin,
                             child: Text(
                               '👑  ', //itt van egy korona emoji lol
-                              style: style,
+                              style: mainTextStyle,
                             )),
                       ),
                     ],

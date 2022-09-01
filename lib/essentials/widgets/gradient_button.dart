@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
+import '../../config.dart';
 import '../app_theme.dart';
 
 class GradientButton extends StatelessWidget {
@@ -15,8 +16,7 @@ class GradientButton extends StatelessWidget {
       constraints: BoxConstraints(minWidth: 88.0, minHeight: 36.0),
       child: Ink(
         decoration: BoxDecoration(
-          gradient:
-              AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
+          gradient: AppTheme.gradientFromTheme(currentThemeName),
           borderRadius: BorderRadius.circular(15),
           // boxShadow: (Theme.of(context).brightness==Brightness.light && useShadow)
           // ?[ BoxShadow(

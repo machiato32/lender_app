@@ -203,7 +203,7 @@
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
     "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!",
 
-    "gradient_available_in_paid_version": "A gradienses színeket megveheted az alkalmazáson belül",
+    "gradient_available_in_paid_version": "A színátmenetes és dinamikus témákat megveheted az alkalmazáson belül",
 
     "version_not_supported": "A verzió nem támogatott",
     "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
@@ -219,8 +219,8 @@
     "group_boost": "Csoportfejlesztő Dodók",
     "group_boost_explanation": "Növeld meg a csoport létszámát 30 főre, és kövessétek nyomon a statisztikáit.\nA csomag 2 csoporthoz elegendő Dodót tartalmaz.",
     "ad_gradient_bundle": "Kis Lender csomag",
-    "ad_gradient_bundle_explanation":"Élvezd a Lendert teljes szépségében.\nTávolítsd el a reklámokat, engedélyezd a színátmenetes témákat.",
-    "gradients": "Gradienses témák",
+    "ad_gradient_bundle_explanation":"Élvezd a Lendert teljes szépségében.\nTávolítsd el a reklámokat, engedélyezd a színátmenetes és dinamikus témákat.",
+    "gradients": "Színátmenetes témák",
     "gradients_explanation": "Élvezd a Lendert minden színben.\nEngedélyezd a színátmenetes témákat. (A mi kedvencünk a narancssárga 😉)",
     "big_lender_bundle": "Nagy Lender csomag",
     "big_lender_bundle_explanation": "A kis Lender csomaghoz hozzácsaptunk 1 csoport fejlesztéséhez elegendő Dodót.",
@@ -367,5 +367,9 @@
     "share": "Oszd meg a csoportot",
     "share_url": "Vagy hívd meg a barátaid üzenetben",
     "scan_code": "Olvasd be a QR kódot",
-    "paste_code": "Vagy másold ide a meghívót:"
+    "paste_code": "Vagy másold ide a meghívót:",
+
+    "gradient_themes" : "Színátmenetes témák",
+    "dynamic_themes" : "Dinamikus témák",
+    "dynamic_themes_explanation" : "Ezek a témák alkalmazkodni fognak a rendszer színbeállításaihoz (amennyiben azok elérhetők)"
 }

@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/app_theme.dart';
 import '../essentials/widgets/error_message.dart';
 import '../essentials/widgets/gradient_button.dart';
 
@@ -25,7 +26,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
   Future<List<PurchaseData>> _purchases;
   TabController _tabController;
-
+  int _selectedIndex;
   Future<List<PurchaseData>> _getPurchases(
       {bool overwriteCache = false}) async {
     try {
@@ -85,6 +86,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   void initState() {
     _tabController = TabController(
         length: 2, vsync: this, initialIndex: widget.selectedIndex);
+    _selectedIndex = widget.selectedIndex;
     _payments = null;
     _payments = _getPayments();
     _purchases = null;
@@ -110,38 +112,129 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           children: <Widget>[
             Text(
               'history'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             SizedBox(
               height: 10,
             ),
             Text(
               'history_explanation'.tr(),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 20,
             ),
             TabBar(
+              indicatorColor: Colors.transparent,
               controller: _tabController,
+              onTap: (_newIndex) {
+                setState(() {
+                  _selectedIndex = _newIndex;
+                });
+              },
+              splashFactory: InkSparkle.splashFactory,
+              // overlayColor:
+              //     MaterialStateProperty.all<Color>(Colors.transparent),
               tabs: <Widget>[
-                Tab(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Theme.of(context).colorScheme.secondary,
+                Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: _selectedIndex == 0
+                        ? AppTheme.gradientFromTheme(currentThemeName)
+                        : LinearGradient(colors: [
+                            ElevationOverlay.applyOverlay(context,
+                                Theme.of(context).colorScheme.surface, 10),
+                            ElevationOverlay.applyOverlay(context,
+                                Theme.of(context).colorScheme.surface, 10)
+                          ]),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.shopping_cart,
+                          color: _selectedIndex == 0
+                              ? Theme.of(context).colorScheme.onSecondary
+                              : Theme.of(context).colorScheme.onSurfaceVariant),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'purchases'.tr(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(
+                                  color: _selectedIndex == 0
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Tab(
-                    icon: Icon(
-                  Icons.payments,
-                  color: Theme.of(context).colorScheme.secondary,
-                )),
+                Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: _selectedIndex == 1
+                        ? AppTheme.gradientFromTheme(currentThemeName)
+                        : LinearGradient(colors: [
+                            ElevationOverlay.applyOverlay(context,
+                                Theme.of(context).colorScheme.surface, 10),
+                            ElevationOverlay.applyOverlay(context,
+                                Theme.of(context).colorScheme.surface, 10)
+                          ]),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.attach_money,
+                          color: _selectedIndex == 1
+                              ? Theme.of(context).colorScheme.onSecondary
+                              : Theme.of(context).colorScheme.onSurfaceVariant),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'payments'.tr(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(
+                                  color: _selectedIndex == 1
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             Container(
               height: 550,
               child: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: <Widget>[
                   FutureBuilder(
@@ -191,9 +284,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                             Icon(
                                               Icons.more_horiz,
                                               color: Theme.of(context)
-                                                  .textTheme
-                                                  .button
-                                                  .color,
+                                                  .colorScheme
+                                                  .onPrimary,
                                             ),
                                             SizedBox(
                                               width: 4,
@@ -202,7 +294,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                               'more'.tr(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .button,
+                                                  .button
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimary),
                                             ),
                                           ],
                                         ),
@@ -273,9 +369,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           Icon(
                                             Icons.more_horiz,
                                             color: Theme.of(context)
-                                                .textTheme
-                                                .button
-                                                .color,
+                                                .colorScheme
+                                                .onPrimary,
                                           ),
                                           SizedBox(
                                             width: 4,
@@ -284,7 +379,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                             'more'.tr(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .button,
+                                                .labelLarge
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimary),
                                           ),
                                         ],
                                       ),

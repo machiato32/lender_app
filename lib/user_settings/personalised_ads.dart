@@ -4,36 +4,34 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-class PersonalisedAds extends StatefulWidget {
 
+class PersonalisedAds extends StatefulWidget {
   @override
   _PersonalisedAdsState createState() => _PersonalisedAdsState();
 }
 
 class _PersonalisedAdsState extends State<PersonalisedAds> {
-
   bool _personalisedAds = personalisedAds;
 
   Future<bool> _updatePersonalisedAds() async {
-    try{
-      if(personalisedAds!=_personalisedAds){
+    try {
+      if (personalisedAds != _personalisedAds) {
         Map<String, dynamic> body = {
-          "personalised_ads":_personalisedAds?"on":"off"
+          "personalised_ads": _personalisedAds ? "on" : "off"
         };
         await httpPut(context: context, uri: '/user', body: body);
-        personalisedAds=_personalisedAds;
+        personalisedAds = _personalisedAds;
         Future.delayed(delayTime()).then((value) => _onUpdatePersonalisedAds());
         return true;
-      }else{
+      } else {
         return Future.value(true);
       }
-
-    } catch(_){
+    } catch (_) {
       throw _;
     }
   }
 
-  void _onUpdatePersonalisedAds(){
+  void _onUpdatePersonalisedAds() {
     Navigator.pop(context);
     Navigator.pop(context);
   }
@@ -48,17 +46,18 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
           children: [
             Center(
                 child: Text(
-                  'use_personalised_ads'.tr(),
-                  style: Theme.of(context).textTheme.headline6,
-                )
-            ),
+              'use_personalised_ads'.tr(),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+            )),
             SizedBox(
               height: 10,
             ),
             Center(
               child: Text(
                 'use_personalised_ads_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -67,37 +66,43 @@ class _PersonalisedAdsState extends State<PersonalisedAds> {
             ),
             SwitchListTile(
               value: _personalisedAds,
-              secondary: Icon(Icons.update, color: Theme.of(context).colorScheme.primary,),
-              activeColor: Theme.of(context).colorScheme.primary,
-              onChanged: (value){
+              secondary: Icon(
+                Icons.update,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              activeColor: Theme.of(context).colorScheme.secondary,
+              onChanged: (value) {
                 setState(() {
-                  _personalisedAds=value;
+                  _personalisedAds = value;
                 });
                 showDialog(
                     builder: (context) => FutureSuccessDialog(
-                      future: _updatePersonalisedAds(),
-                      onDataTrue: (){
-                        _onUpdatePersonalisedAds();
-                      },
-                      onDataFalse: (){
-                        Navigator.pop(context);
-                        setState(() {
-                          _personalisedAds=!_personalisedAds;
-                        });
-                      },
-                      onNoData: (){
-                        Navigator.pop(context);
-                        setState(() {
-                          _personalisedAds=!_personalisedAds;
-                        });
-                      },
-                      dataTrueText: 'update_personalised_ads_scf',
-                    ), context: context,
-                    barrierDismissible: false
-                );
+                          future: _updatePersonalisedAds(),
+                          onDataTrue: () {
+                            _onUpdatePersonalisedAds();
+                          },
+                          onDataFalse: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              _personalisedAds = !_personalisedAds;
+                            });
+                          },
+                          onNoData: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              _personalisedAds = !_personalisedAds;
+                            });
+                          },
+                          dataTrueText: 'update_personalised_ads_scf',
+                        ),
+                    context: context,
+                    barrierDismissible: false);
               },
-
-              title: Text('use_personalised_ads'.tr(), style: Theme.of(context).textTheme.subtitle2,),
+              title: Text(
+                'use_personalised_ads'.tr(),
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
               dense: true,
             ),
           ],

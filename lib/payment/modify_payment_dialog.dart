@@ -9,6 +9,7 @@ import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
   TextEditingController _noteController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   Future<List<Member>> _members;
-  Member _chipChoiceValue;
+  Member _selectedMember;
   var _formKey = GlobalKey<FormState>();
 
   int _index = 0;
@@ -44,11 +45,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-          ? guestUserId
-          : currentUserId;
       for (var member in decoded['data']['members']) {
-        if (member['user_id'] != idToUse) {
+        if (member['user_id'] != idToUse()) {
           members.add(Member(
               nickname: member['nickname'],
               balance: (member['balance'] * 1.0),
@@ -112,7 +110,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
               Center(
                   child: Text(
                 'modify_payment'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -121,7 +120,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
               Center(
                   child: Text(
                 'modify_payment_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -132,11 +132,9 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'note'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.note,
-                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -145,10 +143,6 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                   ),
                   inputFormatters: [LengthLimitingTextInputFormatter(50)],
                   controller: _noteController,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               Visibility(
@@ -171,25 +165,18 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                       controller: _amountController,
                       decoration: InputDecoration(
                         hintText: 'amount'.tr(),
-                        fillColor: Theme.of(context).colorScheme.onSurface,
                         filled: true,
                         prefixIcon: Icon(
                           Icons.pin,
-                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         suffixIcon: Icon(
                           Icons.calculate,
-                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).textTheme.bodyText1.color),
-                      cursorColor: Theme.of(context).colorScheme.secondary,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
@@ -243,42 +230,17 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                                         widget.savedPayment.takerId,
                                     orElse: () => null);
                             if (selectMember != null)
-                              _chipChoiceValue = selectMember;
+                              _selectedMember = selectMember;
                             widget.savedPayment.takerId = -1;
                           }
-                          return Wrap(
-                            spacing: 10,
-                            children: snapshot.data
-                                .map<ChoiceChip>((Member member) => ChoiceChip(
-                                      label: Text(member.nickname),
-                                      pressElevation: 30,
-                                      selected: _chipChoiceValue == member,
-                                      onSelected: (bool newValue) {
-                                        FocusScope.of(context).unfocus();
-                                        setState(() {
-                                          _chipChoiceValue = member;
-                                          // _selectedMember = member;
-                                        });
-                                      },
-                                      labelStyle: _chipChoiceValue == member
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSecondary)
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      selectedColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ))
-                                .toList(),
+                          return MemberChips(
+                            allowMultiple: false,
+                            allMembers: snapshot.data,
+                            membersChanged: (members) {
+                              _selectedMember =
+                                  members.isEmpty ? null : members[0];
+                            },
+                            membersChosen: [_selectedMember],
                           );
                         } else {
                           return ErrorMessage(
@@ -314,7 +276,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                         });
                       },
                       child: Icon(Icons.navigate_before,
-                          color: Theme.of(context).textTheme.button.color),
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ),
                   GradientButton(
@@ -329,7 +291,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                       } else {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
-                          if (_chipChoiceValue == null) {
+                          if (_selectedMember == null) {
                             FToast ft = FToast();
                             ft.init(context);
                             ft.showToast(
@@ -345,7 +307,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                                     future: _updatePayment(
                                         amount,
                                         note,
-                                        _chipChoiceValue,
+                                        _selectedMember,
                                         widget.savedPayment.paymentId),
                                   ),
                               context: context);
@@ -353,7 +315,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                       }
                     },
                     child: Icon(_index == 2 ? Icons.check : Icons.navigate_next,
-                        color: Theme.of(context).textTheme.button.color),
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],
               ),

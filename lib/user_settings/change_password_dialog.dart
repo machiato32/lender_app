@@ -55,11 +55,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         },
         decoration: InputDecoration(
           hintText: 'old_password'.tr(),
-          fillColor: Theme.of(context).colorScheme.onSurface,
           filled: true,
           prefixIcon: Icon(
             Icons.password,
-            color: Theme.of(context).textTheme.bodyText1.color,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -71,9 +70,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         ],
         controller: _oldPasswordController,
         obscureText: true,
-        style: TextStyle(
-            fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-        cursorColor: Theme.of(context).colorScheme.secondary,
       ),
       TextFormField(
         validator: (value) {
@@ -87,11 +83,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         },
         decoration: InputDecoration(
           hintText: 'new_password'.tr(),
-          fillColor: Theme.of(context).colorScheme.onSurface,
           filled: true,
           prefixIcon: Icon(
             Icons.password,
-            color: Theme.of(context).textTheme.bodyText1.color,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -103,9 +98,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         ],
         controller: _newPasswordController,
         obscureText: true,
-        style: TextStyle(
-            fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-        cursorColor: Theme.of(context).colorScheme.secondary,
       ),
       TextFormField(
         validator: (value) {
@@ -122,11 +114,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         },
         decoration: InputDecoration(
           hintText: 'new_password_confirm'.tr(),
-          fillColor: Theme.of(context).colorScheme.onSurface,
           filled: true,
           prefixIcon: Icon(
             Icons.password,
-            color: Theme.of(context).textTheme.bodyText1.color,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -138,9 +128,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         ],
         controller: _confirmPasswordController,
         obscureText: true,
-        style: TextStyle(
-            fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-        cursorColor: Theme.of(context).colorScheme.secondary,
       ),
       TextFormField(
         validator: (value) {
@@ -155,11 +142,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         controller: _passwordReminderController,
         decoration: InputDecoration(
           hintText: 'password_reminder'.tr(),
-          fillColor: Theme.of(context).colorScheme.onSurface,
           filled: true,
           prefixIcon: Icon(
             Icons.search,
-            color: Theme.of(context).textTheme.bodyText1.color,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -169,9 +154,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         inputFormatters: [
           LengthLimitingTextInputFormatter(50),
         ],
-        style: TextStyle(
-            fontSize: 20, color: Theme.of(context).textTheme.bodyText1.color),
-        cursorColor: Theme.of(context).colorScheme.secondary,
       ),
     ];
   }
@@ -182,7 +164,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return Form(
       key: _formKey,
       child: Dialog(
-        backgroundColor: Theme.of(context).cardTheme.color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -191,7 +172,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             children: <Widget>[
               Text(
                 'change_password'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -217,7 +199,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                       },
                       child: Icon(
                         Icons.arrow_left,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -248,7 +230,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     },
                     child: Icon(
                       _index == 3 ? Icons.check : Icons.arrow_right,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ],

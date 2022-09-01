@@ -60,20 +60,23 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
             children: [
               Text(
                 e.id.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 10,
               ),
               Text((e.id + '_explanation').tr(),
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.titleSmall.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center),
               SizedBox(
                 height: 10,
               ),
               Text('price'.tr() + e.price,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -81,7 +84,8 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
                   GradientButton(
                     child: Text(
                       'buy'.tr(),
-                      style: Theme.of(context).textTheme.button,
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary),
                     ),
                     onPressed: () {
                       PurchaseParam purchaseParam =
@@ -110,12 +114,12 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
       appBar: AppBar(
         title: Text(
           'in_app_purchase'.tr(),
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          // style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+        // ),
       ),
       body: !isIAPPlatformEnabled
           ? Container()

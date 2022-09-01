@@ -156,12 +156,15 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       appBar: AppBar(
         title: Text(
           'history'.tr(),
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              .copyWith(color: Theme.of(context).colorScheme.onBackground),
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+        // ),
         actions: [
           IconButton(
             icon: Icon(
@@ -187,10 +190,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                         start: DateTime.now().subtract(Duration(days: 30)),
                         end: DateTime.now()),
                     builder: (context, child) {
-                      return Theme(
-                        data: AppTheme.getDateRangePickerTheme(context),
-                        child: child,
-                      );
+                      return child;
                     });
                 if (range != null) {
                   _startDate = range.start;
@@ -210,21 +210,21 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       ),
       bottomNavigationBar: width > tabletViewWidth
           ? null
-          : BottomNavigationBar(
+          : NavigationBar(
               backgroundColor: Theme.of(context).cardTheme.color,
-              onTap: (_index) {
+              onDestinationSelected: (_index) {
                 setState(() {
                   _selectedIndex = _index;
                   _tabController.animateTo(_index);
                 });
               },
-              currentIndex: _selectedIndex,
-              items: [
-                BottomNavigationBarItem(
+              selectedIndex: _selectedIndex,
+              destinations: [
+                NavigationDestination(
                   icon: Icon(Icons.shopping_cart),
                   label: 'purchases'.tr(),
                 ),
-                BottomNavigationBarItem(
+                NavigationDestination(
                     icon: Icon(Icons.attach_money), label: 'payments'.tr())
               ],
             ),
@@ -269,6 +269,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
       floatingActionButton: Visibility(
         visible: width < tabletViewWidth,
         child: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
           onPressed: () {
             if (_selectedIndex == 0 && _purchaseScrollController.hasClients) {
               _purchaseScrollController.animateTo(
@@ -287,7 +288,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           },
           child: Icon(
             Icons.keyboard_arrow_up,
-            color: Theme.of(context).textTheme.button.color,
+            color: Theme.of(context).colorScheme.onTertiary,
           ),
         ),
       ),
@@ -389,7 +390,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                     ' - ' +
                     DateFormat('yyyy/MM/dd')
                         .format(now.subtract(Duration(days: 1))),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground),
               )),
         ],
       );
@@ -402,7 +404,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ' - ' +
                   DateFormat('yyyy/MM/dd')
                       .format(now.subtract(Duration(days: 1))),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground),
             )),
       );
     }
@@ -434,7 +439,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ' - ' +
                   DateFormat('yyyy/MM/dd')
                       .format(now.subtract(Duration(days: 1))),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground),
             ),
           ),
         ));
@@ -465,7 +473,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           padding: EdgeInsets.all(25),
           child: Text(
             'nothing_to_show'.tr(),
-            style: Theme.of(context).textTheme.bodyText1,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                .copyWith(color: Theme.of(context).colorScheme.onBackground),
             textAlign: TextAlign.center,
           ),
         )
@@ -487,7 +498,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ' - ' +
                   DateFormat('yyyy/MM/dd')
                       .format(now.subtract(Duration(days: 1))),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground),
             ),
           ),
         ],
@@ -501,7 +515,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ' - ' +
                   DateFormat('yyyy/MM/dd')
                       .format(now.subtract(Duration(days: 1))),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground),
             )),
       );
     }
@@ -528,7 +545,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ' - ' +
                   DateFormat('yyyy/MM/dd')
                       .format(now.subtract(Duration(days: 1))),
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground),
             ),
           ),
         ));

@@ -88,7 +88,10 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
             Center(
               child: Text(
                 'merge_guest'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
             SizedBox(
@@ -102,17 +105,27 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                     return DropdownButtonHideUnderline(
                       child: DropdownButtonFormField(
                         decoration: InputDecoration(
-                          fillColor: Theme.of(context).colorScheme.onSurface,
+                          // fillColor: Theme.of(context).colorScheme.onSurface,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        dropdownColor: Theme.of(context).colorScheme.onSurface,
+                        dropdownColor: ElevationOverlay.applyOverlay(context,
+                            Theme.of(context).colorScheme.surfaceVariant, 10),
                         elevation: 0,
-                        style: Theme.of(context).textTheme.subtitle2,
-                        hint: Text('select_member'.tr()),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant),
+                        hint: Text('select_member'.tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant)),
                         value: _dropdownValue,
                         onChanged: (value) {
                           setState(() {
@@ -152,7 +165,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                 GradientButton(
                   child: Icon(
                     Icons.done,
-                    color: Theme.of(context).colorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   onPressed: () {
                     showDialog(
@@ -160,20 +173,23 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                                   choice: 'sure_merge_guest',
                                 ),
                             context: context)
-                        .then((value) {
-                      if (value ?? false == true) {
-                        print(_dropdownValue.memberId);
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _mergeGuest(_dropdownValue.memberId),
-                                  dataTrueText: 'merge_scf',
-                                  onDataTrue: () {
-                                    _onMergeGuest();
-                                  },
-                                ),
-                            context: context);
-                      }
-                    });
+                        .then(
+                      (value) {
+                        if (value ?? false == true) {
+                          print(_dropdownValue.memberId);
+                          showDialog(
+                              builder: (context) => FutureSuccessDialog(
+                                    future:
+                                        _mergeGuest(_dropdownValue.memberId),
+                                    dataTrueText: 'merge_scf',
+                                    onDataTrue: () {
+                                      _onMergeGuest();
+                                    },
+                                  ),
+                              context: context);
+                        }
+                      },
+                    );
                   },
                 )
               ],

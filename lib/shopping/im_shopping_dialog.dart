@@ -51,14 +51,20 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
             children: [
               Text(
                 'where'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
                 'im_shopping_explanation'.tr(),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -76,11 +82,10 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
                   },
                   decoration: InputDecoration(
                     hintText: 'store'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.shopping_basket,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -88,10 +93,6 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
                     ),
                   ),
                   controller: _controller,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                   inputFormatters: [LengthLimitingTextInputFormatter(20)],
                 ),
               ),
@@ -119,7 +120,7 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
                     },
                     child: Icon(
                       Icons.send,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ],

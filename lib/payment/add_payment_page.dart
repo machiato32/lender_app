@@ -7,7 +7,9 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +35,7 @@ class AddPaymentRoute extends StatefulWidget {
 }
 
 class _AddPaymentRouteState extends State<AddPaymentRoute> {
-  Member _chipChoiceValue;
+  Member _selectedMember;
   TextEditingController _amountController = TextEditingController();
   TextEditingController _noteController = TextEditingController();
   Future<List<Member>> _members;
@@ -51,11 +53,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
-      int idToUse = (guestNickname != null && guestGroupId == currentGroupId)
-          ? guestUserId
-          : currentUserId;
       for (var member in decoded['data']['members']) {
-        if (member['user_id'] != idToUse) {
+        if (member['user_id'] != idToUse()) {
           members.add(Member(
               nickname: member['nickname'],
               balance: (member['balance'] * 1.0),
@@ -100,12 +99,12 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         appBar: AppBar(
           title: Text(
             'payment'.tr(),
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          ),
+          // flexibleSpace: Container(
+          //   decoration: BoxDecoration(
+          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+          // ),
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -145,15 +144,13 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               TextField(
                                 decoration: InputDecoration(
                                   hintText: 'note'.tr(),
-                                  fillColor:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  // fillColor:
+                                  //     Theme.of(context).colorScheme.onSurface,
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.note,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -164,14 +161,13 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   LengthLimitingTextInputFormatter(50)
                                 ],
                                 controller: _noteController,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color),
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                // style: TextStyle(
+                                //     fontSize: 20,
+                                //     color: Theme.of(context)
+                                //         .colorScheme
+                                //         .onSurface),
+                                // cursorColor:
+                                //     Theme.of(context).colorScheme.secondary,
                               ),
                               SizedBox(
                                 height: 20,
@@ -194,37 +190,35 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                     controller: _amountController,
                                     decoration: InputDecoration(
                                       hintText: 'amount'.tr(),
-                                      fillColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
+                                      // fillColor: Theme.of(context)
+                                      //     .inputDecorationTheme
+                                      //     .fillColor,
                                       filled: true,
                                       prefixIcon: Icon(
                                         Icons.pin,
                                         color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            .color,
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                       suffixIcon: Icon(
                                         Icons.calculate,
                                         color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            .color,
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            .color),
-                                    cursorColor:
-                                        Theme.of(context).colorScheme.secondary,
+                                    // style: TextStyle(
+                                    //     fontSize: 20,
+                                    //     color: Theme.of(context)
+                                    //         .textTheme
+                                    //         .bodyText1
+                                    //         .color),
+                                    // cursorColor:
+                                    //     Theme.of(context).colorScheme.secondary,
                                     keyboardType:
                                         TextInputType.numberWithOptions(
                                             decimal: true),
@@ -269,55 +263,20 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               Center(
                                 child: FutureBuilder(
                                   future: _members,
-                                  builder: (context, snapshot) {
+                                  builder: (context,
+                                      AsyncSnapshot<List<Member>> snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.done) {
                                       if (snapshot.hasData) {
-                                        return Wrap(
-                                          alignment: WrapAlignment.center,
-                                          spacing: 10,
-                                          children: snapshot.data
-                                              .map<ChoiceChip>(
-                                                  (Member member) => ChoiceChip(
-                                                        label: Text(
-                                                            member.nickname),
-                                                        pressElevation: 30,
-                                                        selected:
-                                                            _chipChoiceValue ==
-                                                                member,
-                                                        onSelected:
-                                                            (bool newValue) {
-                                                          FocusScope.of(context)
-                                                              .unfocus();
-                                                          setState(() {
-                                                            _chipChoiceValue =
-                                                                member;
-                                                            // _selectedMember = member;
-                                                          });
-                                                        },
-                                                        labelStyle: _chipChoiceValue ==
-                                                                member
-                                                            ? Theme.of(context)
-                                                                .textTheme
-                                                                .bodyText1
-                                                                .copyWith(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .onSecondary)
-                                                            : Theme.of(context)
-                                                                .textTheme
-                                                                .bodyText1,
-                                                        backgroundColor:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .onSurface,
-                                                        selectedColor:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .secondary,
-                                                      ))
-                                              .toList(),
+                                        return MemberChips(
+                                          allowMultiple: false,
+                                          allMembers: snapshot.data,
+                                          membersChanged: (members) {
+                                            _selectedMember = members.isEmpty
+                                                ? null
+                                                : members[0];
+                                          },
+                                          membersChosen: [_selectedMember],
                                         );
                                       } else {
                                         return ErrorMessage(
@@ -355,11 +314,13 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.send),
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          child:
+              Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
           onPressed: () {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
-              if (_chipChoiceValue == null) {
+              if (_selectedMember == null) {
                 FToast ft = FToast();
                 ft.init(context);
                 ft.showToast(
@@ -372,7 +333,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
               String note = _noteController.text;
               showDialog(
                   builder: (context) => FutureSuccessDialog(
-                        future: _postPayment(amount, note, _chipChoiceValue),
+                        future: _postPayment(amount, note, _selectedMember),
                         dataTrue: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -380,7 +341,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                 child: Text("payment_scf".tr(),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         .copyWith(color: Colors.white),
                                     textAlign: TextAlign.center)),
                             SizedBox(
@@ -395,14 +356,19 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       Icon(Icons.check,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onSecondary),
+                                              .onPrimary),
                                       SizedBox(
                                         width: 3,
                                       ),
                                       Text(
                                         'okay'.tr(),
-                                        style:
-                                            Theme.of(context).textTheme.button,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary),
                                       ),
                                     ],
                                   ),
@@ -423,21 +389,26 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       Icon(Icons.add,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onSecondary),
+                                              .onPrimary),
                                       SizedBox(
                                         width: 3,
                                       ),
                                       Text(
                                         'add_new'.tr(),
-                                        style:
-                                            Theme.of(context).textTheme.button,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary),
                                       ),
                                     ],
                                   ),
                                   onPressed: () {
                                     _amountController.text = '';
                                     _noteController.text = '';
-                                    _chipChoiceValue = null;
+                                    _selectedMember = null;
                                     Navigator.pop(context);
                                   },
                                   useShadow: false,

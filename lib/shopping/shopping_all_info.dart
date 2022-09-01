@@ -1,10 +1,10 @@
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/shopping/edit_request_dialog.dart';
+import 'package:csocsort_szamla/shopping/shopping_list_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -22,8 +22,11 @@ class ShoppingAllInfo extends StatefulWidget {
 class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
+      await httpDelete(
+          uri: '/requests/' + id.toString(),
+          context: context,
+          useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onFulfillShoppingRequest());
       return true;
     } catch (_) {
@@ -31,15 +34,18 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
     }
   }
 
-  void _onFulfillShoppingRequest(){
+  void _onFulfillShoppingRequest() {
     Navigator.pop(context, true);
     Navigator.pop(context, 'deleted');
   }
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
-      bool useGuest = guestNickname!=null && guestGroupId==currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
+      await httpDelete(
+          uri: '/requests/' + id.toString(),
+          context: context,
+          useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onDeleteShoppingRequest());
       return true;
     } catch (_) {
@@ -47,14 +53,13 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
     }
   }
 
-  void _onDeleteShoppingRequest(){
+  void _onDeleteShoppingRequest() {
     Navigator.pop(context);
     Navigator.pop(context, 'deleted');
   }
 
   @override
   Widget build(BuildContext context) {
-    int idToUse=(guestNickname!=null && guestGroupId==currentGroupId)?guestUserId:currentUserId;
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Column(
@@ -63,13 +68,16 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
           Row(
             children: <Widget>[
               Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
-                  child: Text(
-                widget.data.requesterNickname,
-                style: Theme.of(context).textTheme.bodyText1,
-              )),
+                child: Text(
+                  ' - ' + widget.data.requesterNickname,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
             ],
           ),
           SizedBox(
@@ -78,11 +86,17 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.receipt_long, color: Theme.of(context).colorScheme.primary),
-              Text(' - '),
+              Icon(Icons.receipt_long,
+                  color: Theme.of(context).colorScheme.secondary),
               Flexible(
-                  child: Text(widget.data.name,
-                      style: Theme.of(context).textTheme.bodyText1)),
+                child: Text(
+                  ' - ' + widget.data.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
             ],
           ),
           SizedBox(
@@ -92,21 +106,26 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             children: <Widget>[
               Icon(
                 Icons.date_range,
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              Text(' - '),
               Flexible(
-                  child: Text(
+                child: Text(
+                  ' - ' +
                       DateFormat('yyyy/MM/dd - HH:mm')
                           .format(widget.data.updatedAt),
-                      style: Theme.of(context).textTheme.bodyText1)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
             ],
           ),
           SizedBox(
             height: 10,
           ),
           Visibility(
-            visible: widget.data.requesterId == idToUse,
+            visible: widget.data.requesterId == idToUse(),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,9 +136,13 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                              builder: (context) => EditRequestDialog(requestId: widget.data.requestId, textBefore: widget.data.name,), context: context
-                          ).then((value){
-                            if(value??false){
+                                  builder: (context) => EditRequestDialog(
+                                        requestId: widget.data.requestId,
+                                        textBefore: widget.data.name,
+                                      ),
+                                  context: context)
+                              .then((value) {
+                            if (value ?? false) {
                               Navigator.pop(context, 'edited');
                             }
                           });
@@ -127,11 +150,19 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         child: Row(
                           children: [
                             Icon(Icons.edit,
-                                color: Theme.of(context).textTheme.button.color),
-                            SizedBox(width: 5,),
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Text(
                               'modify'.tr(),
-                              style: Theme.of(context).textTheme.button,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
                             ),
                           ],
                         ),
@@ -142,30 +173,38 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GradientButton(
-                          onPressed: () {
-                            showDialog(
-                                builder: (context) => FutureSuccessDialog(
-                                  future:
-                                  _deleteShoppingRequest(widget.data.requestId),
-                                  dataTrueText: 'delete_scf',
-                                  onDataTrue: () {
-                                    _onDeleteShoppingRequest();
-                                  },
-                                ), barrierDismissible: false,
-                                context: context
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete,
-                                  color: Theme.of(context).textTheme.button.color),
-                              SizedBox(width: 5,),
-                              Text(
-                                'delete'.tr(),
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                            ],
-                          ),
+                        onPressed: () {
+                          showDialog(
+                              builder: (context) => FutureSuccessDialog(
+                                    future: _deleteShoppingRequest(
+                                        widget.data.requestId),
+                                    dataTrueText: 'delete_scf',
+                                    onDataTrue: () {
+                                      _onDeleteShoppingRequest();
+                                    },
+                                  ),
+                              barrierDismissible: false,
+                              context: context);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete,
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'delete'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -174,7 +213,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.data.requesterId != idToUse,
+            visible: widget.data.requesterId != idToUse(),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,22 +225,31 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         onPressed: () {
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                future: _fulfillShoppingRequest(widget.data.requestId),
-                                dataTrueText: 'fulfill_scf',
-                                onDataTrue: () {
-                                  _onFulfillShoppingRequest();
-                                },
-                              ), barrierDismissible: false,
-                              context: context
-                          );
+                                    future: _fulfillShoppingRequest(
+                                        widget.data.requestId),
+                                    dataTrueText: 'fulfill_scf',
+                                    onDataTrue: () {
+                                      _onFulfillShoppingRequest();
+                                    },
+                                  ),
+                              barrierDismissible: false,
+                              context: context);
                         },
                         child: Row(
                           children: [
                             Icon(Icons.check,
-                                color: Theme.of(context).textTheme.button.color),
-                            SizedBox(width: 5,),
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Text('remove_from_list'.tr(),
-                                style: Theme.of(context).textTheme.button),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary)),
                           ],
                         ),
                       ),
@@ -213,40 +261,43 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                              builder: (context) => FutureSuccessDialog(
-                                future: _fulfillShoppingRequest(widget.data.requestId),
-                                dataTrueText: 'fulfill_scf',
-                                onDataTrue: () {
-                                  _onFulfillShoppingRequest();
-                                },
-                              ), barrierDismissible: false,
-                              context: context
-                          ).then((value) {
-                            if(value==true){
+                                  builder: (context) => FutureSuccessDialog(
+                                        future: _fulfillShoppingRequest(
+                                            widget.data.requestId),
+                                        dataTrueText: 'fulfill_scf',
+                                        onDataTrue: () {
+                                          _onFulfillShoppingRequest();
+                                        },
+                                      ),
+                                  barrierDismissible: false,
+                                  context: context)
+                              .then((value) {
+                            if (value == true) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddPurchaseRoute(
-                                            type: PurchaseType
-                                                .fromShopping,
-                                            shoppingData:
-                                            widget
-                                                .data,
-                                          )
-                                  )
-                              );
+                                      builder: (context) => AddPurchaseRoute(
+                                            type: PurchaseType.fromShopping,
+                                            shoppingData: widget.data,
+                                          )));
                             }
-
                           });
                         },
                         child: Row(
                           children: [
                             Icon(Icons.attach_money,
-                                color: Theme.of(context).textTheme.button.color),
-                            SizedBox(width: 5,),
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Text('add_as_expense'.tr(),
-                                style: Theme.of(context).textTheme.button),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary)),
                           ],
                         ),
                       ),

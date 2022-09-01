@@ -11,6 +11,7 @@ import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,6 +21,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import '../essentials/widgets/error_message.dart';
+import '../shopping/shopping_list_entry.dart';
 
 Random random = Random();
 
@@ -129,12 +131,12 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
         appBar: AppBar(
           title: Text(
             'purchase'.tr(),
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          ),
+          // flexibleSpace: Container(
+          //   decoration: BoxDecoration(
+          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
+          // ),
         ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -186,16 +188,15 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                       },
                                       decoration: InputDecoration(
                                         hintText: 'note'.tr(),
-                                        fillColor: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        // fillColor: Theme.of(context)
+                                        //     .colorScheme
+                                        //     .onSurface,
                                         filled: true,
                                         prefixIcon: Icon(
                                           Icons.note,
                                           color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color,
+                                              .colorScheme
+                                              .onSurface,
                                         ),
                                         border: OutlineInputBorder(
                                           borderRadius:
@@ -207,15 +208,15 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                         LengthLimitingTextInputFormatter(50)
                                       ],
                                       controller: noteController,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color),
-                                      cursorColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      // style: TextStyle(
+                                      //     fontSize: 20,
+                                      //     color: Theme.of(context)
+                                      //         .textTheme
+                                      //         .bodyText1
+                                      //         .color),
+                                      // cursorColor: Theme.of(context)
+                                      //     .colorScheme
+                                      //     .secondary,
                                     ),
                                     SizedBox(
                                       height: 20,
@@ -239,23 +240,21 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                           focusNode: _focusNode,
                                           decoration: InputDecoration(
                                             hintText: 'full_amount'.tr(),
-                                            fillColor: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
+                                            // fillColor: Theme.of(context)
+                                            //     .colorScheme
+                                            //     .onSurface,
                                             filled: true,
                                             prefixIcon: Icon(
                                               Icons.pin,
                                               color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  .color,
+                                                  .colorScheme
+                                                  .onSurface,
                                             ),
                                             suffixIcon: Icon(
                                               Icons.calculate,
                                               color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  .color,
+                                                  .colorScheme
+                                                  .onSurface,
                                             ),
                                             border: OutlineInputBorder(
                                               borderRadius:
@@ -264,15 +263,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                             ),
                                           ),
                                           controller: _amountController,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  .color),
-                                          cursorColor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
                                           keyboardType:
                                               TextInputType.numberWithOptions(
                                                   decimal: true),
@@ -325,7 +315,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                               Center(
                                 child: FutureBuilder(
                                   future: _members,
-                                  builder: (context, snapshot) {
+                                  builder: (context,
+                                      AsyncSnapshot<List<Member>> snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.done) {
                                       if (snapshot.hasData) {
@@ -335,57 +326,28 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                         }
                                         if (widget.type ==
                                             PurchaseType.fromShopping) {
-                                          memberChipBool[
-                                              (snapshot.data as List<Member>)
-                                                  .firstWhere((member) =>
-                                                      member.memberId ==
-                                                      widget.shoppingData
-                                                          .requesterId)] = true;
+                                          memberChipBool[snapshot.data
+                                              .firstWhere((member) =>
+                                                  member.memberId ==
+                                                  widget.shoppingData
+                                                      .requesterId)] = true;
                                         }
-                                        return Wrap(
-                                          alignment: WrapAlignment.center,
-                                          spacing: 10,
-                                          children: snapshot.data
-                                              .map<ChoiceChip>((Member
-                                                      member) =>
-                                                  ChoiceChip(
-                                                    label:
-                                                        Text(member.nickname),
-                                                    pressElevation: 30,
-                                                    selected:
-                                                        memberChipBool[member],
-                                                    onSelected:
-                                                        (bool newValue) {
-                                                      FocusScope.of(context)
-                                                          .unfocus();
-                                                      setState(() {
-                                                        memberChipBool[member] =
-                                                            newValue;
-                                                      });
-                                                    },
-                                                    labelStyle: memberChipBool[
-                                                            member]
-                                                        ? Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1
-                                                            .copyWith(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .onSecondary)
-                                                        : Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .onSurface,
-                                                    selectedColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                  ))
+                                        return MemberChips(
+                                          allowMultiple: true,
+                                          allMembers: snapshot.data,
+                                          membersChosen: snapshot.data
+                                              .where((member) =>
+                                                  memberChipBool[member])
                                               .toList(),
+                                          membersChanged: (members) {
+                                            setState(() {
+                                              for (Member member
+                                                  in snapshot.data) {
+                                                memberChipBool[member] =
+                                                    members.contains(member);
+                                              }
+                                            });
+                                          },
                                         );
                                       } else {
                                         return ErrorMessage(
@@ -534,7 +496,9 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.send),
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          child:
+              Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
           onPressed: () {
             FocusScope.of(context).unfocus();
             if (_formKey.currentState.validate()) {
@@ -560,14 +524,15 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Flexible(
-                                child: Text(
-                              'purchase_scf'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .copyWith(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            )),
+                              child: Text(
+                                'purchase_scf'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    .copyWith(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                             SizedBox(
                               height: 15,
                             ),
@@ -580,14 +545,19 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                       Icon(Icons.check,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onSecondary),
+                                              .onPrimary),
                                       SizedBox(
                                         width: 3,
                                       ),
                                       Text(
                                         'okay'.tr(),
-                                        style:
-                                            Theme.of(context).textTheme.button,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary),
                                       ),
                                     ],
                                   ),
@@ -608,14 +578,19 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                       Icon(Icons.add,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onSecondary),
+                                              .onPrimary),
                                       SizedBox(
                                         width: 3,
                                       ),
                                       Text(
                                         'add_new'.tr(),
-                                        style:
-                                            Theme.of(context).textTheme.button,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary),
                                       ),
                                     ],
                                   ),

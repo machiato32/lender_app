@@ -44,8 +44,6 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Theme.of(context).cardTheme.color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -54,8 +52,12 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             Center(
               child: Text(
                 'edit_nickname'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
+            ),
+            SizedBox(
+              height: 10,
             ),
             Form(
               key: _nicknameFormKey,
@@ -74,11 +76,9 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                   controller: _nicknameController,
                   decoration: InputDecoration(
                     hintText: 'nickname'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.account_circle,
-                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -88,10 +88,6 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(15),
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -102,29 +98,30 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                    onPressed: () {
-                      if (_nicknameFormKey.currentState.validate()) {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        String nickname =
-                            _nicknameController.text[0].toUpperCase() +
-                                _nicknameController.text.substring(1);
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _updateNickname(
-                                      nickname, widget.memberId),
-                                  onDataTrue: () {
-                                    _onUpdateNickname();
-                                  },
-                                  dataTrueText: 'nickname_scf',
-                                ),
-                            barrierDismissible: false,
-                            context: context);
-                      }
-                    },
-                    child: Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    )),
+                  onPressed: () {
+                    if (_nicknameFormKey.currentState.validate()) {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      String nickname =
+                          _nicknameController.text[0].toUpperCase() +
+                              _nicknameController.text.substring(1);
+                      showDialog(
+                          builder: (context) => FutureSuccessDialog(
+                                future:
+                                    _updateNickname(nickname, widget.memberId),
+                                onDataTrue: () {
+                                  _onUpdateNickname();
+                                },
+                                dataTrueText: 'nickname_scf',
+                              ),
+                          barrierDismissible: false,
+                          context: context);
+                    }
+                  },
+                  child: Icon(
+                    Icons.check,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
               ],
             ),
           ],

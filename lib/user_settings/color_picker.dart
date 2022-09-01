@@ -14,9 +14,22 @@ class ColorPicker extends StatefulWidget {
 }
 
 class _ColorPickerState extends State<ColorPicker> {
+  List<Widget> _getDynamicColors({bool enabled}) {
+    return AppTheme.themes.entries
+        .where((element) => element.key.contains('Dynamic'))
+        .map((entry) {
+      return ColorElement(
+        theme: entry.value,
+        themeName: entry.key,
+        enabled: enabled,
+      );
+    }).toList();
+  }
+
   List<Widget> _getSolidColors() {
     return AppTheme.themes.entries
-        .where((element) => !element.key.contains('Gradient'))
+        .where((element) => (!element.key.contains('Gradient') &&
+            !element.key.contains('Dynamic')))
         .map((entry) {
       return ColorElement(
         theme: entry.value,
@@ -40,12 +53,13 @@ class _ColorPickerState extends State<ColorPicker> {
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Center(
                 child: Text(
               'change_theme'.tr(),
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             )),
             SizedBox(height: 10),
             Center(
@@ -63,15 +77,27 @@ class _ColorPickerState extends State<ColorPicker> {
             SizedBox(
               height: 7,
             ),
-            Center(
-              child: Visibility(
-                visible: !useGradients,
-                child: Text(
-                  'gradient_available_in_paid_version'.tr(),
-                  style: Theme.of(context).textTheme.subtitle2,
-                  textAlign: TextAlign.center,
-                ),
+            Text(
+              'gradient_themes'.tr(),
+              style: Theme.of(context).textTheme.titleLarge.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 3,
+            ),
+            Visibility(
+              visible: !useGradients || true,
+              child: Text(
+                'gradient_available_in_paid_version'.tr(),
+                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
               ),
+            ),
+            SizedBox(
+              height: 3,
             ),
             Center(
               child: Wrap(
@@ -79,6 +105,47 @@ class _ColorPickerState extends State<ColorPicker> {
                 runSpacing: 5,
                 spacing: 5,
                 children: _getGradientColors(enabled: useGradients),
+              ),
+            ),
+            Visibility(
+              visible: AppTheme.themes.keys.contains('darkDynamic'),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 7,
+                  ),
+                  Divider(),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  Text(
+                    'dynamic_themes'.tr(),
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    'dynamic_themes_explanation'.tr(),
+                    style: Theme.of(context).textTheme.titleSmall.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Center(
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      runSpacing: 5,
+                      spacing: 5,
+                      children: _getDynamicColors(enabled: useGradients),
+                    ),
+                  ),
+                ],
               ),
             )
           ],
@@ -113,10 +180,8 @@ class _ColorElementState extends State<ColorElement> {
     return Ink(
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-          gradient: (widget.themeName ==
-                  Provider.of<AppStateNotifier>(context, listen: false)
-                      .themeName)
-              ? AppTheme.gradientFromTheme(widget.theme)
+          gradient: (widget.themeName == currentThemeName)
+              ? AppTheme.gradientFromTheme(widget.themeName)
               : LinearGradient(
                   colors: [Colors.transparent, Colors.transparent]),
           borderRadius: BorderRadius.circular(20)),
@@ -145,7 +210,7 @@ class _ColorElementState extends State<ColorElement> {
               //       blurRadius: 1.5,
               //     )]
               //     : [],
-              gradient: AppTheme.gradientFromTheme(widget.theme),
+              gradient: AppTheme.gradientFromTheme(widget.themeName),
               border: Border.all(
                   color: widget.theme.scaffoldBackgroundColor, width: 8),
               borderRadius: BorderRadius.circular(20)),

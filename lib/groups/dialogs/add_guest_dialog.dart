@@ -54,8 +54,14 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
             Center(
               child: Text(
                 'add_guest'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
+            ),
+            SizedBox(
+              height: 10,
             ),
             Form(
               key: _nicknameFormKey,
@@ -74,11 +80,11 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   controller: _nicknameController,
                   decoration: InputDecoration(
                     hintText: 'nickname'.tr(),
-                    fillColor: Theme.of(context).colorScheme.onSurface,
+                    // fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.account_circle,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -88,10 +94,10 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(15),
                   ],
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.bodyText1.color),
-                  cursorColor: Theme.of(context).colorScheme.secondary,
+                  // style: TextStyle(
+                  //     fontSize: 20,
+                  //     color: Theme.of(context).textTheme.bodyText1.color),
+                  // cursorColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),

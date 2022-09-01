@@ -1,6 +1,5 @@
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../essentials/app_theme.dart';
@@ -31,15 +30,8 @@ class _ReportABugPageState extends State<ReportABugPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          ),
           title: Text(
             'report_a_bug'.tr(),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondary,
-            ),
           ),
         ),
         body: Form(
@@ -63,7 +55,13 @@ class _ReportABugPageState extends State<ReportABugPage> {
                               child: Text(
                                 DateFormat('yyyy/MM/dd - HH:mm').format(
                                     widget.date == null ? now : widget.date),
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant),
                               ),
                             ),
                             SizedBox(
@@ -83,30 +81,24 @@ class _ReportABugPageState extends State<ReportABugPage> {
                                     controller: _bugController,
                                     decoration: InputDecoration(
                                       hintText: 'bug'.tr(),
-                                      fillColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            .color),
-                                    cursorColor:
-                                        Theme.of(context).colorScheme.secondary,
                                   )
                                 : Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       widget.error.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant),
                                     ),
                                   ),
                             SizedBox(
@@ -126,30 +118,24 @@ class _ReportABugPageState extends State<ReportABugPage> {
                                     controller: _locationController,
                                     decoration: InputDecoration(
                                       hintText: 'location'.tr(),
-                                      fillColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            .color),
-                                    cursorColor:
-                                        Theme.of(context).colorScheme.secondary,
                                   )
                                 : Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       widget.location,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant),
                                     ),
                                   ),
                             SizedBox(
@@ -165,22 +151,12 @@ class _ReportABugPageState extends State<ReportABugPage> {
                               controller: _detailsController,
                               decoration: InputDecoration(
                                 hintText: 'details'.tr(),
-                                fillColor:
-                                    Theme.of(context).colorScheme.onSurface,
                                 filled: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color),
-                              cursorColor:
-                                  Theme.of(context).colorScheme.secondary,
                             ),
                             SizedBox(
                               height: 15,
@@ -200,6 +176,8 @@ class _ReportABugPageState extends State<ReportABugPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          foregroundColor: Theme.of(context).colorScheme.onTertiary,
           onPressed: () {
             if (_formKey.currentState.validate()) {
               String error = widget.error ?? _bugController.text;
