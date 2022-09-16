@@ -89,31 +89,34 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                         orElse: () => null);
                     _first = false;
                   }
-                  return MemberChips(
-                      allowMultiple: false,
-                      allMembers: snapshot.data,
-                      membersChanged: (members) {
-                        Member member = members.isEmpty ? null : members[0];
-                        FocusScope.of(context).unfocus();
-                        clearGroupCache();
-                        if (member != null) {
-                          _selectedGuest = member;
-                          saveGuestGroupId(currentGroupId);
-                          saveGuestApiToken(member.apiToken);
-                          saveGuestNickname(member.nickname);
-                          saveGuestUserId(member.memberId);
-                        } else {
-                          _selectedGuest = null;
-                          deleteGuestGroupId();
-                          deleteGuestApiToken();
-                          deleteGuestNickname();
-                          deleteGuestUserId();
-                        }
-                        setState(() {
-                          widget.bannerKey.currentState.setState(() {});
-                        });
-                      },
-                      membersChosen: [_selectedGuest]);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: MemberChips(
+                        allowMultiple: false,
+                        allMembers: snapshot.data,
+                        membersChanged: (members) {
+                          Member member = members.isEmpty ? null : members[0];
+                          FocusScope.of(context).unfocus();
+                          clearGroupCache();
+                          if (member != null) {
+                            _selectedGuest = member;
+                            saveGuestGroupId(currentGroupId);
+                            saveGuestApiToken(member.apiToken);
+                            saveGuestNickname(member.nickname);
+                            saveGuestUserId(member.memberId);
+                          } else {
+                            _selectedGuest = null;
+                            deleteGuestGroupId();
+                            deleteGuestApiToken();
+                            deleteGuestNickname();
+                            deleteGuestUserId();
+                          }
+                          setState(() {
+                            widget.bannerKey.currentState.setState(() {});
+                          });
+                        },
+                        membersChosen: [_selectedGuest]),
+                  );
                 } else {
                   return ErrorMessage(
                     error: snapshot.error.toString(),

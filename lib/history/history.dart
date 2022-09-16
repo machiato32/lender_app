@@ -161,7 +161,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                     children: [
                       Icon(Icons.shopping_cart,
                           color: _selectedIndex == 0
-                              ? Theme.of(context).colorScheme.onSecondary
+                              ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.onSurfaceVariant),
                       SizedBox(
                         width: 3,
@@ -174,9 +174,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               .labelLarge
                               .copyWith(
                                   color: _selectedIndex == 0
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary
+                                      ? Theme.of(context).colorScheme.onPrimary
                                       : Theme.of(context)
                                           .colorScheme
                                           .onSurfaceVariant),
@@ -204,7 +202,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                     children: [
                       Icon(Icons.attach_money,
                           color: _selectedIndex == 1
-                              ? Theme.of(context).colorScheme.onSecondary
+                              ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.onSurfaceVariant),
                       SizedBox(
                         width: 3,
@@ -217,9 +215,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               .labelLarge
                               .copyWith(
                                   color: _selectedIndex == 1
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary
+                                      ? Theme.of(context).colorScheme.onPrimary
                                       : Theme.of(context)
                                           .colorScheme
                                           .onSurfaceVariant),

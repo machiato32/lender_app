@@ -37,11 +37,11 @@ class _MemberChipsState extends State<MemberChips> {
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 10,
+      runSpacing: 10,
       children: widget.allMembers
           .map<ChoiceChip>(
             (Member member) => ChoiceChip(
               label: Text(member.nickname),
-              pressElevation: 30,
               selected: membersChosen.contains(member),
               onSelected: (bool selected) {
                 FocusScope.of(context).unfocus();
@@ -64,15 +64,13 @@ class _MemberChipsState extends State<MemberChips> {
                 });
               },
               labelStyle: membersChosen.contains(member)
-                  ? Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onPrimary)
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
-              selectedColor: Theme.of(context).colorScheme.primary,
+                  ? Theme.of(context).textTheme.labelLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer)
+                  : Theme.of(context).textTheme.labelLarge.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           )
           .toList(),

@@ -17,6 +17,7 @@ class AddGuestDialog extends StatefulWidget {
 
 class _AddGuestDialogState extends State<AddGuestDialog> {
   TextEditingController _nicknameController = TextEditingController();
+  var _nicknameFormKey = GlobalKey<FormState>();
   Future<bool> _addGuest(String username) async {
     try {
       Map<String, dynamic> body = {
@@ -42,10 +43,7 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var _nicknameFormKey = GlobalKey<FormState>();
     return Dialog(
-      backgroundColor: Theme.of(context).cardTheme.color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -80,7 +78,6 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   controller: _nicknameController,
                   decoration: InputDecoration(
                     hintText: 'nickname'.tr(),
-                    // fillColor: Theme.of(context).colorScheme.onSurface,
                     filled: true,
                     prefixIcon: Icon(
                       Icons.account_circle,
@@ -94,10 +91,7 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(15),
                   ],
-                  // style: TextStyle(
-                  //     fontSize: 20,
-                  //     color: Theme.of(context).textTheme.bodyText1.color),
-                  // cursorColor: Theme.of(context).colorScheme.secondary,
+                  onFieldSubmitted: (value) => _buttonPush(),
                 ),
               ),
             ),
@@ -108,22 +102,7 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                    onPressed: () {
-                      if (_nicknameFormKey.currentState.validate()) {
-                        // Navigator.pop(context);
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _addGuest(_nicknameController.text),
-                                  onDataTrue: () async {
-                                    _onAddGuest();
-                                  },
-                                  dataTrueText: 'add_guest_scf',
-                                ),
-                            barrierDismissible: false,
-                            context: context);
-                      }
-                    },
+                    onPressed: _buttonPush,
                     child: Icon(
                       Icons.check,
                       color: Theme.of(context).colorScheme.onSecondary,
@@ -134,5 +113,21 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
         ),
       ),
     );
+  }
+
+  void _buttonPush() {
+    if (_nicknameFormKey.currentState.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _addGuest(_nicknameController.text),
+                onDataTrue: () async {
+                  _onAddGuest();
+                },
+                dataTrueText: 'add_guest_scf',
+              ),
+          barrierDismissible: false,
+          context: context);
+    }
   }
 }

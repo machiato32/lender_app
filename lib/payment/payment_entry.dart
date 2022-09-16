@@ -3,7 +3,6 @@ import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -126,16 +125,16 @@ class _PaymentEntryState extends State<PaymentEntry> {
           .copyWith(color: Theme.of(context).colorScheme.onPrimary);
     } else {
       icon = Icon(Icons.call_received,
-          color: Theme.of(context).colorScheme.onSurface);
+          color: Theme.of(context).colorScheme.onSurfaceVariant);
 
       mainTextStyle = Theme.of(context)
           .textTheme
           .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       subTextStyle = Theme.of(context)
           .textTheme
           .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       takerName = widget.data.payerNickname;
       amount = (-widget.data.amount).printMoney(currentGroupCurrency);
       boxDecoration = BoxDecoration();
@@ -169,12 +168,12 @@ class _PaymentEntryState extends State<PaymentEntry> {
               onTap: !widget.isTappable
                   ? null
                   : () async {
-                      showModalBottomSheetCustom(
-                          context: context,
-                          backgroundColor: Theme.of(context).cardTheme.color,
-                          builder: (context) => SingleChildScrollView(
-                              child: PaymentAllInfo(widget.data))).then(
-                          (returnValue) {
+                      showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => SingleChildScrollView(
+                                  child: PaymentAllInfo(widget.data)))
+                          .then((returnValue) {
                         if (returnValue == 'deleted')
                           widget.callback(purchase: false, payment: true);
                       });

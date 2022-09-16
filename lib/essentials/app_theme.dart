@@ -28,7 +28,7 @@ class AppTheme {
       Brightness.light,
     ),
     'greenDarkTheme': generateThemeData(
-      Colors.green[400],
+      Colors.green,
       Brightness.dark,
     ),
     'amberLightTheme': generateThemeData(
@@ -62,6 +62,7 @@ class AppTheme {
     'plumGradientDarkTheme': generateThemeData(
       Color.fromARGB(255, 152, 108, 240),
       Brightness.dark,
+      themeName: 'plumGradientDarkTheme',
     ),
     'celestialLightTheme': generateThemeData(
       Color.fromARGB(255, 195, 55, 100),
@@ -86,6 +87,7 @@ class AppTheme {
     'endlessGradientDarkTheme': generateThemeData(
       Color.fromARGB(255, 67, 206, 162),
       Brightness.dark,
+      themeName: 'endlessGradientDarkTheme',
     ),
     'greenGradientLightTheme': generateThemeData(
       Color.fromARGB(255, 24, 219, 56),
@@ -117,18 +119,12 @@ class AppTheme {
     ),
     'whiteGradientDarkTheme':
         generateThemeData(Color.fromARGB(255, 253, 251, 251), Brightness.dark),
-    // 'rainbowGradientLightTheme': generateThemeData(Colors.purple, Colors.red,
-    //     Brightness.light, Colors.white, Colors.purple,
-    //     secondGradientColor: Colors.blue,
-    //     thirdGradientColor: Colors.green,
-    //     fourthGradientColor: Colors.yellow,
-    //     fifthGradientColor: Colors.orange),
-    // 'rainbowGradientDarkTheme': generateThemeData(
-    //     Colors.purple, Colors.red, Brightness.dark, Colors.white, Colors.purple,
-    //     secondGradientColor: Colors.blue,
-    //     thirdGradientColor: Colors.green,
-    //     fourthGradientColor: Colors.yellow,
-    //     fifthGradientColor: Colors.orange),
+    'rainbowGradientLightTheme': generateThemeData(
+        Colors.purple, Brightness.light,
+        themeName: 'rainbowGradientLightTheme'),
+    'rainbowGradientDarkTheme': generateThemeData(
+        Colors.purple, Brightness.dark,
+        themeName: 'rainbowGradientDarkTheme'),
   };
 
   static Map<String, List<Color>> gradientColors = {
@@ -204,16 +200,37 @@ class AppTheme {
       Color.fromARGB(255, 24, 219, 56),
       Color.fromARGB(255, 62, 173, 81),
     ],
+    'rainbowGradientLightTheme': [
+      Colors.purple,
+      Colors.blue,
+      Colors.green,
+      Colors.yellow,
+      Colors.orange,
+    ],
+    'rainbowGradientDarkTheme': [
+      Colors.purple,
+      Colors.blue,
+      Colors.green,
+      Colors.yellow,
+      Colors.orange,
+    ],
   };
 
   static Gradient gradientFromTheme(String themeName,
       {bool useSecondary = false}) {
-    // print(themeName);
     return gradientColors.keys.contains(themeName)
-        ? LinearGradient(colors: [
-            AppTheme.gradientColors[themeName][0],
-            AppTheme.gradientColors[themeName][1]
-          ])
+        ? themeName.contains('rainbow')
+            ? LinearGradient(colors: [
+                AppTheme.gradientColors[themeName][0],
+                AppTheme.gradientColors[themeName][1],
+                AppTheme.gradientColors[themeName][2],
+                AppTheme.gradientColors[themeName][3],
+                AppTheme.gradientColors[themeName][4],
+              ])
+            : LinearGradient(colors: [
+                AppTheme.gradientColors[themeName][0],
+                AppTheme.gradientColors[themeName][1]
+              ])
         : useSecondary
             ? LinearGradient(colors: [
                 AppTheme.themes[themeName].colorScheme.secondary,
@@ -225,12 +242,39 @@ class AppTheme {
               ]);
   }
 
-  static ThemeData generateThemeData(Color seedColor, Brightness brightness) {
+  static ThemeData generateThemeData(Color seedColor, Brightness brightness,
+      {String themeName = ''}) {
     ColorScheme colorScheme = ColorScheme.fromSeed(
       seedColor: seedColor,
       brightness: brightness,
     );
-
+    if (themeName != '') {
+      ColorScheme newColorScheme;
+      if (themeName == 'plumGradientDarkTheme') {
+        newColorScheme =
+            colorScheme.copyWith(onPrimary: Color.fromARGB(255, 40, 1, 92));
+      } else if (themeName.contains('endlessGradientDarkTheme')) {
+        newColorScheme =
+            colorScheme.copyWith(onPrimary: Color.fromARGB(255, 0, 20, 14));
+      } else if (themeName.contains('rainbow')) {
+        newColorScheme = colorScheme.copyWith(onPrimary: Colors.white);
+      }
+      return ThemeData.from(colorScheme: colorScheme, useMaterial3: true)
+          .copyWith(
+            cardTheme: CardTheme(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            ),
+            bottomSheetTheme: BottomSheetThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+            ),
+          )
+          .copyWith(colorScheme: newColorScheme);
+    }
     return ThemeData.from(colorScheme: colorScheme, useMaterial3: true)
         .copyWith(
       cardTheme: CardTheme(
@@ -239,154 +283,11 @@ class AppTheme {
         ),
         margin: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       ),
-    );
-    // if (brightness == Brightness.light) {
-    //   return ThemeData(
-    //     appBarTheme: AppBarTheme(
-    //         iconTheme: IconThemeData(color: fontOnSecondaryColor),
-    //         elevation: 0),
-    //     brightness: Brightness.light,
-    //     primaryColor: primaryColor,
-    //     accentColor: secondaryColor,
-    //     scaffoldBackgroundColor:
-    //         cardColor == null ? Colors.grey[200] : cardColor,
-    //     canvasColor: Colors.grey[200],
-    //     colorScheme: ColorScheme.light(
-    //         primary: primaryColor,
-    //         secondary: secondaryColor,
-    //         onSecondary: fontOnSecondaryColor,
-    //         surface: Colors.grey[400],
-    //         onSurface: Colors.grey[100],
-    //         onPrimary: gradientColor,
-    //         onBackground: Colors.pink,
-    //         error: secondGradientColor ?? Colors.transparent,
-    //         primaryVariant: thirdGradientColor ?? Colors.transparent,
-    //         onError: fourthGradientColor ?? Colors.transparent,
-    //         secondaryVariant: fifthGradientColor ?? Colors.transparent),
-    //     cardTheme: CardTheme(
-    //       color: Colors.white,
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(15),
-    //       ),
-    //       elevation: 0,
-    //       margin: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-    //     ),
-    //     dialogTheme: DialogTheme(
-    //       backgroundColor: Colors.white,
-    //       shape:
-    //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    //     ),
-    //     buttonTheme: ButtonThemeData(
-    //         shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.circular(15))),
-    //     textTheme: TextTheme(
-    //       headline6: TextStyle(fontSize: 25, color: primaryColor),
-    //       bodyText1: TextStyle(
-    //         fontSize: 20,
-    //         color: Colors.grey[700],
-    //       ),
-    //       bodyText2: TextStyle(
-    //         fontSize: 20,
-    //         fontWeight: FontWeight.bold,
-    //         color: secondaryColor,
-    //       ),
-    //       subtitle2: TextStyle(
-    //         fontSize: 15,
-    //         color: Colors.grey[700],
-    //       ),
-    //       button: TextStyle(fontSize: 20, color: Colors.white),
-    //     ),
-    //     dividerColor: Colors.grey[500],
-    //     inputDecorationTheme: InputDecorationTheme(
-    //       hintStyle: TextStyle(color: Colors.grey[400]),
-    //     ),
-    //   );
-    // } else {
-    //   return ThemeData(
-    //     appBarTheme: AppBarTheme(
-    //       brightness: Brightness.dark,
-    //       iconTheme: IconThemeData(color: fontOnSecondaryColor),
-    //     ),
-    //     brightness: Brightness.dark,
-    //     canvasColor: Colors.grey[800],
-    //     primaryColor: primaryColor,
-    //     accentColor: secondaryColor,
-    //     scaffoldBackgroundColor: Colors.black,
-    //     colorScheme: ColorScheme.dark(
-    //         primary: primaryColor,
-    //         secondary: secondaryColor,
-    //         background: Colors.grey[500],
-    //         onPrimary: gradientColor, //nem hasznalom
-    //         //history icon
-    //         onSecondary: fontOnSecondaryColor, //szovegek szine
-    //         onBackground: Color.fromARGB(255, 50, 50, 50), //nem hasznalom
-    //         //box decoration
-    //         surface: Colors.grey[400],
-    //         //history date
-    //         onSurface: Color.fromARGB(255, 40, 40, 40),
-    //         error: secondGradientColor ?? Colors.transparent,
-    //         primaryVariant: thirdGradientColor ?? Colors.transparent,
-    //         onError: fourthGradientColor ?? Colors.transparent,
-    //         secondaryVariant: fifthGradientColor ?? Colors.transparent),
-    //     dialogTheme: DialogTheme(
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    //         backgroundColor: cardColor ?? Color.fromARGB(255, 50, 50, 50)),
-    //     cardTheme: CardTheme(
-    //       color: cardColor ?? Color.fromARGB(255, 25, 25, 25),
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(15),
-    //       ),
-    //       margin: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-    //     ),
-    //     buttonTheme: ButtonThemeData(
-    //         shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.circular(15))),
-    //     textTheme: TextTheme(
-    //       headline6: TextStyle(fontSize: 25, color: Colors.grey[200]),
-    //       bodyText1: TextStyle(
-    //         color: Colors.white,
-    //       ),
-    //       bodyText2: TextStyle(
-    //         fontWeight: FontWeight.bold,
-    //         color: secondaryColor,
-    //       ),
-    //       subtitle2: TextStyle(
-    //         color: Colors.white,
-    //       ),
-    //       button: TextStyle(
-    //         color: fontOnSecondaryColor,
-    //       ),
-    //     ),
-    //     dividerColor: Colors.grey[500],
-    //     bottomSheetTheme: BottomSheetThemeData(
-    //       backgroundColor: cardColor,
-    //     ),
-    //   );
-    // }
-  }
-
-  static ThemeData getDateRangePickerTheme(BuildContext context) {
-    return Theme.of(context).copyWith(
-      primaryColor: Theme.of(context).colorScheme.primary,
-      colorScheme: Theme.of(context).colorScheme.copyWith(
-            onSurface: Theme.of(context).brightness == Brightness.light
-                ? Colors.grey[800]
-                : Theme.of(context).colorScheme.onSecondary,
-            onPrimary: Colors.white,
-            surface: Theme.of(context).colorScheme.primary,
-          ),
-      scaffoldBackgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.white
-          : Colors.black,
-      textTheme: Theme.of(context).textTheme.copyWith(
-            bodyText2: Theme.of(context)
-                .textTheme
-                .bodyText1
-                .copyWith(fontWeight: FontWeight.normal),
-            headline5: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            headline4: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
+      bottomSheetTheme: BottomSheetThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+      ),
     );
   }
 

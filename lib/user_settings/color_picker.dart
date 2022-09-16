@@ -88,7 +88,7 @@ class _ColorPickerState extends State<ColorPicker> {
               height: 3,
             ),
             Visibility(
-              visible: !useGradients || true,
+              visible: !useGradients,
               child: Text(
                 'gradient_available_in_paid_version'.tr(),
                 style: Theme.of(context).textTheme.titleSmall.copyWith(

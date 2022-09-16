@@ -5,7 +5,6 @@ import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/purchase_all_info.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -113,7 +112,9 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
     /* Set icon, amount and names */
     if (bought && received) {
       leadingIcon = Icon(Icons.swap_horiz,
-          color: Theme.of(context).colorScheme.onSecondary);
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSecondary);
       amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
       amountToSelf = (-widget.data.receivers
               .firstWhere((member) => member.memberId == idToUse())
@@ -124,30 +125,22 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       } else {
         names = widget.data.receivers[0].nickname;
       }
-      mainTextStyle = Theme.of(context)
-          .textTheme
-          .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
-      subTextStyle = Theme.of(context)
-          .textTheme
-          .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
+      mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSecondary);
+      subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSecondary);
       boxDecoration = BoxDecoration(
-        // boxShadow: ( Theme.of(context).brightness==Brightness.light)
-        //     ?[ BoxShadow(
-        //       color: Colors.grey[500],
-        //       offset: Offset(0.0, 1.5),
-        //       blurRadius: 1.5,
-        //     )]
-        //     : [],
         gradient:
             AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
-        // color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(15),
       );
     } else if (bought) {
-      leadingIcon = Icon(Icons.call_made,
-          color: Theme.of(context).colorScheme.onSecondary);
+      leadingIcon =
+          Icon(Icons.call_made, color: Theme.of(context).colorScheme.onPrimary);
       amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
       if (widget.data.receivers.length > 1) {
         names = widget.data.receivers.join(', ');
@@ -163,20 +156,12 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           .bodySmall
           .copyWith(color: Theme.of(context).colorScheme.onPrimary);
       boxDecoration = BoxDecoration(
-        // boxShadow: ( Theme.of(context).brightness==Brightness.light)
-        //     ?[ BoxShadow(
-        //       color: Colors.grey[500],
-        //       offset: Offset(0.0, 1.5),
-        //       blurRadius: 1.5,
-        //     )]
-        //     : [],
         gradient: AppTheme.gradientFromTheme(currentThemeName),
-        // color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(15),
       );
     } else if (received) {
       leadingIcon = Icon(Icons.call_received,
-          color: Theme.of(context).colorScheme.onSurface);
+          color: Theme.of(context).colorScheme.onSurfaceVariant);
       names = widget.data.buyerNickname;
       amount = (-widget.data.receivers
               .firstWhere((element) => element.memberId == idToUse())
@@ -185,11 +170,11 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       subTextStyle = Theme.of(context)
           .textTheme
           .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       mainTextStyle = Theme.of(context)
           .textTheme
           .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onSurface);
+          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       boxDecoration = BoxDecoration();
     }
 
@@ -218,7 +203,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     context: context);
               },
               onTap: () async {
-                showModalBottomSheetCustom(
+                showModalBottomSheet(
+                    isScrollControlled: true,
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
                     builder: (context) => SingleChildScrollView(

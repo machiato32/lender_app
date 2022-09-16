@@ -1,14 +1,9 @@
 import 'dart:collection';
 
-import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/stack.dart';
-import 'package:flutter/rendering.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import '../app_theme.dart';
 
 class Calculator extends StatefulWidget {
   final Function callback;
@@ -193,33 +188,30 @@ class _CalculatorState extends State<Calculator> {
           SizedBox(
             height: 15,
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: AppTheme.gradientFromTheme(currentThemeName),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            padding: const EdgeInsets.only(left: 25, right: 24),
-            child: Column(
-              children: [
-                Visibility(
-                  visible: _numToWrite == '',
-                  child: Text(
-                    '0',
-                    style: Theme.of(context).textTheme.headlineSmall.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
-                  ),
+          Column(
+            children: [
+              Visibility(
+                visible: _numToWrite == '',
+                child: Text(
+                  '0',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall
+                      .copyWith(color: Theme.of(context).colorScheme.tertiary),
                 ),
-                Visibility(
-                  visible: _numToWrite != '',
-                  child: Text(
-                    _numToWrite,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineSmall.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
-                  ),
+              ),
+              Visibility(
+                visible: _numToWrite != '',
+                child: Text(
+                  _numToWrite,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall
+                      .copyWith(color: Theme.of(context).colorScheme.tertiary),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           SizedBox(
             height: 10,

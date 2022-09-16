@@ -16,10 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../essentials/app_theme.dart';
 
 class RegisterAlmostDonePage extends StatefulWidget {
   final String inviteURL;
@@ -65,189 +62,194 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: ListView(
-            padding: EdgeInsets.all(20),
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              Center(
-                child: Text(
-                  'just_few_things_left'.tr(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Stack(
-                children: [
-                  TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'field_empty'.tr();
-                      }
-                      if (value.length < 3) {
-                        return 'minimal_length'.tr(args: ['3']);
-                      }
-                      return null;
-                    },
-                    controller: _passwordReminderController,
-                    decoration: InputDecoration(
-                      labelText: 'password_reminder'.tr(),
-                      filled: true,
-                      prefixIcon: Icon(
-                        Icons.search,
-                      ),
-                      suffixIcon: Icon(
-                        Icons.info_outline,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    inputFormatters: [
-                      // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                      LengthLimitingTextInputFormatter(50),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 9),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _reminderExplanationController.expanded =
-                                !_reminderExplanationController.expanded;
-                          });
-                        },
-                        splashRadius: 0.1,
-                        icon: Icon(
-                          Icons.info_outline,
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expandable(
-                controller: _reminderExplanationController,
-                collapsed: Container(),
-                expanded: Container(
-                    constraints: BoxConstraints(maxHeight: 80),
-                    child: Row(
-                      children: [
-                        Flexible(
-                            child: Text(
-                          'reminder_explanation'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface),
-                        )),
-                      ],
-                    )),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: ListView(
+                padding: EdgeInsets.all(20),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  Text(
-                    'your_currency'.tr(),
-                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface),
+                  Center(
+                    child: Text(
+                      'just_few_things_left'.tr(),
+                      style: Theme.of(context).textTheme.titleLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(
-                    width: 20,
+                    height: 20,
                   ),
-                  Flexible(
-                    child: CurrencyPickerDropdown(
-                      currencyChanged: _changeCurrencyValue,
-                      defaultCurrencyValue: _defaultCurrencyValue,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: InkWell(
-                        onTap: () {
-                          launchUrlString(
-                              'https://policies.google.com/privacy');
+                  Stack(
+                    children: [
+                      TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'field_empty'.tr();
+                          }
+                          if (value.length < 3) {
+                            return 'minimal_length'.tr(args: ['3']);
+                          }
+                          return null;
                         },
-                        child: Text(
-                          'personalised_ads'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
-                              .copyWith(
-                                  decoration: TextDecoration.underline,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface),
-                          textAlign: TextAlign.center,
+                        controller: _passwordReminderController,
+                        decoration: InputDecoration(
+                          labelText: 'password_reminder'.tr(),
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.search,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.info_outline,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        inputFormatters: [
+                          // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                          LengthLimitingTextInputFormatter(50),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 9),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _reminderExplanationController.expanded =
+                                    !_reminderExplanationController.expanded;
+                              });
+                            },
+                            splashRadius: 0.1,
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Colors.transparent,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Expandable(
+                    controller: _reminderExplanationController,
+                    collapsed: Container(),
+                    expanded: Container(
+                        constraints: BoxConstraints(maxHeight: 80),
+                        child: Row(
+                          children: [
+                            Flexible(
+                                child: Text(
+                              'reminder_explanation'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
+                            )),
+                          ],
                         )),
                   ),
-                  Checkbox(
-                    value: _personalisedAds,
-                    activeColor: Theme.of(context).colorScheme.secondary,
-                    onChanged: (value) {
-                      setState(() {
-                        _personalisedAds = value;
-                      });
-                    },
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'your_currency'.tr(),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: CurrencyPickerDropdown(
+                          currencyChanged: _changeCurrencyValue,
+                          defaultCurrencyValue: _defaultCurrencyValue,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: InkWell(
+                            onTap: () {
+                              launchUrlString(
+                                  'https://policies.google.com/privacy');
+                            },
+                            child: Text(
+                              'personalised_ads'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  .copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
+                              textAlign: TextAlign.center,
+                            )),
+                      ),
+                      Checkbox(
+                        value: _personalisedAds,
+                        activeColor: Theme.of(context).colorScheme.secondary,
+                        onChanged: (value) {
+                          setState(() {
+                            _personalisedAds = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GradientButton(
+                        child: Icon(
+                          Icons.send,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (_formKey.currentState.validate()) {
+                            String passwordReminder =
+                                _passwordReminderController.text;
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return FutureSuccessDialog(
+                                  future: _register(
+                                      widget.username,
+                                      widget.password,
+                                      passwordReminder,
+                                      _defaultCurrencyValue),
+                                  dataTrueText: 'registration_scf',
+                                );
+                              },
+                            );
+                          }
+                        },
+                      )
+                    ],
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GradientButton(
-                    child: Icon(
-                      Icons.send,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (_formKey.currentState.validate()) {
-                        String passwordReminder =
-                            _passwordReminderController.text;
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return FutureSuccessDialog(
-                              future: _register(
-                                  widget.username,
-                                  widget.password,
-                                  passwordReminder,
-                                  _defaultCurrencyValue),
-                              dataTrueText: 'registration_scf',
-                            );
-                          },
-                        );
-                      }
-                    },
-                  )
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),

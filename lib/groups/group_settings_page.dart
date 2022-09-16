@@ -38,7 +38,7 @@ class _GroupSettingState extends State<GroupSettings> {
               args: [currentGroupId.toString()]),
           context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
-      print(decoded);
+      // print(decoded);
       return decoded['data'] == 1;
     } catch (_) {
       throw _;
@@ -68,7 +68,7 @@ class _GroupSettingState extends State<GroupSettings> {
     _hasGuests.whenComplete(() {
       Future.delayed(Duration(milliseconds: 1000)).then((value) {
         if (widget.scrollTo == 'guests') {
-          print(guestsKey.currentContext);
+          // print(guestsKey.currentContext);
           Scrollable.ensureVisible(guestsKey.currentContext);
         }
       });
@@ -94,7 +94,7 @@ class _GroupSettingState extends State<GroupSettings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
-          controller: ScrollController(),
+          physics: NeverScrollableScrollPhysics(),
           child: Column(
             children: <Widget>[
               FutureBuilder(
@@ -133,9 +133,12 @@ class _GroupSettingState extends State<GroupSettings> {
                             ],
                           );
                         }
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: columnWidgets,
+                        return SingleChildScrollView(
+                          controller: ScrollController(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: columnWidgets,
+                          ),
                         );
                       } else {
                         return ErrorMessage(

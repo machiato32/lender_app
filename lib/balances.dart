@@ -340,13 +340,18 @@ class _BalancesState extends State<Balances> {
 
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
+      TextStyle textStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
+          color: member.memberId == idToUse()
+              ? currentThemeName.contains('Gradient')
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSecondary
+              : Theme.of(context).colorScheme.onSurface);
       return Container(
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           decoration: member.memberId == idToUse()
               ? BoxDecoration(
                   gradient: AppTheme.gradientFromTheme(currentThemeName,
                       useSecondary: true),
-                  // color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(15),
                 )
               : null,
@@ -355,17 +360,11 @@ class _BalancesState extends State<Balances> {
             children: <Widget>[
               Text(
                 member.nickname,
-                style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                    color: member.memberId == idToUse()
-                        ? Theme.of(context).colorScheme.onSecondary
-                        : Theme.of(context).colorScheme.onSurface),
+                style: textStyle,
               ),
               Text(
                 member.balance.money(currentGroupCurrency),
-                style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                    color: member.memberId == idToUse()
-                        ? Theme.of(context).colorScheme.onSecondary
-                        : Theme.of(context).colorScheme.onSurface),
+                style: textStyle,
               )
             ],
           ));

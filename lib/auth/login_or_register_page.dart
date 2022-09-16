@@ -29,7 +29,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
     ]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (useTest) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Theme.of(context).colorScheme.secondary,
           duration: Duration(hours: 10),
           content: Text(
@@ -71,53 +71,55 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                _tapped = true;
-                _doubleTapped = false;
-              },
-              onDoubleTap: () {
-                if (_tapped) {
-                  _doubleTapped = true;
-                }
-              },
-              onLongPress: () {
-                if (_tapped && _doubleTapped) {
-                  setState(() {
-                    if (!useTest) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                        duration: Duration(hours: 10),
-                        content: Text(
-                          'Test Mode',
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        action: SnackBarAction(
-                          label: 'Back to Normal Mode',
-                          textColor: Theme.of(context).textTheme.button.color,
-                          onPressed: () {
-                            setState(() {
-                              useTest = !useTest;
-                              _tapped = false;
-                              _doubleTapped = false;
-                            });
-                          },
-                        ),
-                      ));
-                    } else {
-                      _scaffoldKey.currentState.removeCurrentSnackBar();
-                    }
-                    clearAllCache();
-                    useTest = !useTest;
-                    _tapped = false;
-                    _doubleTapped = false;
-                  });
-                }
-              },
-              child: Image(
-                image: AssetImage('assets/dodo_color_glow3.png'),
-                height: MediaQuery.of(context).size.width / 3,
+            Flexible(
+              child: GestureDetector(
+                onTap: () {
+                  _tapped = true;
+                  _doubleTapped = false;
+                },
+                onDoubleTap: () {
+                  if (_tapped) {
+                    _doubleTapped = true;
+                  }
+                },
+                onLongPress: () {
+                  if (_tapped && _doubleTapped) {
+                    setState(() {
+                      if (!useTest) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          duration: Duration(hours: 10),
+                          content: Text(
+                            'Test Mode',
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                          action: SnackBarAction(
+                            label: 'Back to Normal Mode',
+                            textColor: Theme.of(context).textTheme.button.color,
+                            onPressed: () {
+                              setState(() {
+                                useTest = !useTest;
+                                _tapped = false;
+                                _doubleTapped = false;
+                              });
+                            },
+                          ),
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      }
+                      clearAllCache();
+                      useTest = !useTest;
+                      _tapped = false;
+                      _doubleTapped = false;
+                    });
+                  }
+                },
+                child: Image(
+                  image: AssetImage('assets/dodo_color_glow3.png'),
+                  height: MediaQuery.of(context).size.width / 3,
+                ),
               ),
             ),
             Center(
@@ -141,8 +143,10 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                   .copyWith(color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.center,
             )),
-            SizedBox(
-              height: 100,
+            Flexible(
+              child: SizedBox(
+                height: 50,
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -110,18 +110,19 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Flexible(
-                child: Text(
-              widget.dataFalseText.tr(),
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge
-                  .copyWith(color: Theme.of(context).colorScheme.onError),
-              textAlign: TextAlign.center,
-            )),
+              child: Text(
+                widget.dataFalseText.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onError),
+                textAlign: TextAlign.center,
+              ),
+            ),
             SizedBox(
               height: 15,
             ),
-            FlatButton.icon(
+            ElevatedButton.icon(
               icon: Icon(
                 Icons.clear,
                 color: Theme.of(context).colorScheme.onError,
@@ -133,10 +134,12 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                 'back'.tr(),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(color: Colors.white),
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onError),
               ),
-              color: Colors.red,
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).colorScheme.error)),
             )
           ],
         ),
@@ -153,18 +156,19 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Flexible(
-                child: Text(
-              snapshot.error.toString().tr(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  .copyWith(color: Colors.white),
-              textAlign: TextAlign.center,
-            )),
+              child: Text(
+                snapshot.error.toString().tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
             SizedBox(
               height: 15,
             ),
-            FlatButton.icon(
+            ElevatedButton.icon(
               icon: Icon(
                 Icons.clear,
                 color: Theme.of(context).colorScheme.onError,
@@ -179,7 +183,10 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                     .labelLarge
                     .copyWith(color: Theme.of(context).colorScheme.onError),
               ),
-              color: Theme.of(context).colorScheme.error,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).colorScheme.error),
+              ),
             )
           ],
         ),

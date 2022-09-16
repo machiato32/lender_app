@@ -36,7 +36,7 @@ class AboutUs extends StatelessWidget {
               children: [
                 GradientButton(
                   child: Icon(Icons.info,
-                      color: Theme.of(context).colorScheme.onSecondary),
+                      color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
                     showAboutDialog(
                       context: context,

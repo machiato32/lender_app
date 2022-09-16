@@ -20,6 +20,7 @@ class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         padding: EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

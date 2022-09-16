@@ -17,7 +17,7 @@ class ErrorMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(15),
           child: Column(
             children: [
               Text(error.tr(),
@@ -34,7 +34,10 @@ class ErrorMessage extends StatelessWidget {
                     Text('if_not_working'.tr(),
                         style: Theme.of(context).textTheme.bodyMedium.copyWith(
                             color: Theme.of(context).colorScheme.onSurface)),
-                    OutlinedButton(
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TextButton(
                       onPressed: () {
                         DateTime now = DateTime.now();
                         Navigator.push(
@@ -46,12 +49,6 @@ class ErrorMessage extends StatelessWidget {
                                       location: locationOfError,
                                     )));
                       },
-                      // child: Icon(
-                      //   Icons.error,
-                      //   color: Theme.of(context).brightness == Brightness.dark
-                      //       ? Colors.black
-                      //       : Colors.white,
-                      // ),
                       child: Text('report_this_error'.tr(),
                           style: Theme.of(context)
                               .textTheme

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/currency_picker_dropdown.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import '../essentials/app_theme.dart';
 import 'main_group_page.dart';
 
 class CreateGroup extends StatefulWidget {
@@ -68,10 +66,6 @@ class _CreateGroupState extends State<CreateGroup> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          // flexibleSpace: Container(
-          //   decoration: BoxDecoration(
-          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          // ),
           title: Text(
             'create'.tr(),
           ),

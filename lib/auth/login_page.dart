@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:csocsort_szamla/auth/forgot_password_dialog.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,9 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import '../essentials/app_theme.dart';
 import '../groups/main_group_page.dart';
-import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   final String inviteURL;
@@ -43,193 +41,131 @@ class _LoginPageState extends State<LoginPage> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
-            // flexibleSpace: Container(
-            //   decoration: BoxDecoration(
-            //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-            // ),
             title: Text('login'.tr()),
           ),
           body: Center(
-            child: ListView(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              shrinkWrap: true,
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Card(
-                  margin: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  child: TextFormField(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: ListView(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                shrinkWrap: true,
+                children: <Widget>[
+                  Card(
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    child: TextFormField(
+                      validator: (value) {
+                        value = value.trim();
+                        if (value.isEmpty) {
+                          return 'field_empty'.tr();
+                        }
+                        if (value.length < 3) {
+                          return 'minimal_length'.tr(args: ['3']);
+                        }
+                        return null;
+                      },
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        prefixIcon: Icon(
+                          Icons.account_circle,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: 'username'.tr(),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
                     validator: (value) {
-                      value = value.trim();
-                      if (value.isEmpty) {
+                      if (value.trim().isEmpty) {
                         return 'field_empty'.tr();
-                      }
-                      if (value.length < 3) {
-                        return 'minimal_length'.tr(args: ['3']);
                       }
                       return null;
                     },
-                    controller: _usernameController,
+                    controller: _passwordController,
                     decoration: InputDecoration(
+                      hintText: 'password'.tr(),
                       filled: true,
                       prefixIcon: Icon(
-                        Icons.account_circle,
+                        Icons.password,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'username'.tr(),
                     ),
+                    obscureText: true,
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                      LengthLimitingTextInputFormatter(15),
+                      FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
                     ],
+                    onFieldSubmitted: (value) => _pushedButton(),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value.trim().isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    return null;
-                  },
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    hintText: 'password'.tr(),
-                    filled: true,
-                    prefixIcon: Icon(
-                      Icons.password,
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Center(
+                    child: OutlinedButton(
+                      child: Text('forgot_password'.tr(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ForgotPasswordDialog();
+                          },
+                        );
+                      },
                     ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
                   ),
-                  obscureText: true,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9]')),
-                  ],
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Center(
-                  child: OutlinedButton(
-                    child: Text('forgot_password'.tr(),
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.primary)),
-                    onPressed: () async {
-                      GlobalKey<FormState> formState = GlobalKey<FormState>();
-                      TextEditingController controller =
-                          TextEditingController();
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Form(
-                            key: formState,
-                            child: AlertDialog(
-                              title: Text(
-                                'forgot_password'.tr(),
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                              content: TextFormField(
-                                controller: controller,
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 3) {
-                                    return 'minimal_length'.tr(args: ['3']);
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'username'.tr(),
-                                  filled: true,
-                                  prefixIcon: Icon(
-                                    Icons.account_circle,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp('[a-z0-9]')),
-                                  LengthLimitingTextInputFormatter(15),
-                                ],
-                              ),
-                              actions: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GradientButton(
-                                      onPressed: () {
-                                        if (formState.currentState.validate()) {
-                                          String username = controller.text;
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ForgotPasswordPage(
-                                                username: username,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Icon(Icons.send,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton(
             foregroundColor: Theme.of(context).colorScheme.onTertiary,
             backgroundColor: Theme.of(context).colorScheme.tertiary,
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                String username = _usernameController.text.toLowerCase();
-                String password = _passwordController.text;
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return FutureSuccessDialog(
-                      future: _login(username, password),
-                      dataTrueText: 'login_scf',
-                      onDataTrue: () {
-                        _onSelectGroupTrue();
-                      },
-                    );
-                  },
-                );
-              }
-            },
+            onPressed: _pushedButton,
             child: Icon(Icons.send),
           ),
         ),
       ),
     );
+  }
+
+  void _pushedButton() {
+    if (_formKey.currentState.validate()) {
+      String username = _usernameController.text.toLowerCase();
+      String password = _passwordController.text;
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return FutureSuccessDialog(
+            future: _login(username, password),
+            dataTrueText: 'login_scf',
+            onDataTrue: () {
+              _onSelectGroupTrue();
+            },
+          );
+        },
+      );
+    }
   }
 
   Future<bool> _selectGroup(int lastActiveGroup) async {

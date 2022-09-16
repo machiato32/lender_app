@@ -1,23 +1,16 @@
 import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
-import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/shopping/im_shopping_dialog.dart';
-import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../essentials/widgets/error_message.dart';
-import 'edit_request_dialog.dart';
 import 'shopping_list_entry.dart';
 
 class ShoppingList extends StatefulWidget {
@@ -93,7 +86,7 @@ class _ShoppingListState extends State<ShoppingList> {
   }
 
   void _onUndoDeleteRequest() {
-    Scaffold.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
     Navigator.pop(context, true);
   }
 
@@ -103,19 +96,23 @@ class _ShoppingListState extends State<ShoppingList> {
       _shoppingList = _getShoppingList(overwriteCache: true);
     });
     if (restoreId != null) {
-      Scaffold.of(context).removeCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        // behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+        // padding: EdgeInsets.all(24),
         duration: Duration(seconds: 3),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'request_deleted'.tr(),
-              style: Theme.of(context).textTheme.button.copyWith(fontSize: 15),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSecondary),
             ),
             InkWell(
               onTap: () {
@@ -134,27 +131,47 @@ class _ShoppingListState extends State<ShoppingList> {
                 });
               },
               child: Container(
-                  padding: EdgeInsets.all(3),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.undo,
-                        color: Theme.of(context).textTheme.button.color,
-                      ),
-                      SizedBox(width: 3),
-                      Text(
-                        'undo'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(fontSize: 15),
-                      ),
-                    ],
-                  )),
+                padding: EdgeInsets.all(3),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.undo,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                    SizedBox(width: 3),
+                    Text(
+                      'undo'.tr(),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSecondary),
+                    ),
+                  ],
+                ),
+              ),
             )
           ],
         ),
       ));
+    }
+  }
+
+  void _buttonPush() {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      String name = _addRequestController.text;
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _postShoppingRequest(name),
+                dataTrueText: 'add_scf',
+                onDataTrue: () {
+                  _onPostShoppingRequest();
+                },
+                onDataFalse: () {
+                  Navigator.pop(context);
+                  setState(() {});
+                },
+              ),
+          barrierDismissible: false,
+          context: context);
     }
   }
 
@@ -255,7 +272,6 @@ class _ShoppingListState extends State<ShoppingList> {
                 height: 260,
                 color: Colors.transparent,
                 child: Card(
-                  // color: Theme.of(context).brightness==Brightness.dark?Color.fromARGB(255, 50, 50, 50):Colors.white,
                   margin: widget.bigScreen
                       ? null
                       : EdgeInsets.only(left: 0, right: 0),
@@ -341,41 +357,17 @@ class _ShoppingListState extends State<ShoppingList> {
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(255)
                                     ],
+                                    onFieldSubmitted: (value) => _buttonPush(),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       GradientButton(
-                                        // color: Theme.of(context).colorScheme.secondary,
                                         child: Icon(Icons.add_shopping_cart,
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .onPrimary),
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            String name =
-                                                _addRequestController.text;
-                                            showDialog(
-                                                builder: (context) =>
-                                                    FutureSuccessDialog(
-                                                      future:
-                                                          _postShoppingRequest(
-                                                              name),
-                                                      dataTrueText: 'add_scf',
-                                                      onDataTrue: () {
-                                                        _onPostShoppingRequest();
-                                                      },
-                                                      onDataFalse: () {
-                                                        Navigator.pop(context);
-                                                        setState(() {});
-                                                      },
-                                                    ),
-                                                barrierDismissible: false,
-                                                context: context);
-                                          }
-                                        },
+                                        onPressed: _buttonPush,
                                       ),
                                     ],
                                   ),

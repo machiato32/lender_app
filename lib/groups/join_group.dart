@@ -16,7 +16,6 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-import '../essentials/app_theme.dart';
 import 'create_group.dart';
 import 'main_group_page.dart';
 
@@ -111,10 +110,6 @@ class _JoinGroupState extends State<JoinGroup> {
         key: _formKey,
         child: Scaffold(
           appBar: AppBar(
-            // flexibleSpace: Container(
-            //   decoration: BoxDecoration(
-            //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-            // ),
             title: Text(
               'join'.tr(),
             ),

@@ -3,17 +3,14 @@ import 'dart:math';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
-import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -208,15 +205,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                         LengthLimitingTextInputFormatter(50)
                                       ],
                                       controller: noteController,
-                                      // style: TextStyle(
-                                      //     fontSize: 20,
-                                      //     color: Theme.of(context)
-                                      //         .textTheme
-                                      //         .bodyText1
-                                      //         .color),
-                                      // cursorColor: Theme.of(context)
-                                      //     .colorScheme
-                                      //     .secondary,
+                                      onFieldSubmitted: (value) =>
+                                          _buttonPush(),
                                     ),
                                     SizedBox(
                                       height: 20,
@@ -240,9 +230,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                           focusNode: _focusNode,
                                           decoration: InputDecoration(
                                             hintText: 'full_amount'.tr(),
-                                            // fillColor: Theme.of(context)
-                                            //     .colorScheme
-                                            //     .onSurface,
                                             filled: true,
                                             prefixIcon: Icon(
                                               Icons.pin,
@@ -270,6 +257,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                             FilteringTextInputFormatter.allow(
                                                 RegExp('[0-9\\.]'))
                                           ],
+                                          onFieldSubmitted: (value) =>
+                                              _buttonPush(),
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(top: 9),
@@ -282,7 +271,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                                   color: Colors.transparent,
                                                 ),
                                                 onPressed: () {
-                                                  showModalBottomSheetCustom(
+                                                  showModalBottomSheet(
+                                                    isScrollControlled: true,
                                                     context: context,
                                                     builder: (context) {
                                                       return SingleChildScrollView(
@@ -499,124 +489,124 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
           backgroundColor: Theme.of(context).colorScheme.tertiary,
           child:
               Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-            if (_formKey.currentState.validate()) {
-              if (!memberChipBool.containsValue(true)) {
-                FToast ft = FToast();
-                ft.init(context);
-                ft.showToast(
-                    child: errorToast('person_not_chosen', context),
-                    toastDuration: Duration(seconds: 2),
-                    gravity: ToastGravity.BOTTOM);
-                return;
-              }
-              double amount = double.parse(_amountController.text);
-              String name = noteController.text;
-              List<Member> members = [];
-              memberChipBool.forEach((Member key, bool value) {
-                if (value) members.add(key);
-              });
-              showDialog(
-                  builder: (context) => FutureSuccessDialog(
-                        future: _postPurchase(members, amount, name),
-                        dataTrue: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                'purchase_scf'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    .copyWith(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.check,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        'okay'.tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  useShadow: false,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.add,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        'add_new'.tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _amountController.text = '';
-                                      noteController.text = '';
-                                      for (Member key in memberChipBool.keys) {
-                                        memberChipBool[key] = false;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  useShadow: false,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                  barrierDismissible: false,
-                  context: context);
-            }
-          },
+          onPressed: _buttonPush,
         ),
       ),
     );
+  }
+
+  void _buttonPush() {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      if (!memberChipBool.containsValue(true)) {
+        FToast ft = FToast();
+        ft.init(context);
+        ft.showToast(
+            child: errorToast('person_not_chosen', context),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        return;
+      }
+      double amount = double.parse(_amountController.text);
+      String name = noteController.text;
+      List<Member> members = [];
+      memberChipBool.forEach((Member key, bool value) {
+        if (value) members.add(key);
+      });
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _postPurchase(members, amount, name),
+                dataTrue: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'purchase_scf'.tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            .copyWith(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                'okay'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          useShadow: false,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.add,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                'add_new'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _amountController.text = '';
+                              noteController.text = '';
+                              for (Member key in memberChipBool.keys) {
+                                memberChipBool[key] = false;
+                              }
+                            });
+                            Navigator.pop(context);
+                          },
+                          useShadow: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+          barrierDismissible: false,
+          context: context);
+    }
   }
 }

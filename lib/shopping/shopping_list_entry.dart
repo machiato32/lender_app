@@ -2,7 +2,6 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
@@ -224,9 +223,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                       context: context);
                 },
                 onTap: () async {
-                  showModalBottomSheetCustom(
+                  showModalBottomSheet(
                       context: context,
-                      backgroundColor: Theme.of(context).cardTheme.color,
+                      isScrollControlled: true,
                       builder: (context) => SingleChildScrollView(
                           child: ShoppingAllInfo(widget.data))).then((val) {
                     if (val == 'deleted')

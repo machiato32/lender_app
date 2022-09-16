@@ -1,9 +1,7 @@
 import 'dart:convert';
 
-import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
@@ -357,9 +355,9 @@ class _InvitationState extends State<Invitation> {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: () {
-              showModalBottomSheetCustom(
+              showModalBottomSheet(
                   context: context,
-                  backgroundColor: Theme.of(context).cardTheme.color,
+                  isScrollControlled: true,
                   builder: (context) => SingleChildScrollView(
                         child: ApproveMember(
                           member: member,

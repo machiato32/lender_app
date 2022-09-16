@@ -4,7 +4,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
+// import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
@@ -141,11 +141,9 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               SizedBox(
                                 height: 10,
                               ),
-                              TextField(
+                              TextFormField(
                                 decoration: InputDecoration(
                                   hintText: 'note'.tr(),
-                                  // fillColor:
-                                  //     Theme.of(context).colorScheme.onSurface,
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.note,
@@ -161,13 +159,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   LengthLimitingTextInputFormatter(50)
                                 ],
                                 controller: _noteController,
-                                // style: TextStyle(
-                                //     fontSize: 20,
-                                //     color: Theme.of(context)
-                                //         .colorScheme
-                                //         .onSurface),
-                                // cursorColor:
-                                //     Theme.of(context).colorScheme.secondary,
+                                onFieldSubmitted: (value) => _buttonPush(),
                               ),
                               SizedBox(
                                 height: 20,
@@ -190,9 +182,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                     controller: _amountController,
                                     decoration: InputDecoration(
                                       hintText: 'amount'.tr(),
-                                      // fillColor: Theme.of(context)
-                                      //     .inputDecorationTheme
-                                      //     .fillColor,
                                       filled: true,
                                       prefixIcon: Icon(
                                         Icons.pin,
@@ -211,14 +200,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    // style: TextStyle(
-                                    //     fontSize: 20,
-                                    //     color: Theme.of(context)
-                                    //         .textTheme
-                                    //         .bodyText1
-                                    //         .color),
-                                    // cursorColor:
-                                    //     Theme.of(context).colorScheme.secondary,
                                     keyboardType:
                                         TextInputType.numberWithOptions(
                                             decimal: true),
@@ -226,6 +207,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       FilteringTextInputFormatter.allow(
                                           RegExp('[0-9\\.]'))
                                     ],
+                                    onFieldSubmitted: (value) => _buttonPush(),
                                   ),
                                   Container(
                                     margin: EdgeInsets.only(top: 9),
@@ -238,20 +220,21 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                             color: Colors.transparent,
                                           ),
                                           onPressed: () {
-                                            showModalBottomSheetCustom(
-                                              context: context,
-                                              builder: (context) {
-                                                return SingleChildScrollView(
-                                                    child: Calculator(
-                                                  callback: (String fromCalc) {
-                                                    setState(() {
-                                                      _amountController.text =
-                                                          fromCalc;
-                                                    });
-                                                  },
-                                                ));
-                                              },
-                                            );
+                                            showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return SingleChildScrollView(
+                                                      child: Calculator(
+                                                    callback:
+                                                        (String fromCalc) {
+                                                      setState(() {
+                                                        _amountController.text =
+                                                            fromCalc;
+                                                      });
+                                                    },
+                                                  ));
+                                                });
                                           }),
                                     ),
                                   ),
@@ -301,7 +284,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                           ),
                         ),
                       ),
-//              Balances()
                     ],
                   ),
                 ),
@@ -317,113 +299,113 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
           backgroundColor: Theme.of(context).colorScheme.tertiary,
           child:
               Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-            if (_formKey.currentState.validate()) {
-              if (_selectedMember == null) {
-                FToast ft = FToast();
-                ft.init(context);
-                ft.showToast(
-                    child: errorToast('person_not_chosen', context),
-                    toastDuration: Duration(seconds: 2),
-                    gravity: ToastGravity.BOTTOM);
-                return;
-              }
-              double amount = double.parse(_amountController.text);
-              String note = _noteController.text;
-              showDialog(
-                  builder: (context) => FutureSuccessDialog(
-                        future: _postPayment(amount, note, _selectedMember),
-                        dataTrue: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                                child: Text("payment_scf".tr(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        .copyWith(color: Colors.white),
-                                    textAlign: TextAlign.center)),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.check,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        'okay'.tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  useShadow: false,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.add,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        'add_new'.tr(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    _amountController.text = '';
-                                    _noteController.text = '';
-                                    _selectedMember = null;
-                                    Navigator.pop(context);
-                                  },
-                                  useShadow: false,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                  barrierDismissible: false,
-                  context: context);
-            }
-          },
+          onPressed: _buttonPush,
         ),
       ),
     );
+  }
+
+  void _buttonPush() {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      if (_selectedMember == null) {
+        FToast ft = FToast();
+        ft.init(context);
+        ft.showToast(
+            child: errorToast('person_not_chosen', context),
+            toastDuration: Duration(seconds: 2),
+            gravity: ToastGravity.BOTTOM);
+        return;
+      }
+      double amount = double.parse(_amountController.text);
+      String note = _noteController.text;
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _postPayment(amount, note, _selectedMember),
+                dataTrue: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                        child: Text("payment_scf".tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                .copyWith(color: Colors.white),
+                            textAlign: TextAlign.center)),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                'okay'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          useShadow: false,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.add,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                'add_new'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            _amountController.text = '';
+                            _noteController.text = '';
+                            _selectedMember = null;
+                            Navigator.pop(context);
+                          },
+                          useShadow: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+          barrierDismissible: false,
+          context: context);
+    }
   }
 }

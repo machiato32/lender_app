@@ -133,7 +133,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Widget> _generateListTiles(List<Group> groups) {
     return groups.map((group) {
       return Padding(
-        padding: EdgeInsets.only(left: 12),
+        padding: EdgeInsets.symmetric(horizontal: 12),
         child: Material(
           type: MaterialType.transparency,
           child: ListTile(
@@ -141,7 +141,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ? Theme.of(context).colorScheme.secondaryContainer
                 : Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(28)),
+              borderRadius: BorderRadius.all(Radius.circular(28)),
             ),
             title: Text(
               group.groupName,
@@ -202,11 +202,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _handleDrawer() {
+  void _handleDrawer(bool bigScreen) {
+    if (!bigScreen) {
+      _scaffoldKey.currentState.openEndDrawer();
+    } else {
+      _scaffoldKey.currentState.openDrawer();
+    }
     FeatureDiscovery.discoverFeatures(context, <String>['drawer', 'settings']);
-    print('drawer');
-    _scaffoldKey.currentState.openEndDrawer();
-    // _scaffoldKey.currentState.openDrawer();
     _groups = null;
     _groups = _getGroups();
   }
@@ -224,23 +226,42 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     bool bigScreen = width > tabletViewWidth;
+    if (bigScreen && _selectedIndex > 1) {
+      _selectedIndex = 0;
+      _tabController.animateTo(_selectedIndex);
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    }
     return Scaffold(
-      // backgroundColor: _selectedIndex != 1
-      //     ? Theme.of(context).scaffoldBackgroundColor
-      //     : Theme.of(context).cardTheme.color,
       key: _scaffoldKey,
       appBar: AppBar(
+        leading: bigScreen
+            ? IconButton(
+                onPressed: () {
+                  _handleDrawer(bigScreen);
+                },
+                icon: DescribedFeatureOverlay(
+                  tapTarget: Icon(Icons.menu, color: Colors.black),
+                  featureId: 'drawer',
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  overflowMode: OverflowMode.extendBackground,
+                  title: Text(
+                    'discovery_drawer_title'.tr(),
+                    style: Theme.of(context).textTheme.titleLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onTertiary),
+                  ),
+                  description: Text(
+                    'discovery_drawer_description'.tr(),
+                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                        color: Theme.of(context).colorScheme.onTertiary),
+                  ),
+                  barrierDismissible: false,
+                  child: Icon(Icons.menu),
+                ),
+              )
+            : null,
         actions: [Container()],
-        // elevation: _selectedIndex == 1 ? 0 : 4,
         centerTitle: true,
-        // flexibleSpace: currentThemeName.contains('Gradient')
-        //     ? Container(
-        //         decoration: BoxDecoration(
-        //             gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        //       )
-        //     : null,
         title: FutureBuilder(
           future: _getCurrentGroup(),
           builder: (context, snapshot) {
@@ -263,55 +284,35 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ? null
           : NavigationBar(
               onDestinationSelected: (_index) {
-                if (!bigScreen) {
-                  if (_index != 3) {
-                    setState(() {
-                      _selectedIndex = _index;
-                      _tabController.animateTo(_index);
-                      _scaffoldKey.currentState.removeCurrentSnackBar();
-                    });
-                  } else {
-                    _handleDrawer();
-                  }
-
-                  if (_selectedIndex == 1) {
-                    FeatureDiscovery.discoverFeatures(
-                        context, ['shopping_list']);
-                  } else if (_selectedIndex == 2) {
-                    FeatureDiscovery.discoverFeatures(
-                        context, ['group_settings']);
-                  }
+                if (_index != 3) {
+                  setState(() {
+                    _selectedIndex = _index;
+                    _tabController.animateTo(_index);
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                  });
                 } else {
-                  if (_index != 2) {
-                    setState(() {
-                      _selectedIndex = _index;
-                      _tabController.animateTo(_index);
-                      _scaffoldKey.currentState.removeCurrentSnackBar();
-                    });
-                  } else {
-                    _handleDrawer();
-                  }
-                  if (_selectedIndex == 0) {
-                    FeatureDiscovery.discoverFeatures(
-                        context, ['shopping_list']);
-                  } else if (_selectedIndex == 1) {
-                    FeatureDiscovery.discoverFeatures(
-                        context, ['group_settings']);
-                  }
+                  _handleDrawer(bigScreen);
+                }
+                if (_selectedIndex == 1) {
+                  FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
+                } else if (_selectedIndex == 2) {
+                  FeatureDiscovery.discoverFeatures(
+                      context, ['group_settings']);
                 }
               },
               selectedIndex: _selectedIndex,
-              destinations: bigScreen
-                  ? (_bottomNavbarItems().take(1).toList()
-                    ..addAll(
-                        _bottomNavbarItems().reversed.take(2).toList().reversed)
-                    ..toList())
-                  : _bottomNavbarItems(),
+              destinations: _bottomNavbarItems(),
             ),
-      endDrawer: Drawer(
-        child: _drawer(),
-        // backgroundColor: Colors.pink,
-      ),
+      drawer: bigScreen
+          ? Drawer(
+              child: _drawer(),
+            )
+          : null,
+      endDrawer: !bigScreen
+          ? Drawer(
+              child: _drawer(),
+            )
+          : null,
       floatingActionButton: _selectedIndex == (bigScreen ? 1 : 2)
           ? GroupSettingsSpeedDial()
           : Visibility(
@@ -320,7 +321,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 callback: this.callback,
               ),
             ),
-
       body: !kIsWeb && Platform.isWindows
           ? _body(true, bigScreen)
           : ConnectivityWidget(
@@ -348,14 +348,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Widget _body(bool isOnline, bool bigScreen) {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width - (bigScreen ? 80 : 0);
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        10 - //appbar
+        64 - //appbar
+        (idToUse() == guestUserId ? 60 : 0) - // guestBanner
         (bigScreen ? 0 : 56) - //bottomNavbar
         adHeight;
     List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
-    // print(width);
     return Row(
       children: [
         bigScreen
@@ -363,38 +363,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 labelType: NavigationRailLabelType.all,
                 destinations: _navigationRailItems(),
                 onDestinationSelected: (_index) {
-                  if (!bigScreen) {
-                    if (_index != 3) {
-                      setState(() {
-                        _selectedIndex = _index;
-                        _tabController.animateTo(_index);
-                        _scaffoldKey.currentState.removeCurrentSnackBar();
-                      });
-                    } else {
-                      _handleDrawer();
-                    }
-
-                    if (_selectedIndex == 1) {
-                      FeatureDiscovery.discoverFeatures(
-                          context, ['shopping_list']);
-                    } else if (_selectedIndex == 2) {
-                      FeatureDiscovery.discoverFeatures(
-                          context, ['group_settings']);
-                    }
-                  } else {
-                    if (_index != 2) {
-                      setState(() {
-                        _selectedIndex = _index;
-                        _tabController.animateTo(_index);
-                        _scaffoldKey.currentState.removeCurrentSnackBar();
-                      });
-                    } else {
-                      _handleDrawer();
-                    }
-                    if (_selectedIndex == 2) {
-                      FeatureDiscovery.discoverFeatures(
-                          context, ['group_settings']);
-                    }
+                  // print(_selectedIndex);
+                  setState(() {
+                    _selectedIndex = _index;
+                    _tabController.animateTo(_index);
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                  });
+                  if (_selectedIndex == 1) {
+                    FeatureDiscovery.discoverFeatures(
+                        context, ['group_settings']);
                   }
                 },
                 selectedIndex: _selectedIndex)
@@ -485,8 +462,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: ElevationOverlay.applyOverlay(
             context, Theme.of(context).colorScheme.surface, 1),
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(16),
+        borderRadius: BorderRadius.all(
+          Radius.circular(16),
         ),
       ),
       child: Column(
@@ -501,7 +478,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     children: <Widget>[
                       Expanded(
                         child: Image(
-                          image: AssetImage('assets/dodo_color_glow.png'),
+                          image: AssetImage('assets/dodo_color_glow3.png'),
                         ),
                       ),
                       Text(
@@ -533,11 +510,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                             cardTheme: CardTheme(
                               elevation: 0,
                               color: Colors.transparent,
-                              margin: EdgeInsets.only(left: 12),
+                              margin: EdgeInsets.symmetric(horizontal: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.horizontal(
-                                  left: Radius.circular(28),
-                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(28)),
                               ),
                             ),
                           ),
@@ -579,11 +555,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   },
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(28)),
+                      borderRadius: BorderRadius.all(Radius.circular(28)),
                     ),
                     leading: Icon(
                       Icons.group_add,
@@ -602,11 +577,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(28)),
+                      borderRadius: BorderRadius.all(Radius.circular(28)),
                     ),
                     leading: Icon(
                       Icons.create,
@@ -620,9 +594,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateGroup()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateGroup(),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -654,11 +630,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           Visibility(
             visible: !kIsWeb && Platform.isAndroid,
             child: Padding(
-              padding: const EdgeInsets.only(left: 12.0),
+              padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: ListTile(
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.horizontal(left: Radius.circular(28)),
+                  borderRadius: BorderRadius.all(Radius.circular(28)),
                 ),
                 dense: true,
                 onTap: () {
@@ -674,13 +649,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   }
                 },
                 leading: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.onSurfaceVariant,
-                        BlendMode.srcIn),
-                    child: Image.asset(
-                      'assets/dodo_color.png',
-                      width: 25,
-                    )),
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn),
+                  child: Image.asset(
+                    'assets/dodo_color.png',
+                    width: 25,
+                  ),
+                ),
                 subtitle: trialVersion
                     ? Text(
                         'trial_version'.tr().toUpperCase(),
@@ -697,11 +673,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ListTile(
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(left: Radius.circular(28)),
+                borderRadius: BorderRadius.all(Radius.circular(28)),
               ),
               dense: true,
               leading: DescribedFeatureOverlay(
@@ -738,11 +713,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ListTile(
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(left: Radius.circular(28)),
+                borderRadius: BorderRadius.all(Radius.circular(28)),
               ),
               leading: Icon(
                 Icons.bug_report,
@@ -764,11 +738,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
           Divider(),
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ListTile(
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(left: Radius.circular(28)),
+                borderRadius: BorderRadius.all(Radius.circular(28)),
               ),
               leading: Icon(
                 Icons.exit_to_app,
@@ -827,31 +800,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           child: Icon(Icons.supervisor_account),
         ),
         label: Text('group'.tr()),
-      ),
-      NavigationRailDestination(
-        icon: DescribedFeatureOverlay(
-          tapTarget: Icon(Icons.menu, color: Colors.black),
-          featureId: 'drawer',
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          overflowMode: OverflowMode.extendBackground,
-          title: Text(
-            'discovery_drawer_title'.tr(),
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
-          ),
-          description: Text(
-            'discovery_drawer_description'.tr(),
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                .copyWith(color: Theme.of(context).colorScheme.onTertiary),
-          ),
-          barrierDismissible: false,
-          child: Icon(Icons.menu),
-        ),
-        label: Text('more'.tr()),
       ),
     ];
   }

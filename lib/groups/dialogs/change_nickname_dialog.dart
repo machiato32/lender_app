@@ -88,6 +88,7 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(15),
                   ],
+                  onFieldSubmitted: (value) => _buttonPushed(),
                 ),
               ),
             ),
@@ -98,25 +99,7 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  onPressed: () {
-                    if (_nicknameFormKey.currentState.validate()) {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      String nickname =
-                          _nicknameController.text[0].toUpperCase() +
-                              _nicknameController.text.substring(1);
-                      showDialog(
-                          builder: (context) => FutureSuccessDialog(
-                                future:
-                                    _updateNickname(nickname, widget.memberId),
-                                onDataTrue: () {
-                                  _onUpdateNickname();
-                                },
-                                dataTrueText: 'nickname_scf',
-                              ),
-                          barrierDismissible: false,
-                          context: context);
-                    }
-                  },
+                  onPressed: _buttonPushed,
                   child: Icon(
                     Icons.check,
                     color: Theme.of(context).colorScheme.onPrimary,
@@ -128,5 +111,23 @@ class _ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
         ),
       ),
     );
+  }
+
+  void _buttonPushed() {
+    if (_nicknameFormKey.currentState.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      String nickname = _nicknameController.text[0].toUpperCase() +
+          _nicknameController.text.substring(1);
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _updateNickname(nickname, widget.memberId),
+                onDataTrue: () {
+                  _onUpdateNickname();
+                },
+                dataTrueText: 'nickname_scf',
+              ),
+          barrierDismissible: false,
+          context: context);
+    }
   }
 }

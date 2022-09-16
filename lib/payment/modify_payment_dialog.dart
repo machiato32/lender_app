@@ -4,7 +4,6 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -194,7 +193,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                               color: Colors.transparent,
                             ),
                             onPressed: () {
-                              showModalBottomSheetCustom(
+                              showModalBottomSheet(
+                                isScrollControlled: true,
                                 context: context,
                                 builder: (context) {
                                   return SingleChildScrollView(

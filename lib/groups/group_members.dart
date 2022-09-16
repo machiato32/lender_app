@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/group_objects.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -194,15 +193,17 @@ class _MemberEntryState extends State<MemberEntry> {
   @override
   Widget build(BuildContext context) {
     if (widget.member.memberId == currentUserId) {
-      mainTextStyle = Theme.of(context)
-          .textTheme
-          .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
-      subTextStyle = Theme.of(context)
-          .textTheme
-          .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onSecondary);
-      iconColor = Theme.of(context).colorScheme.onSecondary;
+      mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSecondary);
+      subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSecondary);
+      iconColor = currentThemeName.contains('Gradient')
+          ? Theme.of(context).colorScheme.onPrimary
+          : Theme.of(context).colorScheme.onSecondary;
       boxDecoration = BoxDecoration(
         gradient:
             AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
@@ -230,9 +231,9 @@ class _MemberEntryState extends State<MemberEntry> {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: () {
-            showModalBottomSheetCustom(
+            showModalBottomSheet(
                 context: context,
-                backgroundColor: Theme.of(context).cardTheme.color,
+                isScrollControlled: true,
                 builder: (context) => SingleChildScrollView(
                       child: MemberAllInfo(
                         member: widget.member,

@@ -92,6 +92,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(20),
                   ],
+                  onFieldSubmitted: (value) => _buttonPush(),
                 ),
               ),
               SizedBox(
@@ -101,22 +102,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GradientButton(
-                    onPressed: () {
-                      if (_groupNameFormKey.currentState.validate()) {
-                        FocusScope.of(context).unfocus();
-                        String groupName = _groupNameController.text;
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _updateGroupName(groupName),
-                                  dataTrueText: 'nickname_scf',
-                                  onDataTrue: () {
-                                    _onUpdateGroupName();
-                                  },
-                                ),
-                            barrierDismissible: false,
-                            context: context);
-                      }
-                    },
+                    onPressed: _buttonPush,
                     child: Icon(
                       Icons.check,
                       color: Theme.of(context).colorScheme.onSecondary,
@@ -129,5 +115,22 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
         ),
       ),
     );
+  }
+
+  void _buttonPush() {
+    if (_groupNameFormKey.currentState.validate()) {
+      FocusScope.of(context).unfocus();
+      String groupName = _groupNameController.text;
+      showDialog(
+          builder: (context) => FutureSuccessDialog(
+                future: _updateGroupName(groupName),
+                dataTrueText: 'nickname_scf',
+                onDataTrue: () {
+                  _onUpdateGroupName();
+                },
+              ),
+          barrierDismissible: false,
+          context: context);
+    }
   }
 }
