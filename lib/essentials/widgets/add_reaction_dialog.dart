@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -94,6 +96,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
               height: 10,
             ),
             Container(
+              constraints: BoxConstraints(maxHeight: 100),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -134,10 +137,12 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                           child: Text(
                                             e,
                                             style: TextStyle(
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    13),
+                                                fontSize: min(
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        13,
+                                                    50)),
                                           )),
                                     ),
                                   ))

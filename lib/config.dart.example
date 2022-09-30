@@ -28,8 +28,13 @@ int idToUse() {
       : currentUserId;
 }
 
+/// Is in app purchase enabled on the platform. Set programmatically.
 bool isIAPPlatformEnabled = false;
+
+/// Are ads enabled on the platform. Set programmatically.
 bool isAdPlatformEnabled = false;
+
+/// Is Firebase enabled on the platform. Set programmatically.
 bool isFirebasePlatformEnabled = false;
 
 double tabletViewWidth = 880;
