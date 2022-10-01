@@ -1,6 +1,6 @@
 {
-    "name": "csocsort_app",
-    "short_name": "csocsort_app",
+    "name": "Lender - money and debtmanagement designed for groups",
+    "short_name": "Lender",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
