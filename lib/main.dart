@@ -233,7 +233,7 @@ class _LenderAppState extends State<LenderApp> {
           .createNotificationChannel(AndroidNotificationChannel(
             channel,
             (channel + '_notification').tr(),
-            (channel + '_notification_explanation').tr(),
+            description: (channel + '_notification_explanation').tr(),
             groupId: groupId,
           ));
     }
@@ -324,6 +324,10 @@ class _LenderAppState extends State<LenderApp> {
               ['payment_created', 'payment_modified', 'payment_deleted']);
           _createNotificationChannels('shopping',
               ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
+          flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>()
+              .requestPermission();
         });
 
         setupInitialMessage();
@@ -335,7 +339,8 @@ class _LenderAppState extends State<LenderApp> {
               decoded['channel_id'], //only this is needed
               (decoded['channel_id'] +
                   '_notification'), // these don't do anything
-              (decoded['channel_id'] + '_notification_explanation'),
+              channelDescription:
+                  (decoded['channel_id'] + '_notification_explanation'),
               styleInformation: BigTextStyleInformation(''));
           var iOSPlatformChannelSpecifics =
               new IOSNotificationDetails(presentSound: false);

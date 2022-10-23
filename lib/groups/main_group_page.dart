@@ -351,7 +351,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width - (bigScreen ? 80 : 0);
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        64 - //appbar
+        (!Platform.isAndroid ? 64 : 0) - //appbar
         (idToUse() == guestUserId ? 60 : 0) - // guestBanner
         (bigScreen ? 0 : 56) - //bottomNavbar
         adHeight;

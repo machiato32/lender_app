@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DownloadExportDialog extends StatefulWidget {
   @override
@@ -38,12 +39,12 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
 
   void _onDownloadPdf(String url) {
     Navigator.pop(context);
-    launch(url);
+    launchUrlString(url, mode: LaunchMode.externalApplication);
   }
 
   void _onDownloadXls(String url) {
     Navigator.pop(context);
-    launch(url);
+    launchUrlString(url, mode: LaunchMode.externalApplication);
   }
 
   @override

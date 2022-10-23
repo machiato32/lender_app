@@ -83,6 +83,9 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
 
   Widget _generateSpeedDial(bool boosted, {DateTime created}) {
     return SpeedDial(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       backgroundColor: Theme.of(context).colorScheme.tertiary,
       child: Icon(Icons.show_chart,
           color: Theme.of(context).colorScheme.onTertiary),

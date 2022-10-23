@@ -64,18 +64,15 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
 
     rootBundle.load('assets/pipa.riv').then(
       (data) async {
-        final file = RiveFile();
+        final file = RiveFile.import(data);
 
-        // Load the RiveFile from the binary data.
-        if (file.import(data)) {
-          // The artboard is the root of the animation and gets drawn in the
-          // Rive widget.
-          final artboard = file.mainArtboard;
-          // Add a controller to play back a known animation on the main/default
-          // artboard.We store a reference to it so we can toggle playback.
-          artboard.addController(_controller = SimpleAnimation('go'));
-          _riveArtboard = artboard;
-        }
+        // The artboard is the root of the animation and gets drawn in the
+        // Rive widget.
+        final artboard = file.mainArtboard;
+        // Add a controller to play back a known animation on the main/default
+        // artboard.We store a reference to it so we can toggle playback.
+        artboard.addController(_controller = SimpleAnimation('go'));
+        _riveArtboard = artboard;
       },
     );
   }

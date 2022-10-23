@@ -18,6 +18,9 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       backgroundColor: Theme.of(context).colorScheme.tertiary,
       foregroundColor: Theme.of(context).colorScheme.onTertiary,
       child: DescribedFeatureOverlay(
