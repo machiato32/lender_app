@@ -371,5 +371,10 @@
 
     "gradient_themes" : "Színátmenetes témák",
     "dynamic_themes" : "Dinamikus témák",
-    "dynamic_themes_explanation" : "Ezek a témák alkalmazkodni fognak a rendszer színbeállításaihoz (amennyiben azok elérhetők)"
+    "dynamic_themes_explanation" : "Ezek a témák alkalmazkodni fognak a rendszer színbeállításaihoz (amennyiben azok elérhetők)",
+
+    "in_app_purchase_description": "Reklámok és témák",
+    "iapp_not_supported": "A bolt ezen a platformon nem támogatott",
+    "iapp_not_supported_explanation": "Az alkalmazáson belüli termékeket (pl. reklámmentesség, színtémák) jelenleg csak az Androidos appban tudod megvenni.\nHogyha ez nem megoldható számodra, írj egy e-mailt a developer@lenderapp.net címre.",
+    "no_camera_access": "Az alkalmazásnak nincs joga hozzáférni a kamerához."
 }

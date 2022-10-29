@@ -180,8 +180,13 @@ class _CreateGroupState extends State<CreateGroup> {
                               children: [
                                 GradientButton(
                                   child: Text('create_group'.tr(),
-                                      style:
-                                          Theme.of(context).textTheme.button),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary)),
                                   onPressed: () {
                                     if (_formKey.currentState.validate()) {
                                       String token = _groupName.text;

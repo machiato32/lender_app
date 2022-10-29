@@ -1,10 +1,8 @@
-import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/user_settings/delete_all_data.dart';
+import 'dart:io' show Platform;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../essentials/app_theme.dart';
 import 'about_us.dart';
 import 'change_language.dart';
 import 'change_password.dart';
@@ -12,6 +10,9 @@ import 'change_username.dart';
 import 'color_picker.dart';
 import 'personalised_ads.dart';
 import 'reset_tutorial.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/ad_management.dart';
+import 'package:csocsort_szamla/user_settings/delete_all_data.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -24,19 +25,12 @@ class _SettingsState extends State<Settings> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        56 -
-        adHeight; //Height without status bar and appbar
+        (kIsWeb || Platform.isWindows ? 64 : 0) - //appbar
+        adHeight(); //Height without status bar and appbar
     return Scaffold(
       appBar: AppBar(
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        // ),
         title: Text(
           'settings'.tr(),
-          // style: TextStyle(
-          //   color: Theme.of(context).colorScheme.onSecondary,
-          // ),
         ),
       ),
       body: GestureDetector(

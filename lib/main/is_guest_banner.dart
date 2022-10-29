@@ -24,8 +24,6 @@ class _IsGuestBannerState extends State<IsGuestBanner> {
           elevation: 1,
           backgroundColor: ElevationOverlay.applyOverlay(
               context, Theme.of(context).colorScheme.surface, 1),
-          // backgroundColor: Theme.of(context).brightness==Brightness.dark?Colors.grey[900]:Colors.white,
-
           actions: [
             TextButton(
               onPressed: () {

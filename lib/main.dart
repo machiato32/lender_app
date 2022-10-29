@@ -120,9 +120,6 @@ void main() async {
     isIAPPlatformEnabled = Platform.isAndroid;
     isAdPlatformEnabled = Platform.isAndroid;
     isFirebasePlatformEnabled = Platform.isAndroid;
-    if (isIAPPlatformEnabled) {
-      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-    }
     if (isAdPlatformEnabled) {
       MobileAds.instance.initialize();
     }
@@ -148,7 +145,6 @@ void main() async {
     themeName = preferences.getString('theme');
   }
   await loadAllPrefs();
-
   String initURL;
   try {
     initURL = await getInitialLink();

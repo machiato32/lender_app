@@ -42,8 +42,10 @@ class _CurrencyPickerDropdownState extends State<CurrencyPickerDropdown> {
         },
         value: _defaultCurrencyValue,
         borderRadius: BorderRadius.circular(30),
-        dropdownColor: ElevationOverlay.applyOverlay(
-            context, Theme.of(context).colorScheme.surface, 10),
+        dropdownColor: ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            2),
         style: Theme.of(context)
             .textTheme
             .bodyLarge

@@ -25,11 +25,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../balances.dart';
 import '../config.dart';
 import '../essentials/ad_management.dart';
-import '../essentials/app_theme.dart';
 import '../essentials/currencies.dart';
 import '../essentials/group_objects.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
+import '../main/iapp_not_supported_dialog.dart';
 import '../main/main_speed_dial.dart';
 import '../main/report_a_bug_page.dart';
 import '../main/trial_version_dialog.dart';
@@ -321,7 +321,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 callback: this.callback,
               ),
             ),
-      body: !kIsWeb && Platform.isWindows
+      body: kIsWeb || Platform.isWindows
           ? _body(true, bigScreen)
           : ConnectivityWidget(
               offlineBanner: kIsWeb
@@ -351,10 +351,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width - (bigScreen ? 80 : 0);
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        (!Platform.isAndroid ? 64 : 0) - //appbar
+        (kIsWeb || Platform.isWindows ? 64 : 0) - //appbar
         (idToUse() == guestUserId ? 60 : 0) - // guestBanner
         (bigScreen ? 0 : 56) - //bottomNavbar
-        adHeight;
+        adHeight();
     List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
     return Row(
       children: [
@@ -627,48 +627,54 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             },
           ),
           Divider(),
-          Visibility(
-            visible: !kIsWeb && Platform.isAndroid,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(28)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(28)),
+              ),
+              dense: true,
+              onTap: () {
+                if (trialVersion) {
+                  showDialog(
+                      builder: (context) => TrialVersionDialog(),
+                      context: context);
+                } else if (!isIAPPlatformEnabled) {
+                  showDialog(
+                      builder: (context) => IAPPNotSupportedDialog(),
+                      context: context);
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InAppPurchasePage()));
+                }
+              },
+              leading: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurfaceVariant,
+                    BlendMode.srcIn),
+                child: Image.asset(
+                  'assets/dodo_color.png',
+                  width: 25,
                 ),
-                dense: true,
-                onTap: () {
-                  if (trialVersion) {
-                    showDialog(
-                        builder: (context) => TrialVersionDialog(),
-                        context: context);
-                  } else {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InAppPurchasePage()));
-                  }
-                },
-                leading: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onSurfaceVariant,
-                      BlendMode.srcIn),
-                  child: Image.asset(
-                    'assets/dodo_color.png',
-                    width: 25,
-                  ),
-                ),
-                subtitle: trialVersion
-                    ? Text(
-                        'trial_version'.tr().toUpperCase(),
-                        style: Theme.of(context).textTheme.labelSmall.copyWith(
-                            color: Theme.of(context).colorScheme.secondary),
-                      )
-                    : null,
-                title: Text(
-                  'in_app_purchase'.tr(),
-                  style: Theme.of(context).textTheme.labelLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
-                ),
+              ),
+              subtitle: trialVersion
+                  ? Text(
+                      'trial_version'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.labelSmall.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
+                    )
+                  : Text(
+                      'in_app_purchase_description'.tr(),
+                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+              title: Text(
+                'in_app_purchase'.tr(),
+                style: Theme.of(context).textTheme.labelLarge.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
           ),

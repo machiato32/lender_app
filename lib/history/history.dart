@@ -139,90 +139,119 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                   _selectedIndex = _newIndex;
                 });
               },
-              splashFactory: InkSparkle.splashFactory,
-              // overlayColor:
-              //     MaterialStateProperty.all<Color>(Colors.transparent),
+              overlayColor:
+                  MaterialStateProperty.all<Color>(Colors.transparent),
               tabs: <Widget>[
-                Ink(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: _selectedIndex == 0
-                        ? AppTheme.gradientFromTheme(currentThemeName)
-                        : LinearGradient(colors: [
-                            ElevationOverlay.applyOverlay(context,
-                                Theme.of(context).colorScheme.surface, 10),
-                            ElevationOverlay.applyOverlay(context,
-                                Theme.of(context).colorScheme.surface, 10)
-                          ]),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.shopping_cart,
-                          color: _selectedIndex == 0
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onSurfaceVariant),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Flexible(
-                        child: Text(
-                          'purchases'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge
-                              .copyWith(
-                                  color: _selectedIndex == 0
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant),
-                          overflow: TextOverflow.ellipsis,
+                InkWell(
+                  splashFactory: InkSparkle.splashFactory,
+                  borderRadius: BorderRadius.circular(30),
+                  onTap: () {
+                    _selectedIndex = 0;
+                    _tabController.animateTo(_selectedIndex);
+                    Future.delayed(Duration(milliseconds: 50)).then((value) {
+                      setState(() {});
+                    });
+                  },
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: _selectedIndex == 0
+                          ? AppTheme.gradientFromTheme(currentThemeName)
+                          : LinearGradient(colors: [
+                              ElevationOverlay.applyOverlay(context,
+                                  Theme.of(context).colorScheme.surface, 10),
+                              ElevationOverlay.applyOverlay(context,
+                                  Theme.of(context).colorScheme.surface, 10)
+                            ]),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.shopping_cart,
+                            color: _selectedIndex == 0
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
+                        SizedBox(
+                          width: 3,
                         ),
-                      ),
-                    ],
+                        Flexible(
+                          child: Text(
+                            'purchases'.tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                .copyWith(
+                                    color: _selectedIndex == 0
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Ink(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: _selectedIndex == 1
-                        ? AppTheme.gradientFromTheme(currentThemeName)
-                        : LinearGradient(colors: [
-                            ElevationOverlay.applyOverlay(context,
-                                Theme.of(context).colorScheme.surface, 10),
-                            ElevationOverlay.applyOverlay(context,
-                                Theme.of(context).colorScheme.surface, 10)
-                          ]),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.attach_money,
-                          color: _selectedIndex == 1
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onSurfaceVariant),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Flexible(
-                        child: Text(
-                          'payments'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge
-                              .copyWith(
-                                  color: _selectedIndex == 1
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant),
-                          overflow: TextOverflow.ellipsis,
+                InkWell(
+                  splashFactory: InkSparkle.splashFactory,
+                  borderRadius: BorderRadius.circular(30),
+                  onTap: () {
+                    _selectedIndex = 1;
+                    _tabController.animateTo(_selectedIndex);
+                    Future.delayed(Duration(milliseconds: 50)).then((value) {
+                      setState(() {});
+                    });
+                  },
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: _selectedIndex == 1
+                          ? AppTheme.gradientFromTheme(currentThemeName)
+                          : LinearGradient(colors: [
+                              ElevationOverlay.applyOverlay(context,
+                                  Theme.of(context).colorScheme.surface, 10),
+                              ElevationOverlay.applyOverlay(context,
+                                  Theme.of(context).colorScheme.surface, 10)
+                            ]),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.attach_money,
+                            color: _selectedIndex == 1
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
+                        SizedBox(
+                          width: 3,
                         ),
-                      ),
-                    ],
+                        Flexible(
+                          child: Text(
+                            'payments'.tr(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                .copyWith(
+                                    color: _selectedIndex == 1
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

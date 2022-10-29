@@ -10,9 +10,11 @@ import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -238,6 +240,7 @@ class _JoinGroupState extends State<JoinGroup> {
                             children: [
                               Visibility(
                                 visible: widget.inviteURL == null &&
+                                    !kIsWeb &&
                                     (Platform.isAndroid || Platform.isIOS),
                                 child: Column(
                                   children: [
@@ -283,6 +286,11 @@ class _JoinGroupState extends State<JoinGroup> {
                                                 _tokenController.text =
                                                     cameraScanResult;
                                               });
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                  msg: 'no_camera_access'.tr(),
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG);
                                             }
                                           },
                                         ),

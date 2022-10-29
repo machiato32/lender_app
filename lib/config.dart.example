@@ -38,4 +38,4 @@ bool isAdPlatformEnabled = false;
 bool isFirebasePlatformEnabled = false;
 
 double tabletViewWidth = 880;
-double adHeight = (isAdPlatformEnabled && showAds) ? 50 : 0;
+double adHeight => (isAdPlatformEnabled && showAds) ? 50 : 0;
