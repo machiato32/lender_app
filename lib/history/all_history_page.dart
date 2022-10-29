@@ -414,7 +414,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
     List<Widget> allEntries = [initial];
     List<PaymentEntry> weekEntries = [];
     for (PaymentData data in data) {
-      print(data.updatedAt.toString() + ' ' + data.note);
       if (now.difference(data.updatedAt).inDays > 7) {
         int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
         now = now.subtract(Duration(days: toSubtract * 7));
