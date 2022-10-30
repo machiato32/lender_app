@@ -865,7 +865,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             overflowMode: OverflowMode.extendBackground,
             child: Icon(Icons.supervisor_account),
           ),
-          label: 'group'.tr()),
+          label: 'group'.tr()), //TODO: bettername
       NavigationDestination(
         icon: DescribedFeatureOverlay(
           tapTarget: Icon(Icons.menu, color: Colors.black),

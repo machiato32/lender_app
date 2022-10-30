@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
-
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
@@ -13,12 +12,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 import 'create_group.dart';
+import 'dialogs/qr_scanner_page.dart';
 import 'main_group_page.dart';
 
 class JoinGroup extends StatefulWidget {
@@ -66,8 +65,8 @@ class _JoinGroupState extends State<JoinGroup> {
         saveGroupId(decoded['data']['group_id']);
         saveGroupCurrency(decoded['data']['currency']);
         if (usersGroups == null) {
-          usersGroupIds = List<int>();
-          usersGroups = List<String>();
+          usersGroupIds = <int>[];
+          usersGroups = <String>[];
         }
         usersGroupIds.add(decoded['data']['group_id']);
         usersGroups.add(decoded['data']['group_name']);
@@ -231,7 +230,6 @@ class _JoinGroupState extends State<JoinGroup> {
               children: <Widget>[
                 Expanded(
                   child: ListView(
-                    // padding: EdgeInsets.all(15),
                     children: <Widget>[
                       Card(
                         child: Padding(
@@ -267,25 +265,22 @@ class _JoinGroupState extends State<JoinGroup> {
                                           ),
                                           onPressed: () async {
                                             if (await Permission.camera
-                                                    .request()
-                                                    .isGranted &&
-                                                await Permission.storage
-                                                    .request()
-                                                    .isGranted) {
-                                              String cameraScanResult =
-                                                  await FlutterBarcodeScanner
-                                                      .scanBarcode(
-                                                          '#${Theme.of(context).colorScheme.primary.value.toRadixString(16)}',
-                                                          'Cancel',
-                                                          true,
-                                                          ScanMode.QR);
-                                              if (cameraScanResult == '-1') {
-                                                cameraScanResult = '';
+                                                .request()
+                                                .isGranted) {
+                                              String scanResult;
+                                              await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              QRScannerPage()))
+                                                  .then((value) =>
+                                                      scanResult = value);
+                                              if (scanResult != null) {
+                                                setState(() {
+                                                  _tokenController.text =
+                                                      scanResult;
+                                                });
                                               }
-                                              setState(() {
-                                                _tokenController.text =
-                                                    cameraScanResult;
-                                              });
                                             } else {
                                               Fluttertoast.showToast(
                                                   msg: 'no_camera_access'.tr(),
