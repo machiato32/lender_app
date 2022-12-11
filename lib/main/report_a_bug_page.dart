@@ -53,15 +53,10 @@ class _ReportABugPageState extends State<ReportABugPage> {
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Text(
-                                DateFormat('yyyy/MM/dd - HH:mm').format(
-                                    widget.date == null ? now : widget.date),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant),
+                                DateFormat('yyyy/MM/dd - HH:mm')
+                                    .format(widget.date == null ? now : widget.date),
+                                style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant),
                               ),
                             ),
                             SizedBox(
@@ -92,13 +87,8 @@ class _ReportABugPageState extends State<ReportABugPage> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       widget.error.tr(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant),
+                                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant),
                                     ),
                                   ),
                             SizedBox(
@@ -129,13 +119,8 @@ class _ReportABugPageState extends State<ReportABugPage> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       widget.location,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant),
+                                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant),
                                     ),
                                   ),
                             SizedBox(
@@ -170,7 +155,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
               ),
               Visibility(
                 visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                child: adUnitForSite('report_bug'),
+                child: AdUnitForSite(site: 'report_bug'),
               ),
             ],
           ),
@@ -202,8 +187,7 @@ class _ReportABugPageState extends State<ReportABugPage> {
     );
   }
 
-  Future<bool> _postBug(
-      String bugText, DateTime date, String location, String details) async {
+  Future<bool> _postBug(String bugText, DateTime date, String location, String details) async {
     try {
       Map<String, dynamic> body = {
         "description": bugText +

@@ -380,5 +380,19 @@
     "in_app_purchase_description": "Ads and color themes",
     "iapp_not_supported": "The store is not enabled on your platform",
     "iapp_not_supported_explanation": "In app items (ex. no ads, color themes) can as of right now only be purchased in the Android app.\nIf you don't own an Android device but still want to buy something please write an email to developer@lenderapp.net.",
-    "no_camera_access": "The app has no prmission to access the camera."
+    "no_camera_access": "The app has no prmission to access the camera.",
+
+    "custom_amount_hint": "Hint: Long press on a member below to customize the amount they paid.",
+    "add_purchase_explanation": "The amount will be split equaly between the selected members.",
+
+    "first_give_amount_toast": "First type in an amount!",
+    "cant_add_custom_amount_toast": "The amount to be paid can't be customized.",
+    "no_money_left_toast": "You've already distributed the whole amount.",
+    "custom_above_amount_toast": "Them whole amount was below the custom value set earlier.",
+    "sum_above_amount_toast": "The sum of the custom values was above the full amount.",
+
+    "custom_amount": "Custom amount",
+    "custom_amount_explanation": "Set how much the chosen member should pay.",
+    "reset": "Reset",
+    "chosen_amount": "Chosen amount: "
 }

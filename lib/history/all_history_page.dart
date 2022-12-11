@@ -20,8 +20,7 @@ class AllHistoryRoute extends StatefulWidget {
   _AllHistoryRouteState createState() => _AllHistoryRouteState();
 }
 
-class _AllHistoryRouteState extends State<AllHistoryRoute>
-    with TickerProviderStateMixin {
+class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderStateMixin {
   DateTime _startDate;
   DateTime _endDate;
   Future<List<PurchaseData>> _purchases;
@@ -32,8 +31,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<PurchaseData>> _getPurchases(
-      {bool overwriteCache = false}) async {
+  Future<List<PurchaseData>> _getPurchases({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response;
@@ -113,8 +111,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         deleteCache(uri: generateUri(GetUriKeys.paymentsAll));
         deleteCache(uri: generateUri(GetUriKeys.paymentsFirst6));
         deleteCache(
-            uri: 'payments?group=$currentGroupId&from_date',
-            multipleArgs: true); //payments date
+            uri: 'payments?group=$currentGroupId&from_date', multipleArgs: true); //payments date
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
       }
@@ -122,8 +119,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         deleteCache(uri: generateUri(GetUriKeys.purchasesAll));
         deleteCache(uri: generateUri(GetUriKeys.purchasesFirst6));
         deleteCache(
-            uri: 'purchases?group=$currentGroupId&from_date',
-            multipleArgs: true); //purchases date
+            uri: 'purchases?group=$currentGroupId&from_date', multipleArgs: true); //purchases date
         _purchases = null;
         _purchases = _getPurchases(overwriteCache: true);
       }
@@ -134,8 +130,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
 
   @override
   void initState() {
-    _tabController = TabController(
-        length: 2, vsync: this, initialIndex: widget.startingIndex);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.startingIndex);
     _selectedIndex = widget.startingIndex;
 
     _purchases = null;
@@ -167,8 +162,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
         // ),
         actions: [
           IconButton(
-            icon: Icon(
-                _startDate != null ? Icons.highlight_off : Icons.date_range),
+            icon: Icon(_startDate != null ? Icons.highlight_off : Icons.date_range),
             onPressed: () async {
               if (_startDate != null) {
                 setState(() {
@@ -187,8 +181,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                     lastDate: DateTime.now(),
                     currentDate: DateTime.now(),
                     initialDateRange: DateTimeRange(
-                        start: DateTime.now().subtract(Duration(days: 30)),
-                        end: DateTime.now()),
+                        start: DateTime.now().subtract(Duration(days: 30)), end: DateTime.now()),
                     builder: (context, child) {
                       return child;
                     });
@@ -224,8 +217,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   icon: Icon(Icons.shopping_cart),
                   label: 'purchases'.tr(),
                 ),
-                NavigationDestination(
-                    icon: Icon(Icons.attach_money), label: 'payments'.tr())
+                NavigationDestination(icon: Icon(Icons.attach_money), label: 'payments'.tr())
               ],
             ),
       body: Column(
@@ -261,8 +253,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                   ),
                 ),
           Visibility(
-              visible: MediaQuery.of(context).viewInsets.bottom == 0,
-              child: adUnitForSite('history')),
+            visible: MediaQuery.of(context).viewInsets.bottom == 0,
+            child: AdUnitForSite(site: 'history'),
+          ),
         ],
       ),
       //TODO:hide on top
@@ -277,8 +270,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
                 curve: Curves.easeOut,
                 duration: const Duration(milliseconds: 300),
               );
-            } else if (_selectedIndex == 1 &&
-                _paymentScrollController.hasClients) {
+            } else if (_selectedIndex == 1 && _paymentScrollController.hasClients) {
               _paymentScrollController.animateTo(
                 0.0,
                 curve: Curves.easeOut,
@@ -385,13 +377,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
           Container(
               padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
               child: Text(
-                DateFormat('yyyy/MM/dd')
-                        .format(now.subtract(Duration(days: 7))) +
+                DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                     ' - ' +
-                    DateFormat('yyyy/MM/dd')
-                        .format(now.subtract(Duration(days: 1))),
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground),
+                    DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onBackground),
               )),
         ],
       );
@@ -402,8 +394,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             child: Text(
               DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                   ' - ' +
-                  DateFormat('yyyy/MM/dd')
-                      .format(now.subtract(Duration(days: 1))),
+                  DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
               style: Theme.of(context)
                   .textTheme
                   .titleSmall
@@ -436,8 +427,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             child: Text(
               DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                   ' - ' +
-                  DateFormat('yyyy/MM/dd')
-                      .format(now.subtract(Duration(days: 1))),
+                  DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
               style: Theme.of(context)
                   .textTheme
                   .titleSmall
@@ -495,8 +485,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             child: Text(
               DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                   ' - ' +
-                  DateFormat('yyyy/MM/dd')
-                      .format(now.subtract(Duration(days: 1))),
+                  DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
               style: Theme.of(context)
                   .textTheme
                   .titleSmall
@@ -512,8 +501,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             child: Text(
               DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                   ' - ' +
-                  DateFormat('yyyy/MM/dd')
-                      .format(now.subtract(Duration(days: 1))),
+                  DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
               style: Theme.of(context)
                   .textTheme
                   .titleSmall
@@ -542,8 +530,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute>
             child: Text(
               DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 7))) +
                   ' - ' +
-                  DateFormat('yyyy/MM/dd')
-                      .format(now.subtract(Duration(days: 1))),
+                  DateFormat('yyyy/MM/dd').format(now.subtract(Duration(days: 1))),
               style: Theme.of(context)
                   .textTheme
                   .titleSmall

@@ -57,6 +57,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   TextEditingController noteController = TextEditingController();
   Future<List<Member>> _members;
   Map<Member, bool> memberChipBool = Map<Member, bool>();
+  Map<Member, double> percentageMap = Map<Member, double>();
   FocusNode _focusNode = FocusNode();
 
   var _formKey = GlobalKey<FormState>();
@@ -85,8 +86,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
     }
   }
 
-  Future<bool> _postPurchase(
-      List<Member> members, double amount, String name) async {
+  Future<bool> _postPurchase(List<Member> members, double amount, String name) async {
     bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
     try {
       Map<String, dynamic> body = {
@@ -96,8 +96,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
         "receivers": members.map((e) => e.toJson()).toList()
       };
 
-      await httpPost(
-          uri: '/purchases', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/purchases', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -122,6 +121,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
 
   @override
   Widget build(BuildContext context) {
+    // print(memberChipBool);
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -130,10 +130,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
             'purchase'.tr(),
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          // flexibleSpace: Container(
-          //   decoration: BoxDecoration(
-          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          // ),
         ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -165,179 +161,169 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  children: <Widget>[
-                                    TextFormField(
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'field_empty'.tr();
-                                        }
-                                        if (value.length < 3) {
-                                          return 'minimal_length'
-                                              .tr(args: ['3']);
-                                        }
-                                        return null;
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: 'note'.tr(),
-                                        // fillColor: Theme.of(context)
-                                        //     .colorScheme
-                                        //     .onSurface,
-                                        filled: true,
-                                        prefixIcon: Icon(
-                                          Icons.note,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                      ),
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(50)
-                                      ],
-                                      controller: noteController,
-                                      onFieldSubmitted: (value) =>
-                                          _buttonPush(),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Stack(
-                                      children: [
-                                        TextFormField(
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'field_empty'.tr();
-                                            }
-                                            if (double.tryParse(value) ==
-                                                null) {
-                                              return 'not_valid_num'.tr();
-                                            }
-                                            if (double.parse(value) < 0) {
-                                              return 'not_valid_num'.tr();
-                                            }
-                                            return null;
-                                          },
-                                          focusNode: _focusNode,
-                                          decoration: InputDecoration(
-                                            hintText: 'full_amount'.tr(),
-                                            filled: true,
-                                            prefixIcon: Icon(
-                                              Icons.pin,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                            ),
-                                            suffixIcon: Icon(
-                                              Icons.calculate,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                            ),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              borderSide: BorderSide.none,
-                                            ),
-                                          ),
-                                          controller: _amountController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.allow(
-                                                RegExp('[0-9\\.]'))
-                                          ],
-                                          onFieldSubmitted: (value) =>
-                                              _buttonPush(),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 9),
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: IconButton(
-                                                splashRadius: 0.1,
-                                                icon: Icon(
-                                                  Icons.calculate,
-                                                  color: Colors.transparent,
-                                                ),
-                                                onPressed: () {
-                                                  showModalBottomSheet(
-                                                    isScrollControlled: true,
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return SingleChildScrollView(
-                                                          child: Calculator(
-                                                        initial:
-                                                            _amountController
-                                                                .text,
-                                                        callback:
-                                                            (String fromCalc) {
-                                                          setState(() {
-                                                            _amountController
-                                                                    .text =
-                                                                fromCalc;
-                                                          });
-                                                        },
-                                                      ));
-                                                    },
-                                                  );
-                                                }),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              Center(
+                                child: Text(
+                                  'add_purchase_explanation'.tr(),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                                 ),
                               ),
                               SizedBox(
                                 height: 20,
                               ),
+                              TextFormField(
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'field_empty'.tr();
+                                  }
+                                  if (value.length < 3) {
+                                    return 'minimal_length'.tr(args: ['3']);
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'note'.tr(),
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.note,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                controller: noteController,
+                                onFieldSubmitted: (value) => _buttonPush(),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Stack(
+                                children: [
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'field_empty'.tr();
+                                      }
+                                      if (double.tryParse(value) == null) {
+                                        return 'not_valid_num'.tr();
+                                      }
+                                      if (double.parse(value) < 0) {
+                                        return 'not_valid_num'.tr();
+                                      }
+                                      return null;
+                                    },
+                                    focusNode: _focusNode,
+                                    decoration: InputDecoration(
+                                      hintText: 'full_amount'.tr(),
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.pin,
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
+                                      suffixIcon: Icon(
+                                        Icons.calculate,
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                    controller: _amountController,
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
+                                    ],
+                                    onFieldSubmitted: (value) => _buttonPush(),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 9),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: IconButton(
+                                          splashRadius: 0.1,
+                                          icon: Icon(
+                                            Icons.calculate,
+                                            color: Colors.transparent,
+                                          ),
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) {
+                                                return SingleChildScrollView(
+                                                    child: Calculator(
+                                                  initial: _amountController.text,
+                                                  callback: (String fromCalc) {
+                                                    setState(() {
+                                                      _amountController.text = fromCalc;
+                                                    });
+                                                  },
+                                                ));
+                                              },
+                                            );
+                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Center(
+                                child: Text(
+                                  'custom_amount_hint'.tr(),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
                               Center(
                                 child: FutureBuilder(
                                   future: _members,
-                                  builder: (context,
-                                      AsyncSnapshot<List<Member>> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
+                                  builder: (context, AsyncSnapshot<List<Member>> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.done) {
                                       if (snapshot.hasData) {
                                         for (Member member in snapshot.data) {
-                                          memberChipBool.putIfAbsent(
-                                              member, () => false);
+                                          if (!memberChipBool.containsKey(member)) {
+                                            memberChipBool[member] = false;
+                                          }
                                         }
-                                        if (widget.type ==
-                                            PurchaseType.fromShopping) {
-                                          memberChipBool[snapshot.data
-                                              .firstWhere((member) =>
-                                                  member.memberId ==
-                                                  widget.shoppingData
-                                                      .requesterId)] = true;
+                                        if (widget.type == PurchaseType.fromShopping) {
+                                          memberChipBool[snapshot.data.firstWhere((member) =>
+                                              member.memberId ==
+                                              widget.shoppingData.requesterId)] = true;
                                         }
                                         return MemberChips(
                                           allowMultiple: true,
                                           allMembers: snapshot.data,
                                           membersChosen: snapshot.data
-                                              .where((member) =>
-                                                  memberChipBool[member])
+                                              .where((member) => memberChipBool[member])
                                               .toList(),
                                           membersChanged: (members) {
                                             setState(() {
-                                              for (Member member
-                                                  in snapshot.data) {
-                                                memberChipBool[member] =
-                                                    members.contains(member);
+                                              for (Member member in snapshot.data) {
+                                                memberChipBool[member] = members.contains(member);
                                               }
                                             });
                                           },
+                                          percentagesChanged: (Map<Member, double> percentages) {
+                                            percentageMap = percentages;
+                                          },
+                                          showDivisionDialog: true,
+                                          getMaxAmount: () =>
+                                              double.tryParse(_amountController.text) ?? 0.0,
                                         );
                                       } else {
                                         return ErrorMessage(
@@ -356,120 +342,39 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                   },
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Material(
-                                      type: MaterialType.transparency,
-                                      child: Ink(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(1000.0),
-                                          onTap: () {
-                                            FocusScope.of(context).unfocus();
-                                            for (Member member
-                                                in memberChipBool.keys) {
-                                              memberChipBool[member] =
-                                                  !memberChipBool[member];
-                                            }
-                                            setState(() {});
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Icon(Icons.swap_horiz,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary),
-                                          ),
-                                        ),
-                                      )),
-                                  Flexible(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Text(
-                                          _amountController.text != '' &&
-                                                  memberChipBool.values
-                                                          .where((element) =>
-                                                              element == true)
-                                                          .toList()
-                                                          .length >
-                                                      0
-                                              ? ((double.tryParse(_amountController
-                                                                  .text) ??
-                                                              0) /
-                                                          memberChipBool.values
-                                                              .where(
-                                                                  (element) =>
-                                                                      element ==
-                                                                      true)
-                                                              .toList()
-                                                              .length)
-                                                      .toStringAsFixed(2) +
-                                                  'per_person'.tr(args: [
-                                                    currencies[
-                                                            currentGroupCurrency]
-                                                        ['symbol']
-                                                  ])
-                                              : '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2,
-                                        ),
-                                      ),
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      setState(() {
+                                        for (Member member in memberChipBool.keys) {
+                                          memberChipBool[member] = !memberChipBool[member];
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.swap_horiz,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                   ),
-                                  Material(
-                                      type: MaterialType.transparency,
-                                      child: Ink(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(1000.0),
-                                          onTap: () {
-                                            FocusScope.of(context).unfocus();
-                                            for (Member member
-                                                in memberChipBool.keys) {
-                                              memberChipBool[member] = false;
-                                            }
-                                            setState(() {});
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Icon(Icons.clear,
-                                                color: Colors.red),
-                                          ),
-                                        ),
-                                      )),
+                                  IconButton(
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      setState(() {
+                                        for (Member member in memberChipBool.keys) {
+                                          memberChipBool[member] = false;
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  )
                                 ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -479,7 +384,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                 ),
                 Visibility(
                   visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                  child: adUnitForSite('purchase'),
+                  child: AdUnitForSite(site: 'purchase'),
                 ),
               ],
             ),
@@ -487,8 +392,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.tertiary,
-          child:
-              Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
+          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
           onPressed: _buttonPush,
         ),
       ),
@@ -513,6 +417,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
       memberChipBool.forEach((Member key, bool value) {
         if (value) members.add(key);
       });
+      //TODO: add percentages to post (what to send exactly?)
       showDialog(
           builder: (context) => FutureSuccessDialog(
                 future: _postPurchase(members, amount, name),
@@ -522,10 +427,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                     Flexible(
                       child: Text(
                         'purchase_scf'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            .copyWith(color: Colors.white),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -538,9 +440,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                         GradientButton(
                           child: Row(
                             children: [
-                              Icon(Icons.check,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
+                              Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary),
                               SizedBox(
                                 width: 3,
                               ),
@@ -549,10 +449,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary),
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               ),
                             ],
                           ),
@@ -570,9 +467,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                         GradientButton(
                           child: Row(
                             children: [
-                              Icon(Icons.add,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
+                              Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
                               SizedBox(
                                 width: 3,
                               ),
@@ -581,10 +476,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary),
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               ),
                             ],
                           ),

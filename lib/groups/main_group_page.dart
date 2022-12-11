@@ -39,8 +39,7 @@ class MainPage extends StatefulWidget {
   final int selectedHistoryIndex;
   final int selectedIndex;
   final String scrollTo;
-  MainPage(
-      {this.selectedHistoryIndex = 0, this.selectedIndex = 0, this.scrollTo});
+  MainPage({this.selectedHistoryIndex = 0, this.selectedIndex = 0, this.scrollTo});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -63,8 +62,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<List<Group>> _getGroups() async {
-    http.Response response =
-        await httpGet(context: context, uri: generateUri(GetUriKeys.groups));
+    http.Response response = await httpGet(context: context, uri: generateUri(GetUriKeys.groups));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     List<Group> groups = [];
     for (var group in decoded['data']) {
@@ -80,8 +78,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     saveUsersGroupIds();
     //The group ID cannot change, but the group name and currency can change
     if (groups.any((element) => element.groupId == currentGroupId)) {
-      var group =
-          groups.firstWhere((element) => element.groupId == currentGroupId);
+      var group = groups.firstWhere((element) => element.groupId == currentGroupId);
       saveGroupName(group.groupName);
       saveGroupCurrency(group.groupCurrency);
     }
@@ -91,8 +88,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Future<String> _getCurrentGroup() async {
     http.Response response = await httpGet(
       context: context,
-      uri: generateUri(GetUriKeys.groupCurrent,
-          args: [currentGroupId.toString()]),
+      uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
     );
     Map<String, dynamic> decoded = jsonDecode(response.body);
     saveGroupName(decoded['data']['group_name']);
@@ -101,8 +97,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Future<dynamic> _getSumBalance() async {
     try {
-      http.Response response = await httpGet(
-          context: context, uri: generateUri(GetUriKeys.userBalanceSum));
+      http.Response response =
+          await httpGet(context: context, uri: generateUri(GetUriKeys.userBalanceSum));
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     } catch (_) {
@@ -146,10 +142,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             title: Text(
               group.groupName,
               style: (group.groupName == currentGroupName)
-                  ? Theme.of(context).textTheme.labelLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSecondaryContainer)
-                  : Theme.of(context).textTheme.labelLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ? Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer)
+                  : Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             onTap: () async {
               saveGroupName(group.groupName);
@@ -170,8 +170,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _selectedIndex = widget.selectedIndex;
-    _tabController = TabController(
-        length: 3, vsync: this, initialIndex: widget.selectedIndex);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: widget.selectedIndex);
     _groups = null;
     _groups = _getGroups();
     scrollTo = widget.scrollTo;
@@ -247,13 +246,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   overflowMode: OverflowMode.extendBackground,
                   title: Text(
                     'discovery_drawer_title'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onTertiary),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onTertiary),
                   ),
                   description: Text(
                     'discovery_drawer_description'.tr(),
-                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onTertiary),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onTertiary),
                   ),
                   barrierDismissible: false,
                   child: Icon(Icons.menu),
@@ -296,8 +299,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 if (_selectedIndex == 1) {
                   FeatureDiscovery.discoverFeatures(context, ['shopping_list']);
                 } else if (_selectedIndex == 2) {
-                  FeatureDiscovery.discoverFeatures(
-                      context, ['group_settings']);
+                  FeatureDiscovery.discoverFeatures(context, ['group_settings']);
                 }
               },
               selectedIndex: _selectedIndex,
@@ -333,9 +335,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       child: Text(
                         'no_connection'.tr(),
                         style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -370,8 +370,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ScaffoldMessenger.of(context).removeCurrentSnackBar();
                   });
                   if (_selectedIndex == 1) {
-                    FeatureDiscovery.discoverFeatures(
-                        context, ['group_settings']);
+                    FeatureDiscovery.discoverFeatures(context, ['group_settings']);
                   }
                 },
                 selectedIndex: _selectedIndex)
@@ -414,7 +413,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ],
                 ),
               ),
-              adUnitForSite('home_screen'),
+              AdUnitForSite(site: 'home_screen'),
             ],
           ),
         ),
@@ -460,8 +459,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Widget _drawer() {
     return Ink(
       decoration: BoxDecoration(
-        color: ElevationOverlay.applyOverlay(
-            context, Theme.of(context).colorScheme.surface, 1),
+        color: ElevationOverlay.applyOverlay(context, Theme.of(context).colorScheme.surface, 1),
         borderRadius: BorderRadius.all(
           Radius.circular(16),
         ),
@@ -486,15 +484,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall
-                            .copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                       Text(
                         'hi'.tr() + ' ' + currentUsername + '!',
-                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                            color: Theme.of(context).colorScheme.primary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            .copyWith(color: Theme.of(context).colorScheme.primary),
                       ),
                     ],
                   ),
@@ -512,8 +509,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               color: Colors.transparent,
                               margin: EdgeInsets.symmetric(horizontal: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(28)),
+                                borderRadius: BorderRadius.all(Radius.circular(28)),
                               ),
                             ),
                           ),
@@ -521,17 +517,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                             clipBehavior: Clip.antiAlias,
                             child: ExpansionTile(
                               title: Text('groups'.tr(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant)),
+                                  style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant)),
                               leading: Icon(Icons.group,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant),
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant),
                               children: _generateListTiles(snapshot.data),
                             ),
                           ),
@@ -566,13 +555,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                     title: Text(
                       'join_group'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => JoinGroup()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => JoinGroup()));
                     },
                   ),
                 ),
@@ -588,9 +577,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                     title: Text(
                       'create_group'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     onTap: () {
                       Navigator.push(
@@ -613,8 +603,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   String currency = snapshot.data['currency'];
                   double balance = snapshot.data['balance'] * 1.0;
                   return Text('Σ: ' + balance.printMoney(currency),
-                      style: Theme.of(context).textTheme.bodyMedium.copyWith(
-                          color: Theme.of(context).colorScheme.secondary));
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          .copyWith(color: Theme.of(context).colorScheme.secondary));
                 }
               }
               return Text(
@@ -636,24 +628,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               dense: true,
               onTap: () {
                 if (trialVersion) {
-                  showDialog(
-                      builder: (context) => TrialVersionDialog(),
-                      context: context);
+                  showDialog(builder: (context) => TrialVersionDialog(), context: context);
                 } else if (!isIAPPlatformEnabled) {
-                  showDialog(
-                      builder: (context) => IAPPNotSupportedDialog(),
-                      context: context);
+                  showDialog(builder: (context) => IAPPNotSupportedDialog(), context: context);
                 } else {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InAppPurchasePage()));
+                      context, MaterialPageRoute(builder: (context) => InAppPurchasePage()));
                 }
               },
               leading: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurfaceVariant,
-                    BlendMode.srcIn),
+                    Theme.of(context).colorScheme.onSurfaceVariant, BlendMode.srcIn),
                 child: Image.asset(
                   'assets/dodo_color.png',
                   width: 25,
@@ -662,19 +647,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               subtitle: trialVersion
                   ? Text(
                       'trial_version'.tr().toUpperCase(),
-                      style: Theme.of(context).textTheme.labelSmall.copyWith(
-                          color: Theme.of(context).colorScheme.secondary),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          .copyWith(color: Theme.of(context).colorScheme.secondary),
                     )
                   : Text(
                       'in_app_purchase_description'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
               title: Text(
                 'in_app_purchase'.tr(),
-                style: Theme.of(context).textTheme.labelLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
           ),
@@ -694,13 +684,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 contentLocation: ContentLocation.above,
                 title: Text(
                   'discovery_settings_title'.tr(),
-                  style: Theme.of(context).textTheme.titleLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onTertiary),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onTertiary),
                 ),
                 description: Text(
                   'discovery_settings_description'.tr(),
-                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onTertiary),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onTertiary),
                 ),
                 child: Icon(
                   Icons.settings,
@@ -709,12 +703,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
               title: Text(
                 'settings'.tr(),
-                style: Theme.of(context).textTheme.labelLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Settings()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
               },
             ),
           ),
@@ -737,8 +732,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     .copyWith(color: Theme.of(context).colorScheme.error),
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ReportABugPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ReportABugPage()));
               },
             ),
           ),
@@ -756,16 +750,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               dense: true,
               title: Text(
                 'logout'.tr(),
-                style: Theme.of(context).textTheme.labelLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               onTap: () async {
                 _logout();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginOrRegisterPage()),
-                    (r) => false);
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
               },
             ),
           ),
@@ -803,7 +796,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 .copyWith(color: Theme.of(context).colorScheme.onTertiary),
           ),
           overflowMode: OverflowMode.extendBackground,
-          child: Icon(Icons.supervisor_account),
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 5),
+                child: Icon(
+                  Icons.group,
+                  size: 22,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 17),
+                child: Icon(
+                  Icons.settings,
+                  size: 12,
+                ),
+              ),
+            ],
+          ),
         ),
         label: Text('group'.tr()),
       ),
@@ -863,7 +873,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   .copyWith(color: Theme.of(context).colorScheme.onTertiary),
             ),
             overflowMode: OverflowMode.extendBackground,
-            child: Icon(Icons.supervisor_account),
+            child: Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 5),
+                  child: Icon(
+                    Icons.group,
+                    size: 22,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 17),
+                  child: Icon(
+                    Icons.settings,
+                    size: 12,
+                  ),
+                ),
+              ],
+            ),
           ),
           label: 'group'.tr()), //TODO: bettername
       NavigationDestination(

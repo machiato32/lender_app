@@ -21,22 +21,20 @@ class CreateGroup extends StatefulWidget {
 
 class _CreateGroupState extends State<CreateGroup> {
   TextEditingController _groupName = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController(
-      text: currentUsername[0].toUpperCase() + currentUsername.substring(1));
+  TextEditingController _nicknameController =
+      TextEditingController(text: currentUsername[0].toUpperCase() + currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
   String _defaultCurrencyValue = "EUR";
 
-  Future<bool> _createGroup(
-      String groupName, String nickname, String currency) async {
+  Future<bool> _createGroup(String groupName, String nickname, String currency) async {
     try {
       Map<String, dynamic> body = {
         'group_name': groupName,
         'currency': currency,
         'member_nickname': nickname
       };
-      http.Response response =
-          await httpPost(uri: '/groups', body: body, context: context);
+      http.Response response = await httpPost(uri: '/groups', body: body, context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       saveGroupName(decoded['group_name']);
       saveGroupId(decoded['group_id']);
@@ -56,8 +54,8 @@ class _CreateGroupState extends State<CreateGroup> {
 
   void _onCreateGroup() async {
     await clearAllCache();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
   @override
@@ -149,13 +147,8 @@ class _CreateGroupState extends State<CreateGroup> {
                               children: <Widget>[
                                 Text(
                                   'currency_of_group'.tr(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant),
+                                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 ),
                                 SizedBox(
                                   width: 20,
@@ -180,25 +173,16 @@ class _CreateGroupState extends State<CreateGroup> {
                               children: [
                                 GradientButton(
                                   child: Text('create_group'.tr(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary)),
+                                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                          color: Theme.of(context).colorScheme.onPrimary)),
                                   onPressed: () {
                                     if (_formKey.currentState.validate()) {
                                       String token = _groupName.text;
-                                      String nickname =
-                                          _nicknameController.text;
+                                      String nickname = _nicknameController.text;
                                       showDialog(
-                                          builder: (context) =>
-                                              FutureSuccessDialog(
+                                          builder: (context) => FutureSuccessDialog(
                                                 future: _createGroup(
-                                                    token,
-                                                    nickname,
-                                                    _defaultCurrencyValue),
+                                                    token, nickname, _defaultCurrencyValue),
                                                 onDataTrue: () {
                                                   _onCreateGroup();
                                                 },
@@ -220,7 +204,7 @@ class _CreateGroupState extends State<CreateGroup> {
               ),
               Visibility(
                 visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                child: adUnitForSite('create_group'),
+                child: AdUnitForSite(site: 'create_group'),
               ),
             ],
           ),

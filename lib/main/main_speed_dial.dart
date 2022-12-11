@@ -48,16 +48,14 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
         overflowMode: OverflowMode.extendBackground,
         child: Icon(Icons.add),
       ),
-      overlayColor: (Theme.of(context).brightness == Brightness.dark)
-          ? Colors.black
-          : Colors.white,
+      overlayColor: (Theme.of(context).brightness == Brightness.dark) ? Colors.black : Colors.white,
       curve: Curves.bounceIn,
       onOpen: () {
-        FeatureDiscovery.discoverFeatures(
-            context, <String>['add_payment_expense']);
+        FeatureDiscovery.discoverFeatures(context, <String>['add_payment_expense']);
       },
       children: [
         SpeedDialChild(
+          elevation: 0,
           foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
           backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
           labelWidget: GestureDetector(
@@ -78,8 +76,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                     height: 20,
                   ),
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                     //                  margin: EdgeInsets.only(right: 18.0),
                     decoration: BoxDecoration(
                       // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
@@ -88,9 +85,7 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                     ),
                     child: Text('payment'.tr(),
                         style: Theme.of(context).textTheme.bodyMedium.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
+                            color: Theme.of(context).colorScheme.onTertiaryContainer,
                             fontSize: 18)),
                   ),
                   SizedBox(
@@ -106,12 +101,12 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
           ),
           child: Icon(Icons.payments),
           onTap: () {
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddPaymentRoute()))
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddPaymentRoute()))
                 .then((value) => widget.callback());
           },
         ),
         SpeedDialChild(
+            elevation: 0,
             foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
             backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
             labelWidget: GestureDetector(
@@ -135,22 +130,16 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                       height: 20,
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
                         // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         borderRadius: BorderRadius.all(Radius.circular(6.0)),
                       ),
                       child: Text('purchase'.tr(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onTertiaryContainer,
-                                  fontSize: 18)),
+                          style: Theme.of(context).textTheme.bodyMedium.copyWith(
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
+                              fontSize: 18)),
                     ),
                     SizedBox(
                       height: 5,
@@ -163,7 +152,9 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
                 ),
               ),
             ),
-            child: Icon(Icons.shopping_cart),
+            child: Icon(
+              Icons.shopping_cart,
+            ),
             onTap: () {
               Navigator.push(
                   context,

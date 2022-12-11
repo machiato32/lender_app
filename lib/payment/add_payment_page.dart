@@ -25,8 +25,7 @@ class SavedPayment {
   int payerId, takerId;
   double amount;
   int paymentId;
-  SavedPayment(
-      {this.note, this.payerId, this.takerId, this.amount, this.paymentId});
+  SavedPayment({this.note, this.payerId, this.takerId, this.amount, this.paymentId});
 }
 
 class AddPaymentRoute extends StatefulWidget {
@@ -77,8 +76,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         'taker_id': toMember.memberId
       };
 
-      await httpPost(
-          uri: '/payments', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
       return true;
     } catch (_) {
       throw _;
@@ -147,17 +145,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                   filled: true,
                                   prefixIcon: Icon(
                                     Icons.note,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
                                     borderSide: BorderSide.none,
                                   ),
                                 ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50)
-                                ],
+                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
                                 controller: _noteController,
                                 onFieldSubmitted: (value) => _buttonPush(),
                               ),
@@ -185,27 +180,20 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       filled: true,
                                       prefixIcon: Icon(
                                         Icons.pin,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       suffixIcon: Icon(
                                         Icons.calculate,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    keyboardType:
-                                        TextInputType.numberWithOptions(
-                                            decimal: true),
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9\\.]'))
+                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
                                     ],
                                     onFieldSubmitted: (value) => _buttonPush(),
                                   ),
@@ -224,13 +212,10 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                                 isScrollControlled: true,
                                                 context: context,
                                                 builder: (context) {
-                                                  return SingleChildScrollView(
-                                                      child: Calculator(
-                                                    callback:
-                                                        (String fromCalc) {
+                                                  return SingleChildScrollView(child: Calculator(
+                                                    callback: (String fromCalc) {
                                                       setState(() {
-                                                        _amountController.text =
-                                                            fromCalc;
+                                                        _amountController.text = fromCalc;
                                                       });
                                                     },
                                                   ));
@@ -246,18 +231,14 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               Center(
                                 child: FutureBuilder(
                                   future: _members,
-                                  builder: (context,
-                                      AsyncSnapshot<List<Member>> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
+                                  builder: (context, AsyncSnapshot<List<Member>> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.done) {
                                       if (snapshot.hasData) {
                                         return MemberChips(
                                           allowMultiple: false,
                                           allMembers: snapshot.data,
                                           membersChanged: (members) {
-                                            _selectedMember = members.isEmpty
-                                                ? null
-                                                : members[0];
+                                            _selectedMember = members.isEmpty ? null : members[0];
                                           },
                                           membersChosen: [_selectedMember],
                                         );
@@ -275,8 +256,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       }
                                     }
 
-                                    return Center(
-                                        child: CircularProgressIndicator());
+                                    return Center(child: CircularProgressIndicator());
                                   },
                                 ),
                               ),
@@ -289,7 +269,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                 ),
                 Visibility(
                   visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                  child: adUnitForSite('payment'),
+                  child: AdUnitForSite(site: 'payment'),
                 ),
               ],
             ),
@@ -297,8 +277,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.tertiary,
-          child:
-              Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
+          child: Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
           onPressed: _buttonPush,
         ),
       ),
@@ -327,10 +306,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   children: [
                     Flexible(
                         child: Text("payment_scf".tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                .copyWith(color: Colors.white),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge.copyWith(color: Colors.white),
                             textAlign: TextAlign.center)),
                     SizedBox(
                       height: 15,
@@ -341,9 +318,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                         GradientButton(
                           child: Row(
                             children: [
-                              Icon(Icons.check,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
+                              Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary),
                               SizedBox(
                                 width: 3,
                               ),
@@ -352,10 +327,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary),
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               ),
                             ],
                           ),
@@ -373,9 +345,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                         GradientButton(
                           child: Row(
                             children: [
-                              Icon(Icons.add,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
+                              Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
                               SizedBox(
                                 width: 3,
                               ),
@@ -384,10 +354,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary),
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               ),
                             ],
                           ),

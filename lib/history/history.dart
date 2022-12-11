@@ -27,8 +27,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PurchaseData>> _purchases;
   TabController _tabController;
   int _selectedIndex;
-  Future<List<PurchaseData>> _getPurchases(
-      {bool overwriteCache = false}) async {
+  Future<List<PurchaseData>> _getPurchases({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
@@ -68,7 +67,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   }
 
   void callback({bool purchase = false, bool payment = false}) {
-    print('lolol');
     widget.callback();
     setState(() {
       if (payment) {
@@ -84,8 +82,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _tabController = TabController(
-        length: 2, vsync: this, initialIndex: widget.selectedIndex);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _selectedIndex = widget.selectedIndex;
     _payments = null;
     _payments = _getPayments();
@@ -139,8 +136,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                   _selectedIndex = _newIndex;
                 });
               },
-              overlayColor:
-                  MaterialStateProperty.all<Color>(Colors.transparent),
+              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
               tabs: <Widget>[
                 InkWell(
                   splashFactory: InkSparkle.splashFactory,
@@ -158,10 +154,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       gradient: _selectedIndex == 0
                           ? AppTheme.gradientFromTheme(currentThemeName)
                           : LinearGradient(colors: [
-                              ElevationOverlay.applyOverlay(context,
-                                  Theme.of(context).colorScheme.surface, 10),
-                              ElevationOverlay.applyOverlay(context,
-                                  Theme.of(context).colorScheme.surface, 10)
+                              ElevationOverlay.applyOverlay(
+                                  context, Theme.of(context).colorScheme.surface, 10),
+                              ElevationOverlay.applyOverlay(
+                                  context, Theme.of(context).colorScheme.surface, 10)
                             ]),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -171,26 +167,17 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         Icon(Icons.shopping_cart,
                             color: _selectedIndex == 0
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                                : Theme.of(context).colorScheme.onSurfaceVariant),
                         SizedBox(
                           width: 3,
                         ),
                         Flexible(
                           child: Text(
                             'purchases'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                .copyWith(
-                                    color: _selectedIndex == 0
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant),
+                            style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                color: _selectedIndex == 0
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.onSurfaceVariant),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -214,10 +201,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       gradient: _selectedIndex == 1
                           ? AppTheme.gradientFromTheme(currentThemeName)
                           : LinearGradient(colors: [
-                              ElevationOverlay.applyOverlay(context,
-                                  Theme.of(context).colorScheme.surface, 10),
-                              ElevationOverlay.applyOverlay(context,
-                                  Theme.of(context).colorScheme.surface, 10)
+                              ElevationOverlay.applyOverlay(
+                                  context, Theme.of(context).colorScheme.surface, 10),
+                              ElevationOverlay.applyOverlay(
+                                  context, Theme.of(context).colorScheme.surface, 10)
                             ]),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -227,26 +214,17 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         Icon(Icons.attach_money,
                             color: _selectedIndex == 1
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                                : Theme.of(context).colorScheme.onSurfaceVariant),
                         SizedBox(
                           width: 3,
                         ),
                         Flexible(
                           child: Text(
                             'payments'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                .copyWith(
-                                    color: _selectedIndex == 1
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant),
+                            style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                color: _selectedIndex == 1
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.onSurfaceVariant),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -298,32 +276,22 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AllHistoryRoute(
-                                                          startingIndex:
-                                                              _tabController
-                                                                  .index)));
+                                                  builder: (context) => AllHistoryRoute(
+                                                      startingIndex: _tabController.index)));
                                         },
                                         child: Row(
                                           children: [
                                             Icon(
                                               Icons.more_horiz,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary,
+                                              color: Theme.of(context).colorScheme.onPrimary,
                                             ),
                                             SizedBox(
                                               width: 4,
                                             ),
                                             Text(
                                               'more'.tr(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .button
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .onPrimary),
+                                              style: Theme.of(context).textTheme.button.copyWith(
+                                                  color: Theme.of(context).colorScheme.onPrimary),
                                             ),
                                           ],
                                         ),
@@ -370,8 +338,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                               Container(
                                 height: 490,
-                                child: Column(
-                                    children: _generatePayments(snapshot.data)),
+                                child: Column(children: _generatePayments(snapshot.data)),
                               ),
                               Visibility(
                                 visible: (snapshot.data as List).length > 5,
@@ -383,32 +350,23 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AllHistoryRoute(
-                                                      startingIndex:
-                                                          _tabController.index,
+                                                builder: (context) => AllHistoryRoute(
+                                                      startingIndex: _tabController.index,
                                                     )));
                                       },
                                       child: Row(
                                         children: [
                                           Icon(
                                             Icons.more_horiz,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary,
+                                            color: Theme.of(context).colorScheme.onPrimary,
                                           ),
                                           SizedBox(
                                             width: 4,
                                           ),
                                           Text(
                                             'more'.tr(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelLarge
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onPrimary),
+                                            style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                                color: Theme.of(context).colorScheme.onPrimary),
                                           ),
                                         ],
                                       ),

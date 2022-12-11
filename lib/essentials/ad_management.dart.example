@@ -13,17 +13,38 @@ Map<String, String> appUnitIds = {
   'settings':'example'
 };
 
-Widget adUnitForSite(String site) {
-    if (isAdPlatformEnabled) {
-      BannerAd ad = BannerAd(
-        adUnitId: appUnitIds[site],
-        size: AdSize.banner,
-        request: AdRequest(),
-        listener: BannerAdListener(),
-      );
+class AdUnitForSite extends StatefulWidget {
+  final String site;
+  AdUnitForSite({@required this.site}) {}
+
+  @override
+  State<AdUnitForSite> createState() => _AdUnitForSiteState();
+}
+
+class _AdUnitForSiteState extends State<AdUnitForSite> {
+  BannerAd ad;
+  @override
+  void initState() {
+    ad = BannerAd(
+      adUnitId: appUnitIds[widget.site],
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(),
+    );
+    if (showAds) {
       ad.load();
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (ad.responseInfo == null && showAds) {
+      ad.load();
+    }
+    if (isAdPlatformEnabled) {
       return Visibility(
-        visible: showAds && isAdPlatformEnabled,
+        visible: showAds,
         child: Container(
           width: ad.size.width.toDouble(),
           height: ad.size.height.toDouble(),
@@ -32,4 +53,5 @@ Widget adUnitForSite(String site) {
       );
     }
     return Container();
+  }
 }

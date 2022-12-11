@@ -49,10 +49,7 @@ class _SettingsState extends State<Settings> {
                   )
                 : Expanded(
                     child: Table(
-                      columnWidths: {
-                        0: FractionColumnWidth(0.5),
-                        1: FractionColumnWidth(0.5)
-                      },
+                      columnWidths: {0: FractionColumnWidth(0.5), 1: FractionColumnWidth(0.5)},
                       children: [
                         TableRow(children: [
                           AspectRatio(
@@ -73,7 +70,7 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
-            adUnitForSite('settings'),
+            AdUnitForSite(site: 'settings'),
           ],
         ),
       ),
