@@ -6,32 +6,32 @@ import '../app_theme.dart';
 
 class GradientButton extends StatelessWidget {
   final Widget child;
-  final Function onPressed;
-  final bool useShadow;
-  GradientButton({this.child, this.onPressed, this.useShadow = true});
+  final Function() onPressed;
+  final bool useSecondary;
+  final double borderRadius;
+  GradientButton({this.child, this.onPressed, this.useSecondary = false, this.borderRadius = 20});
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 5, bottom: 5),
       constraints: BoxConstraints(minWidth: 88.0, minHeight: 36.0),
+      height: 40,
       child: Ink(
         decoration: BoxDecoration(
-          gradient: AppTheme.gradientFromTheme(currentThemeName),
-          borderRadius: BorderRadius.circular(15),
-          // boxShadow: (Theme.of(context).brightness==Brightness.light && useShadow)
-          // ?[ BoxShadow(
-          //   color: Colors.grey[500],
-          //   offset: Offset(0.0, 1.5),
-          //   blurRadius: 1.5,
-          // )]
-          // : []
+          gradient: AppTheme.gradientFromTheme(currentThemeName, useSecondary: this.useSecondary),
+          borderRadius: BorderRadius.circular(this.borderRadius),
         ),
         child: InkWell(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(this.borderRadius),
             onTap: this.onPressed,
-            child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              child: Align(alignment: Alignment.center, child: this.child),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: this.child,
+                ),
+              ],
             )),
       ),
     );

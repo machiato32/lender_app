@@ -335,7 +335,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
-                          useShadow: false,
                         ),
                       ],
                     ),
@@ -364,7 +363,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                             _selectedMember = null;
                             Navigator.pop(context);
                           },
-                          useShadow: false,
                         ),
                       ],
                     ),

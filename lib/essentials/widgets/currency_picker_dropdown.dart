@@ -4,8 +4,20 @@ import '../currencies.dart';
 class CurrencyPickerDropdown extends StatefulWidget {
   final String defaultCurrencyValue;
   final ValueChanged<String> currencyChanged;
-  CurrencyPickerDropdown(
-      {@required this.defaultCurrencyValue, @required this.currencyChanged});
+  final bool filled;
+  final bool noContentPadding;
+  final bool showSymbol;
+  final Color dropdownColor;
+  final Color textColor;
+  CurrencyPickerDropdown({
+    @required this.defaultCurrencyValue,
+    @required this.currencyChanged,
+    this.filled = true,
+    this.noContentPadding = false,
+    this.showSymbol = true,
+    this.textColor,
+    this.dropdownColor,
+  });
 
   @override
   State<CurrencyPickerDropdown> createState() => _CurrencyPickerDropdownState();
@@ -22,18 +34,21 @@ class _CurrencyPickerDropdownState extends State<CurrencyPickerDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    _defaultCurrencyValue = widget.defaultCurrencyValue;
     return ButtonTheme(
       alignedDropdown: true,
       child: DropdownButtonFormField(
         decoration: InputDecoration(
-          filled: true,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
-          ),
-        ),
+            filled: widget.filled,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none,
+            ),
+            // isDense: true,
+            contentPadding: widget.noContentPadding ? EdgeInsets.only(top: 0) : null),
         elevation: 0,
         isExpanded: true,
+        iconEnabledColor: widget.textColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
         onChanged: (value) {
           widget.currencyChanged(value);
           setState(() {
@@ -43,22 +58,20 @@ class _CurrencyPickerDropdownState extends State<CurrencyPickerDropdown> {
         value: _defaultCurrencyValue,
         borderRadius: BorderRadius.circular(30),
         dropdownColor: ElevationOverlay.applySurfaceTint(
-            Theme.of(context).colorScheme.surface,
+            widget.dropdownColor ?? Theme.of(context).colorScheme.surface,
             Theme.of(context).colorScheme.surfaceTint,
             2),
         style: Theme.of(context)
             .textTheme
-            .bodyLarge
-            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            .labelLarge
+            .copyWith(color: widget.textColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
         menuMaxHeight: 500,
         items: enumerateCurrencies()
             .map((currency) => DropdownMenuItem(
                   child: Center(
                     child: Text(
                       currency.split(';')[0].trim() +
-                          " (" +
-                          currency.split(';')[1].trim() +
-                          ")",
+                          (widget.showSymbol ? (" (" + currency.split(';')[1].trim() + ")") : ""),
                     ),
                   ),
                   value: currency.split(';')[0].trim(),

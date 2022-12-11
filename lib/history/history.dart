@@ -283,15 +283,19 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           children: [
                                             Icon(
                                               Icons.more_horiz,
+                                              size: 18,
                                               color: Theme.of(context).colorScheme.onPrimary,
                                             ),
                                             SizedBox(
-                                              width: 4,
+                                              width: 8,
                                             ),
                                             Text(
                                               'more'.tr(),
                                               style: Theme.of(context).textTheme.button.copyWith(
                                                   color: Theme.of(context).colorScheme.onPrimary),
+                                            ),
+                                            SizedBox(
+                                              width: 8,
                                             ),
                                           ],
                                         ),

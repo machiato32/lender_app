@@ -28,10 +28,7 @@ class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
           children: <Widget>[
             Text(
               widget.choice.tr(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(color: Colors.white),
+              style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -45,18 +42,20 @@ class _ConfirmChoiceDialogState extends State<ConfirmChoiceDialog> {
                     Navigator.pop(context, true);
                   },
                   child: Text('yes'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary)),
-                  useShadow: false,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                 ),
                 GradientButton(
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
                   child: Text('no'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary)),
-                  useShadow: false,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                 )
               ],
             )

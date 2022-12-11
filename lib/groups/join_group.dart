@@ -376,7 +376,6 @@ class _JoinGroupState extends State<JoinGroup> {
                                                             onPressed: () {
                                                               Navigator.pop(context);
                                                             },
-                                                            useShadow: false,
                                                           ),
                                                         ],
                                                       )

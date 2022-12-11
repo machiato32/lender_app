@@ -1,10 +1,6 @@
 import 'dart:collection';
 
 extension Money on double {
-  double threshold(String code) {
-    return (currencies[code]['subunit'] == 1 ? 0.01 : 1) / 2;
-  }
-
   String money(String code) {
     double d = this;
     if (this > -threshold(code) && this < 0) {
@@ -20,6 +16,17 @@ extension Money on double {
             : currencies[code]["symbol"] + "" + this.money(code)
         : this.money(code) + " " + currencies[code]["symbol"];
   }
+
+  double exchange(String fromCurrency, String toCurrency) {
+    if (fromCurrency == toCurrency) {
+      return this;
+    }
+    return this / 400;
+  }
+}
+
+double threshold(String code) {
+  return (currencies[code]['subunit'] == 1 ? 0.01 : 1) / 2;
 }
 
 bool hasSubunit(String code) {

@@ -11,7 +11,7 @@ import 'guest_switcher.dart';
 class ManageGuests extends StatelessWidget {
   final bool hasGuests;
   final GlobalKey<State> bannerKey;
-  ManageGuests({this.hasGuests, this.bannerKey});
+  ManageGuests({this.hasGuests = false, this.bannerKey});
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,10 @@ class ManageGuests extends StatelessWidget {
           Flexible(
               child: Text('needs_choose_guest'.tr(),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onErrorContainer))),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onErrorContainer))),
         ],
       ),
     );
@@ -64,16 +66,17 @@ class ManageGuests extends StatelessWidget {
               height: 10,
             ),
             Divider(),
-            Visibility(
-                visible: hasGuests, child: GuestSwitcher(bannerKey: bannerKey)),
+            Visibility(visible: hasGuests, child: GuestSwitcher(bannerKey: bannerKey)),
             SizedBox(
               height: 10,
             ),
             Center(
                 child: Text(
               'add_guest'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -100,9 +103,7 @@ class ManageGuests extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   onPressed: () {
-                    showDialog(
-                        builder: (context) => AddGuestDialog(),
-                        context: context);
+                    showDialog(builder: (context) => AddGuestDialog(), context: context);
                   },
                 ),
               ],
@@ -117,9 +118,10 @@ class ManageGuests extends StatelessWidget {
                   Center(
                       child: Text(
                     'merge_guest'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 20),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
                     textAlign: TextAlign.center,
                   )),
                   SizedBox(
@@ -128,8 +130,10 @@ class ManageGuests extends StatelessWidget {
                   Center(
                       child: Text(
                     'merge_guest_explanation'.tr(),
-                    style: Theme.of(context).textTheme.titleSmall.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),
                     textAlign: TextAlign.center,
                   )),
                   SizedBox(
@@ -146,8 +150,7 @@ class ManageGuests extends StatelessWidget {
                         onPressed: () {
                           if (guestApiToken != null) {
                             showDialog(
-                                builder: (context) => MemberToMergeDialog(),
-                                context: context);
+                                builder: (context) => MemberToMergeDialog(), context: context);
                           } else {
                             FToast ft = FToast();
                             ft.init(context);

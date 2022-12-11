@@ -35,9 +35,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
       Map<String, dynamic> body = {"member_id": memberId, "admin": isAdmin};
 
       await httpPut(
-          uri: '/groups/' + currentGroupId.toString() + '/admins',
-          context: context,
-          body: body);
+          uri: '/groups/' + currentGroupId.toString() + '/admins', context: context, body: body);
       Future.delayed(delayTime()).then((value) => _onChangeAdmin());
       return true;
     } catch (_) {
@@ -69,13 +67,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_circle, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.member.username,
-                style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
             ],
           ),
@@ -84,13 +83,14 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_box, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.member.nickname,
-                style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
             ],
           ),
@@ -102,8 +102,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
                 child: Text(
                   'Admin',
-                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 )),
           ),
           SizedBox(
@@ -115,8 +117,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 value: widget.member.isAdmin,
                 title: Text(
                   'Admin',
-                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (value) {
@@ -133,8 +137,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 },
               )),
           Visibility(
-            visible: widget.isCurrentUserAdmin ||
-                widget.member.memberId == currentUserId,
+            visible: widget.isCurrentUserAdmin || widget.member.memberId == currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -162,8 +165,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       ),
                       Text(
                         'edit_nickname'.tr(),
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
@@ -172,8 +177,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.isCurrentUserAdmin &&
-                widget.member.memberId != currentUserId,
+            visible: widget.isCurrentUserAdmin && widget.member.memberId != currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -211,14 +215,19 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       ),
                       Text(
                         'kick_member'.tr(),
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Visibility(
             visible: widget.member.memberId == currentUserId,
@@ -228,10 +237,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 GradientButton(
                   onPressed: () {
                     double currencyThreshold =
-                        (currencies[currentGroupCurrency]['subunit'] == 1
-                                ? 0.01
-                                : 1) /
-                            2;
+                        (currencies[currentGroupCurrency]['subunit'] == 1 ? 0.01 : 1) / 2;
                     if (widget.member.balance <= -currencyThreshold) {
                       FToast ft = FToast();
                       ft.init(context);
@@ -274,8 +280,10 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                       ),
                       Text(
                         'leave_group'.tr(),
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
@@ -291,8 +299,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
   Future<bool> _removeMember(int memberId) async {
     Map<String, dynamic> body = {
       "member_id": memberId ?? currentUserId,
-      "threshold":
-          (currencies[currentGroupCurrency]['subunit'] == 1 ? 0.01 : 1) / 2
+      "threshold": (currencies[currentGroupCurrency]['subunit'] == 1 ? 0.01 : 1) / 2
     };
 
     http.Response response = await httpPost(
@@ -326,15 +333,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
     deleteGuestNickname();
     deleteGuestUserId();
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
   void _onRemoveMemberNull() async {
     await clearAllCache();
     if (currentGroupId != null) {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
     } else {
       usersGroupIds.remove(currentGroupId);
       usersGroups.remove(currentGroupName);

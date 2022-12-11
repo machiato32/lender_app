@@ -457,7 +457,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
-                          useShadow: false,
                         ),
                       ],
                     ),
@@ -490,7 +489,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                             });
                             Navigator.pop(context);
                           },
-                          useShadow: false,
                         ),
                       ],
                     ),
