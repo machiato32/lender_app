@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
@@ -6,14 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/purchase/purchase_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/currencies.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 
 class PurchaseAllInfo extends StatefulWidget {
-  final PurchaseData data;
+  final Purchase data;
 
   PurchaseAllInfo(this.data);
 
@@ -25,10 +25,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
   Future<bool> _deleteElement(int id) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/purchases/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
+      await httpDelete(uri: '/purchases/' + id.toString(), context: context, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onDeleteElement());
       return true;
     } catch (_) {
@@ -72,8 +69,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_circle, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.data.buyerNickname,
@@ -90,8 +86,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.people,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.people, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.data.receivers.join(', '),
@@ -107,15 +102,13 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.attach_money,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary),
               Flexible(
-                  child: Text(
-                      ' - ' +
-                          widget.data.totalAmount
-                              .printMoney(currentGroupCurrency),
-                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface))),
+                  child: Text(' - ' + widget.data.totalAmount.printMoney(currentGroupCurrency),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
@@ -129,11 +122,11 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
               ),
               Flexible(
                   child: Text(
-                      ' - ' +
-                          DateFormat('yyyy/MM/dd - HH:mm')
-                              .format(widget.data.updatedAt),
-                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface))),
+                      ' - ' + DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
@@ -166,15 +159,16 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.edit,
-                          color: Theme.of(context).colorScheme.onPrimary),
+                      Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'modify'.tr(),
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),
@@ -190,8 +184,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                       if (value != null && value) {
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                                  future:
-                                      _deleteElement(widget.data.purchaseId),
+                                  future: _deleteElement(widget.data.purchaseId),
                                   dataTrueText: 'delete_scf',
                                   onDataTrue: () {
                                     _onDeleteElement();
@@ -204,15 +197,16 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.delete,
-                          color: Theme.of(context).colorScheme.onPrimary),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'revoke'.tr(),
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),

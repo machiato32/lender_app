@@ -383,7 +383,7 @@
     "no_camera_access": "The app has no prmission to access the camera.",
 
     "custom_amount_hint": "Hint: Long press on a member below to customize the amount they paid.",
-    "add_purchase_explanation": "The amount will be split equaly between the selected members.",
+    "add_purchase_explanation": "By default the amount will be split equally between the selected members.",
 
     "first_give_amount_toast": "First type in an amount!",
     "cant_add_custom_amount_toast": "The amount to be paid can't be customized.",

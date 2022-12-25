@@ -12,6 +12,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/models.dart';
+
 class AllHistoryRoute extends StatefulWidget {
   ///Defines whether to show purchases (0) or payments (1)
   final int startingIndex;
@@ -23,7 +25,7 @@ class AllHistoryRoute extends StatefulWidget {
 class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderStateMixin {
   DateTime _startDate;
   DateTime _endDate;
-  Future<List<PurchaseData>> _purchases;
+  Future<List<Purchase>> _purchases;
   Future<List<PaymentData>> _payments;
 
   ScrollController _purchaseScrollController = ScrollController();
@@ -31,7 +33,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   TabController _tabController;
   int _selectedIndex = 0;
 
-  Future<List<PurchaseData>> _getPurchases({bool overwriteCache = false}) async {
+  Future<List<Purchase>> _getPurchases({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response;
@@ -52,9 +54,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
             useGuest: useGuest);
       }
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<PurchaseData> purchaseData = [];
+      List<Purchase> purchaseData = [];
       for (var data in decoded) {
-        purchaseData.add(PurchaseData.fromJson(data));
+        purchaseData.add(Purchase.fromJson(data));
       }
       return purchaseData;
     } catch (_) {
@@ -408,12 +410,10 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
       if (now.difference(data.updatedAt).inDays > 7) {
         int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
         now = now.subtract(Duration(days: toSubtract * 7));
-        allEntries.add(Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: weekEntries,
-            ),
+        allEntries.add(Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: weekEntries,
           ),
         ));
         weekEntries = [];
@@ -443,19 +443,17 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
       }
     }
     if (weekEntries.isNotEmpty) {
-      allEntries.add(Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: weekEntries,
-          ),
+      allEntries.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: weekEntries,
         ),
       ));
     }
     return allEntries;
   }
 
-  List<Widget> _generatePurchase(List<PurchaseData> data) {
+  List<Widget> _generatePurchase(List<Purchase> data) {
     if (data.length == 0) {
       return [
         Padding(
@@ -511,16 +509,14 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
     }
     List<Widget> allEntries = [initial];
     List<PurchaseEntry> weekEntries = [];
-    for (PurchaseData data in data) {
+    for (Purchase data in data) {
       if (now.difference(data.updatedAt).inDays > 7) {
         int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
         now = now.subtract(Duration(days: toSubtract * 7));
-        allEntries.add(Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: weekEntries,
-            ),
+        allEntries.add(Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: weekEntries,
           ),
         ));
         weekEntries = [];
@@ -539,23 +535,21 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
           ),
         ));
         weekEntries.add(PurchaseEntry(
-          data: data,
+          purchase: data,
           callback: callback,
         ));
       } else {
         weekEntries.add(PurchaseEntry(
-          data: data,
+          purchase: data,
           callback: callback,
         ));
       }
     }
     if (weekEntries.isNotEmpty) {
-      allEntries.add(Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: weekEntries,
-          ),
+      allEntries.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: weekEntries,
         ),
       ));
     }

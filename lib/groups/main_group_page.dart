@@ -26,7 +26,7 @@ import '../balance/balances.dart';
 import '../config.dart';
 import '../essentials/ad_management.dart';
 import '../essentials/currencies.dart';
-import '../essentials/group_objects.dart';
+import '../essentials/models.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
 import '../main/iapp_not_supported_dialog.dart';
@@ -351,11 +351,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width - (bigScreen ? 80 : 0);
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
-        (kIsWeb || Platform.isWindows ? 64 : 0) - //appbar
+        (kIsWeb || Platform.isWindows ? 56 : 0) - //appbar
         (idToUse() == guestUserId ? 60 : 0) - // guestBanner
         (bigScreen ? 0 : 56) - //bottomNavbar
         adHeight();
-    List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height);
+    List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height, width);
     return Row(
       children: [
         bigScreen
@@ -421,7 +421,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Widget> _tabWidgets(bool isOnline, bool bigScreen, double height) {
+  List<Widget> _tabWidgets(bool isOnline, bool bigScreen, double height, double width) {
     return [
       RefreshIndicator(
         onRefresh: () async {
@@ -452,6 +452,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         scrollTo: scrollTo,
         bigScreen: bigScreen,
         height: height,
+        width: width,
       ),
     ];
   }

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 
 import '../essentials/widgets/error_message.dart';
 import '../essentials/http_handler.dart';
@@ -27,9 +27,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
   Future<List<Member>> _getGuests() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupGuests),
-          context: context,
-          useCache: false);
+          uri: generateUri(GetUriKeys.groupGuests), context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       for (var member in decoded['data']) {
@@ -58,8 +56,10 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
         Center(
           child: Text(
             'guest_switcher'.tr(),
-            style: Theme.of(context).textTheme.titleSmall.copyWith(
-                color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                .copyWith(color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
             textAlign: TextAlign.center,
           ),
         ),
@@ -84,8 +84,7 @@ class _GuestSwitcherState extends State<GuestSwitcher> {
                   if (_first == true) {
                     _selectedGuest = (snapshot.data as List<Member>).firstWhere(
                         (element) =>
-                            element.nickname == guestNickname &&
-                            guestGroupId == currentGroupId,
+                            element.nickname == guestNickname && guestGroupId == currentGroupId,
                         orElse: () => null);
                     _first = false;
                   }

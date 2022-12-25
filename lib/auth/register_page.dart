@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../essentials/validation_rules.dart';
+
 class RegisterPage extends StatefulWidget {
   final String inviteURL;
   RegisterPage({this.inviteURL});
@@ -56,58 +58,33 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: EdgeInsets.only(left: 20, right: 20),
                 shrinkWrap: true,
                 children: <Widget>[
-                  Stack(
-                    children: [
-                      TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'field_empty'.tr();
-                          }
-                          if (value.length < 3) {
-                            return 'minimal_length'.tr(args: ['3']);
-                          }
-                          return null;
-                        },
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          hintText: 'username'.tr(),
-                          filled: true,
-                          prefixIcon: Icon(
-                            Icons.account_circle,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.info_outline,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                          LengthLimitingTextInputFormatter(15),
-                        ],
+                  TextFormField(
+                    validator: (value) => validateTextField({
+                      isEmpty: [value],
+                      minimalLength: [value, 3],
+                    }),
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      hintText: 'username'.tr(),
+                      prefixIcon: Icon(
+                        Icons.account_circle,
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 9),
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _usernameExplanationController.expanded =
-                                    !_usernameExplanationController.expanded;
-                              });
-                            },
-                            splashRadius: 0.1,
-                            splashColor: Colors.transparent,
-                            icon: Icon(
-                              Icons.info_outline,
-                              color: Colors.transparent,
-                            ),
-                          ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _usernameExplanationController.expanded =
+                                !_usernameExplanationController.expanded;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                      )
+                      ),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                      LengthLimitingTextInputFormatter(15),
                     ],
                   ),
                   SizedBox(
@@ -117,46 +94,31 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _usernameExplanationController,
                     collapsed: Container(),
                     expanded: Container(
-                        constraints: BoxConstraints(maxHeight: 80),
-                        child: Row(
-                          children: [
-                            Flexible(
-                                child: Text(
-                              'username_explanation'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant),
-                            )),
-                          ],
-                        )),
+                      constraints: BoxConstraints(maxHeight: 80),
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      child: Text(
+                        'username_explanation'.tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'field_empty'.tr();
-                      }
-                      if (value.length < 4) {
-                        return 'minimal_length'.tr(args: ['4']);
-                      }
-                      return null;
-                    },
+                    validator: (value) => validateTextField({
+                      isEmpty: [value],
+                      minimalLength: [value, 4],
+                    }),
                     controller: _passwordController,
                     decoration: InputDecoration(
                       hintText: 'password'.tr(),
-                      filled: true,
                       prefixIcon: Icon(
                         Icons.password,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
                       ),
                     ),
                     inputFormatters: [
@@ -168,28 +130,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 30,
                   ),
                   TextFormField(
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return 'passwords_not_match'.tr();
-                      }
-                      if (value.isEmpty) {
-                        return 'field_empty'.tr();
-                      }
-                      if (value.length < 4) {
-                        return 'minimal_length'.tr(args: ['4']);
-                      }
-                      return null;
-                    },
+                    validator: (value) => validateTextField({
+                      matchString: [value, _passwordController.text],
+                      isEmpty: [value],
+                      minimalLength: [value, 4],
+                    }),
                     controller: _passwordConfirmController,
                     decoration: InputDecoration(
                       hintText: 'confirm_password'.tr(),
-                      filled: true,
                       prefixIcon: Icon(
                         Icons.password,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
                       ),
                     ),
                     inputFormatters: [
@@ -207,19 +157,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       Flexible(
                         child: InkWell(
                             onTap: () {
-                              launchUrlString(
-                                  'https://lenderapp.net/privacy-policy');
+                              launchUrlString('https://lenderapp.net/privacy-policy');
                             },
                             child: Text(
                               'accept_privacy_policy'.tr() + '*',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  .copyWith(
-                                      decoration: TextDecoration.underline,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
+                              style: Theme.of(context).textTheme.titleSmall.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).colorScheme.onSurface),
                               textAlign: TextAlign.center,
                             )),
                       ),
@@ -275,8 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
           );
         } else {
           Widget toast = Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25.0),
               color: Theme.of(context).colorScheme.error,
@@ -293,8 +236,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Flexible(
                     child: Text("must_accept_privacy_policy".tr(),
-                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onError))),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onError))),
               ],
             ),
           );
@@ -302,9 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
           FToast ft = FToast();
           ft.init(context);
           ft.showToast(
-              child: toast,
-              toastDuration: Duration(seconds: 2),
-              gravity: ToastGravity.BOTTOM);
+              child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
         }
       } else {
         Widget toast = Container(
@@ -325,8 +268,10 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               Flexible(
                 child: Text("passwords_not_match".tr(),
-                    style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onError)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onError)),
               ),
             ],
           ),
@@ -334,9 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
         FToast ft = FToast();
         ft.init(context);
         ft.showToast(
-            child: toast,
-            toastDuration: Duration(seconds: 2),
-            gravity: ToastGravity.BOTTOM);
+            child: toast, toastDuration: Duration(seconds: 2), gravity: ToastGravity.BOTTOM);
       }
     }
   }
@@ -356,8 +299,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<bool> _register(String username, String password) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      Future.delayed(delayTime())
-          .then((value) => _onRegister(username, password));
+      Future.delayed(delayTime()).then((value) => _onRegister(username, password));
       return true;
     } on FormatException {
       throw 'format_exception'.tr() + ' F01';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../essentials/http_handler.dart';
+import '../essentials/validation_rules.dart';
 import '../essentials/widgets/future_success_dialog.dart';
 import '../essentials/widgets/gradient_button.dart';
 import '../groups/main_group_page.dart';
@@ -31,8 +32,8 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
   }
 
   void _onUpdateUsername() {
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
     _usernameController.text = '';
     // clearAllCache();
   }
@@ -51,8 +52,10 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
             children: <Widget>[
               Text(
                 'change_username'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -61,25 +64,15 @@ class _ChangeUsernameDialogState extends State<ChangeUsernameDialog> {
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 1) {
-                      return 'minimal_length'.tr(args: ['1']);
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateTextField({
+                    isEmpty: [value],
+                    minimalLength: [value, 1],
+                  }),
                   controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'new_name'.tr(),
-                    filled: true,
                     prefixIcon: Icon(
                       Icons.account_circle,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [

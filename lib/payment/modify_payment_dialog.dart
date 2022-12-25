@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
@@ -58,15 +58,10 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
     }
   }
 
-  Future<bool> _updatePayment(
-      double amount, String note, Member toMember, int paymentId) async {
+  Future<bool> _updatePayment(double amount, String note, Member toMember, int paymentId) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      Map<String, dynamic> body = {
-        'amount': amount,
-        'note': note,
-        'taker_id': toMember.memberId
-      };
+      Map<String, dynamic> body = {'amount': amount, 'note': note, 'taker_id': toMember.memberId};
 
       await httpPut(
           uri: '/payments/' + paymentId.toString(),
@@ -90,8 +85,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
     super.initState();
     _members = _getMembers();
     if (widget.savedPayment != null) {
-      _amountController.text =
-          widget.savedPayment.amount.money(currentGroupCurrency);
+      _amountController.text = widget.savedPayment.amount.money(currentGroupCurrency);
       _noteController.text = widget.savedPayment.note;
     }
   }
@@ -109,8 +103,10 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
               Center(
                   child: Text(
                 'modify_payment'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -119,8 +115,10 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
               Center(
                   child: Text(
                 'modify_payment_explanation'.tr(),
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -176,11 +174,8 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
-                      ],
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))],
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 8),
@@ -197,8 +192,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (context) {
-                                  return SingleChildScrollView(
-                                      child: Calculator(
+                                  return SingleChildScrollView(child: Calculator(
                                     callback: (String fromCalc) {
                                       setState(() {
                                         _amountController.text = fromCalc;
@@ -221,24 +215,18 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasData) {
-                          if (widget.savedPayment != null &&
-                              widget.savedPayment.takerId != -1) {
-                            Member selectMember =
-                                (snapshot.data as List<Member>).firstWhere(
-                                    (element) =>
-                                        element.memberId ==
-                                        widget.savedPayment.takerId,
-                                    orElse: () => null);
-                            if (selectMember != null)
-                              _selectedMember = selectMember;
+                          if (widget.savedPayment != null && widget.savedPayment.takerId != -1) {
+                            Member selectMember = (snapshot.data as List<Member>).firstWhere(
+                                (element) => element.memberId == widget.savedPayment.takerId,
+                                orElse: () => null);
+                            if (selectMember != null) _selectedMember = selectMember;
                             widget.savedPayment.takerId = -1;
                           }
                           return MemberChips(
                             allowMultiple: false,
                             allMembers: snapshot.data,
                             membersChanged: (members) {
-                              _selectedMember =
-                                  members.isEmpty ? null : members[0];
+                              _selectedMember = members.isEmpty ? null : members[0];
                             },
                             membersChosen: [_selectedMember],
                           );
@@ -304,10 +292,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
                           String note = _noteController.text;
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future: _updatePayment(
-                                        amount,
-                                        note,
-                                        _selectedMember,
+                                    future: _updatePayment(amount, note, _selectedMember,
                                         widget.savedPayment.paymentId),
                                   ),
                               context: context);

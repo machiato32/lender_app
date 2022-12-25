@@ -6,6 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../essentials/validation_rules.dart';
+
 class ImShoppingDialog extends StatefulWidget {
   @override
   _ImShoppingDialogState createState() => _ImShoppingDialogState();
@@ -23,9 +25,7 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
       await httpPost(
           context: context,
           body: body,
-          uri: '/groups/' +
-              currentGroupId.toString() +
-              '/send_shopping_notification',
+          uri: '/groups/' + currentGroupId.toString() + '/send_shopping_notification',
           useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onPostImShopping());
       return true;
@@ -73,23 +73,15 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextFormField(
-                  validator: (value) {
-                    value = value.trim();
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateTextField({
+                    isEmpty: [value.trim()],
+                    minimalLength: [value.trim(), 1],
+                  }),
                   decoration: InputDecoration(
                     hintText: 'store'.tr(),
-                    filled: true,
                     prefixIcon: Icon(
                       Icons.shopping_basket,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                   controller: _controller,

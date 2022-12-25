@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../group_objects.dart';
+import '../models.dart';
 
 class CustomChoiceChip extends StatefulWidget {
   final Member member;
@@ -12,17 +12,16 @@ class CustomChoiceChip extends StatefulWidget {
   final bool selected;
   final Function onLongPress;
   final double fillRatio;
-  const CustomChoiceChip({
-    this.member,
-    this.selected,
-    this.selectedColor,
-    this.notSelectedColor,
-    this.selectedFontColor,
-    this.notSelectedFontColor,
-    this.onMemberChosen,
-    this.onLongPress,
-    this.fillRatio,
-  });
+  const CustomChoiceChip(
+      {this.member,
+      this.selected,
+      this.selectedColor,
+      this.notSelectedColor,
+      this.selectedFontColor,
+      this.notSelectedFontColor,
+      this.onMemberChosen,
+      this.onLongPress,
+      this.fillRatio});
 
   @override
   State<CustomChoiceChip> createState() => _CustomChoiceChipState();
@@ -70,14 +69,15 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
   Widget build(BuildContext context) {
     return Ink(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-              width: 0.7,
-              color: widget.selected ? Colors.transparent : Theme.of(context).colorScheme.outline),
-          gradient: LinearGradient(
-            colors: [widget.selectedColor, widget.notSelectedColor],
-            stops: [ratioAnimation.value, ratioAnimation.value],
-          )),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+            width: 0.7,
+            color: widget.selected ? Colors.transparent : Theme.of(context).colorScheme.outline),
+        gradient: LinearGradient(
+          colors: [widget.selectedColor, widget.notSelectedColor],
+          stops: [ratioAnimation.value, ratioAnimation.value],
+        ),
+      ),
       child: InkWell(
         splashFactory: InkSplash.splashFactory,
         borderRadius: BorderRadius.circular(8),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../config.dart';
+import '../essentials/validation_rules.dart';
 
 class EditRequestDialog extends StatefulWidget {
   final String textBefore;
@@ -68,27 +69,16 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 1) {
-                      return 'minimal_length'.tr(args: ['1']);
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateTextField({
+                    isEmpty: [value.trim()],
+                    minimalLength: [value.trim(), 2],
+                  }),
                   controller: _requestController,
                   decoration: InputDecoration(
                     hintText: 'edited_request'.tr(),
-                    // fillColor: Theme.of(context).colorScheme.onSurface,
-                    filled: true,
                     prefixIcon: Icon(
                       Icons.shopping_cart,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [

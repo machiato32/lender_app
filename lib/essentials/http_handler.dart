@@ -65,8 +65,7 @@ List<String> getUris = [
 enum HttpType { get, post, put, delete }
 
 ///Generates URI-s from enum values. The default value of [args] is [currentGroupId].
-String generateUri(GetUriKeys key,
-    {HttpType type = HttpType.get, List<String> args}) {
+String generateUri(GetUriKeys key, {HttpType type = HttpType.get, List<String> args}) {
   if (type == HttpType.get) {
     if (args == null) {
       args = [currentGroupId.toString()];
@@ -131,8 +130,8 @@ void memberNotInGroup(BuildContext context) {
   if (usersGroups.length > 0) {
     currentGroupName = usersGroups[0];
     currentGroupId = usersGroupIds[0];
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   } else {
     currentGroupName = null;
     currentGroupId = null;
@@ -152,13 +151,10 @@ Future<Directory> _getCacheDir() async {
 }
 
 Future<http.Response> fromCache(
-    {@required String uri,
-    @required bool overwriteCache,
-    bool alwaysReturnCache = false}) async {
+    {@required String uri, @required bool overwriteCache, bool alwaysReturnCache = false}) async {
   try {
     String s = Platform.isWindows ? '\\' : '/';
-    String fileName =
-        uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+    String fileName = uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
     var cacheDir = await _getCacheDir();
     if (!cacheDir.existsSync()) {
       return null;
@@ -168,8 +164,7 @@ Future<http.Response> fromCache(
     if (alwaysReturnCache ||
         (!overwriteCache &&
             (file.existsSync() &&
-                DateTime.now().difference(await file.lastModified()).inMinutes <
-                    5))) {
+                DateTime.now().difference(await file.lastModified()).inMinutes < 5))) {
       // print('from cache');
       return http.Response(file.readAsStringSync(), 200);
     }
@@ -185,8 +180,7 @@ Future<http.Response> fromCache(
 Future toCache({@required String uri, @required http.Response response}) async {
   // print('to cache');
   String s = Platform.isWindows ? '\\' : '/';
-  String fileName =
-      uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+  String fileName = uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
   var cacheDir = await _getCacheDir();
   //print('itt');
   cacheDir.create();
@@ -201,8 +195,7 @@ Future toCache({@required String uri, @required http.Response response}) async {
 Future deleteCache({@required String uri, bool multipleArgs = false}) async {
   if (!kIsWeb) {
     uri = uri.substring(1);
-    String fileName =
-        uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
+    String fileName = uri.replaceAll('/', '-').replaceAll('&', '-').replaceAll('?', '-');
     String s = Platform.isWindows ? '\\' : '/';
     var cacheDir = await _getCacheDir();
     if (multipleArgs) {
@@ -286,22 +279,21 @@ Future<http.Response> httpGet(
   try {
     useCache = useCache && !kIsWeb;
     if (useCache) {
-      http.Response responseFromCache = await fromCache(
-          uri: uri.substring(1), overwriteCache: overwriteCache);
+      http.Response responseFromCache =
+          await fromCache(uri: uri.substring(1), overwriteCache: overwriteCache);
       if (responseFromCache != null) {
         //print('de cache!');
         return responseFromCache;
       }
     }
-    //print(uri);
+    // print(Uri.parse((useTest ? TEST_URL : APP_URL) + uri));
     //print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " +
-          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
-    http.Response response = await http
-        .get(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
+    http.Response response =
+        await http.get(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
     if (response.statusCode < 300 && response.statusCode >= 200) {
       if (useCache) toCache(uri: uri.substring(1), response: response);
       return response;
@@ -318,9 +310,7 @@ Future<http.Response> httpGet(
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-            (r) => false);
+            context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
       } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
@@ -329,8 +319,8 @@ Future<http.Response> httpGet(
   } on FormatException {
     throw 'format_exception';
   } on SocketException {
-    http.Response response = await fromCache(
-        uri: uri.substring(1), overwriteCache: false, alwaysReturnCache: true);
+    http.Response response =
+        await fromCache(uri: uri.substring(1), overwriteCache: false, alwaysReturnCache: true);
     if (response != null) {
       return response;
     }
@@ -348,20 +338,15 @@ Future<http.Response> httpPost(
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " +
-          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
     if (body != null) {
       String bodyEncoded = json.encode(body);
-      response = await http.post(
-          Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
-          headers: header,
-          body: bodyEncoded);
+      response = await http.post(Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
+          headers: header, body: bodyEncoded);
     } else {
-      response = await http.post(
-          Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
-          headers: header);
+      response = await http.post(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
     }
 
     if (response.statusCode < 300 && response.statusCode >= 200) {
@@ -378,9 +363,7 @@ Future<http.Response> httpPost(
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-            (r) => false);
+            context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
       } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
@@ -403,8 +386,7 @@ Future<http.Response> httpPut(
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " +
-          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
     if (body != null) {
@@ -412,8 +394,7 @@ Future<http.Response> httpPut(
       response = await http.put(Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
           headers: header, body: bodyEncoded);
     } else {
-      response = await http.put(Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
-          headers: header);
+      response = await http.put(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
     }
 
     if (response.statusCode < 300 && response.statusCode >= 200) {
@@ -430,9 +411,7 @@ Future<http.Response> httpPut(
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-            (r) => false);
+            context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
       } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }
@@ -448,18 +427,14 @@ Future<http.Response> httpPut(
 }
 
 Future<http.Response> httpDelete(
-    {@required BuildContext context,
-    @required String uri,
-    bool useGuest = false}) async {
+    {@required BuildContext context, @required String uri, bool useGuest = false}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " +
-          (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
-    http.Response response = await http.delete(
-        Uri.parse((useTest ? TEST_URL : APP_URL) + uri),
-        headers: header);
+    http.Response response =
+        await http.delete(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
 
     if (response.statusCode < 300 && response.statusCode >= 200) {
       return response;
@@ -474,9 +449,7 @@ Future<http.Response> httpDelete(
             toastDuration: Duration(seconds: 2),
             gravity: ToastGravity.BOTTOM);
         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-            (r) => false);
+            context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
       } else if (error['error'] == 'user_not_member') {
         memberNotInGroup(context);
       }

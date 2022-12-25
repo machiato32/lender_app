@@ -1,6 +1,6 @@
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'group_objects.dart';
+import 'models.dart';
 
 List<PaymentData> paymentsNeeded(List<Member> members) {
   List<PaymentData> payments = <PaymentData>[];
@@ -14,8 +14,7 @@ List<PaymentData> paymentsNeeded(List<Member> members) {
           memberId: member.memberId));
     }
     do {
-      memberCopy.sort(
-          (member1, member2) => member1.balance.compareTo(member2.balance));
+      memberCopy.sort((member1, member2) => member1.balance.compareTo(member2.balance));
       var minPerson = memberCopy[0];
       var maxPerson = memberCopy[memberCopy.length - 1];
       payments.add(new PaymentData(

@@ -16,8 +16,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
+import '../essentials/validation_rules.dart';
 import 'create_group.dart';
-import 'dialogs/qr_scanner_page.dart';
+import 'qr_scanner_page.dart';
 import 'main_group_page.dart';
 
 class JoinGroup extends StatefulWidget {
@@ -264,21 +265,13 @@ class _JoinGroupState extends State<JoinGroup> {
                                 ),
                               ),
                               TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  return null;
-                                },
+                                validator: (value) => validateTextField({
+                                  isEmpty: [value.trim()],
+                                }),
                                 decoration: InputDecoration(
                                   hintText: 'invitation'.tr(),
-                                  filled: true,
                                   prefixIcon: Icon(
                                     Icons.mail,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide.none,
                                   ),
                                 ),
                                 controller: _tokenController,
@@ -287,25 +280,19 @@ class _JoinGroupState extends State<JoinGroup> {
                                 height: 20,
                               ),
                               TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 1) {
-                                    return 'minimal_length'.tr(args: ['1']);
-                                  }
-                                  return null;
-                                },
+                                validator: (value) => validateTextField({
+                                  isEmpty: [value.trim()],
+                                  minimalLength: [value.trim(), 1],
+                                }),
                                 decoration: InputDecoration(
                                   labelText: 'nickname_in_group'.tr(),
                                   hintText: 'nickname_in_group'.tr(),
                                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                                  filled: true,
                                   prefixIcon: Icon(
                                     Icons.account_circle,
                                   ),
                                   border: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: BorderSide.none,
                                   ),
                                 ),

@@ -9,7 +9,20 @@ class GradientButton extends StatelessWidget {
   final Function() onPressed;
   final bool useSecondary;
   final double borderRadius;
-  GradientButton({this.child, this.onPressed, this.useSecondary = false, this.borderRadius = 20});
+  final bool useTertiary;
+  final bool useSecondaryContainer;
+  final bool usePrimaryContainer;
+  final bool useTertiaryContainer;
+  GradientButton({
+    this.child,
+    this.onPressed,
+    this.useSecondary = false,
+    this.borderRadius = 20,
+    this.useSecondaryContainer = false,
+    this.usePrimaryContainer = false,
+    this.useTertiary = false,
+    this.useTertiaryContainer = false,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,12 +30,18 @@ class GradientButton extends StatelessWidget {
       height: 40,
       child: Ink(
         decoration: BoxDecoration(
-          gradient: AppTheme.gradientFromTheme(currentThemeName, useSecondary: this.useSecondary),
+          gradient: AppTheme.gradientFromTheme(
+            currentThemeName,
+            useSecondary: this.useSecondary,
+            usePrimaryContainer: this.usePrimaryContainer,
+            useTertiaryContainer: this.useTertiary,
+            useSecondaryContainer: this.useSecondaryContainer,
+          ),
           borderRadius: BorderRadius.circular(this.borderRadius),
         ),
         child: InkWell(
             borderRadius: BorderRadius.circular(this.borderRadius),
-            onTap: this.onPressed,
+            onTap: this.onPressed, //TODO: fix home screen
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

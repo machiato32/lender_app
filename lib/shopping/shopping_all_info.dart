@@ -23,10 +23,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/requests/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onFulfillShoppingRequest());
       return true;
     } catch (_) {
@@ -42,10 +39,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/requests/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onDeleteShoppingRequest());
       return true;
     } catch (_) {
@@ -67,8 +61,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_circle, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                 child: Text(
                   ' - ' + widget.data.requesterNickname,
@@ -86,8 +79,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.receipt_long,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.receipt_long, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                 child: Text(
                   ' - ' + widget.data.name,
@@ -110,9 +102,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
               ),
               Flexible(
                 child: Text(
-                  ' - ' +
-                      DateFormat('yyyy/MM/dd - HH:mm')
-                          .format(widget.data.updatedAt),
+                  ' - ' + DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt),
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -136,12 +126,12 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                       GradientButton(
                         onPressed: () {
                           showDialog(
-                                  builder: (context) => EditRequestDialog(
-                                        requestId: widget.data.requestId,
-                                        textBefore: widget.data.name,
-                                      ),
-                                  context: context)
-                              .then((value) {
+                            builder: (context) => EditRequestDialog(
+                              requestId: widget.data.requestId,
+                              textBefore: widget.data.name,
+                            ),
+                            context: context,
+                          ).then((value) {
                             if (value ?? false) {
                               Navigator.pop(context, 'edited');
                             }
@@ -149,8 +139,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.edit,
-                                color: Theme.of(context).colorScheme.onPrimary),
+                            Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
                             SizedBox(
                               width: 5,
                             ),
@@ -159,15 +148,15 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary),
+                                  .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             ),
                           ],
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -176,8 +165,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         onPressed: () {
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future: _deleteShoppingRequest(
-                                        widget.data.requestId),
+                                    future: _deleteShoppingRequest(widget.data.requestId),
                                     dataTrueText: 'delete_scf',
                                     onDataTrue: () {
                                       _onDeleteShoppingRequest();
@@ -188,8 +176,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.delete,
-                                color: Theme.of(context).colorScheme.onPrimary),
+                            Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
                             SizedBox(
                               width: 5,
                             ),
@@ -198,10 +185,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary),
+                                  .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             ),
                           ],
                         ),
@@ -225,8 +209,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         onPressed: () {
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future: _fulfillShoppingRequest(
-                                        widget.data.requestId),
+                                    future: _fulfillShoppingRequest(widget.data.requestId),
                                     dataTrueText: 'fulfill_scf',
                                     onDataTrue: () {
                                       _onFulfillShoppingRequest();
@@ -237,23 +220,24 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.check,
-                                color: Theme.of(context).colorScheme.onPrimary),
+                            Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary),
                             SizedBox(
                               width: 5,
                             ),
-                            Text('remove_from_list'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary)),
+                            Text(
+                              'remove_from_list'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                            ),
                           ],
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -262,8 +246,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                         onPressed: () {
                           showDialog(
                                   builder: (context) => FutureSuccessDialog(
-                                        future: _fulfillShoppingRequest(
-                                            widget.data.requestId),
+                                        future: _fulfillShoppingRequest(widget.data.requestId),
                                         dataTrueText: 'fulfill_scf',
                                         onDataTrue: () {
                                           _onFulfillShoppingRequest();
@@ -274,12 +257,14 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                               .then((value) {
                             if (value == true) {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddPurchaseRoute(
-                                            type: PurchaseType.fromShopping,
-                                            shoppingData: widget.data,
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddPurchaseRoute(
+                                    type: PurchaseType.fromShopping,
+                                    shoppingData: widget.data,
+                                  ),
+                                ),
+                              );
                             }
                           });
                         },
@@ -290,14 +275,13 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
                             SizedBox(
                               width: 5,
                             ),
-                            Text('add_as_expense'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary)),
+                            Text(
+                              'add_as_expense'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                            ),
                           ],
                         ),
                       ),

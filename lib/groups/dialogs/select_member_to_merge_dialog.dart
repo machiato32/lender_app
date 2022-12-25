@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
@@ -24,14 +24,9 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
   Member _dropdownValue;
 
   Future<bool> _mergeGuest(int memberId) async {
-    Map<String, dynamic> body = {
-      'member_id': memberId,
-      'guest_id': guestUserId
-    };
+    Map<String, dynamic> body = {'member_id': memberId, 'guest_id': guestUserId};
     await httpPost(
-        context: context,
-        uri: '/groups/' + currentGroupId.toString() + '/merge_guest',
-        body: body);
+        context: context, uri: '/groups/' + currentGroupId.toString() + '/merge_guest', body: body);
     Future.delayed(delayTime()).then((value) => _onMergeGuest());
     return true;
   }
@@ -43,16 +38,14 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
     deleteGuestGroupId();
     deleteGuestNickname();
     deleteGuestUserId();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
   Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent),
-          context: context,
-          useCache: false);
+          uri: generateUri(GetUriKeys.groupCurrent), context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       print(decoded['data']['members']);
@@ -117,17 +110,15 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                             Theme.of(context).colorScheme.surfaceTint,
                             2),
                         elevation: 0,
-                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                         hint: Text('select_member'.tr(),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant)),
+                                .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                         value: _dropdownValue,
                         onChanged: (value) {
                           setState(() {
@@ -181,8 +172,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                           print(_dropdownValue.memberId);
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future:
-                                        _mergeGuest(_dropdownValue.memberId),
+                                    future: _mergeGuest(_dropdownValue.memberId),
                                     dataTrueText: 'merge_scf',
                                     onDataTrue: () {
                                       _onMergeGuest();

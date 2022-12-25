@@ -1,26 +1,25 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:csocsort_szamla/purchase/add_modify_purchase.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/validation_rules.dart';
+import '../essentials/widgets/currency_picker_icon_button.dart';
 import '../essentials/widgets/error_message.dart';
 import '../shopping/shopping_list_entry.dart';
-
-Random random = Random();
 
 class SavedPurchase {
   String buyerNickname, buyerUsername;
@@ -56,8 +55,9 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   Future<List<Member>> _members;
-  Map<Member, bool> memberChipBool = Map<Member, bool>();
-  Map<Member, double> percentageMap = Map<Member, double>();
+  Map<Member, bool> membersMap = Map<Member, bool>();
+  Map<Member, double> customAmountMap = Map<Member, double>();
+  String selectedCurrency = currentGroupCurrency;
   FocusNode _focusNode = FocusNode();
 
   var _formKey = GlobalKey<FormState>();
@@ -93,14 +93,39 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
         "name": name,
         "group": currentGroupId,
         "amount": amount,
-        "receivers": members.map((e) => e.toJson()).toList()
+        "currency": selectedCurrency,
+        "receivers": members
+            .map((member) => {
+                  "user_id": member.memberId,
+                  "amount": customAmountMap.containsKey(member) ? customAmountMap[member] : null,
+                })
+            .toList()
       };
 
       await httpPost(uri: '/purchases', body: body, context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onPostPurchase());
       return true;
     } catch (_) {
       throw _;
     }
+  }
+
+  void _onPostPurchase() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  double amountForNonCustom() {
+    double sumCustom = 0;
+    customAmountMap.values.forEach((element) => sumCustom += element);
+    double amount = (double.tryParse(_amountController.text) ?? 0.0) - sumCustom;
+    int membersChosen = 0;
+    for (bool isChosen in membersMap.values) {
+      if (isChosen) {
+        membersChosen++;
+      }
+    }
+    return amount / (membersChosen - customAmountMap.length);
   }
 
   void setInitialValues() {
@@ -121,7 +146,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
 
   @override
   Widget build(BuildContext context) {
-    // print(memberChipBool);
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -167,7 +191,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .titleSmall
+                                      .bodyMedium
                                       .copyWith(color: Theme.of(context).colorScheme.onSurface),
                                 ),
                               ),
@@ -175,15 +199,10 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                 height: 20,
                               ),
                               TextFormField(
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'field_empty'.tr();
-                                  }
-                                  if (value.length < 3) {
-                                    return 'minimal_length'.tr(args: ['3']);
-                                  }
-                                  return null;
-                                },
+                                validator: (value) => validateTextField({
+                                  isEmpty: [value],
+                                  minimalLength: [value, 3],
+                                }),
                                 decoration: InputDecoration(
                                   hintText: 'note'.tr(),
                                   filled: true,
@@ -191,87 +210,90 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                     Icons.note,
                                     color: Theme.of(context).colorScheme.onSurface,
                                   ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide.none,
-                                  ),
+                                  // border: OutlineInputBorder(
+                                  //   borderRadius: BorderRadius.circular(30),
+                                  //   borderSide: BorderSide.none,
+                                  // ),
                                 ),
                                 inputFormatters: [LengthLimitingTextInputFormatter(50)],
                                 controller: noteController,
                                 onFieldSubmitted: (value) => _buttonPush(),
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 15,
                               ),
-                              Stack(
-                                children: [
-                                  TextFormField(
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'field_empty'.tr();
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'not_valid_num'.tr();
-                                      }
-                                      if (double.parse(value) < 0) {
-                                        return 'not_valid_num'.tr();
-                                      }
-                                      return null;
+                              Center(
+                                child: Text(
+                                  'amount_textbox_hint'.tr(),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                validator: (value) => validateTextField({
+                                  isEmpty: [value],
+                                  notValidNumber: [
+                                    value,
+                                  ]
+                                }),
+                                focusNode: _focusNode,
+                                decoration: InputDecoration(
+                                  hintText: 'full_amount'.tr(),
+                                  filled: true,
+                                  prefixIcon: GestureDetector(
+                                    onDoubleTap: () {
+                                      setState(() {
+                                        selectedCurrency = currentGroupCurrency;
+                                      });
                                     },
-                                    focusNode: _focusNode,
-                                    decoration: InputDecoration(
-                                      hintText: 'full_amount'.tr(),
-                                      filled: true,
-                                      prefixIcon: Icon(
-                                        Icons.pin,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      suffixIcon: Icon(
-                                        Icons.calculate,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: BorderSide.none,
-                                      ),
+                                    child: CurrencyPickerIconButton(
+                                      selectedCurrency: selectedCurrency,
+                                      onCurrencyChanged: (newCurrency) {
+                                        setState(() {
+                                          selectedCurrency = newCurrency ?? selectedCurrency;
+                                        });
+                                      },
                                     ),
-                                    controller: _amountController,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
-                                    ],
-                                    onFieldSubmitted: (value) => _buttonPush(),
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 9),
-                                    child: Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: IconButton(
-                                          splashRadius: 0.1,
-                                          icon: Icon(
-                                            Icons.calculate,
-                                            color: Colors.transparent,
-                                          ),
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) {
-                                                return SingleChildScrollView(
-                                                    child: Calculator(
-                                                  initial: _amountController.text,
-                                                  callback: (String fromCalc) {
-                                                    setState(() {
-                                                      _amountController.text = fromCalc;
-                                                    });
-                                                  },
-                                                ));
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) {
+                                          return SingleChildScrollView(
+                                            child: Calculator(
+                                              initial: _amountController.text,
+                                              callback: (String fromCalc) {
+                                                setState(() {
+                                                  _amountController.text =
+                                                      (double.tryParse(fromCalc) ?? 0.0)
+                                                          .money(selectedCurrency);
+                                                });
                                               },
-                                            );
-                                          }),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.calculate,
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
+                                ),
+                                controller: _amountController,
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
                                 ],
+                                onFieldSubmitted: (value) => _buttonPush(),
                               ),
                               SizedBox(
                                 height: 15,
@@ -296,30 +318,33 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                     if (snapshot.connectionState == ConnectionState.done) {
                                       if (snapshot.hasData) {
                                         for (Member member in snapshot.data) {
-                                          if (!memberChipBool.containsKey(member)) {
-                                            memberChipBool[member] = false;
+                                          if (!membersMap.containsKey(member)) {
+                                            membersMap[member] = false;
                                           }
                                         }
                                         if (widget.type == PurchaseType.fromShopping) {
-                                          memberChipBool[snapshot.data.firstWhere((member) =>
+                                          membersMap[snapshot.data.firstWhere((member) =>
                                               member.memberId ==
                                               widget.shoppingData.requesterId)] = true;
                                         }
                                         return MemberChips(
+                                          selectedCurrency: selectedCurrency,
                                           allowMultiple: true,
                                           allMembers: snapshot.data,
                                           membersChosen: snapshot.data
-                                              .where((member) => memberChipBool[member])
+                                              .where((member) => membersMap[member])
                                               .toList(),
                                           membersChanged: (members) {
                                             setState(() {
                                               for (Member member in snapshot.data) {
-                                                memberChipBool[member] = members.contains(member);
+                                                membersMap[member] = members.contains(member);
                                               }
                                             });
                                           },
-                                          percentagesChanged: (Map<Member, double> percentages) {
-                                            percentageMap = percentages;
+                                          customAmountsChanged: (Map<Member, double> amounts) {
+                                            setState(() {
+                                              customAmountMap = amounts;
+                                            });
                                           },
                                           showDivisionDialog: true,
                                           getMaxAmount: () =>
@@ -342,6 +367,9 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                   },
                                 ),
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -349,8 +377,8 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
                                       setState(() {
-                                        for (Member member in memberChipBool.keys) {
-                                          memberChipBool[member] = !memberChipBool[member];
+                                        for (Member member in membersMap.keys) {
+                                          membersMap[member] = !membersMap[member];
                                         }
                                       });
                                     },
@@ -359,12 +387,25 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
                                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                   ),
+                                  Visibility(
+                                    visible: _amountController.text != "" &&
+                                        membersMap.containsValue(true),
+                                    child: Center(
+                                      child: Text(
+                                          'per_person'.tr(args: [
+                                            amountForNonCustom().printMoney(selectedCurrency)
+                                          ]),
+                                          style: Theme.of(context).textTheme.bodySmall.copyWith(
+                                                color: Theme.of(context).colorScheme.tertiary,
+                                              )),
+                                    ),
+                                  ),
                                   IconButton(
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
                                       setState(() {
-                                        for (Member member in memberChipBool.keys) {
-                                          memberChipBool[member] = false;
+                                        for (Member member in membersMap.keys) {
+                                          membersMap[member] = false;
                                         }
                                       });
                                     },
@@ -402,7 +443,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
   void _buttonPush() {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState.validate()) {
-      if (!memberChipBool.containsValue(true)) {
+      if (!membersMap.containsValue(true)) {
         FToast ft = FToast();
         ft.init(context);
         ft.showToast(
@@ -414,86 +455,12 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> {
       double amount = double.parse(_amountController.text);
       String name = noteController.text;
       List<Member> members = [];
-      memberChipBool.forEach((Member key, bool value) {
+      membersMap.forEach((Member key, bool value) {
         if (value) members.add(key);
       });
-      //TODO: add percentages to post (what to send exactly?)
       showDialog(
           builder: (context) => FutureSuccessDialog(
                 future: _postPurchase(members, amount, name),
-                dataTrue: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        'purchase_scf'.tr(),
-                        style: Theme.of(context).textTheme.bodyLarge.copyWith(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          child: Row(
-                            children: [
-                              Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                'okay'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          child: Row(
-                            children: [
-                              Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                'add_new'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _amountController.text = '';
-                              noteController.text = '';
-                              for (Member key in memberChipBool.keys) {
-                                memberChipBool[key] = false;
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
               ),
           barrierDismissible: false,
           context: context);

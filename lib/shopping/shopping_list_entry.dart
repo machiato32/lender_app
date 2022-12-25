@@ -1,5 +1,5 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -35,9 +35,8 @@ class ShoppingRequestData {
         requesterNickname: json['requester_nickname'],
         name: json['name'],
         updatedAt: DateTime.parse(json['updated_at']).toLocal(),
-        reactions: json['reactions']
-            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-            .toList());
+        reactions:
+            json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
   }
 
   @override
@@ -67,27 +66,22 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
-    Reaction oldReaction = widget.data.reactions.firstWhere(
-        (element) => element.userId == idToUse(),
-        orElse: () => null);
+    Reaction oldReaction = widget.data.reactions
+        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
     bool alreadyReacted = oldReaction != null;
-    bool sameReaction =
-        alreadyReacted ? oldReaction.reaction == reaction : false;
+    bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     } else if (!alreadyReacted) {
       widget.data.reactions.add(Reaction(
-          nickname:
-              idToUse() == currentUserId ? currentUsername : guestNickname,
+          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
           reaction: reaction,
           userId: idToUse()));
       setState(() {});
     } else {
-      widget.data.reactions.add(Reaction(
-          nickname: oldReaction.nickname,
-          reaction: reaction,
-          userId: idToUse()));
+      widget.data.reactions
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -114,8 +108,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         color: Theme.of(context).colorScheme.primary,
       );
     } else {
-      icon = Icon(Icons.card_giftcard,
-          color: Theme.of(context).colorScheme.secondary);
+      icon = Icon(Icons.card_giftcard, color: Theme.of(context).colorScheme.secondary);
     }
     return Dismissible(
       key: UniqueKey(),
@@ -128,16 +121,11 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
               color: Theme.of(context).textTheme.bodyText1.color,
             )),
       ),
-      dismissThresholds: {
-        DismissDirection.startToEnd: 0.6,
-        DismissDirection.endToStart: 0.6
-      },
+      dismissThresholds: {DismissDirection.startToEnd: 0.6, DismissDirection.endToStart: 0.6},
       background: Align(
           alignment: Alignment.centerLeft,
           child: Icon(
-            widget.data.requesterId != idToUse()
-                ? Icons.attach_money
-                : Icons.edit,
+            widget.data.requesterId != idToUse() ? Icons.attach_money : Icons.edit,
             size: 30,
             color: Theme.of(context).textTheme.bodyText1.color,
           )),
@@ -145,8 +133,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         if (widget.data.requesterId != idToUse()) {
           showDialog(
                   builder: (context) => FutureSuccessDialog(
-                        future: _deleteFulfillShoppingRequest(
-                            widget.data.requestId, context),
+                        future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                         dataTrueText: 'fulfill_scf',
                         onDataTrue: () {
                           _onDeleteFulfillShoppingRequest();
@@ -170,8 +157,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           if (direction == DismissDirection.endToStart) {
             showDialog(
                     builder: (context) => FutureSuccessDialog(
-                          future: _deleteFulfillShoppingRequest(
-                              widget.data.requestId, context),
+                          future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
                           dataTrueText: 'delete_scf',
                           onDataTrue: () {
                             _onDeleteFulfillShoppingRequest();
@@ -180,8 +166,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                     barrierDismissible: false,
                     context: context)
                 .then((value) {
-              if (value ?? false)
-                widget.callback(restoreId: widget.data.requestId);
+              if (value ?? false) widget.callback(restoreId: widget.data.requestId);
             });
           } else if (direction == DismissDirection.startToEnd) {
             showDialog(
@@ -205,10 +190,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
             width: MediaQuery.of(context).size.width,
             decoration: boxDecoration,
             margin: EdgeInsets.only(
-                top: widget.data.reactions.length == 0 ? 5 : 10,
-                bottom: 8,
-                left: 5,
-                right: 5),
+                top: widget.data.reactions.length == 0 ? 5 : 10, bottom: 8, left: 5, right: 5),
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
@@ -226,10 +208,9 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                   showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      builder: (context) => SingleChildScrollView(
-                          child: ShoppingAllInfo(widget.data))).then((val) {
-                    if (val == 'deleted')
-                      widget.callback(restoreId: widget.data.requestId);
+                      builder: (context) =>
+                          SingleChildScrollView(child: ShoppingAllInfo(widget.data))).then((val) {
+                    if (val == 'deleted') widget.callback(restoreId: widget.data.requestId);
                     if (val == 'edited') widget.callback();
                   });
                 },
@@ -255,10 +236,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
                                   ),
                                   Flexible(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Flexible(
                                           child: Text(
@@ -304,12 +283,8 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   Future<bool> _deleteFulfillShoppingRequest(int id, var buildContext) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/requests/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
-      Future.delayed(delayTime())
-          .then((value) => _onDeleteFulfillShoppingRequest());
+      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onDeleteFulfillShoppingRequest());
       return true;
     } catch (_) {
       throw _;

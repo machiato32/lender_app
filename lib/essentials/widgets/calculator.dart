@@ -1,6 +1,7 @@
 import 'dart:collection';
 
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/config.dart';
+import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/stack.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -100,7 +101,7 @@ class _CalculatorState extends State<Calculator> {
     _operators.push(input);
     setState(() {
       if (_numToWrite.length != 0 &&
-          _stuffOperators.contains(_numToWrite[_numToWrite.length - 1])) {
+          _operatorsAndEquals.contains(_numToWrite[_numToWrite.length - 1])) {
         _numToWrite = _numToWrite.substring(0, _numToWrite.length - 1) + input;
       }
       _lastOperator = input;
@@ -233,43 +234,47 @@ class _CalculatorState extends State<Calculator> {
           SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                child: _operators.length != 0 && _isStillNum
-                    ? Text(
-                        '=',
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      )
-                    : Icon(
-                        Icons.copy,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                onPressed: () {
-                  if (_operators.length != 0 && _isStillNum) {
-                    equals();
-                  } else {
-                    Navigator.pop(context);
-                    if (double.tryParse(_numToWrite) != null) {
-                      widget.callback(_numToWrite);
-                    }
-                  }
-                },
+          Ink(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: _operators.length != 0 && _isStillNum
+                  ? LinearGradient(colors: [Colors.grey, Colors.grey])
+                  : AppTheme.gradientFromTheme(currentThemeName),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(100),
+              onTap: _operators.length != 0 && _isStillNum
+                  ? null
+                  : () {
+                      if (_operators.length != 0 && _isStillNum) {
+                        equals();
+                      } else {
+                        Navigator.pop(context);
+                        if (double.tryParse(_numToWrite) != null) {
+                          widget.callback(_numToWrite);
+                        }
+                      }
+                    },
+              child: Icon(
+                Icons.copy,
+                color: _operators.length != 0 && _isStillNum
+                    ? Colors.black
+                    : Theme.of(context).colorScheme.onPrimary,
               ),
-            ],
+            ),
           )
         ],
       ),
     );
   }
 
-  List<String> _firstRow = ['/', '1', '2', '3', 'C'];
-  List<String> _secondRow = ['*', '4', '5', '6', ''];
+  List<String> _firstRow = ['÷', '1', '2', '3', 'C'];
+  List<String> _secondRow = ['×', '4', '5', '6', ''];
   List<String> _thirdRow = ['-', '7', '8', '9', ''];
   List<String> _fourthRow = ['+', '.', '0', 'b', '='];
-  List<String> _stuffOperators = ['+', '-', '/', '*', '='];
+  List<String> _operatorsAndEquals = ['+', '-', '÷', '×', '='];
 
   List<Widget> _generateRow(int index) {
     List row;
@@ -288,26 +293,12 @@ class _CalculatorState extends State<Calculator> {
         break;
     }
     return row.map((e) {
-      List<String> operators = [
-        '0',
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '',
-        'C',
-        '='
-      ];
+      List<String> notOperators = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '', 'C', '='];
       Color color, textColor;
       if (_lastOperator == e) {
         color = Theme.of(context).colorScheme.secondary;
         textColor = Theme.of(context).colorScheme.onSecondary;
-      } else if (!operators.contains(e)) {
+      } else if (!notOperators.contains(e)) {
         color = Theme.of(context).colorScheme.secondaryContainer;
         textColor = Theme.of(context).colorScheme.onSecondaryContainer;
       } else if (e == 'C') {
@@ -340,7 +331,7 @@ class _CalculatorState extends State<Calculator> {
                       backspace();
                       return;
                     }
-                    if (_stuffOperators.contains(e)) {
+                    if (_operatorsAndEquals.contains(e)) {
                       if (_isStillNum) {
                         if (e == '=') {
                           equals();
@@ -357,17 +348,14 @@ class _CalculatorState extends State<Calculator> {
                 : null,
             child: Ink(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
+                shape: BoxShape.circle,
                 color: color,
               ),
               child: Center(
                 child: e != 'b'
                     ? Text(
                         e,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            .copyWith(color: textColor),
+                        style: Theme.of(context).textTheme.headlineLarge.copyWith(color: textColor),
                       )
                     : Icon(Icons.backspace, color: textColor),
               ),

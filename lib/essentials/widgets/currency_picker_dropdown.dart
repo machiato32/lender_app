@@ -40,11 +40,6 @@ class _CurrencyPickerDropdownState extends State<CurrencyPickerDropdown> {
       child: DropdownButtonFormField(
         decoration: InputDecoration(
             filled: widget.filled,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
-            ),
-            // isDense: true,
             contentPadding: widget.noContentPadding ? EdgeInsets.only(top: 0) : null),
         elevation: 0,
         isExpanded: true,
@@ -56,7 +51,7 @@ class _CurrencyPickerDropdownState extends State<CurrencyPickerDropdown> {
           });
         },
         value: _defaultCurrencyValue,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
         dropdownColor: ElevationOverlay.applySurfaceTint(
             widget.dropdownColor ?? Theme.of(context).colorScheme.surface,
             Theme.of(context).colorScheme.surfaceTint,

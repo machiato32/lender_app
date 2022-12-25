@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math';
 
-import '../group_objects.dart';
+import '../models.dart';
 
 class MemberChips extends StatefulWidget {
   final bool allowMultiple;
@@ -14,15 +14,17 @@ class MemberChips extends StatefulWidget {
   final ValueChanged<List<Member>> membersChanged;
   final bool showDivisionDialog;
   final Function getMaxAmount;
-  final Function percentagesChanged;
+  final Function customAmountsChanged;
+  final String selectedCurrency;
   const MemberChips({
     @required this.allowMultiple,
     @required this.allMembers,
     @required this.membersChanged,
     @required this.membersChosen,
+    this.selectedCurrency,
     this.showDivisionDialog = false,
     this.getMaxAmount,
-    this.percentagesChanged,
+    this.customAmountsChanged,
   });
 
   @override
@@ -31,49 +33,25 @@ class MemberChips extends StatefulWidget {
 
 class _MemberChipsState extends State<MemberChips> {
   List<Member> membersChosen = [];
-  Map<Member, double> customValues = {};
-  Map<Member, double> percentages = {};
+  Map<Member, double> customAmounts = {};
 
   double getInitialValue(Member member, double maxMoney) {
-    if (customValues.containsKey(member)) {
-      return customValues[member];
+    if (customAmounts.containsKey(member)) {
+      return customAmounts[member];
     } else {
       double sumCustom = 0;
-      customValues.values.forEach((element) => sumCustom += element);
-      return (maxMoney - sumCustom) / (membersChosen.length - customValues.length);
+      customAmounts.values.forEach((element) => sumCustom += element);
+      return (maxMoney - sumCustom) / (membersChosen.length - customAmounts.length);
     }
   }
 
   double maxWithoutCustom(Member member, double maxMoney) {
     double sumCustom = 0;
-    customValues.values.forEach((element) => sumCustom += element);
-    if (customValues.containsKey(member)) {
-      return maxMoney - sumCustom + customValues[member];
+    customAmounts.values.forEach((element) => sumCustom += element);
+    if (customAmounts.containsKey(member)) {
+      return maxMoney - sumCustom + customAmounts[member];
     }
     return maxMoney - sumCustom;
-  }
-
-  void calculatePercentages() {
-    double maxAmount = widget.getMaxAmount();
-    if (maxAmount == 0 || membersChosen.length == 0) {
-      percentages.clear();
-    } else {
-      int nonCustom = membersChosen.length - customValues.length;
-      double sumCustom = 0;
-      customValues.values.forEach((element) => sumCustom += element);
-      double amountWithoutCustom = maxAmount - sumCustom;
-      percentages.clear();
-      for (Member member in membersChosen) {
-        if (customValues.containsKey(member)) {
-          percentages[member] = customValues[member] / maxAmount;
-        } else {
-          percentages[member] = amountWithoutCustom / nonCustom / maxAmount;
-        }
-      }
-    }
-    if (widget.percentagesChanged != null) {
-      widget.percentagesChanged(percentages);
-    }
   }
 
   @override
@@ -92,14 +70,13 @@ class _MemberChipsState extends State<MemberChips> {
   Widget build(BuildContext context) {
     if (widget.showDivisionDialog) {
       if (membersChosen.length == 0) {
-        customValues.clear();
+        customAmounts.clear();
       }
-      calculatePercentages();
       double maxMoney = widget.getMaxAmount() * 1.0;
       bool someoneReset = false;
       for (Member member in membersChosen) {
-        if (customValues.containsKey(member) && customValues[member] > maxMoney) {
-          customValues.remove(member);
+        if (customAmounts.containsKey(member) && customAmounts[member] > maxMoney) {
+          customAmounts.remove(member);
           someoneReset = true;
         }
       }
@@ -107,9 +84,9 @@ class _MemberChipsState extends State<MemberChips> {
         Fluttertoast.showToast(msg: 'custom_above_amount_toast'.tr());
       }
       double sumCustom = 0;
-      customValues.values.forEach((element) => sumCustom += element);
+      customAmounts.values.forEach((element) => sumCustom += element);
       if (sumCustom > maxMoney) {
-        customValues.clear();
+        customAmounts.clear();
         Fluttertoast.showToast(msg: 'sum_above_amount_toast'.tr());
       }
     }
@@ -121,8 +98,8 @@ class _MemberChipsState extends State<MemberChips> {
       children: widget.allMembers.map<Widget>(
         (Member member) {
           double fillRatio;
-          Color selectedColor = Theme.of(context).colorScheme.secondaryContainer;
-          Color selectedFontColor = Theme.of(context).colorScheme.onSecondaryContainer;
+          Color selectedColor = Theme.of(context).colorScheme.tertiaryContainer;
+          Color selectedFontColor = Theme.of(context).colorScheme.onTertiaryContainer;
           if (widget.showDivisionDialog) {
             double maxMoney = widget.getMaxAmount();
             fillRatio = getInitialValue(member, maxMoney);
@@ -137,14 +114,13 @@ class _MemberChipsState extends State<MemberChips> {
             if (!membersChosen.contains(member)) {
               fillRatio = 0;
             }
-            if (customValues.containsKey(member)) {
-              selectedColor = Theme.of(context).colorScheme.tertiaryContainer;
-              selectedFontColor = Theme.of(context).colorScheme.onTertiaryContainer;
+            if (customAmounts.containsKey(member)) {
+              selectedColor = Theme.of(context).colorScheme.primaryContainer;
+              selectedFontColor = Theme.of(context).colorScheme.onPrimaryContainer;
             }
           } else {
             fillRatio = membersChosen.contains(member) ? 1 : 0;
           }
-
           return CustomChoiceChip(
             member: member,
             selected: membersChosen.contains(member),
@@ -154,13 +130,16 @@ class _MemberChipsState extends State<MemberChips> {
             notSelectedFontColor: Theme.of(context).colorScheme.onSurface,
             fillRatio: fillRatio * 1.0,
             onMemberChosen: (selected) {
+              if (widget.customAmountsChanged != null) {
+                widget.customAmountsChanged(customAmounts);
+              }
               setState(() {
                 if (widget.allowMultiple) {
                   if (selected) {
                     membersChosen.add(member);
                   } else {
                     membersChosen.remove(member);
-                    customValues.remove(member);
+                    customAmounts.remove(member);
                   }
                 } else {
                   if (selected) {
@@ -168,7 +147,7 @@ class _MemberChipsState extends State<MemberChips> {
                     membersChosen.add(member);
                   } else {
                     membersChosen.clear();
-                    customValues.clear();
+                    customAmounts.clear();
                   }
                 }
                 widget.membersChanged(membersChosen);
@@ -188,8 +167,8 @@ class _MemberChipsState extends State<MemberChips> {
                       Fluttertoast.showToast(msg: 'first_give_amount_toast'.tr());
                       return;
                     }
-                    if (!customValues.containsKey(member) &&
-                        membersChosen.length - customValues.length == 1) {
+                    if (!customAmounts.containsKey(member) &&
+                        membersChosen.length - customAmounts.length == 1) {
                       Fluttertoast.showToast(msg: 'cant_add_custom_amount_toast'.tr());
                       return;
                     }
@@ -203,7 +182,8 @@ class _MemberChipsState extends State<MemberChips> {
                       context: context,
                       builder: (context) {
                         return CustomAmountDialog(
-                          alreadyCustom: customValues.containsKey(member),
+                          currency: widget.selectedCurrency,
+                          alreadyCustom: customAmounts.containsKey(member),
                           maxMoney: maxMoney,
                           initialValue: initialValue,
                           maxValue: maxValue,
@@ -213,13 +193,15 @@ class _MemberChipsState extends State<MemberChips> {
                       setState(() {
                         if (value != null) {
                           if (value == -1) {
-                            customValues.remove(member);
+                            customAmounts.remove(member);
                             return;
                           }
-                          customValues[member] = value;
+                          customAmounts[member] = value;
                         }
                       });
+                      widget.customAmountsChanged(customAmounts);
                     });
+                    widget.customAmountsChanged(customAmounts);
                   },
           );
         },

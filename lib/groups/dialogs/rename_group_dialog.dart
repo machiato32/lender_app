@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../../essentials/http_handler.dart';
+import '../../essentials/validation_rules.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
 import '../main_group_page.dart';
@@ -25,10 +26,8 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
     try {
       Map<String, dynamic> body = {"name": groupName};
 
-      http.Response response = await httpPut(
-          uri: '/groups/' + currentGroupId.toString(),
-          context: context,
-          body: body);
+      http.Response response =
+          await httpPut(uri: '/groups/' + currentGroupId.toString(), context: context, body: body);
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       saveGroupName(decoded['group_name']);
@@ -40,8 +39,8 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
   }
 
   void _onUpdateGroupName() {
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
     _groupNameController.text = '';
     clearGroupCache();
     deleteCache(uri: generateUri(GetUriKeys.groups));
@@ -59,8 +58,10 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
             children: <Widget>[
               Text(
                 'rename_group'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               SizedBox(
                 height: 10,
@@ -68,15 +69,10 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 1) {
-                      return 'minimal_length'.tr(args: ['1']);
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateTextField({
+                    isEmpty: [value.trim()],
+                    minimalLength: [value.trim(), 1],
+                  }),
                   controller: _groupNameController,
                   decoration: InputDecoration(
                     hintText: 'new_name'.tr(),

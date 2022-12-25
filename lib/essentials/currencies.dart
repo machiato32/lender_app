@@ -21,7 +21,10 @@ extension Money on double {
     if (fromCurrency == toCurrency) {
       return this;
     }
-    return this / 400;
+    if (currencies[toCurrency]["rate"] == null || currencies[fromCurrency]["rate"] == null) {
+      return this;
+    }
+    return this * currencies[toCurrency]["rate"] / currencies[fromCurrency]["rate"];
   }
 }
 

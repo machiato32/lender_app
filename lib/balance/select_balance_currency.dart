@@ -1,8 +1,8 @@
-import 'package:csocsort_szamla/balance/tab.dart';
 import 'package:csocsort_szamla/essentials/widgets/currency_picker_dropdown.dart';
 import 'package:flutter/material.dart';
 
 import '../config.dart';
+import '../essentials/app_theme.dart';
 
 class SelectBalanceCurrency extends StatefulWidget {
   final String selectedCurrency;
@@ -22,19 +22,34 @@ class _SelectBalanceCurrencyState extends State<SelectBalanceCurrency> {
   }
 
   @override
+  void didUpdateWidget(covariant SelectBalanceCurrency oldWidget) {
+    _selectedCurrency = widget.selectedCurrency;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        CustomTab(
+        InkWell(
+          borderRadius: BorderRadius.circular(12),
           onDoubleTap: () {
-            setState(() {
-              _selectedCurrency = currentGroupCurrency;
-            });
-            widget.onCurrencyChange(currentGroupCurrency);
+            _selectedCurrency = currentGroupCurrency;
+            widget.onCurrencyChange(_selectedCurrency);
           },
-          selected: widget.selectedCurrency != currentGroupCurrency,
-          child: Container(
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: _selectedCurrency != currentGroupCurrency
+                  ? AppTheme.gradientFromTheme(currentThemeName, useTertiaryContainer: true)
+                  : LinearGradient(colors: [
+                      ElevationOverlay.applyOverlay(
+                          context, Theme.of(context).colorScheme.surface, 10),
+                      ElevationOverlay.applyOverlay(
+                          context, Theme.of(context).colorScheme.surface, 10)
+                    ]),
+            ),
             width: 80,
             child: CurrencyPickerDropdown(
               currencyChanged: (newCurrency) {
@@ -46,10 +61,10 @@ class _SelectBalanceCurrencyState extends State<SelectBalanceCurrency> {
               noContentPadding: true,
               showSymbol: false,
               textColor: widget.selectedCurrency != currentGroupCurrency
-                  ? Theme.of(context).colorScheme.onPrimary
+                  ? Theme.of(context).colorScheme.onTertiaryContainer
                   : null,
               dropdownColor: widget.selectedCurrency != currentGroupCurrency
-                  ? Theme.of(context).colorScheme.primary
+                  ? Theme.of(context).colorScheme.tertiaryContainer
                   : null,
             ),
           ),

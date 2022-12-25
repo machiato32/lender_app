@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../../config.dart';
 import '../../essentials/http_handler.dart';
+import '../../essentials/validation_rules.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
 import '../main_group_page.dart';
@@ -20,14 +21,9 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
   var _nicknameFormKey = GlobalKey<FormState>();
   Future<bool> _addGuest(String username) async {
     try {
-      Map<String, dynamic> body = {
-        "language": context.locale.languageCode,
-        "username": username
-      };
+      Map<String, dynamic> body = {"language": context.locale.languageCode, "username": username};
       await httpPost(
-          uri: '/groups/' + currentGroupId.toString() + '/add_guest',
-          context: context,
-          body: body);
+          uri: '/groups/' + currentGroupId.toString() + '/add_guest', context: context, body: body);
       Future.delayed(delayTime()).then((value) => _onAddGuest());
       return true;
     } catch (_) {
@@ -37,8 +33,8 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
 
   Future<void> _onAddGuest() async {
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
   }
 
   @override
@@ -66,15 +62,10 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'field_empty'.tr();
-                    }
-                    if (value.length < 1) {
-                      return 'minimal_length'.tr(args: ['1']);
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateTextField({
+                    isEmpty: [value.trim()],
+                    minimalLength: [value.trim(), 1],
+                  }),
                   controller: _nicknameController,
                   decoration: InputDecoration(
                     hintText: 'nickname'.tr(),
@@ -82,10 +73,6 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
                     prefixIcon: Icon(
                       Icons.account_circle,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [
@@ -102,11 +89,12 @@ class _AddGuestDialogState extends State<AddGuestDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                    onPressed: _buttonPush,
-                    child: Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    )),
+                  onPressed: _buttonPush,
+                  child: Icon(
+                    Icons.check,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
               ],
             ),
           ],

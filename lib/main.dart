@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
+import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/version_not_supported_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
@@ -39,8 +41,7 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -92,20 +93,20 @@ Future onSelectNotification(String payload) async {
         if (details == 'payment') {
           selectedIndex = 1;
         }
-        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-            builder: (context) =>
-                MainPage(selectedHistoryIndex: selectedIndex)));
+        getIt.get<NavigationService>().navigateToAnyadForce(
+            MaterialPageRoute(builder: (context) => MainPage(selectedHistoryIndex: selectedIndex)));
       } else if (page == 'shopping') {
         int selectedTab = 1;
-        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-            builder: (context) => MainPage(selectedIndex: selectedTab)));
-      } else if (page == 'store') {
         getIt.get<NavigationService>().navigateToAnyadForce(
-            MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+            MaterialPageRoute(builder: (context) => MainPage(selectedIndex: selectedTab)));
+      } else if (page == 'store') {
+        getIt
+            .get<NavigationService>()
+            .navigateToAnyadForce(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
       } else if (page == 'group_settings') {
         int selectedTab = 2;
-        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-            builder: (context) => MainPage(selectedIndex: selectedTab)));
+        getIt.get<NavigationService>().navigateToAnyadForce(
+            MaterialPageRoute(builder: (context) => MainPage(selectedIndex: selectedTab)));
       }
     }
   } catch (e) {
@@ -158,12 +159,7 @@ void main() async {
           initURL: initURL,
         ),
       ),
-      supportedLocales: [
-        Locale('en'),
-        Locale('de'),
-        Locale('it'),
-        Locale('hu')
-      ],
+      supportedLocales: [Locale('en'), Locale('de'), Locale('it'), Locale('hu')],
       path: 'assets/translations',
       fallbackLocale: Locale('en'),
       useOnlyLangCode: true,
@@ -197,9 +193,8 @@ class _LenderAppState extends State<LenderApp> {
       setState(() {
         if (currentUserId != null) {
           getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(
-              builder: (context) => JoinGroup(
-                  inviteURL: _link,
-                  fromAuth: (currentGroupId == null) ? true : false)));
+              builder: (context) =>
+                  JoinGroup(inviteURL: _link, fromAuth: (currentGroupId == null) ? true : false)));
         } else {
           getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(
               builder: (context) => LoginOrRegisterPage(
@@ -212,20 +207,16 @@ class _LenderAppState extends State<LenderApp> {
     });
   }
 
-  void _createNotificationChannels(
-      String groupId, List<String> channels) async {
+  void _createNotificationChannels(String groupId, List<String> channels) async {
     AndroidNotificationChannelGroup androidNotificationChannelGroup =
-        AndroidNotificationChannelGroup(
-            groupId, (groupId + '_notification').tr());
+        AndroidNotificationChannelGroup(groupId, (groupId + '_notification').tr());
     flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         .createNotificationChannelGroup(androidNotificationChannelGroup);
 
     for (String channel in channels) {
       flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           .createNotificationChannel(AndroidNotificationChannel(
             channel,
             (channel + '_notification').tr(),
@@ -236,8 +227,7 @@ class _LenderAppState extends State<LenderApp> {
   }
 
   Future<void> setupInitialMessage() async {
-    RemoteMessage initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    RemoteMessage initialMessage = await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       onSelectNotification(initialMessage.data['payload']);
@@ -297,12 +287,10 @@ class _LenderAppState extends State<LenderApp> {
       });
     }
     if (isFirebasePlatformEnabled) {
-      var initializationSettingsAndroid =
-          new AndroidInitializationSettings('@drawable/dodo_white');
+      var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo_white');
       var initializationSettingsIOS = new IOSInitializationSettings();
       var initializationSettings = new InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS);
+          android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
       flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
       flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -312,17 +300,15 @@ class _LenderAppState extends State<LenderApp> {
       _link = widget.initURL;
       Future.delayed(Duration(seconds: 1)).then((value) {
         Future.delayed(Duration(seconds: 2)).then((value) {
+          _createNotificationChannels('group_system', ['other', 'group_update']);
           _createNotificationChannels(
-              'group_system', ['other', 'group_update']);
-          _createNotificationChannels('purchase',
-              ['purchase_created', 'purchase_modified', 'purchase_deleted']);
-          _createNotificationChannels('payment',
-              ['payment_created', 'payment_modified', 'payment_deleted']);
-          _createNotificationChannels('shopping',
-              ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
+              'purchase', ['purchase_created', 'purchase_modified', 'purchase_deleted']);
+          _createNotificationChannels(
+              'payment', ['payment_created', 'payment_modified', 'payment_deleted']);
+          _createNotificationChannels(
+              'shopping', ['shopping_created', 'shopping_fulfilled', 'shopping_shop']);
           flutterLocalNotificationsPlugin
-              .resolvePlatformSpecificImplementation<
-                  AndroidFlutterLocalNotificationsPlugin>()
+              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
               .requestPermission();
         });
 
@@ -333,31 +319,25 @@ class _LenderAppState extends State<LenderApp> {
           print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
               decoded['channel_id'], //only this is needed
-              (decoded['channel_id'] +
-                  '_notification'), // these don't do anything
-              channelDescription:
-                  (decoded['channel_id'] + '_notification_explanation'),
+              (decoded['channel_id'] + '_notification'), // these don't do anything
+              channelDescription: (decoded['channel_id'] + '_notification_explanation'),
               styleInformation: BigTextStyleInformation(''));
-          var iOSPlatformChannelSpecifics =
-              new IOSNotificationDetails(presentSound: false);
+          var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
           var platformChannelSpecifics = new NotificationDetails(
-              android: androidPlatformChannelSpecifics,
-              iOS: iOSPlatformChannelSpecifics);
-          flutterLocalNotificationsPlugin.show(
-              int.parse(message.data['id']) ?? 0,
-              message.notification.title,
-              message.notification.body,
-              platformChannelSpecifics,
+              android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+          flutterLocalNotificationsPlugin.show(int.parse(message.data['id']) ?? 0,
+              message.notification.title, message.notification.body, platformChannelSpecifics,
               payload: message.data['payload']);
         });
         FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
           onSelectNotification(message.data['payload']);
         });
-        if (currentUserId != null) {
-          _getUserData();
-        }
       });
     }
+    if (currentUserId != null) {
+      _getUserData();
+    }
+    _getExchangeRates();
     _supportedVersion().then((value) {
       if (!(value ?? true)) {
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
@@ -367,15 +347,32 @@ class _LenderAppState extends State<LenderApp> {
     });
   }
 
+  Future<void> _getExchangeRates() async {
+    try {
+      Map<String, String> header = {
+        "Content-Type": "application/json",
+      };
+      http.Response response = await http
+          .get(Uri.parse((useTest ? TEST_URL : APP_URL) + '/currencies'), headers: header);
+      Map<String, dynamic> decoded = jsonDecode(response.body);
+      for (String currency in (decoded["rates"] as LinkedHashMap<String, dynamic>).keys) {
+        if (currencies.containsKey(currency)) {
+          currencies[currency]["rate"] = decoded["rates"][currency];
+        }
+      }
+    } catch (_) {
+      throw _;
+    }
+  }
+
   Future<bool> _supportedVersion() async {
     try {
       Map<String, String> header = {
         "Content-Type": "application/json",
       };
       http.Response response = await http.get(
-          Uri.parse((useTest ? TEST_URL : APP_URL) +
-              '/supported?version=' +
-              currentVersion.toString()),
+          Uri.parse(
+              (useTest ? TEST_URL : APP_URL) + '/supported?version=' + currentVersion.toString()),
           headers: header);
       bool decoded = jsonDecode(response.body);
       return decoded;
@@ -390,24 +387,21 @@ class _LenderAppState extends State<LenderApp> {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
       };
-      http.Response response = await http.get(
-          Uri.parse((useTest ? TEST_URL : APP_URL) + '/user'),
-          headers: header);
+      http.Response response =
+          await http.get(Uri.parse((useTest ? TEST_URL : APP_URL) + '/user'), headers: header);
       var decoded = jsonDecode(response.body);
       showAds = decoded['data']['ad_free'] == 0;
       useGradients = decoded['data']['gradients_enabled'] == 1;
       personalisedAds = decoded['data']['personalised_ads'] == 1;
       trialVersion = decoded['data']['trial'] == 1;
-      if (currentGroupId == null &&
-          decoded['data']['last_active_group'] != null) {
+      if (currentGroupId == null && decoded['data']['last_active_group'] != null) {
         currentGroupId = decoded['data']['last_active_group'];
         getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
               builder: (context) => MainPage(),
             ));
       }
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      if (!useGradients &&
-          preferences.getString('theme').contains('Gradient')) {
+      if (!useGradients && preferences.getString('theme').contains('Gradient')) {
         preferences.setString('theme', 'greenLightTheme');
       }
     } catch (_) {
@@ -426,8 +420,7 @@ class _LenderAppState extends State<LenderApp> {
   Widget build(BuildContext context) {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
-        return DynamicColorBuilder(
-            builder: (ColorScheme lightDynamic, ColorScheme darkDynamic) {
+        return DynamicColorBuilder(builder: (ColorScheme lightDynamic, ColorScheme darkDynamic) {
           if (lightDynamic != null && !_dynamicColorLoaded) {
             AppTheme.addDynamicThemes(lightDynamic, darkDynamic);
             appState.updateThemeNoNotify(widget.themeName);

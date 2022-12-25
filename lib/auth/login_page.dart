@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:csocsort_szamla/auth/forgot_password_dialog.dart';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/validation_rules.dart';
 import '../groups/main_group_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,8 +26,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _usernameController =
-      TextEditingController(text: currentUsername ?? '');
+  TextEditingController _usernameController = TextEditingController(text: currentUsername ?? '');
   TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -50,59 +50,35 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(left: 20, right: 20),
                 shrinkWrap: true,
                 children: <Widget>[
-                  Card(
-                    margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextFormField(
-                      validator: (value) {
-                        value = value.trim();
-                        if (value.isEmpty) {
-                          return 'field_empty'.tr();
-                        }
-                        if (value.length < 3) {
-                          return 'minimal_length'.tr(args: ['3']);
-                        }
-                        return null;
-                      },
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        prefixIcon: Icon(
-                          Icons.account_circle,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'username'.tr(),
+                  TextFormField(
+                    validator: (value) => validateTextField({
+                      isEmpty: [value],
+                      minimalLength: [value, 3],
+                    }),
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.account_circle,
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                        LengthLimitingTextInputFormatter(15),
-                      ],
+                      hintText: 'username'.tr(),
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
+                      LengthLimitingTextInputFormatter(15),
+                    ],
                   ),
                   SizedBox(
                     height: 30,
                   ),
                   TextFormField(
-                    validator: (value) {
-                      if (value.trim().isEmpty) {
-                        return 'field_empty'.tr();
-                      }
-                      return null;
-                    },
+                    validator: (value) => validateTextField({
+                      isEmpty: [value],
+                    }),
                     controller: _passwordController,
                     decoration: InputDecoration(
                       hintText: 'password'.tr(),
-                      filled: true,
                       prefixIcon: Icon(
                         Icons.password,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
                       ),
                     ),
                     obscureText: true,
@@ -120,9 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: Theme.of(context)
                               .textTheme
                               .labelLarge
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.primary)),
+                              .copyWith(color: Theme.of(context).colorScheme.primary)),
                       onPressed: () async {
                         await showDialog(
                           context: context,
@@ -170,8 +144,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _selectGroup(int lastActiveGroup) async {
     try {
-      http.Response response =
-          await httpGet(uri: generateUri(GetUriKeys.groups), context: context);
+      http.Response response = await httpGet(uri: generateUri(GetUriKeys.groups), context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Group> groups = [];
       for (var group in decoded['data']) {
@@ -185,13 +158,8 @@ class _LoginPageState extends State<LoginPage> {
         usersGroupIds = groups.map<int>((group) => group.groupId).toList();
         saveUsersGroups();
         saveUsersGroupIds();
-        if (groups
-                .where((group) => group.groupId == lastActiveGroup)
-                .toList()
-                .length !=
-            0) {
-          Group currentGroup =
-              groups.firstWhere((group) => group.groupId == lastActiveGroup);
+        if (groups.where((group) => group.groupId == lastActiveGroup).toList().length != 0) {
+          Group currentGroup = groups.firstWhere((group) => group.groupId == lastActiveGroup);
           saveGroupName(currentGroup.groupName);
           saveGroupId(lastActiveGroup);
           saveGroupCurrency(currentGroup.groupCurrency);
@@ -213,8 +181,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onSelectGroupTrue() {
     if (widget.inviteURL == null) {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
     } else {
       Navigator.pushAndRemoveUntil(
           context,
@@ -251,10 +219,8 @@ class _LoginPageState extends State<LoginPage> {
       };
       Map<String, String> header = {"Content-Type": "application/json"};
       String bodyEncoded = jsonEncode(body);
-      http.Response response = await http.post(
-          Uri.parse((useTest ? TEST_URL : APP_URL) + '/login'),
-          headers: header,
-          body: bodyEncoded);
+      http.Response response = await http.post(Uri.parse((useTest ? TEST_URL : APP_URL) + '/login'),
+          headers: header, body: bodyEncoded);
       if (response.statusCode == 200) {
         Map<String, dynamic> decoded = jsonDecode(response.body);
         showAds = decoded['data']['ad_free'] == 0;

@@ -2,21 +2,19 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-// import 'package:csocsort_szamla/essentials/widgets/bottom_sheet_custom.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-import '../essentials/app_theme.dart';
+import '../essentials/validation_rules.dart';
 import '../essentials/widgets/error_message.dart';
 import '../essentials/widgets/gradient_button.dart';
 
@@ -99,10 +97,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             'payment'.tr(),
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          // flexibleSpace: Container(
-          //   decoration: BoxDecoration(
-          //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-          // ),
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -142,14 +136,9 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               TextFormField(
                                 decoration: InputDecoration(
                                   hintText: 'note'.tr(),
-                                  filled: true,
                                   prefixIcon: Icon(
                                     Icons.note,
                                     color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                    borderSide: BorderSide.none,
                                   ),
                                 ),
                                 inputFormatters: [LengthLimitingTextInputFormatter(50)],
@@ -162,33 +151,36 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               Stack(
                                 children: [
                                   TextFormField(
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'field_empty'.tr();
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'not_valid_num'.tr();
-                                      }
-                                      if (double.parse(value) < 0) {
-                                        return 'not_valid_num'.tr();
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) => validateTextField({
+                                      isEmpty: [value.trim()],
+                                      notValidNumber: [value.trim()],
+                                    }),
                                     controller: _amountController,
                                     decoration: InputDecoration(
                                       hintText: 'amount'.tr(),
-                                      filled: true,
                                       prefixIcon: Icon(
                                         Icons.pin,
                                         color: Theme.of(context).colorScheme.onSurface,
                                       ),
-                                      suffixIcon: Icon(
-                                        Icons.calculate,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: BorderSide.none,
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.calculate,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) {
+                                                return SingleChildScrollView(child: Calculator(
+                                                  callback: (String fromCalc) {
+                                                    setState(() {
+                                                      _amountController.text = fromCalc;
+                                                    });
+                                                  },
+                                                ));
+                                              });
+                                        },
                                       ),
                                     ),
                                     keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -196,32 +188,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                                       FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
                                     ],
                                     onFieldSubmitted: (value) => _buttonPush(),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 9),
-                                    child: Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: IconButton(
-                                          splashRadius: 0.1,
-                                          icon: Icon(
-                                            Icons.calculate,
-                                            color: Colors.transparent,
-                                          ),
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                isScrollControlled: true,
-                                                context: context,
-                                                builder: (context) {
-                                                  return SingleChildScrollView(child: Calculator(
-                                                    callback: (String fromCalc) {
-                                                      setState(() {
-                                                        _amountController.text = fromCalc;
-                                                      });
-                                                    },
-                                                  ));
-                                                });
-                                          }),
-                                    ),
                                   ),
                                 ],
                               ),

@@ -18,10 +18,10 @@ import 'invitation.dart';
 class GroupSettings extends StatefulWidget {
   final bool bigScreen;
   final double height;
+  final double width;
   final GlobalKey<State> bannerKey;
   final String scrollTo;
-  GroupSettings(
-      {this.bannerKey, this.scrollTo, this.bigScreen = false, this.height});
+  GroupSettings({this.bannerKey, this.scrollTo, this.bigScreen = false, this.height, this.width});
   @override
   _GroupSettingState createState() => _GroupSettingState();
 }
@@ -34,8 +34,7 @@ class _GroupSettingState extends State<GroupSettings> {
   Future<bool> _getHasGuests() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupHasGuests,
-              args: [currentGroupId.toString()]),
+          uri: generateUri(GetUriKeys.groupHasGuests, args: [currentGroupId.toString()]),
           context: context);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       // print(decoded);
@@ -48,9 +47,7 @@ class _GroupSettingState extends State<GroupSettings> {
   Future<bool> _getIsUserAdmin() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupMember),
-          context: context,
-          useCache: false);
+          uri: generateUri(GetUriKeys.groupMember), context: context, useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data']['is_admin'] == 1;
     } catch (_) {
@@ -78,7 +75,7 @@ class _GroupSettingState extends State<GroupSettings> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = widget.width ?? MediaQuery.of(context).size.width;
     double height = widget.height ?? MediaQuery.of(context).size.height;
     return RefreshIndicator(
       onRefresh: () async {
@@ -122,11 +119,8 @@ class _GroupSettingState extends State<GroupSettings> {
                                   aspectRatio: width / 2 / height,
                                   child: ListView(
                                     controller: ScrollController(),
-                                    children: columnWidgets.reversed
-                                        .take(2)
-                                        .toList()
-                                        .reversed
-                                        .toList(),
+                                    children:
+                                        columnWidgets.reversed.take(2).toList().reversed.toList(),
                                   ),
                                 ),
                               ])
@@ -176,8 +170,10 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                   child: Text(
                     'rename_group'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -200,14 +196,13 @@ class _GroupSettingState extends State<GroupSettings> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GradientButton(
+                      useSecondary: true,
                       child: Icon(
                         Icons.edit,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                       onPressed: () {
-                        showDialog(
-                            builder: (context) => RenameGroupDialog(),
-                            context: context);
+                        showDialog(builder: (context) => RenameGroupDialog(), context: context);
                       },
                     ),
                   ],
@@ -229,9 +224,7 @@ class _GroupSettingState extends State<GroupSettings> {
                 return Column(
                   key: guestsKey,
                   children: [
-                    ManageGuests(
-                        hasGuests: hasGuestsSnapshot.data,
-                        bannerKey: widget.bannerKey),
+                    ManageGuests(hasGuests: hasGuestsSnapshot.data, bannerKey: widget.bannerKey),
                   ],
                 );
               } else {
@@ -261,8 +254,10 @@ class _GroupSettingState extends State<GroupSettings> {
                 Center(
                   child: Text(
                     'change_group_currency'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSurface),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -285,14 +280,14 @@ class _GroupSettingState extends State<GroupSettings> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GradientButton(
+                      useSecondary: true,
                       child: Icon(
                         Icons.monetization_on,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                       onPressed: () {
                         showDialog(
-                            builder: (context) => ChangeGroupCurrencyDialog(),
-                            context: context);
+                            builder: (context) => ChangeGroupCurrencyDialog(), context: context);
                       },
                     ),
                   ],

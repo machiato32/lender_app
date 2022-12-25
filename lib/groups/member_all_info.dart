@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -112,30 +112,31 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
             height: 10,
           ),
           Visibility(
-              visible: widget.isCurrentUserAdmin,
-              child: SwitchListTile(
-                value: widget.member.isAdmin,
-                title: Text(
-                  'Admin',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                ),
-                activeColor: Theme.of(context).colorScheme.secondary,
-                onChanged: (value) {
-                  showDialog(
-                      builder: (context) => FutureSuccessDialog(
-                            future: _changeAdmin(widget.member.memberId, value),
-                            dataTrueText: 'admin_scf',
-                            onDataTrue: () {
-                              _onChangeAdmin();
-                            },
-                          ),
-                      barrierDismissible: false,
-                      context: context);
-                },
-              )),
+            visible: widget.isCurrentUserAdmin,
+            child: SwitchListTile(
+              value: widget.member.isAdmin,
+              title: Text(
+                'Admin',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+              activeColor: Theme.of(context).colorScheme.secondary,
+              onChanged: (value) {
+                showDialog(
+                    builder: (context) => FutureSuccessDialog(
+                          future: _changeAdmin(widget.member.memberId, value),
+                          dataTrueText: 'admin_scf',
+                          onDataTrue: () {
+                            _onChangeAdmin();
+                          },
+                        ),
+                    barrierDismissible: false,
+                    context: context);
+              },
+            ),
+          ),
           Visibility(
             visible: widget.isCurrentUserAdmin || widget.member.memberId == currentUserId,
             child: Row(
@@ -175,6 +176,9 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                 ),
               ],
             ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Visibility(
             visible: widget.isCurrentUserAdmin && widget.member.memberId != currentUserId,

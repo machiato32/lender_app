@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/validation_rules.dart';
 import '../essentials/widgets/error_message.dart';
 import 'shopping_list_entry.dart';
 
@@ -30,8 +31,7 @@ class _ShoppingListState extends State<ShoppingList> {
 
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<ShoppingRequestData>> _getShoppingList(
-      {bool overwriteCache = false}) async {
+  Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
@@ -65,8 +65,7 @@ class _ShoppingListState extends State<ShoppingList> {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      await httpPost(
-          uri: '/requests', context: context, body: body, useGuest: useGuest);
+      await httpPost(uri: '/requests', context: context, body: body, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onPostShoppingRequest());
       return true;
     } catch (_) {
@@ -76,8 +75,7 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _undoDeleteRequest(int id) async {
     try {
-      await httpPost(
-          context: context, uri: '/requests/restore/' + id.toString());
+      await httpPost(context: context, uri: '/requests/restore/' + id.toString());
       Future.delayed(delayTime()).then((value) => _onUndoDeleteRequest());
       return true;
     } catch (_) {
@@ -99,8 +97,8 @@ class _ShoppingListState extends State<ShoppingList> {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         // behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
         // padding: EdgeInsets.all(24),
         duration: Duration(seconds: 3),
         backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -141,8 +139,10 @@ class _ShoppingListState extends State<ShoppingList> {
                     SizedBox(width: 3),
                     Text(
                       'undo'.tr(),
-                      style: Theme.of(context).textTheme.labelLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSecondary),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSecondary),
                     ),
                   ],
                 ),
@@ -229,8 +229,7 @@ class _ShoppingListState extends State<ShoppingList> {
                                   ),
                                   Text(
                                     'nothing_to_show'.tr(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context).textTheme.bodyText1,
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -238,13 +237,11 @@ class _ShoppingListState extends State<ShoppingList> {
                             }
                             return ListView(children: [
                               Container(
-                                transform:
-                                    Matrix4.translationValues(0.0, 0.0, 0.0),
+                                transform: Matrix4.translationValues(0.0, 0.0, 0.0),
                                 child: Padding(
                                   padding: EdgeInsets.all(15),
                                   child: Column(
-                                    children:
-                                        _generateShoppingList(snapshot.data),
+                                    children: _generateShoppingList(snapshot.data),
                                   ),
                                 ),
                               )
@@ -269,18 +266,15 @@ class _ShoppingListState extends State<ShoppingList> {
                 ],
               ),
               Container(
-                height: 260,
+                height: 270,
                 color: Colors.transparent,
                 child: Card(
-                  margin: widget.bigScreen
-                      ? null
-                      : EdgeInsets.only(left: 0, right: 0),
+                  margin: widget.bigScreen ? null : EdgeInsets.only(left: 0, right: 0),
                   shape: widget.bigScreen
                       ? null
                       : RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(30),
-                              bottomRight: Radius.circular(30)),
+                              bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
                         ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -293,9 +287,7 @@ class _ShoppingListState extends State<ShoppingList> {
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface),
+                              .copyWith(color: Theme.of(context).colorScheme.onSurface),
                         )),
                         SizedBox(
                           height: 10,
@@ -306,103 +298,55 @@ class _ShoppingListState extends State<ShoppingList> {
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface),
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
                             textAlign: TextAlign.center,
                           ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Table(
-                            columnWidths: {
-                              0: FlexColumnWidth(),
-                              1: FractionColumnWidth(0.3),
-                            },
-                            defaultVerticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            children: [
-                              TableRow(
-                                children: <Widget>[
-                                  TextFormField(
-                                    validator: (value) {
-                                      value = value.trim();
-                                      if (value.isEmpty) {
-                                        return 'field_empty'.tr();
-                                      }
-                                      if (value.length < 2) {
-                                        return 'minimal_length'.tr(args: ['2']);
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: 'wish'.tr(),
-                                      filled: true,
-                                      prefixIcon: Icon(
-                                        Icons.shopping_cart,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                    ),
-                                    controller: _addRequestController,
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(255)
-                                    ],
-                                    onFieldSubmitted: (value) => _buttonPush(),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GradientButton(
-                                        child: Icon(Icons.add_shopping_cart,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary),
-                                        onPressed: _buttonPush,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                        TextFormField(
+                          validator: (value) => validateTextField({
+                            isEmpty: [value.trim()],
+                            minimalLength: [value.trim(), 2],
+                          }),
+                          decoration: InputDecoration(
+                            hintText: 'wish'.tr(),
+                            prefixIcon: Icon(
+                              Icons.shopping_cart,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.add_shopping_cart,
+                                  color: Theme.of(context).colorScheme.primary),
+                              onPressed: _buttonPush,
+                            ),
+                          ),
+                          controller: _addRequestController,
+                          inputFormatters: [LengthLimitingTextInputFormatter(255)],
+                          onFieldSubmitted: (value) => _buttonPush(),
+                        ),
+                        Flexible(
+                          child: SizedBox(
+                            height: 20,
                           ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            OutlinedButton(
-                              onPressed: () {
-                                showDialog(
-                                  builder: (context) => ImShoppingDialog(),
-                                  context: context,
-                                );
-                              },
-                              child: Text('i_m_shopping'.tr(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
-                          ],
+                        OutlinedButton(
+                          onPressed: () {
+                            showDialog(
+                              builder: (context) => ImShoppingDialog(),
+                              context: context,
+                            );
+                          },
+                          child: Text('i_m_shopping'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  .copyWith(color: Theme.of(context).colorScheme.primary)),
                         ),
                         SizedBox(
                           height: 10,
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -417,10 +361,8 @@ class _ShoppingListState extends State<ShoppingList> {
 
   List<Widget> _generateShoppingList(List<ShoppingRequestData> data) {
     data.sort((e1, e2) {
-      int e2Length =
-          e2.reactions.where((reaction) => reaction.reaction == '❗').length;
-      int e1Length =
-          e1.reactions.where((reaction) => reaction.reaction == '❗').length;
+      int e2Length = e2.reactions.where((reaction) => reaction.reaction == '❗').length;
+      int e1Length = e1.reactions.where((reaction) => reaction.reaction == '❗').length;
       if (e2Length > e1Length) return 1;
       if (e2Length < e1Length) return -1;
       if (e1.updatedAt.isAfter(e2.updatedAt)) return -1;

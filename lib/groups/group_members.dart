@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +23,7 @@ class _GroupMembersState extends State<GroupMembers> {
   Future<List<Member>> _getMembers() async {
     try {
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent,
-              args: [currentGroupId.toString()]),
+          uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
           context: context,
           useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
@@ -32,8 +31,7 @@ class _GroupMembersState extends State<GroupMembers> {
       for (var member in decoded['data']['members']) {
         members.add(Member.fromJson(member));
       }
-      currentMember =
-          members.firstWhere((member) => member.memberId == currentUserId);
+      currentMember = members.firstWhere((member) => member.memberId == currentUserId);
       members.remove(currentMember);
       members.insert(0, currentMember);
       return members;
@@ -94,10 +92,7 @@ class _GroupMembersState extends State<GroupMembers> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                                   textAlign: TextAlign.center,
                                 )),
                               ],
@@ -116,10 +111,7 @@ class _GroupMembersState extends State<GroupMembers> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                                   textAlign: TextAlign.center,
                                 )),
                               ],
@@ -196,17 +188,16 @@ class _MemberEntryState extends State<MemberEntry> {
       mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSecondary);
+              : Theme.of(context).colorScheme.onTertiaryContainer);
       subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSecondary);
+              : Theme.of(context).colorScheme.onTertiaryContainer);
       iconColor = currentThemeName.contains('Gradient')
           ? Theme.of(context).colorScheme.onPrimary
-          : Theme.of(context).colorScheme.onSecondary;
+          : Theme.of(context).colorScheme.onTertiaryContainer;
       boxDecoration = BoxDecoration(
-        gradient:
-            AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
+        gradient: AppTheme.gradientFromTheme(currentThemeName, useTertiaryContainer: true),
         // color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(15),
       );

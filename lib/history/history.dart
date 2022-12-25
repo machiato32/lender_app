@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../essentials/app_theme.dart';
+import '../essentials/models.dart';
 import '../essentials/widgets/error_message.dart';
 import '../essentials/widgets/gradient_button.dart';
 
@@ -24,10 +25,10 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   Future<List<PaymentData>> _payments;
-  Future<List<PurchaseData>> _purchases;
+  Future<List<Purchase>> _purchases;
   TabController _tabController;
   int _selectedIndex;
-  Future<List<PurchaseData>> _getPurchases({bool overwriteCache = false}) async {
+  Future<List<Purchase>> _getPurchases({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
@@ -37,9 +38,9 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           useGuest: useGuest);
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<PurchaseData> purchaseData = [];
+      List<Purchase> purchaseData = [];
       for (var data in decoded) {
-        purchaseData.add(PurchaseData.fromJson(data));
+        purchaseData.add(Purchase.fromJson(data));
       }
       return purchaseData;
     } catch (_) {
@@ -272,19 +273,22 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       GradientButton(
+                                        useSecondary: true,
                                         onPressed: () {
                                           Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => AllHistoryRoute(
-                                                      startingIndex: _tabController.index)));
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AllHistoryRoute(
+                                                  startingIndex: _tabController.index),
+                                            ),
+                                          );
                                         },
                                         child: Row(
                                           children: [
                                             Icon(
                                               Icons.more_horiz,
                                               size: 18,
-                                              color: Theme.of(context).colorScheme.onPrimary,
+                                              color: Theme.of(context).colorScheme.onSecondary,
                                             ),
                                             SizedBox(
                                               width: 8,
@@ -292,7 +296,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                             Text(
                                               'more'.tr(),
                                               style: Theme.of(context).textTheme.button.copyWith(
-                                                  color: Theme.of(context).colorScheme.onPrimary),
+                                                  color: Theme.of(context).colorScheme.onSecondary),
                                             ),
                                             SizedBox(
                                               width: 8,
@@ -330,7 +334,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               padding: EdgeInsets.all(25),
                               child: Text(
                                 'nothing_to_show'.tr(),
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context).textTheme.bodyLarge,
                                 textAlign: TextAlign.center,
                               ),
                             );
@@ -350,6 +354,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GradientButton(
+                                      useSecondary: true,
                                       onPressed: () {
                                         Navigator.push(
                                             context,
@@ -362,7 +367,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                         children: [
                                           Icon(
                                             Icons.more_horiz,
-                                            color: Theme.of(context).colorScheme.onPrimary,
+                                            color: Theme.of(context).colorScheme.onSecondary,
                                           ),
                                           SizedBox(
                                             width: 4,
@@ -370,7 +375,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           Text(
                                             'more'.tr(),
                                             style: Theme.of(context).textTheme.labelLarge.copyWith(
-                                                color: Theme.of(context).colorScheme.onPrimary),
+                                                color: Theme.of(context).colorScheme.onSecondary),
                                           ),
                                         ],
                                       ),
@@ -418,14 +423,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     }).toList();
   }
 
-  List<Widget> _generatePurchases(List<PurchaseData> data) {
+  List<Widget> _generatePurchases(List<Purchase> data) {
     if (data.length > 5) {
       data = data.take(5).toList();
     }
     Function callback = this.callback;
     return data.map((element) {
       return PurchaseEntry(
-        data: element,
+        purchase: element,
         callback: callback,
       );
     }).toList();

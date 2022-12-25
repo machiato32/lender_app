@@ -18,6 +18,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../essentials/validation_rules.dart';
+
 class RegisterAlmostDonePage extends StatefulWidget {
   final String inviteURL;
   final String username;
@@ -73,65 +75,42 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                   Center(
                     child: Text(
                       'just_few_things_left'.tr(),
-                      style: Theme.of(context).textTheme.titleLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Stack(
-                    children: [
-                      TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'field_empty'.tr();
-                          }
-                          if (value.length < 3) {
-                            return 'minimal_length'.tr(args: ['3']);
-                          }
-                          return null;
-                        },
-                        controller: _passwordReminderController,
-                        decoration: InputDecoration(
-                          labelText: 'password_reminder'.tr(),
-                          filled: true,
-                          prefixIcon: Icon(
-                            Icons.search,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.info_outline,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        inputFormatters: [
-                          // FilteringTextInputFormatter.allow(RegExp('[a-z0-9]')),
-                          LengthLimitingTextInputFormatter(50),
-                        ],
+                  TextFormField(
+                    validator: (value) => validateTextField({
+                      isEmpty: [value],
+                      minimalLength: [value, 3],
+                    }),
+                    controller: _passwordReminderController,
+                    decoration: InputDecoration(
+                      hintText: 'password_reminder'.tr(),
+                      prefixIcon: Icon(
+                        Icons.search,
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 9),
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _reminderExplanationController.expanded =
-                                    !_reminderExplanationController.expanded;
-                              });
-                            },
-                            splashRadius: 0.1,
-                            icon: Icon(
-                              Icons.info_outline,
-                              color: Colors.transparent,
-                            ),
-                          ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _reminderExplanationController.expanded =
+                                !_reminderExplanationController.expanded;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                      )
+                      ),
+                    ),
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(50),
                     ],
                   ),
                   SizedBox(
@@ -149,11 +128,8 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                               'reminder_explanation'.tr(),
                               style: Theme.of(context)
                                   .textTheme
-                                  .titleSmall
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
+                                  .bodySmall
+                                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
                             )),
                           ],
                         )),
@@ -165,8 +141,10 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                     children: <Widget>[
                       Text(
                         'your_currency'.tr(),
-                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
                       ),
                       SizedBox(
                         width: 20,
@@ -188,19 +166,13 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                       Flexible(
                         child: InkWell(
                             onTap: () {
-                              launchUrlString(
-                                  'https://policies.google.com/privacy');
+                              launchUrlString('https://policies.google.com/privacy');
                             },
                             child: Text(
                               'personalised_ads'.tr(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  .copyWith(
-                                      decoration: TextDecoration.underline,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
+                              style: Theme.of(context).textTheme.titleSmall.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).colorScheme.onSurface),
                               textAlign: TextAlign.center,
                             )),
                       ),
@@ -226,18 +198,14 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
                         onPressed: () {
                           FocusScope.of(context).unfocus();
                           if (_formKey.currentState.validate()) {
-                            String passwordReminder =
-                                _passwordReminderController.text;
+                            String passwordReminder = _passwordReminderController.text;
                             showDialog(
                               barrierDismissible: false,
                               context: context,
                               builder: (context) {
                                 return FutureSuccessDialog(
-                                  future: _register(
-                                      widget.username,
-                                      widget.password,
-                                      passwordReminder,
-                                      _defaultCurrencyValue),
+                                  future: _register(widget.username, widget.password,
+                                      passwordReminder, _defaultCurrencyValue),
                                   dataTrueText: 'registration_scf',
                                 );
                               },
@@ -267,8 +235,7 @@ class _RegisterAlmostDonePageState extends State<RegisterAlmostDonePage> {
         (r) => false);
   }
 
-  Future<bool> _register(String username, String password, String reminder,
-      String currency) async {
+  Future<bool> _register(String username, String password, String reminder, String currency) async {
     try {
       dynamic token;
       if (!kIsWeb && Platform.isAndroid) {

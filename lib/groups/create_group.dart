@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../essentials/validation_rules.dart';
 import 'main_group_page.dart';
 
 class CreateGroup extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CreateGroupState extends State<CreateGroup> {
       TextEditingController(text: currentUsername[0].toUpperCase() + currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
-  String _defaultCurrencyValue = "EUR";
+  String _defaultCurrencyValue = "EUR"; //TODO: change to users currency
 
   Future<bool> _createGroup(String groupName, String nickname, String currency) async {
     try {
@@ -40,8 +41,8 @@ class _CreateGroupState extends State<CreateGroup> {
       saveGroupId(decoded['group_id']);
       saveGroupCurrency(decoded['currency']);
       if (usersGroups == null) {
-        usersGroups = List<String>();
-        usersGroupIds = List<int>();
+        usersGroups = <String>[];
+        usersGroupIds = <int>[];
       }
       usersGroups.add(decoded['group_name']);
       usersGroupIds.add(decoded['group_id']);
@@ -85,24 +86,14 @@ class _CreateGroupState extends State<CreateGroup> {
                         child: Column(
                           children: [
                             TextFormField(
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                if (value.length < 1) {
-                                  return 'minimal_length'.tr(args: ['1']);
-                                }
-                                return null;
-                              },
+                              validator: (value) => validateTextField({
+                                isEmpty: [value.trim()],
+                                minimalLength: [value.trim(), 1],
+                              }),
                               decoration: InputDecoration(
                                 hintText: 'group_name'.tr(),
-                                filled: true,
                                 prefixIcon: Icon(
                                   Icons.group,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide.none,
                                 ),
                               ),
                               controller: _groupName,
@@ -114,15 +105,10 @@ class _CreateGroupState extends State<CreateGroup> {
                               height: 20,
                             ),
                             TextFormField(
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'field_empty'.tr();
-                                }
-                                if (value.length < 1) {
-                                  return 'minimal_length'.tr(args: ['1']);
-                                }
-                                return null;
-                              },
+                              validator: (value) => validateTextField({
+                                isEmpty: [value.trim()],
+                                minimalLength: [value.trim(), 1],
+                              }),
                               decoration: InputDecoration(
                                 hintText: 'nickname_in_group'.tr(),
                                 labelText: 'nickname_in_group'.tr(),
@@ -131,7 +117,7 @@ class _CreateGroupState extends State<CreateGroup> {
                                   Icons.account_circle,
                                 ),
                                 border: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
                                 ),
                               ),

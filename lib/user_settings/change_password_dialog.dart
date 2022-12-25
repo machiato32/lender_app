@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/essentials/validation_rules.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +22,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   int _index = 0;
   List<TextFormField> textFields = List<TextFormField>();
 
-  Future<bool> _updatePassword(
-      String oldPassword, String newPassword, String reminder) async {
+  Future<bool> _updatePassword(String oldPassword, String newPassword, String reminder) async {
     try {
       Map<String, dynamic> body = {
         'old_password': oldPassword,
@@ -40,29 +40,21 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   }
 
   void _onUpdatePassword() {
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
   }
 
   void initTextFields() {
     textFields = [
       TextFormField(
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'field_empty'.tr();
-          }
-          return null;
-        },
+        validator: (value) => validateTextField({
+          isEmpty: [value]
+        }),
         decoration: InputDecoration(
           hintText: 'old_password'.tr(),
-          filled: true,
           prefixIcon: Icon(
             Icons.password,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
           ),
         ),
         inputFormatters: [
@@ -72,25 +64,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         obscureText: true,
       ),
       TextFormField(
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'field_empty'.tr();
-          }
-          if (value.length < 4) {
-            return 'minimal_length'.tr(args: ['4']);
-          }
-          return null;
-        },
+        validator: (value) => validateTextField({
+          isEmpty: [value],
+          minimalLength: [value, 4],
+        }),
         decoration: InputDecoration(
           hintText: 'new_password'.tr(),
-          filled: true,
           prefixIcon: Icon(
             Icons.password,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
           ),
         ),
         inputFormatters: [
@@ -100,27 +82,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         obscureText: true,
       ),
       TextFormField(
-        validator: (value) {
-          if (value != _newPasswordController.text) {
-            return 'passwords_not_match'.tr();
-          }
-          if (value.isEmpty) {
-            return 'field_empty'.tr();
-          }
-          if (value.length < 4) {
-            return 'minimal_length'.tr(args: ['4']);
-          }
-          return null;
-        },
+        validator: (value) => validateTextField({
+          matchString: [value, _newPasswordController.text],
+          isEmpty: [value],
+          minimalLength: [value, 4],
+        }),
         decoration: InputDecoration(
           hintText: 'new_password_confirm'.tr(),
-          filled: true,
           prefixIcon: Icon(
             Icons.password,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
           ),
         ),
         inputFormatters: [
@@ -130,25 +100,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         obscureText: true,
       ),
       TextFormField(
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'field_empty'.tr();
-          }
-          if (value.length < 3) {
-            return 'minimal_length'.tr(args: ['3']);
-          }
-          return null;
-        },
+        validator: (value) => validateTextField({
+          isEmpty: [value],
+          minimalLength: [value, 3],
+        }),
         controller: _passwordReminderController,
         decoration: InputDecoration(
           hintText: 'password_reminder'.tr(),
-          filled: true,
           prefixIcon: Icon(
             Icons.search,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
           ),
         ),
         inputFormatters: [
@@ -172,8 +132,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             children: <Widget>[
               Text(
                 'change_password'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(

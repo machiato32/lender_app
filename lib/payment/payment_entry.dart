@@ -1,7 +1,7 @@
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
@@ -11,24 +11,26 @@ import 'package:intl/intl.dart';
 
 class PaymentData {
   int paymentId;
-  double amount;
+  double amount, amountOriginalCurrency;
   DateTime updatedAt;
   String payerUsername, payerNickname, takerUsername, takerNickname, note;
   int payerId, takerId;
   List<Reaction> reactions;
 
-  PaymentData(
-      {this.paymentId,
-      this.amount,
-      this.updatedAt,
-      this.payerUsername,
-      this.payerId,
-      this.payerNickname,
-      this.takerUsername,
-      this.takerId,
-      this.takerNickname,
-      this.note,
-      this.reactions});
+  PaymentData({
+    this.paymentId,
+    this.amount,
+    this.amountOriginalCurrency,
+    this.updatedAt,
+    this.payerUsername,
+    this.payerId,
+    this.payerNickname,
+    this.takerUsername,
+    this.takerId,
+    this.takerNickname,
+    this.note,
+    this.reactions,
+  });
 
   factory PaymentData.fromJson(Map<String, dynamic> json) {
     return PaymentData(
@@ -44,9 +46,8 @@ class PaymentData {
         takerUsername: json['taker_username'],
         takerNickname: json['taker_nickname'],
         note: json['note'],
-        reactions: json['reactions']
-            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-            .toList());
+        reactions:
+            json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
   }
 }
 
@@ -73,27 +74,22 @@ class _PaymentEntryState extends State<PaymentEntry> {
 
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
-    Reaction oldReaction = widget.data.reactions.firstWhere(
-        (element) => element.userId == idToUse(),
-        orElse: () => null);
+    Reaction oldReaction = widget.data.reactions
+        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
     bool alreadyReacted = oldReaction != null;
-    bool sameReaction =
-        alreadyReacted ? oldReaction.reaction == reaction : false;
+    bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     } else if (!alreadyReacted) {
       widget.data.reactions.add(Reaction(
-          nickname:
-              idToUse() == currentUserId ? currentUsername : guestNickname,
+          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
           reaction: reaction,
           userId: idToUse()));
       setState(() {});
     } else {
-      widget.data.reactions.add(Reaction(
-          nickname: oldReaction.nickname,
-          reaction: reaction,
-          userId: idToUse()));
+      widget.data.reactions
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -108,24 +104,24 @@ class _PaymentEntryState extends State<PaymentEntry> {
     if (widget.data.payerId == idToUse()) {
       takerName = widget.data.takerNickname;
       amount = widget.data.amount.printMoney(currentGroupCurrency);
-      icon =
-          Icon(Icons.call_made, color: Theme.of(context).colorScheme.onPrimary);
+      icon = Icon(Icons.call_made,
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(currentThemeName),
+        gradient: AppTheme.gradientFromTheme(currentThemeName, usePrimaryContainer: true),
         borderRadius: BorderRadius.circular(15),
-        // color: Theme.of(context).colorScheme.primary,
       );
-      mainTextStyle = Theme.of(context)
-          .textTheme
-          .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
-      subTextStyle = Theme.of(context)
-          .textTheme
-          .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
+      mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
+      subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
     } else {
-      icon = Icon(Icons.call_received,
-          color: Theme.of(context).colorScheme.onSurfaceVariant);
+      icon = Icon(Icons.call_received, color: Theme.of(context).colorScheme.onSurfaceVariant);
 
       mainTextStyle = Theme.of(context)
           .textTheme
@@ -146,10 +142,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
           width: MediaQuery.of(context).size.width,
           decoration: boxDecoration,
           margin: EdgeInsets.only(
-              top: widget.data.reactions.length == 0 ? 0 : 14,
-              bottom: 4,
-              left: 4,
-              right: 4),
+              top: widget.data.reactions.length == 0 ? 0 : 14, bottom: 4, left: 4, right: 4),
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
@@ -171,8 +164,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
                       showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              builder: (context) => SingleChildScrollView(
-                                  child: PaymentAllInfo(widget.data)))
+                              builder: (context) =>
+                                  SingleChildScrollView(child: PaymentAllInfo(widget.data)))
                           .then((returnValue) {
                         if (returnValue == 'deleted')
                           widget.callback(purchase: false, payment: true);

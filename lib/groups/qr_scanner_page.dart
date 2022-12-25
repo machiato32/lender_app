@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../essentials/http_handler.dart';
-import '../../essentials/widgets/future_success_dialog.dart';
+import '../essentials/http_handler.dart';
+import '../essentials/widgets/future_success_dialog.dart';
 
 class QRScannerPage extends StatefulWidget {
   const QRScannerPage();

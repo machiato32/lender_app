@@ -24,7 +24,7 @@ class AppTheme {
       Brightness.dark,
     ),
     'greenLightTheme': generateThemeData(
-      Colors.green,
+      Colors.lightGreen,
       Brightness.light,
     ),
     'greenDarkTheme': generateThemeData(
@@ -119,12 +119,10 @@ class AppTheme {
     ),
     'whiteGradientDarkTheme':
         generateThemeData(Color.fromARGB(255, 253, 251, 251), Brightness.dark),
-    'rainbowGradientLightTheme': generateThemeData(
-        Colors.purple, Brightness.light,
-        themeName: 'rainbowGradientLightTheme'),
-    'rainbowGradientDarkTheme': generateThemeData(
-        Colors.purple, Brightness.dark,
-        themeName: 'rainbowGradientDarkTheme'),
+    'rainbowGradientLightTheme':
+        generateThemeData(Colors.purple, Brightness.light, themeName: 'rainbowGradientLightTheme'),
+    'rainbowGradientDarkTheme':
+        generateThemeData(Colors.purple, Brightness.dark, themeName: 'rainbowGradientDarkTheme'),
   };
 
   static Map<String, List<Color>> gradientColors = {
@@ -216,8 +214,13 @@ class AppTheme {
     ],
   };
 
-  static Gradient gradientFromTheme(String themeName,
-      {bool useSecondary = false}) {
+  static Gradient gradientFromTheme(
+    String themeName, {
+    bool useSecondary = false,
+    bool useTertiaryContainer = false,
+    bool usePrimaryContainer = false,
+    bool useSecondaryContainer = false,
+  }) {
     return gradientColors.keys.contains(themeName)
         ? themeName.contains('rainbow')
             ? LinearGradient(colors: [
@@ -233,13 +236,28 @@ class AppTheme {
               ])
         : useSecondary
             ? LinearGradient(colors: [
-                AppTheme.themes[themeName].colorScheme.secondary,
+                AppTheme.themes[themeName].colorScheme.secondary, //TODO: revert
                 AppTheme.themes[themeName].colorScheme.secondary
               ])
-            : LinearGradient(colors: [
-                AppTheme.themes[themeName].colorScheme.primary,
-                AppTheme.themes[themeName].colorScheme.primary
-              ]);
+            : usePrimaryContainer
+                ? LinearGradient(colors: [
+                    AppTheme.themes[themeName].colorScheme.primaryContainer,
+                    AppTheme.themes[themeName].colorScheme.primaryContainer
+                  ])
+                : useSecondaryContainer
+                    ? LinearGradient(colors: [
+                        AppTheme.themes[themeName].colorScheme.secondaryContainer,
+                        AppTheme.themes[themeName].colorScheme.secondaryContainer
+                      ])
+                    : useTertiaryContainer
+                        ? LinearGradient(colors: [
+                            AppTheme.themes[themeName].colorScheme.tertiaryContainer,
+                            AppTheme.themes[themeName].colorScheme.tertiaryContainer
+                          ])
+                        : LinearGradient(colors: [
+                            AppTheme.themes[themeName].colorScheme.primary,
+                            AppTheme.themes[themeName].colorScheme.primary
+                          ]);
   }
 
   static ThemeData generateThemeData(Color seedColor, Brightness brightness,
@@ -251,11 +269,9 @@ class AppTheme {
     if (themeName != '') {
       ColorScheme newColorScheme;
       if (themeName == 'plumGradientDarkTheme') {
-        newColorScheme =
-            colorScheme.copyWith(onPrimary: Color.fromARGB(255, 40, 1, 92));
+        newColorScheme = colorScheme.copyWith(onPrimary: Color.fromARGB(255, 40, 1, 92));
       } else if (themeName.contains('endlessGradientDarkTheme')) {
-        newColorScheme =
-            colorScheme.copyWith(onPrimary: Color.fromARGB(255, 0, 20, 14));
+        newColorScheme = colorScheme.copyWith(onPrimary: Color.fromARGB(255, 0, 20, 14));
       } else if (themeName.contains('rainbow')) {
         newColorScheme = colorScheme.copyWith(onPrimary: Colors.white);
       }
@@ -272,11 +288,17 @@ class AppTheme {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
               ),
             ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
           )
           .copyWith(colorScheme: newColorScheme);
     }
-    return ThemeData.from(colorScheme: colorScheme, useMaterial3: true)
-        .copyWith(
+    return ThemeData.from(colorScheme: colorScheme, useMaterial3: true).copyWith(
       cardTheme: CardTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -288,25 +310,39 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 
-  static void addDynamicThemes(
-      ColorScheme lightScheme, ColorScheme darkScheme) {
+  static void addDynamicThemes(ColorScheme lightScheme, ColorScheme darkScheme) {
     try {
       AppTheme.themes['lightDynamic'] = ThemeData.from(
         colorScheme: lightScheme,
         useMaterial3: true,
       ).copyWith(
         cardTheme: CardTheme(
-          elevation: 0,
-          color: ElevationOverlay.applySurfaceTint(
-              lightScheme.surface, lightScheme.surfaceTint, 1),
-          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           margin: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        ),
+        bottomSheetTheme: BottomSheetThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
         ),
       );
       AppTheme.themes['darkDynamic'] = ThemeData.from(
@@ -314,14 +350,22 @@ class AppTheme {
         useMaterial3: true,
       ).copyWith(
         cardTheme: CardTheme(
-          elevation: 0,
-          color: ElevationOverlay.applySurfaceTint(
-              darkScheme.surface, darkScheme.surfaceTint, 1),
-          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           margin: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        ),
+        bottomSheetTheme: BottomSheetThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
         ),
       );
     } catch (exception) {

@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/tap_or_hold_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
@@ -10,8 +11,14 @@ class CustomAmountDialog extends StatefulWidget {
   final double maxMoney;
   final double minValue;
   final bool alreadyCustom;
+  final String currency;
   const CustomAmountDialog(
-      {this.initialValue, this.maxValue, this.maxMoney, this.alreadyCustom, this.minValue = 0});
+      {this.initialValue,
+      this.maxValue,
+      this.maxMoney,
+      this.alreadyCustom,
+      this.currency,
+      this.minValue = 0});
 
   @override
   State<CustomAmountDialog> createState() => _CustomAmountDialogState();
@@ -20,18 +27,20 @@ class CustomAmountDialog extends StatefulWidget {
 class _CustomAmountDialogState extends State<CustomAmountDialog> {
   double sliderValue;
   double magnet;
+  String currency;
   @override
   void initState() {
     super.initState();
     sliderValue = widget.initialValue;
     magnet = 0.5;
+    currency = widget.currency ?? currentGroupCurrency;
   }
 
   double roundLogically(double value) {
     double stepSize = (widget.maxValue - widget.minValue) / 20;
     print(stepSize);
     double roundTo = 1;
-    if (hasSubunit(currentGroupCurrency)) {
+    if (hasSubunit(currency)) {
       if (stepSize < 0.01) {
         roundTo = 0.01;
       } else if (stepSize < 0.1) {
@@ -70,20 +79,28 @@ class _CustomAmountDialogState extends State<CustomAmountDialog> {
             SizedBox(
               height: 10,
             ),
-            Visibility(
-              visible: widget.alreadyCustom,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context, -1);
-                },
-                child: Text('reset'.tr()),
-              ),
-            ),
+            Text(
+                'chosen_amount'.tr() +
+                    sliderValue.printMoney(currency) +
+                    ' / ' +
+                    (sliderValue / widget.maxMoney * 100).roundToDouble().toStringAsFixed(0) +
+                    '%',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
             Row(
               children: [
-                Text(
-                  widget.minValue.printMoney(currentGroupCurrency),
-                  style: Theme.of(context).textTheme.bodySmall,
+                TapOrHoldButton(
+                  onUpdate: () {
+                    double value = hasSubunit(currency) ? 0.01 : 1;
+                    setState(() {
+                      if (sliderValue - value <= widget.maxValue) {
+                        sliderValue -= value;
+                      }
+                    });
+                  },
+                  icon: Icons.remove,
                 ),
                 Expanded(
                   child: Slider(
@@ -100,22 +117,28 @@ class _CustomAmountDialogState extends State<CustomAmountDialog> {
                     },
                   ),
                 ),
-                Text(
-                  widget.maxValue.money(currentGroupCurrency),
-                  style: Theme.of(context).textTheme.bodySmall,
+                TapOrHoldButton(
+                  onUpdate: () {
+                    double value = hasSubunit(currency) ? 0.01 : 1;
+                    setState(() {
+                      if (sliderValue + value <= widget.maxValue) {
+                        sliderValue += value;
+                      }
+                    });
+                  },
+                  icon: Icons.add,
                 ),
               ],
             ),
-            Text(
-                'chosen_amount'.tr() +
-                    sliderValue.printMoney(currentGroupCurrency) +
-                    ' / ' +
-                    (sliderValue / widget.maxMoney * 100).roundToDouble().toStringAsFixed(0) +
-                    '%',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            Visibility(
+              visible: widget.alreadyCustom,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context, -1);
+                },
+                child: Text('reset'.tr()),
+              ),
+            ),
             SizedBox(
               height: 20,
             ),

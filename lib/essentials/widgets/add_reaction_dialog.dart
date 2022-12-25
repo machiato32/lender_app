@@ -5,7 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../config.dart';
 import '../app_theme.dart';
-import '../group_objects.dart';
+import '../models.dart';
 import '../http_handler.dart';
 
 class AddReactionDialog extends StatefulWidget {
@@ -27,16 +27,12 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
   Future<bool> _sendReaction(String reaction) async {
     try {
       Map<String, dynamic> body = {
-        widget.type.substring(0, widget.type.length - 1) + "_id":
-            widget.reactToId,
+        widget.type.substring(0, widget.type.length - 1) + "_id": widget.reactToId,
         "reaction": reaction
       };
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       await httpPost(
-          context: context,
-          uri: '/' + widget.type + '/reaction',
-          body: body,
-          useGuest: useGuest);
+          context: context, uri: '/' + widget.type + '/reaction', body: body, useGuest: useGuest);
       // Future.delayed(delayTime()).then((value) => _onSendReaction(reaction));
       return true;
     } catch (_) {
@@ -52,8 +48,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         decoration: BoxDecoration(
           gradient: e.userId == idToUse()
               ? AppTheme.gradientFromTheme(currentThemeName, useSecondary: true)
-              : LinearGradient(
-                  colors: [Colors.transparent, Colors.transparent]),
+              : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
@@ -67,8 +62,10 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                       .textTheme
                       .bodyLarge
                       .copyWith(color: Theme.of(context).colorScheme.onPrimary)
-                  : Theme.of(context).textTheme.bodyLarge.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  : Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               overflow: TextOverflow.ellipsis,
             )),
             Text(e.reaction)
@@ -88,8 +85,10 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
           children: [
             Text(
               'reactions'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -101,8 +100,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                      padding: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 5, right: 5),
+                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(300)),
                       ),
@@ -120,29 +118,21 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                                       child: Ink(
                                           padding: EdgeInsets.all(3),
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(50)),
+                                            borderRadius: BorderRadius.all(Radius.circular(50)),
                                             color: widget.reactions.firstWhere(
                                                         (el) =>
-                                                            el.userId ==
-                                                                idToUse() &&
+                                                            el.userId == idToUse() &&
                                                             el.reaction == e,
                                                         orElse: () => null) !=
                                                     null
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
+                                                ? Theme.of(context).colorScheme.secondary
                                                 : Colors.transparent,
                                           ),
                                           child: Text(
                                             e,
                                             style: TextStyle(
                                                 fontSize: min(
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        13,
-                                                    50)),
+                                                    MediaQuery.of(context).size.width / 13, 50)),
                                           )),
                                     ),
                                   ))

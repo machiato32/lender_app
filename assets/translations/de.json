@@ -382,8 +382,8 @@
     "iapp_not_supported_explanation": "Du kannst die Gegendstände (z.B. keine Anzeigen, Farbthemen) zur Zeit nur über der Android App kaufen.\nFalls dies für dich nicht Lösbar ist, schreib eine E-Mail an developer@lenderapp.net.",
     "no_camera_access": "Die App hat keine Berechtigung zur Kamera.",
 
-    "custom_amount_hint": "Hinweis: Wenn du auf Mitglied lange drückst, kannst du auswählen wie viel er/sie zahlen soll.",
-    "add_purchase_explanation": "Die angegebene Summe wird gleich zwischen den ausgewählten Mitgliedern verteilt.",
+    "custom_amount_hint": "Hinweis: Wenn du auf ein Mitglied lange drückst kannst du auswählen wie viel er/sie gezahlt hat.",
+    "add_purchase_explanation": "Strandartmäßig wird die angegebene Summe gleich zwischen den ausgewählten Mitgliedern verteilt.",
 
     "first_give_amount_toast": "Gib zuerst eine Summe ein!",
     "cant_add_custom_amount_toast": "Der zu zahlende Betrag kann für dieses Mitglied nicht geändert werden.",

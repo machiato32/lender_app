@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 import '../config.dart';
 import '../essentials/app_theme.dart';
 import '../essentials/currencies.dart';
-import '../essentials/group_objects.dart';
+import '../essentials/models.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/widgets/gradient_button.dart';
 import '../groups/main_group_page.dart';
@@ -131,6 +131,7 @@ class _BalancesState extends State<Balances> {
                         Member currentMember = snapshot.data.firstWhere(
                             (element) => element.memberId == idToUse(),
                             orElse: () => null);
+                        print(currentGroupCurrency);
                         double currencyThreshold = threshold(currentGroupCurrency);
                         return Column(
                           children: [
@@ -333,7 +334,8 @@ class _BalancesState extends State<Balances> {
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           decoration: member.memberId == idToUse()
               ? BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
+                  gradient: AppTheme.gradientFromTheme(currentThemeName,
+                      useSecondary: true), //TODO: reset currency on group switch
                   borderRadius: BorderRadius.circular(15),
                 )
               : null,

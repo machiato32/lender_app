@@ -90,10 +90,8 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
               size: 50,
             )
           : ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.secondary, BlendMode.srcIn),
-              child: Container(
-                  height: 60, width: 60, child: Rive(artboard: _riveArtboard)),
+              colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+              child: Container(height: 60, width: 60, child: Rive(artboard: _riveArtboard)),
             );
     }
     return widget.dataTrue;
@@ -135,8 +133,8 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                     .copyWith(color: Theme.of(context).colorScheme.onError),
               ),
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Theme.of(context).colorScheme.error)),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.error)),
             )
           ],
         ),
@@ -155,10 +153,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
             Flexible(
               child: Text(
                 snapshot.error.toString().tr(),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    .copyWith(color: Colors.white),
+                style: Theme.of(context).textTheme.bodyLarge.copyWith(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -181,8 +176,8 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
                     .copyWith(color: Theme.of(context).colorScheme.onError),
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).colorScheme.error),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.error),
               ),
             )
           ],
@@ -212,7 +207,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
               return _buildNoData(snapshot);
             }
           }
-          return Center(child: CircularProgressIndicator());
+          return Center(child: SizedBox(width: 55, height: 55, child: CircularProgressIndicator()));
         },
       ),
     );

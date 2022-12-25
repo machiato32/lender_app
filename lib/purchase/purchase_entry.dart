@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/widgets/add_reaction_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart';
 import 'package:csocsort_szamla/purchase/purchase_all_info.dart';
@@ -11,52 +11,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class PurchaseData {
-  DateTime updatedAt;
-  String buyerUsername, buyerNickname;
-  int buyerId;
-  List<Member> receivers;
-  double totalAmount;
-  int purchaseId;
-  String name;
-  List<Reaction> reactions;
-
-  PurchaseData(
-      {this.updatedAt,
-      this.buyerUsername,
-      this.buyerNickname,
-      this.buyerId,
-      this.receivers,
-      this.totalAmount,
-      this.purchaseId,
-      this.name,
-      this.reactions});
-
-  factory PurchaseData.fromJson(Map<String, dynamic> json) {
-    return PurchaseData(
-        purchaseId: json['purchase_id'],
-        name: json['name'],
-        updatedAt: json['updated_at'] == null
-            ? DateTime.now()
-            : DateTime.parse(json['updated_at']).toLocal(),
-        buyerUsername: json['buyer_username'],
-        buyerId: json['buyer_id'],
-        buyerNickname: json['buyer_nickname'],
-        totalAmount: (json['total_amount'] * 1.0),
-        receivers: json['receivers']
-            .map<Member>((element) => Member.fromJson(element))
-            .toList(),
-        reactions: json['reactions']
-            .map<Reaction>((reaction) => Reaction.fromJson(reaction))
-            .toList());
-  }
-}
-
 class PurchaseEntry extends StatefulWidget {
-  final PurchaseData data;
+  final Purchase purchase;
   final Function({bool purchase, bool payment}) callback;
 
-  const PurchaseEntry({this.data, this.callback});
+  const PurchaseEntry({this.purchase, this.callback});
 
   @override
   _PurchaseEntryState createState() => _PurchaseEntryState();
@@ -69,104 +28,101 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
   BoxDecoration boxDecoration;
   String note;
   String names;
-  String amount;
-  String amountToSelf = '';
+  String amountOriginal = '';
+  String amountToSelfOriginal = '';
 
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
-    Reaction oldReaction = widget.data.reactions.firstWhere(
-        (element) => element.userId == idToUse(),
-        orElse: () => null);
+    Reaction oldReaction = widget.purchase.reactions
+        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
     bool alreadyReacted = oldReaction != null;
-    bool sameReaction =
-        alreadyReacted ? oldReaction.reaction == reaction : false;
+    bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
-      widget.data.reactions.remove(oldReaction);
+      widget.purchase.reactions.remove(oldReaction);
       setState(() {});
     } else if (!alreadyReacted) {
-      widget.data.reactions.add(Reaction(
-          nickname:
-              idToUse() == currentUserId ? currentUsername : guestNickname,
+      widget.purchase.reactions.add(Reaction(
+          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
           reaction: reaction,
           userId: idToUse()));
       setState(() {});
     } else {
-      widget.data.reactions.add(Reaction(
-          nickname: oldReaction.nickname,
-          reaction: reaction,
-          userId: idToUse()));
-      widget.data.reactions.remove(oldReaction);
+      widget.purchase.reactions
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
+      widget.purchase.reactions.remove(oldReaction);
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    note = (widget.data.name == '')
+    note = (widget.purchase.name == '')
         ? 'no_note'.tr()
-        : widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
-    bool bought = widget.data.buyerId == idToUse();
-    bool received = widget.data.receivers
-        .where((element) => element.memberId == idToUse())
-        .isNotEmpty;
+        : widget.purchase.name[0].toUpperCase() + widget.purchase.name.substring(1);
+    bool bought = widget.purchase.buyerId == idToUse();
+    bool received =
+        widget.purchase.receivers.where((element) => element.memberId == idToUse()).isNotEmpty;
     /* Set icon, amount and names */
     if (bought && received) {
       leadingIcon = Icon(Icons.swap_horiz,
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSecondary);
-      amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
-      amountToSelf = (-widget.data.receivers
-              .firstWhere((member) => member.memberId == idToUse())
-              .balance)
-          .printMoney(currentGroupCurrency);
-      if (widget.data.receivers.length > 1) {
-        names = widget.data.receivers.join(', ');
+              : Theme.of(context).colorScheme.onSecondaryContainer);
+      amountOriginal =
+          widget.purchase.totalAmountOriginalCurrency.printMoney(widget.purchase.originalCurrency);
+      amountToSelfOriginal = (-widget.purchase.receivers
+              .firstWhere((element) => element.memberId == idToUse())
+              .balanceOriginalCurrency)
+          .printMoney(widget.purchase.originalCurrency);
+      if (widget.purchase.receivers.length > 1) {
+        names = widget.purchase.receivers.join(', ');
       } else {
-        names = widget.data.receivers[0].nickname;
+        names = widget.purchase.receivers[0].nickname;
       }
       mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSecondary);
+              : Theme.of(context).colorScheme.onSecondaryContainer);
       subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onSecondary);
+              : Theme.of(context).colorScheme.onSecondaryContainer);
       boxDecoration = BoxDecoration(
-        gradient:
-            AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
+        gradient: AppTheme.gradientFromTheme(currentThemeName, useSecondaryContainer: true),
         borderRadius: BorderRadius.circular(15),
       );
     } else if (bought) {
-      leadingIcon =
-          Icon(Icons.call_made, color: Theme.of(context).colorScheme.onPrimary);
-      amount = widget.data.totalAmount.printMoney(currentGroupCurrency);
-      if (widget.data.receivers.length > 1) {
-        names = widget.data.receivers.join(', ');
+      leadingIcon = Icon(Icons.call_made,
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
+      amountOriginal =
+          widget.purchase.totalAmountOriginalCurrency.printMoney(widget.purchase.originalCurrency);
+      if (widget.purchase.receivers.length > 1) {
+        names = widget.purchase.receivers.join(', ');
       } else {
-        names = widget.data.receivers[0].nickname;
+        names = widget.purchase.receivers[0].nickname;
       }
-      mainTextStyle = Theme.of(context)
-          .textTheme
-          .bodyLarge
-          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
-      subTextStyle = Theme.of(context)
-          .textTheme
-          .bodySmall
-          .copyWith(color: Theme.of(context).colorScheme.onPrimary);
+      mainTextStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
+      subTextStyle = Theme.of(context).textTheme.bodySmall.copyWith(
+          color: currentThemeName.contains('Gradient')
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer);
       boxDecoration = BoxDecoration(
-        gradient: AppTheme.gradientFromTheme(currentThemeName),
+        gradient: AppTheme.gradientFromTheme(currentThemeName, usePrimaryContainer: true),
         borderRadius: BorderRadius.circular(15),
       );
     } else if (received) {
-      leadingIcon = Icon(Icons.call_received,
-          color: Theme.of(context).colorScheme.onSurfaceVariant);
-      names = widget.data.buyerNickname;
-      amount = (-widget.data.receivers
+      leadingIcon =
+          Icon(Icons.call_received, color: Theme.of(context).colorScheme.onSurfaceVariant);
+      names = widget.purchase.buyerNickname;
+      amountOriginal = (-widget.purchase.receivers
               .firstWhere((element) => element.memberId == idToUse())
-              .balance)
-          .printMoney(currentGroupCurrency);
+              .balanceOriginalCurrency)
+          .printMoney(widget.purchase.originalCurrency);
       subTextStyle = Theme.of(context)
           .textTheme
           .bodySmall
@@ -177,7 +133,6 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       boxDecoration = BoxDecoration();
     }
-
     return Stack(
       children: [
         Container(
@@ -185,10 +140,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           width: MediaQuery.of(context).size.width,
           decoration: boxDecoration,
           margin: EdgeInsets.only(
-              top: widget.data.reactions.length == 0 ? 0 : 14,
-              bottom: 4,
-              left: 4,
-              right: 4),
+              top: widget.purchase.reactions.length == 0 ? 0 : 14, bottom: 4, left: 4, right: 4),
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
@@ -196,8 +148,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                 showDialog(
                     builder: (context) => AddReactionDialog(
                           type: 'purchases',
-                          reactions: widget.data.reactions,
-                          reactToId: widget.data.purchaseId,
+                          reactions: widget.purchase.reactions,
+                          reactToId: widget.purchase.purchaseId,
                           callback: this.callbackForReaction,
                         ),
                     context: context);
@@ -207,15 +159,14 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                     isScrollControlled: true,
                     context: context,
                     backgroundColor: Theme.of(context).cardTheme.color,
-                    builder: (context) => SingleChildScrollView(
-                        child: PurchaseAllInfo(widget.data))).then((val) {
-                  if (val == 'deleted')
-                    widget.callback(purchase: true, payment: false);
+                    builder: (context) =>
+                        SingleChildScrollView(child: PurchaseAllInfo(widget.purchase))).then((val) {
+                  if (val == 'deleted') widget.callback(purchase: true, payment: false);
                 });
               },
               borderRadius: BorderRadius.circular(15),
               child: Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -254,15 +205,16 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          amount,
+                          amountOriginal,
                           style: mainTextStyle,
                         ),
                         Visibility(
-                            visible: received && bought,
-                            child: Text(
-                              amountToSelf,
-                              style: mainTextStyle,
-                            )),
+                          visible: received && bought,
+                          child: Text(
+                            amountToSelfOriginal,
+                            style: mainTextStyle,
+                          ),
+                        ),
                       ],
                     )
                   ],
@@ -272,8 +224,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           ),
         ),
         PastReactionContainer(
-          reactions: widget.data.reactions,
-          reactedToId: widget.data.purchaseId,
+          reactions: widget.purchase.reactions,
+          reactedToId: widget.purchase.purchaseId,
           isSecondaryColor: bought,
           type: 'purchases',
           callback: this.callbackForReaction,

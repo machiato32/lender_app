@@ -2,6 +2,7 @@ import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/app_state_notifier.dart';
 import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/main/iapp_not_supported_dialog.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,7 @@ class ColorPicker extends StatefulWidget {
 
 class _ColorPickerState extends State<ColorPicker> {
   List<Widget> _getDynamicColors({bool enabled}) {
-    return AppTheme.themes.entries
-        .where((element) => element.key.contains('Dynamic'))
-        .map((entry) {
+    return AppTheme.themes.entries.where((element) => element.key.contains('Dynamic')).map((entry) {
       return ColorElement(
         theme: entry.value,
         themeName: entry.key,
@@ -28,8 +27,7 @@ class _ColorPickerState extends State<ColorPicker> {
 
   List<Widget> _getSolidColors() {
     return AppTheme.themes.entries
-        .where((element) => (!element.key.contains('Gradient') &&
-            !element.key.contains('Dynamic')))
+        .where((element) => (!element.key.contains('Gradient') && !element.key.contains('Dynamic')))
         .map((entry) {
       return ColorElement(
         theme: entry.value,
@@ -42,8 +40,7 @@ class _ColorPickerState extends State<ColorPicker> {
     return AppTheme.themes.entries
         .where((element) => element.key.contains('Gradient'))
         .map((entry) {
-      return ColorElement(
-          theme: entry.value, themeName: entry.key, enabled: enabled);
+      return ColorElement(theme: entry.value, themeName: entry.key, enabled: enabled);
     }).toList();
   }
 
@@ -58,8 +55,10 @@ class _ColorPickerState extends State<ColorPicker> {
             Center(
                 child: Text(
               'change_theme'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             )),
             SizedBox(height: 10),
             Center(
@@ -79,9 +78,10 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
             Text(
               'gradient_themes'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 18),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 18),
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -91,13 +91,15 @@ class _ColorPickerState extends State<ColorPicker> {
               visible: !useGradients,
               child: Text(
                 'gradient_available_in_paid_version'.tr(),
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
             SizedBox(
-              height: 3,
+              height: 7,
             ),
             Center(
               child: Wrap(
@@ -121,8 +123,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   Text(
                     'dynamic_themes'.tr(),
                     style: Theme.of(context).textTheme.titleLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 18),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -130,8 +131,10 @@ class _ColorPickerState extends State<ColorPicker> {
                   ),
                   Text(
                     'dynamic_themes_explanation'.tr(),
-                    style: Theme.of(context).textTheme.titleSmall.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -180,43 +183,41 @@ class _ColorElementState extends State<ColorElement> {
     return Ink(
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-          gradient: (widget.themeName == currentThemeName)
-              ? AppTheme.gradientFromTheme(widget.themeName)
-              : LinearGradient(
-                  colors: [Colors.transparent, Colors.transparent]),
-          borderRadius: BorderRadius.circular(20)),
+        gradient: (widget.themeName == currentThemeName)
+            ? AppTheme.gradientFromTheme(widget.themeName, useSecondary: true)
+            : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
+        borderRadius: BorderRadius.circular(18),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         onTap: () {
           if (widget.enabled) {
-            Provider.of<AppStateNotifier>(context, listen: false)
-                .updateTheme(widget.themeName);
+            Provider.of<AppStateNotifier>(context, listen: false).updateTheme(widget.themeName);
             _getPrefs().then((_prefs) {
               _prefs.setString('theme', widget.themeName);
             });
             _postColor(widget.themeName);
           } else if (isIAPPlatformEnabled) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return IAPPNotSupportedDialog();
+              },
+            );
           }
         },
         child: Ink(
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-              // boxShadow: ( Theme.of(context).brightness==Brightness.light)
-              //     ?[ BoxShadow(
-              //       color: Colors.grey[500],
-              //       offset: Offset(0.0, 1.5),
-              //       blurRadius: 1.5,
-              //     )]
-              //     : [],
-              gradient: AppTheme.gradientFromTheme(widget.themeName),
-              border: Border.all(
-                  color: widget.theme.scaffoldBackgroundColor, width: 8),
-              borderRadius: BorderRadius.circular(20)),
+            gradient: AppTheme.gradientFromTheme(widget.themeName),
+            border: Border.all(color: widget.theme.colorScheme.surface, width: 6),
+            borderRadius: BorderRadius.circular(18),
+          ),
           child: SizedBox(
-            width: 25,
-            height: 25,
+            width: 24,
+            height: 24,
           ),
         ),
       ),

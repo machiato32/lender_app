@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
@@ -28,7 +28,9 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
   TextEditingController _noteController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   Future<List<Member>> _members;
-  Map<Member, bool> memberChipBool = Map<Member, bool>();
+  Map<Member, bool> membersMap = Map<Member, bool>();
+  Map<Member, double> customAmountMap = Map<Member, double>();
+  String selectedCurrency = currentGroupCurrency;
   var _formKey = GlobalKey<FormState>();
 
   int _index = 0;
@@ -89,8 +91,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
     super.initState();
     _members = _getMembers();
     _noteController.text = widget.savedPurchase.name;
-    _amountController.text =
-        widget.savedPurchase.totalAmount.money(currentGroupCurrency);
+    _amountController.text = widget.savedPurchase.totalAmount.money(currentGroupCurrency);
   }
 
   @override
@@ -106,8 +107,10 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
               Center(
                   child: Text(
                 'modify_purchase'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
@@ -116,12 +119,14 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
               Center(
                   child: Text(
                 'modify_purchase_explanation'.tr(),
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               )),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Visibility(
                 visible: _index == 0,
@@ -182,11 +187,8 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                         ),
                       ),
                       controller: _amountController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
-                      ],
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))],
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 9),
@@ -230,41 +232,43 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                         if (snapshot.hasData) {
                           List<Member> snapshotMembers = snapshot.data;
                           for (Member member in snapshot.data) {
-                            memberChipBool.putIfAbsent(member, () => false);
+                            membersMap.putIfAbsent(member, () => false);
                           }
                           if (widget.savedPurchase.receivers != null) {
-                            for (Member member
-                                in widget.savedPurchase.receivers) {
-                              print(member.username);
-                              Member memberInCheckbox =
-                                  snapshotMembers.firstWhere(
-                                      (element) =>
-                                          element.memberId == member.memberId,
-                                      orElse: () => null);
-                              if (memberInCheckbox != null)
-                                memberChipBool[memberInCheckbox] = true;
+                            for (Member member in widget.savedPurchase.receivers) {
+                              print(member.balance); //TODO: this doesn't work :(
+                              Member memberInCheckbox = snapshotMembers.firstWhere(
+                                  (element) => element.memberId == member.memberId,
+                                  orElse: () => null);
+                              if (memberInCheckbox != null) membersMap[memberInCheckbox] = true;
                             }
-                            widget.savedPurchase.receivers =
-                                null; //Needed so it happens only once
+                            widget.savedPurchase.receivers = null; //Needed so it happens only once
                           }
                           return ListView(
                             shrinkWrap: true,
                             children: [
                               Center(
                                 child: MemberChips(
+                                  selectedCurrency: selectedCurrency,
                                   allowMultiple: true,
                                   allMembers: snapshot.data,
-                                  membersChosen: snapshot.data
-                                      .where((member) => memberChipBool[member])
-                                      .toList(),
+                                  membersChosen:
+                                      snapshot.data.where((member) => membersMap[member]).toList(),
                                   membersChanged: (members) {
                                     setState(() {
                                       for (Member member in snapshot.data) {
-                                        memberChipBool[member] =
-                                            members.contains(member);
+                                        membersMap[member] = members.contains(member);
                                       }
                                     });
                                   },
+                                  customAmountsChanged: (Map<Member, double> amounts) {
+                                    setState(() {
+                                      customAmountMap = amounts;
+                                    });
+                                  },
+                                  showDivisionDialog: true,
+                                  getMaxAmount: () =>
+                                      double.tryParse(_amountController.text) ?? 0.0,
                                 ),
                               ),
                             ],
@@ -317,7 +321,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                       } else {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
-                          if (!memberChipBool.containsValue(true)) {
+                          if (!membersMap.containsValue(true)) {
                             FToast ft = FToast();
                             ft.init(context);
                             ft.showToast(
@@ -329,13 +333,13 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> {
                           double amount = double.parse(_amountController.text);
                           String name = _noteController.text;
                           List<Member> members = new List<Member>();
-                          memberChipBool.forEach((Member key, bool value) {
+                          membersMap.forEach((Member key, bool value) {
                             if (value) members.add(key);
                           });
                           showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future: _updatePurchase(members, amount,
-                                        name, widget.savedPurchase.purchaseId),
+                                    future: _updatePurchase(
+                                        members, amount, name, widget.savedPurchase.purchaseId),
                                   ),
                               context: context);
                         }

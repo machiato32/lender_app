@@ -1,4 +1,4 @@
-import 'package:csocsort_szamla/essentials/group_objects.dart';
+import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
@@ -11,21 +11,10 @@ class PastReactionContainer extends StatelessWidget {
   final bool isSecondaryColor;
   final String type;
   PastReactionContainer(
-      {this.reactions,
-      this.reactedToId,
-      this.callback,
-      this.isSecondaryColor,
-      this.type});
+      {this.reactions, this.reactedToId, this.callback, this.isSecondaryColor, this.type});
   @override
   Widget build(BuildContext context) {
-    Map<String, int> numberOfReactions = {
-      '❗': 0,
-      '👍': 0,
-      '❤': 0,
-      '😲': 0,
-      '😥': 0,
-      '❓': 0
-    };
+    Map<String, int> numberOfReactions = {'❗': 0, '👍': 0, '❤': 0, '😲': 0, '😥': 0, '❓': 0};
     for (Reaction reaction in reactions) {
       if (numberOfReactions.keys.contains(reaction.reaction))
         numberOfReactions[reaction.reaction]++;
@@ -81,13 +70,11 @@ class PastReactionContainer extends StatelessWidget {
               },
               borderRadius: BorderRadius.circular(15),
               child: Container(
-                  padding:
-                      EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
+                  padding: EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     color: (Theme.of(context).brightness == Brightness.light)
-                        ? Colors.grey[200].harmonizeWith(
-                            Theme.of(context).colorScheme.primary)
+                        ? Colors.grey[200].harmonizeWith(Theme.of(context).colorScheme.primary)
                         : ElevationOverlay.applyOverlay(
                             context, Theme.of(context).colorScheme.surface, 15),
                     // boxShadow:  (Theme.of(context).brightness==Brightness.light && !isSecondaryColor)
@@ -104,10 +91,10 @@ class PastReactionContainer extends StatelessWidget {
                       children: orderedReactions.map((e) {
                     if (e != null && double.tryParse(e) != null) {
                       return Text(e,
-                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant));
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant));
                     }
                     return Text(
                       e,

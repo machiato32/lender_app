@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../essentials/validation_rules.dart';
 import '../essentials/widgets/gradient_button.dart';
 import 'forgot_password_page.dart';
 
@@ -21,24 +22,15 @@ class ForgotPasswordDialog extends StatelessWidget {
         ),
         content: TextFormField(
           controller: controller,
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'field_empty'.tr();
-            }
-            if (value.length < 3) {
-              return 'minimal_length'.tr(args: ['3']);
-            }
-            return null;
-          },
+          validator: (value) => validateTextField({
+            isEmpty: [value],
+            minimalLength: [value, 3],
+          }),
           decoration: InputDecoration(
             hintText: 'username'.tr(),
             filled: true,
             prefixIcon: Icon(
               Icons.account_circle,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
             ),
           ),
           inputFormatters: [
@@ -55,8 +47,7 @@ class ForgotPasswordDialog extends StatelessWidget {
                 onPressed: () {
                   _buttonPush(context);
                 },
-                child: Icon(Icons.send,
-                    color: Theme.of(context).colorScheme.onPrimary),
+                child: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary),
               ),
             ],
           )

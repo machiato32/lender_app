@@ -25,8 +25,7 @@ class _BoostGroupState extends State<BoostGroup> {
     try {
       http.Response response = await httpGet(
           context: context,
-          uri: generateUri(GetUriKeys.groupBoost,
-              args: [currentGroupId.toString()]),
+          uri: generateUri(GetUriKeys.groupBoost, args: [currentGroupId.toString()]),
           useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
@@ -37,9 +36,7 @@ class _BoostGroupState extends State<BoostGroup> {
 
   Future<bool> _postBoost() async {
     try {
-      await httpPost(
-          context: context,
-          uri: '/groups/' + currentGroupId.toString() + '/boost');
+      await httpPost(context: context, uri: '/groups/' + currentGroupId.toString() + '/boost');
       Future.delayed(delayTime()).then((value) => _onPostBoost());
       return true;
     } catch (_) {
@@ -49,8 +46,8 @@ class _BoostGroupState extends State<BoostGroup> {
 
   Future<void> _onPostBoost() async {
     await clearGroupCache();
-    Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
   @override
@@ -75,8 +72,10 @@ class _BoostGroupState extends State<BoostGroup> {
                     children: [
                       Text(
                         'boost_group'.tr(),
-                        style: Theme.of(context).textTheme.titleLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 10),
@@ -84,8 +83,10 @@ class _BoostGroupState extends State<BoostGroup> {
                         snapshot.data['is_boosted'] == 0
                             ? 'boost_group_explanation'.tr()
                             : 'boost_group_boosted_explanation'.tr(),
-                        style: Theme.of(context).textTheme.titleSmall.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center,
                       ),
                       Visibility(
@@ -94,62 +95,46 @@ class _BoostGroupState extends State<BoostGroup> {
                           children: [
                             SizedBox(height: 20),
                             Text(
-                              'available'.tr(args: [
-                                snapshot.data['available_boosts'].toString()
-                              ]),
+                              'available'.tr(args: [snapshot.data['available_boosts'].toString()]),
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
+                                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  child: Icon(Icons.insights,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary),
-                                  onPressed: () {
-                                    if (snapshot.data['available_boosts'] ==
-                                        0) {
-                                      Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      InAppPurchasePage()))
-                                          .then((value) {
-                                        setState(() {});
-                                      });
-                                    } else {
+                            SizedBox(height: 10),
+                            GradientButton(
+                              child: Icon(Icons.insights,
+                                  color: Theme.of(context).colorScheme.onPrimary),
+                              onPressed: () {
+                                if (snapshot.data['available_boosts'] == 0) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => InAppPurchasePage())).then((value) {
+                                    setState(() {});
+                                  });
+                                } else {
+                                  showDialog(
+                                          builder: (context) => ConfirmChoiceDialog(
+                                                choice: 'sure_boost',
+                                              ),
+                                          context: context)
+                                      .then((value) {
+                                    if (value ?? false) {
                                       showDialog(
-                                              builder: (context) =>
-                                                  ConfirmChoiceDialog(
-                                                    choice: 'sure_boost',
-                                                  ),
-                                              context: context)
-                                          .then((value) {
-                                        if (value ?? false) {
-                                          showDialog(
-                                              builder: (context) =>
-                                                  FutureSuccessDialog(
-                                                    future: _postBoost(),
-                                                    dataTrueText: 'boost_scf',
-                                                    onDataTrue: () {
-                                                      _onPostBoost();
-                                                    },
-                                                  ),
-                                              barrierDismissible: false,
-                                              context: context);
-                                        }
-                                      });
+                                          builder: (context) => FutureSuccessDialog(
+                                                future: _postBoost(),
+                                                dataTrueText: 'boost_scf',
+                                                onDataTrue: () {
+                                                  _onPostBoost();
+                                                },
+                                              ),
+                                          barrierDismissible: false,
+                                          context: context);
                                     }
-                                  },
-                                ),
-                              ],
+                                  });
+                                }
+                              },
                             )
                           ],
                         ),
