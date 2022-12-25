@@ -1,20 +1,18 @@
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/payment/add_payment_page.dart';
 import 'package:csocsort_szamla/payment/modify_payment_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 
+import '../essentials/models.dart';
+
 class PaymentAllInfo extends StatefulWidget {
-  final PaymentData data;
+  final Payment data;
 
   PaymentAllInfo(this.data);
 
@@ -144,12 +142,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     onPressed: () {
                       showDialog(
                               builder: (context) => ModifyPaymentDialog(
-                                    savedPayment: SavedPayment(
-                                        amount: widget.data.amount,
-                                        note: widget.data.note,
-                                        payerId: widget.data.payerId,
-                                        takerId: widget.data.takerId,
-                                        paymentId: widget.data.paymentId),
+                                    savedPayment: widget.data,
                                   ),
                               context: context)
                           .then((value) {

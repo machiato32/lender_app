@@ -9,51 +9,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PaymentData {
-  int paymentId;
-  double amount, amountOriginalCurrency;
-  DateTime updatedAt;
-  String payerUsername, payerNickname, takerUsername, takerNickname, note;
-  int payerId, takerId;
-  List<Reaction> reactions;
-
-  PaymentData({
-    this.paymentId,
-    this.amount,
-    this.amountOriginalCurrency,
-    this.updatedAt,
-    this.payerUsername,
-    this.payerId,
-    this.payerNickname,
-    this.takerUsername,
-    this.takerId,
-    this.takerNickname,
-    this.note,
-    this.reactions,
-  });
-
-  factory PaymentData.fromJson(Map<String, dynamic> json) {
-    return PaymentData(
-        paymentId: json['payment_id'],
-        amount: (json['amount'] * 1.0),
-        updatedAt: json['updated_at'] == null
-            ? DateTime.now()
-            : DateTime.parse(json['updated_at']).toLocal(),
-        payerId: json['payer_id'],
-        payerUsername: json['payer_username'],
-        payerNickname: json['payer_nickname'],
-        takerId: json['taker_id'],
-        takerUsername: json['taker_username'],
-        takerNickname: json['taker_nickname'],
-        note: json['note'],
-        reactions:
-            json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
-  }
-}
-
 class PaymentEntry extends StatefulWidget {
   final bool isTappable;
-  final PaymentData data;
+  final Payment data;
   final Function({bool purchase, bool payment}) callback;
 
   const PaymentEntry({this.data, this.callback, this.isTappable = true});
@@ -103,7 +61,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
     if (widget.data.payerId == idToUse()) {
       takerName = widget.data.takerNickname;
-      amount = widget.data.amount.toMoneyString(currentGroupCurrency, withSymbol: true);
+      amount = widget.data.amountOriginalCurrency
+          .toMoneyString(widget.data.originalCurrency, withSymbol: true);
       icon = Icon(Icons.call_made,
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
@@ -132,7 +91,8 @@ class _PaymentEntryState extends State<PaymentEntry> {
           .bodySmall
           .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       takerName = widget.data.payerNickname;
-      amount = (-widget.data.amount).toMoneyString(currentGroupCurrency, withSymbol: true);
+      amount = (-widget.data.amountOriginalCurrency)
+          .toMoneyString(widget.data.originalCurrency, withSymbol: true);
       boxDecoration = BoxDecoration();
     }
     return Stack(

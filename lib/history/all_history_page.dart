@@ -26,7 +26,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   DateTime _startDate;
   DateTime _endDate;
   Future<List<Purchase>> _purchases;
-  Future<List<PaymentData>> _payments;
+  Future<List<Payment>> _payments;
 
   ScrollController _purchaseScrollController = ScrollController();
   ScrollController _paymentScrollController = ScrollController();
@@ -64,7 +64,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
     }
   }
 
-  Future<List<PaymentData>> _getPayments({bool overwriteCache = false}) async {
+  Future<List<Payment>> _getPayments({bool overwriteCache = false}) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response;
@@ -86,9 +86,9 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
       }
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
-      List<PaymentData> paymentData = [];
+      List<Payment> paymentData = [];
       for (var data in decoded) {
-        paymentData.add(PaymentData.fromJson(data));
+        paymentData.add(Payment.fromJson(data));
       }
       return paymentData;
     } catch (_) {
@@ -352,7 +352,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
     ];
   }
 
-  List<Widget> _generatePayments(List<PaymentData> data) {
+  List<Widget> _generatePayments(List<Payment> data) {
     print(data.length);
     if (data.length == 0) {
       return [
@@ -406,7 +406,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
     }
     List<Widget> allEntries = [initial];
     List<PaymentEntry> weekEntries = [];
-    for (PaymentData data in data) {
+    for (Payment data in data) {
       if (now.difference(data.updatedAt).inDays > 7) {
         int toSubtract = (now.difference(data.updatedAt).inDays / 7).floor();
         now = now.subtract(Duration(days: toSubtract * 7));

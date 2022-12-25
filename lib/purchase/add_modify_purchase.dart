@@ -124,7 +124,6 @@ class AddModifyPurchase {
         }),
         decoration: InputDecoration(
           hintText: 'note'.tr(),
-          filled: true,
           prefixIcon: Icon(
             Icons.note,
             color: theme.colorScheme.onSurface,
@@ -144,7 +143,6 @@ class AddModifyPurchase {
         focusNode: focusNode,
         decoration: InputDecoration(
           hintText: 'full_amount'.tr(),
-          filled: true,
           prefixIcon: GestureDetector(
             onDoubleTap: () {
               _setState(() {

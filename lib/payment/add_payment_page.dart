@@ -1,90 +1,46 @@
-import 'dart:convert';
-
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/calculator.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
+import 'package:csocsort_szamla/payment/add_modify_payment.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-
-import '../essentials/validation_rules.dart';
-import '../essentials/widgets/error_message.dart';
-import '../essentials/widgets/gradient_button.dart';
-
-class SavedPayment {
-  String note;
-  int payerId, takerId;
-  double amount;
-  int paymentId;
-  SavedPayment({this.note, this.payerId, this.takerId, this.amount, this.paymentId});
-}
 
 class AddPaymentRoute extends StatefulWidget {
   @override
   _AddPaymentRouteState createState() => _AddPaymentRouteState();
 }
 
-class _AddPaymentRouteState extends State<AddPaymentRoute> {
-  Member _selectedMember;
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _noteController = TextEditingController();
-  Future<List<Member>> _members;
-
+class _AddPaymentRouteState extends State<AddPaymentRoute> with AddModifyPayment {
   var _formKey = GlobalKey<FormState>();
 
-  Future<List<Member>> _getMembers({bool overwriteCache = false}) async {
+  Future<bool> _postPayment(
+      double amount, String note, Member toMember, BuildContext context) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
-
-      Map<String, dynamic> decoded = jsonDecode(response.body);
-      List<Member> members = [];
-      for (var member in decoded['data']['members']) {
-        if (member['user_id'] != idToUse()) {
-          members.add(Member(
-              nickname: member['nickname'],
-              balance: (member['balance'] * 1.0),
-              memberId: member['user_id']));
-        }
-      }
-      return members;
-    } catch (_) {
-      throw _;
-    }
-  }
-
-  Future<bool> _postPayment(double amount, String note, Member toMember) async {
-    try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      Map<String, dynamic> body = {
-        'group': currentGroupId,
-        'amount': amount,
-        'note': note,
-        'taker_id': toMember.memberId
-      };
+      Map<String, dynamic> body = generateBody(note, amount, toMember);
 
       await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
+      Future.delayed(delayTime()).then((value) => _onPostPayment(context));
       return true;
     } catch (_) {
       throw _;
     }
   }
 
+  void _onPostPayment(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
   @override
   void initState() {
     super.initState();
-    _members = _getMembers();
+    initAddModifyPayment(context, setState,
+        paymentType: PaymentType.newPayment, buttonPush: _buttonPush);
   }
 
   @override
@@ -101,7 +57,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         body: RefreshIndicator(
           onRefresh: () async {
             setState(() {
-              _members = _getMembers(overwriteCache: true);
+              members = getMembers(context, overwriteCache: true);
             });
           },
           child: GestureDetector(
@@ -115,8 +71,8 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                   callback: () {
                     setState(() {
                       clearGroupCache();
-                      _members = null;
-                      _members = _getMembers();
+                      members = null;
+                      members = getMembers(context);
                     });
                   },
                 ),
@@ -133,99 +89,15 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
                               SizedBox(
                                 height: 10,
                               ),
-                              TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: 'note'.tr(),
-                                  prefixIcon: Icon(
-                                    Icons.note,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
-                                controller: _noteController,
-                                onFieldSubmitted: (value) => _buttonPush(),
-                              ),
+                              noteTextField(context),
                               SizedBox(
                                 height: 20,
                               ),
-                              Stack(
-                                children: [
-                                  TextFormField(
-                                    validator: (value) => validateTextField({
-                                      isEmpty: [value.trim()],
-                                      notValidNumber: [value.trim()],
-                                    }),
-                                    controller: _amountController,
-                                    decoration: InputDecoration(
-                                      hintText: 'amount'.tr(),
-                                      prefixIcon: Icon(
-                                        Icons.pin,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          Icons.calculate,
-                                          color: Theme.of(context).colorScheme.primary,
-                                        ),
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) {
-                                                return SingleChildScrollView(child: Calculator(
-                                                  callback: (String fromCalc) {
-                                                    setState(() {
-                                                      _amountController.text = fromCalc;
-                                                    });
-                                                  },
-                                                ));
-                                              });
-                                        },
-                                      ),
-                                    ),
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))
-                                    ],
-                                    onFieldSubmitted: (value) => _buttonPush(),
-                                  ),
-                                ],
-                              ),
+                              amountTextField(context),
                               SizedBox(
                                 height: 20,
                               ),
-                              Center(
-                                child: FutureBuilder(
-                                  future: _members,
-                                  builder: (context, AsyncSnapshot<List<Member>> snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.done) {
-                                      if (snapshot.hasData) {
-                                        return MemberChips(
-                                          allowMultiple: false,
-                                          allMembers: snapshot.data,
-                                          membersChanged: (members) {
-                                            _selectedMember = members.isEmpty ? null : members[0];
-                                          },
-                                          membersChosen: [_selectedMember],
-                                        );
-                                      } else {
-                                        return ErrorMessage(
-                                          error: snapshot.error.toString(),
-                                          locationOfError: 'add_payment',
-                                          callback: () {
-                                            setState(() {
-                                              _members = null;
-                                              _members = _getMembers();
-                                            });
-                                          },
-                                        );
-                                      }
-                                    }
-
-                                    return Center(child: CircularProgressIndicator());
-                                  },
-                                ),
-                              ),
+                              memberChooser(context),
                             ],
                           ),
                         ),
@@ -244,16 +116,16 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.tertiary,
           child: Icon(Icons.send, color: Theme.of(context).colorScheme.onTertiary),
-          onPressed: _buttonPush,
+          onPressed: () => _buttonPush(context),
         ),
       ),
     );
   }
 
-  void _buttonPush() {
+  void _buttonPush(BuildContext context) {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState.validate()) {
-      if (_selectedMember == null) {
+      if (selectedMember == null) {
         FToast ft = FToast();
         ft.init(context);
         ft.showToast(
@@ -262,78 +134,11 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> {
             gravity: ToastGravity.BOTTOM);
         return;
       }
-      double amount = double.parse(_amountController.text);
-      String note = _noteController.text;
+      double amount = double.parse(amountController.text);
+      String note = noteController.text;
       showDialog(
           builder: (context) => FutureSuccessDialog(
-                future: _postPayment(amount, note, _selectedMember),
-                dataTrue: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                        child: Text("payment_scf".tr(),
-                            style:
-                                Theme.of(context).textTheme.bodyLarge.copyWith(color: Colors.white),
-                            textAlign: TextAlign.center)),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          child: Row(
-                            children: [
-                              Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                'okay'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientButton(
-                          child: Row(
-                            children: [
-                              Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                'add_new'.tr(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            _amountController.text = '';
-                            _noteController.text = '';
-                            _selectedMember = null;
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                future: _postPayment(amount, note, selectedMember, context),
               ),
           barrierDismissible: false,
           context: context);

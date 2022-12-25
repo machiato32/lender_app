@@ -47,8 +47,8 @@ class _BalancesState extends State<Balances> {
     }
   }
 
-  Future<bool> _postPayments(List<PaymentData> payments) async {
-    for (PaymentData payment in payments) {
+  Future<bool> _postPayments(List<Payment> payments) async {
+    for (Payment payment in payments) {
       if (await _postPayment(payment.amount * 1.0, '\$\$auto_payment\$\$'.tr(), payment.takerId)) {
         continue;
       }
@@ -152,7 +152,7 @@ class _BalancesState extends State<Balances> {
                                   ),
                                   OutlinedButton(
                                     onPressed: () {
-                                      List<PaymentData> payments = paymentsNeeded(snapshot.data)
+                                      List<Payment> payments = paymentsNeeded(snapshot.data)
                                           .where((payment) => payment.payerId == idToUse())
                                           .toList();
                                       showDialog(
@@ -297,10 +297,10 @@ class _BalancesState extends State<Balances> {
     );
   }
 
-  Widget _generatePaymentsNeeded(List<PaymentData> payments) {
+  Widget _generatePaymentsNeeded(List<Payment> payments) {
     return ListView(
       shrinkWrap: true,
-      children: payments.map<Widget>((PaymentData payment) {
+      children: payments.map<Widget>((Payment payment) {
         return PaymentEntry(
           data: payment,
           isTappable: false,

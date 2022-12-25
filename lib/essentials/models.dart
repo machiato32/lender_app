@@ -110,3 +110,49 @@ class Purchase {
     );
   }
 }
+
+class Payment {
+  int paymentId;
+  double amount, amountOriginalCurrency;
+  DateTime updatedAt;
+  String payerUsername, payerNickname, takerUsername, takerNickname, note;
+  int payerId, takerId;
+  List<Reaction> reactions;
+  String originalCurrency;
+
+  Payment({
+    this.paymentId,
+    this.amount,
+    this.amountOriginalCurrency,
+    this.updatedAt,
+    this.payerUsername,
+    this.payerId,
+    this.payerNickname,
+    this.takerUsername,
+    this.takerId,
+    this.takerNickname,
+    this.note,
+    this.reactions,
+    this.originalCurrency,
+  });
+
+  factory Payment.fromJson(Map<String, dynamic> json) {
+    return Payment(
+        paymentId: json['payment_id'],
+        amount: (json['amount'] * 1.0),
+        updatedAt: json['updated_at'] == null
+            ? DateTime.now()
+            : DateTime.parse(json['updated_at']).toLocal(),
+        payerId: json['payer_id'],
+        payerUsername: json['payer_username'],
+        payerNickname: json['payer_nickname'],
+        takerId: json['taker_id'],
+        takerUsername: json['taker_username'],
+        takerNickname: json['taker_nickname'],
+        note: json['note'],
+        originalCurrency: json['original_currency'] ?? currentGroupCurrency,
+        amountOriginalCurrency: (json['original_amount'] ?? json['amount']) * 1.0,
+        reactions:
+            json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
+  }
+}

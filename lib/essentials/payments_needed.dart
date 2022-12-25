@@ -2,8 +2,8 @@ import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'models.dart';
 
-List<PaymentData> paymentsNeeded(List<Member> members) {
-  List<PaymentData> payments = <PaymentData>[];
+List<Payment> paymentsNeeded(List<Member> members) {
+  List<Payment> payments = <Payment>[];
   List<Member> memberCopy = <Member>[];
   if (members.where((member) => member.balance != 0).length > 0) {
     for (Member member in members) {
@@ -17,7 +17,7 @@ List<PaymentData> paymentsNeeded(List<Member> members) {
       memberCopy.sort((member1, member2) => member1.balance.compareTo(member2.balance));
       var minPerson = memberCopy[0];
       var maxPerson = memberCopy[memberCopy.length - 1];
-      payments.add(new PaymentData(
+      payments.add(new Payment(
           note: 'auto_payment'.tr(),
           paymentId: -1,
           reactions: [],

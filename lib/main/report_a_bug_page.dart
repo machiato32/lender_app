@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../essentials/app_theme.dart';
 import '../essentials/http_handler.dart';
+import '../essentials/validation_rules.dart';
 import '../essentials/widgets/future_success_dialog.dart';
 
 class ReportABugPage extends StatefulWidget {
@@ -64,23 +65,15 @@ class _ReportABugPageState extends State<ReportABugPage> {
                             ),
                             widget.error == null
                                 ? TextFormField(
-                                    validator: (text) {
-                                      if (text.trim().length == 0) {
-                                        return 'field_empty'.tr();
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) => validateTextField({
+                                      isEmpty: [value],
+                                    }),
                                     keyboardType: TextInputType.multiline,
                                     minLines: 1,
                                     maxLines: 10,
                                     controller: _bugController,
                                     decoration: InputDecoration(
                                       hintText: 'bug'.tr(),
-                                      filled: true,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: BorderSide.none,
-                                      ),
                                     ),
                                   )
                                 : Padding(
@@ -96,23 +89,15 @@ class _ReportABugPageState extends State<ReportABugPage> {
                             ),
                             widget.location == null
                                 ? TextFormField(
-                                    validator: (text) {
-                                      if (text.trim().length == 0) {
-                                        return 'field_empty'.tr();
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) => validateTextField({
+                                      isEmpty: [value],
+                                    }),
                                     keyboardType: TextInputType.multiline,
                                     minLines: 1,
                                     maxLines: 10,
                                     controller: _locationController,
                                     decoration: InputDecoration(
                                       hintText: 'location'.tr(),
-                                      filled: true,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: BorderSide.none,
-                                      ),
                                     ),
                                   )
                                 : Padding(
@@ -127,20 +112,13 @@ class _ReportABugPageState extends State<ReportABugPage> {
                               height: 15,
                             ),
                             TextFormField(
-                              validator: (text) {
-                                return null;
-                              },
+                              validator: (value) => validateTextField({}),
                               keyboardType: TextInputType.multiline,
                               minLines: 1,
                               maxLines: 10,
                               controller: _detailsController,
                               decoration: InputDecoration(
                                 hintText: 'details'.tr(),
-                                filled: true,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide.none,
-                                ),
                               ),
                             ),
                             SizedBox(
