@@ -103,7 +103,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
     if (widget.data.payerId == idToUse()) {
       takerName = widget.data.takerNickname;
-      amount = widget.data.amount.printMoney(currentGroupCurrency);
+      amount = widget.data.amount.toMoneyString(currentGroupCurrency, withSymbol: true);
       icon = Icon(Icons.call_made,
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
@@ -132,7 +132,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
           .bodySmall
           .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
       takerName = widget.data.payerNickname;
-      amount = (-widget.data.amount).printMoney(currentGroupCurrency);
+      amount = (-widget.data.amount).toMoneyString(currentGroupCurrency, withSymbol: true);
       boxDecoration = BoxDecoration();
     }
     return Stack(

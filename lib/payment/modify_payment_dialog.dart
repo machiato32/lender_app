@@ -85,7 +85,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> {
     super.initState();
     _members = _getMembers();
     if (widget.savedPayment != null) {
-      _amountController.text = widget.savedPayment.amount.money(currentGroupCurrency);
+      _amountController.text = widget.savedPayment.amount.toMoneyString(currentGroupCurrency);
       _noteController.text = widget.savedPayment.note;
     }
   }

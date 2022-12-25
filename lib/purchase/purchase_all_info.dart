@@ -1,10 +1,8 @@
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
-import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/purchase/modify_purchase_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
@@ -13,9 +11,9 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 
 class PurchaseAllInfo extends StatefulWidget {
-  final Purchase data;
+  final Purchase purchase;
 
-  PurchaseAllInfo(this.data);
+  PurchaseAllInfo(this.purchase);
 
   @override
   _PurchaseAllInfoState createState() => _PurchaseAllInfoState();
@@ -41,10 +39,10 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
   @override
   Widget build(BuildContext context) {
     String note = '';
-    if (widget.data.name == '') {
+    if (widget.purchase.name == '') {
       note = 'no_note'.tr();
     } else {
-      note = widget.data.name[0].toUpperCase() + widget.data.name.substring(1);
+      note = widget.purchase.name[0].toUpperCase() + widget.purchase.name.substring(1);
     }
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -72,7 +70,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
               Icon(Icons.account_circle, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                ' - ' + widget.data.buyerNickname,
+                ' - ' + widget.purchase.buyerNickname,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge
@@ -89,7 +87,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
               Icon(Icons.people, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
-                ' - ' + widget.data.receivers.join(', '),
+                ' - ' + widget.purchase.receivers.join(', '),
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge
@@ -104,7 +102,10 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
             children: <Widget>[
               Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary),
               Flexible(
-                  child: Text(' - ' + widget.data.totalAmount.printMoney(currentGroupCurrency),
+                  child: Text(
+                      ' - ' +
+                          widget.purchase.totalAmount
+                              .toMoneyString(currentGroupCurrency, withSymbol: true),
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -122,7 +123,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
               ),
               Flexible(
                   child: Text(
-                      ' - ' + DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt),
+                      ' - ' + DateFormat('yyyy/MM/dd - HH:mm').format(widget.purchase.updatedAt),
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -133,7 +134,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.buyerId == idToUse(),
+            visible: widget.purchase.buyerId == idToUse(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -141,14 +142,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                   onPressed: () {
                     showDialog(
                       builder: (context) => ModifyPurchaseDialog(
-                        savedPurchase: SavedPurchase(
-                            buyerNickname: widget.data.buyerNickname,
-                            buyerId: widget.data.buyerId,
-                            buyerUsername: widget.data.buyerUsername,
-                            receivers: widget.data.receivers,
-                            totalAmount: widget.data.totalAmount,
-                            name: widget.data.name,
-                            purchaseId: widget.data.purchaseId),
+                        savedPurchase: widget.purchase,
                       ),
                       context: context,
                     ).then((value) {
@@ -184,7 +178,7 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
                       if (value != null && value) {
                         showDialog(
                             builder: (context) => FutureSuccessDialog(
-                                  future: _deleteElement(widget.data.purchaseId),
+                                  future: _deleteElement(widget.purchase.purchaseId),
                                   dataTrueText: 'delete_scf',
                                   onDataTrue: () {
                                     _onDeleteElement();

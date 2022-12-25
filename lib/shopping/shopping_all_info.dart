@@ -10,6 +10,8 @@ import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 
+import '../purchase/add_modify_purchase.dart';
+
 class ShoppingAllInfo extends StatefulWidget {
   final ShoppingRequestData data;
 

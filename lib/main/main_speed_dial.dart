@@ -5,7 +5,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../essentials/app_theme.dart';
+import 'package:csocsort_szamla/purchase/add_modify_purchase.dart';
 
 class MainPageSpeedDial extends StatefulWidget {
   final Function callback;
@@ -157,11 +157,13 @@ class _MainPageSpeedDialState extends State<MainPageSpeedDial> {
             ),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddPurchaseRoute(
-                            type: PurchaseType.newPurchase,
-                          ))).then((value) {
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddPurchaseRoute(
+                    type: PurchaseType.newPurchase,
+                  ),
+                ),
+              ).then((value) {
                 widget.callback();
               });
             }),

@@ -8,6 +8,7 @@ import 'package:csocsort_szamla/purchase/add_purchase_page.dart';
 import 'package:csocsort_szamla/shopping/shopping_all_info.dart';
 import 'package:flutter/material.dart';
 
+import '../purchase/add_modify_purchase.dart';
 import 'edit_request_dialog.dart';
 
 class ShoppingRequestData {
@@ -145,12 +146,14 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
             widget.callback(restoreId: widget.data.requestId);
             if (direction == DismissDirection.startToEnd && value == true) {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddPurchaseRoute(
-                            type: PurchaseType.fromShopping,
-                            shoppingData: widget.data,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddPurchaseRoute(
+                    type: PurchaseType.fromShopping,
+                    shoppingData: widget.data,
+                  ),
+                ),
+              );
             }
           });
         } else {

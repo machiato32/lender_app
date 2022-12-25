@@ -26,10 +26,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deletePayment(int id) async {
     try {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(
-          uri: '/payments/' + id.toString(),
-          context: context,
-          useGuest: useGuest);
+      await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
       Future.delayed(delayTime()).then((value) => _onDeletePayment());
       return true;
     } catch (_) {
@@ -73,8 +70,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.account_circle,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_circle, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.data.payerNickname,
@@ -91,8 +87,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.account_box,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.account_box, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                 ' - ' + widget.data.takerNickname,
@@ -108,14 +103,15 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.attach_money,
-                  color: Theme.of(context).colorScheme.secondary),
+              Icon(Icons.attach_money, color: Theme.of(context).colorScheme.secondary),
               Flexible(
                   child: Text(
                       ' - ' +
-                          widget.data.amount.printMoney(currentGroupCurrency),
-                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface))),
+                          widget.data.amount.toMoneyString(currentGroupCurrency, withSymbol: true),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
@@ -129,11 +125,11 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
               ),
               Flexible(
                   child: Text(
-                      ' - ' +
-                          DateFormat('yyyy/MM/dd - HH:mm')
-                              .format(widget.data.updatedAt),
-                      style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface))),
+                      ' - ' + DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface))),
             ],
           ),
           SizedBox(
@@ -165,8 +161,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.edit,
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
                         SizedBox(
                           width: 3,
                         ),
@@ -176,10 +171,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary),
+                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             overflow: TextOverflow.clip,
                           ),
                         ),
@@ -209,15 +201,16 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.delete,
-                          color: Theme.of(context).colorScheme.onPrimary),
+                      Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
                       SizedBox(
                         width: 3,
                       ),
                       Text(
                         'revoke'.tr(),
-                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ],
                   ),

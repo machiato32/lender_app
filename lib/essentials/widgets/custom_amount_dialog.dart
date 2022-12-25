@@ -81,7 +81,7 @@ class _CustomAmountDialogState extends State<CustomAmountDialog> {
             ),
             Text(
                 'chosen_amount'.tr() +
-                    sliderValue.printMoney(currency) +
+                    sliderValue.toMoneyString(currency, withSymbol: true) +
                     ' / ' +
                     (sliderValue / widget.maxMoney * 100).roundToDouble().toStringAsFixed(0) +
                     '%',

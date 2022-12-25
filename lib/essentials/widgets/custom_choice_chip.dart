@@ -57,6 +57,9 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
           // The state that has changed here is the animation object’s value.
         });
       });
+    if (widget.fillRatio != 0) {
+      animateColor(widget.fillRatio > ratioAnimation.value);
+    }
   }
 
   @override

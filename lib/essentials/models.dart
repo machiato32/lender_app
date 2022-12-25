@@ -27,7 +27,7 @@ class Member {
       balance: json['balance'] * 1.0,
       isAdmin: json['is_admin'] == 1,
       balanceOriginalCurrency: (json['original_balance'] ?? 0) * 1.0,
-      isCustomAmount: json['custom_amount'] == 1,
+      isCustomAmount: json['custom_amount'],
     );
   }
 

@@ -68,12 +68,12 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
               : Theme.of(context).colorScheme.onSecondaryContainer);
-      amountOriginal =
-          widget.purchase.totalAmountOriginalCurrency.printMoney(widget.purchase.originalCurrency);
+      amountOriginal = widget.purchase.totalAmountOriginalCurrency
+          .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       amountToSelfOriginal = (-widget.purchase.receivers
               .firstWhere((element) => element.memberId == idToUse())
               .balanceOriginalCurrency)
-          .printMoney(widget.purchase.originalCurrency);
+          .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       if (widget.purchase.receivers.length > 1) {
         names = widget.purchase.receivers.join(', ');
       } else {
@@ -96,8 +96,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           color: currentThemeName.contains('Gradient')
               ? Theme.of(context).colorScheme.onPrimary
               : Theme.of(context).colorScheme.onPrimaryContainer);
-      amountOriginal =
-          widget.purchase.totalAmountOriginalCurrency.printMoney(widget.purchase.originalCurrency);
+      amountOriginal = widget.purchase.totalAmountOriginalCurrency
+          .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       if (widget.purchase.receivers.length > 1) {
         names = widget.purchase.receivers.join(', ');
       } else {
@@ -122,7 +122,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       amountOriginal = (-widget.purchase.receivers
               .firstWhere((element) => element.memberId == idToUse())
               .balanceOriginalCurrency)
-          .printMoney(widget.purchase.originalCurrency);
+          .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       subTextStyle = Theme.of(context)
           .textTheme
           .bodySmall

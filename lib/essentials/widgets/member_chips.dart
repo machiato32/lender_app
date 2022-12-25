@@ -11,6 +11,7 @@ class MemberChips extends StatefulWidget {
   final bool allowMultiple;
   final List<Member> allMembers;
   final List<Member> membersChosen;
+  final Map<Member, double> customAmounts;
   final ValueChanged<List<Member>> membersChanged;
   final bool showDivisionDialog;
   final Function getMaxAmount;
@@ -21,6 +22,7 @@ class MemberChips extends StatefulWidget {
     @required this.allMembers,
     @required this.membersChanged,
     @required this.membersChosen,
+    this.customAmounts,
     this.selectedCurrency,
     this.showDivisionDialog = false,
     this.getMaxAmount,
@@ -58,12 +60,14 @@ class _MemberChipsState extends State<MemberChips> {
   void initState() {
     super.initState();
     membersChosen = widget.membersChosen;
+    customAmounts = widget.customAmounts ?? {};
   }
 
   @override
   void didUpdateWidget(covariant MemberChips oldWidget) {
     super.didUpdateWidget(oldWidget);
     membersChosen = widget.membersChosen;
+    customAmounts = widget.customAmounts ?? {};
   }
 
   @override

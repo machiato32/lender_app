@@ -1,11 +1,23 @@
 import 'dart:convert';
+import 'package:csocsort_szamla/essentials/currencies.dart';
+import 'package:csocsort_szamla/shopping/shopping_list_entry.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
 import '../config.dart';
+import '../essentials/app_theme.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/models.dart';
+import '../essentials/validation_rules.dart';
+import '../essentials/widgets/calculator.dart';
+import '../essentials/widgets/currency_picker_icon_button.dart';
+import '../essentials/widgets/error_message.dart';
+import '../essentials/widgets/member_chips.dart';
+
+enum PurchaseType { fromShopping, newPurchase, modifyPurchase }
 
 class AddModifyPurchase {
   TextEditingController amountController = TextEditingController();
@@ -15,7 +27,58 @@ class AddModifyPurchase {
   Map<Member, double> customAmountMap = Map<Member, double>();
   String selectedCurrency = currentGroupCurrency;
   FocusNode focusNode = FocusNode();
-  BuildContext context;
+  Function(BuildContext context) buttonPush;
+  void Function(void Function()) _setState;
+  PurchaseType purchaseType;
+  ShoppingRequestData shoppingRequest;
+  Purchase savedPurchase;
+  bool alreadyInitializedSave = false;
+  ThemeData theme = AppTheme.themes[currentThemeName];
+
+  void initAddModifyPurchase(
+    BuildContext context,
+    void Function(void Function()) setState, {
+    void Function(BuildContext context) buttonPush,
+    PurchaseType purchaseType,
+    ShoppingRequestData shoppingRequest,
+    Purchase savedPurchase,
+  }) {
+    assert((purchaseType == PurchaseType.fromShopping && shoppingRequest != null) ||
+        (purchaseType == PurchaseType.modifyPurchase && savedPurchase != null) ||
+        (purchaseType == PurchaseType.newPurchase));
+    this.purchaseType = purchaseType;
+    this.shoppingRequest = shoppingRequest;
+    this.savedPurchase = savedPurchase;
+    this.buttonPush = buttonPush ?? (context) {};
+    this._setState = setState;
+    if (purchaseType == PurchaseType.fromShopping) {
+      noteController.text = shoppingRequest.name;
+    } else if (purchaseType == PurchaseType.modifyPurchase) {
+      selectedCurrency = savedPurchase.originalCurrency;
+      noteController.text = savedPurchase.name;
+      amountController.text =
+          savedPurchase.totalAmountOriginalCurrency.toMoneyString(savedPurchase.originalCurrency);
+    }
+    members = getMembers(context);
+    focusNode.addListener(() {
+      _setState(() {});
+    });
+  }
+
+  Map<String, dynamic> generateBody(String name, double amount, List<Member> members) {
+    return {
+      "name": name,
+      "group": currentGroupId,
+      "amount": amount,
+      "currency": selectedCurrency,
+      "receivers": members
+          .map((member) => {
+                "user_id": member.memberId,
+                "amount": customAmountMap.containsKey(member) ? customAmountMap[member] : null,
+              })
+          .toList()
+    };
+  }
 
   Future<List<Member>> getMembers(BuildContext context, {bool overwriteCache = false}) async {
     try {
@@ -40,4 +103,156 @@ class AddModifyPurchase {
       throw _;
     }
   }
+
+  double amountForNonCustom() {
+    double sumCustom = 0;
+    customAmountMap.values.forEach((element) => sumCustom += element);
+    double amount = (double.tryParse(amountController.text) ?? 0.0) - sumCustom;
+    int membersChosen = 0;
+    for (bool isChosen in membersMap.values) {
+      if (isChosen) {
+        membersChosen++;
+      }
+    }
+    return amount / (membersChosen - customAmountMap.length);
+  }
+
+  TextFormField noteTextField(BuildContext context) => TextFormField(
+        validator: (value) => validateTextField({
+          isEmpty: [value],
+          minimalLength: [value, 3],
+        }),
+        decoration: InputDecoration(
+          hintText: 'note'.tr(),
+          filled: true,
+          prefixIcon: Icon(
+            Icons.note,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        inputFormatters: [LengthLimitingTextInputFormatter(50)],
+        controller: noteController,
+        onFieldSubmitted: (value) => buttonPush(context),
+      );
+  TextFormField amountTextField(BuildContext context) => TextFormField(
+        validator: (value) => validateTextField({
+          isEmpty: [value],
+          notValidNumber: [
+            value,
+          ]
+        }),
+        focusNode: focusNode,
+        decoration: InputDecoration(
+          hintText: 'full_amount'.tr(),
+          filled: true,
+          prefixIcon: GestureDetector(
+            onDoubleTap: () {
+              _setState(() {
+                selectedCurrency = currentGroupCurrency;
+              });
+            },
+            child: CurrencyPickerIconButton(
+              selectedCurrency: selectedCurrency,
+              onCurrencyChanged: (newCurrency) {
+                _setState(() {
+                  selectedCurrency = newCurrency ?? selectedCurrency;
+                });
+              },
+            ),
+          ),
+          suffixIcon: IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (context) {
+                  return SingleChildScrollView(
+                    child: Calculator(
+                      initial: amountController.text,
+                      callback: (String fromCalc) {
+                        _setState(() {
+                          amountController.text =
+                              (double.tryParse(fromCalc) ?? 0.0).toMoneyString(selectedCurrency);
+                        });
+                      },
+                    ),
+                  );
+                },
+              );
+            },
+            icon: Icon(
+              Icons.calculate,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ),
+        controller: amountController,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9\\.]'))],
+        onFieldSubmitted: (value) => buttonPush(context),
+      );
+  Center memberChooser(BuildContext context) => Center(
+        child: FutureBuilder(
+          future: members,
+          builder: (context, AsyncSnapshot<List<Member>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                for (Member member in snapshot.data) {
+                  if (!membersMap.containsKey(member)) {
+                    membersMap[member] = false;
+                  }
+                }
+                if (purchaseType == PurchaseType.fromShopping) {
+                  membersMap[snapshot.data
+                          .firstWhere((member) => member.memberId == shoppingRequest.requesterId)] =
+                      true;
+                } else if (purchaseType == PurchaseType.modifyPurchase && !alreadyInitializedSave) {
+                  for (Member member in savedPurchase.receivers) {
+                    Member memberInMap = membersMap.keys
+                        .firstWhere((element) => element.memberId == member.memberId);
+                    membersMap[memberInMap] = true;
+                    if (member.isCustomAmount) {
+                      customAmountMap[memberInMap] = member.balanceOriginalCurrency;
+                    }
+                  }
+                  alreadyInitializedSave = true;
+                }
+                return MemberChips(
+                  selectedCurrency: selectedCurrency,
+                  allowMultiple: true,
+                  allMembers: snapshot.data,
+                  membersChosen: snapshot.data.where((member) => membersMap[member]).toList(),
+                  customAmounts: customAmountMap,
+                  membersChanged: (members) {
+                    _setState(() {
+                      for (Member member in snapshot.data) {
+                        membersMap[member] = members.contains(member);
+                      }
+                    });
+                  },
+                  customAmountsChanged: (Map<Member, double> amounts) {
+                    _setState(() {
+                      customAmountMap = amounts;
+                    });
+                  },
+                  showDivisionDialog: true,
+                  getMaxAmount: () => double.tryParse(amountController.text) ?? 0.0,
+                );
+              } else {
+                return ErrorMessage(
+                  error: snapshot.error.toString(),
+                  locationOfError: 'add_purchase',
+                  callback: () {
+                    _setState(() {
+                      members = null;
+                      members = getMembers(context);
+                    });
+                  },
+                );
+              }
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+      );
 }

@@ -352,7 +352,7 @@ class _BalancesState extends State<Balances> {
                 secondChild: Text(
                   member.balance
                       .exchange(currentGroupCurrency, _selectedCurrency)
-                      .money(_selectedCurrency),
+                      .toMoneyString(_selectedCurrency),
                   style: textStyle,
                 ),
                 crossFadeState: CrossFadeState.showSecond,

@@ -603,7 +603,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 if (snapshot.hasData) {
                   String currency = snapshot.data['currency'];
                   double balance = snapshot.data['balance'] * 1.0;
-                  return Text('Σ: ' + balance.printMoney(currency),
+                  return Text('Σ: ' + balance.toMoneyString(currency, withSymbol: true),
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
