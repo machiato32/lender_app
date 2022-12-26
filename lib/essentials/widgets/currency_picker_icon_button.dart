@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/currency_picker_dropdown.dart';
 import 'package:flutter/material.dart';
 
@@ -34,12 +35,19 @@ class _CurrencyPickerIconButtonState extends State<CurrencyPickerIconButton> {
               );
             }).then((newCurrency) => widget.onCurrencyChanged(newCurrency));
       },
-      icon: Text(
-        getSymbol(widget.selectedCurrency),
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge
-            .copyWith(color: Theme.of(context).colorScheme.primary),
+      icon: Container(
+        constraints: BoxConstraints(maxWidth: 15),
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            getSymbol(widget.selectedCurrency),
+            style: Theme.of(context).textTheme.labelLarge.copyWith(
+                color: widget.selectedCurrency == currentGroupCurrency
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.tertiary,
+                fontSize: 18),
+          ),
+        ),
       ),
     );
   }

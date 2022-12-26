@@ -17,6 +17,7 @@ class MemberChips extends StatefulWidget {
   final Function getMaxAmount;
   final Function customAmountsChanged;
   final String selectedCurrency;
+  final bool noAnimation;
   const MemberChips({
     @required this.allowMultiple,
     @required this.allMembers,
@@ -27,6 +28,7 @@ class MemberChips extends StatefulWidget {
     this.showDivisionDialog = false,
     this.getMaxAmount,
     this.customAmountsChanged,
+    this.noAnimation = false,
   });
 
   @override
@@ -133,6 +135,7 @@ class _MemberChipsState extends State<MemberChips> {
             notSelectedColor: Theme.of(context).colorScheme.surface,
             notSelectedFontColor: Theme.of(context).colorScheme.onSurface,
             fillRatio: fillRatio * 1.0,
+            noAnimation: widget.noAnimation,
             onMemberChosen: (selected) {
               if (widget.customAmountsChanged != null) {
                 widget.customAmountsChanged(customAmounts);

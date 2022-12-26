@@ -392,5 +392,17 @@
     "reset": "Visszaállítás",
     "chosen_amount": "Választott összeg: ",
 
-    "amount_textbox_hint": "Tipp: bal oldalon megadhatod a tranzakció pénznemét."
+    "amount_textbox_hint": "Tipp: bal oldalon megadhatod a tranzakció pénznemét.",
+
+    "from_who": "Kicsoda:",
+    "to_who": "Ki(k)nek:",
+
+    "food": "Étel",
+    "groceries": "Élelmiszer",
+    "transport": "Transzport",
+    "entertainment": "Szórakozás",
+    "shopping": "Bevásárlás",
+    "health": "Egészség",
+    "other": "Egyéb",
+    "category_hint": "Válaszd ki a kategóriát"    
 }

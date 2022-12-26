@@ -99,6 +99,10 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
               ),
               Visibility(
                 visible: _index == 2,
+                child: purchaserChooser(context),
+              ),
+              Visibility(
+                visible: _index == 3,
                 child: memberChooser(context),
               ),
               SizedBox(
@@ -121,7 +125,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
                   ),
                   GradientButton(
                     onPressed: () {
-                      if (_index != 2) {
+                      if (_index != 3) {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
                           setState(() {
@@ -155,7 +159,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
                         }
                       }
                     },
-                    child: Icon(_index == 2 ? Icons.check : Icons.navigate_next,
+                    child: Icon(_index == 3 ? Icons.check : Icons.navigate_next,
                         color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],

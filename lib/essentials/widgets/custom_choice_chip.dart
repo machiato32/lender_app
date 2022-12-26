@@ -12,16 +12,23 @@ class CustomChoiceChip extends StatefulWidget {
   final bool selected;
   final Function onLongPress;
   final double fillRatio;
-  const CustomChoiceChip(
-      {this.member,
-      this.selected,
-      this.selectedColor,
-      this.notSelectedColor,
-      this.selectedFontColor,
-      this.notSelectedFontColor,
-      this.onMemberChosen,
-      this.onLongPress,
-      this.fillRatio});
+  final bool enabled;
+  final bool showCheck;
+  final bool noAnimation;
+  CustomChoiceChip({
+    @required this.member,
+    @required this.selected,
+    @required this.selectedColor,
+    @required this.notSelectedColor,
+    @required this.selectedFontColor,
+    @required this.notSelectedFontColor,
+    @required this.onMemberChosen,
+    @required this.fillRatio,
+    this.onLongPress,
+    this.enabled = true,
+    this.showCheck = true,
+    this.noAnimation = false,
+  }) {}
 
   @override
   State<CustomChoiceChip> createState() => _CustomChoiceChipState();
@@ -35,9 +42,11 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
 
   void animateColor(bool forward) {
     if (forward) {
-      controller.animateTo(widget.fillRatio, duration: Duration(milliseconds: 500));
+      controller.animateTo(widget.fillRatio,
+          duration: Duration(milliseconds: widget.noAnimation ? 0 : 500));
     } else {
-      controller.animateBack(widget.fillRatio, duration: Duration(milliseconds: 500));
+      controller.animateBack(widget.fillRatio,
+          duration: Duration(milliseconds: widget.noAnimation ? 0 : 500));
     }
   }
 
@@ -82,7 +91,7 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
         ),
       ),
       child: InkWell(
-        splashFactory: InkSplash.splashFactory,
+        splashFactory: widget.enabled ? InkSplash.splashFactory : NoSplash.splashFactory,
         borderRadius: BorderRadius.circular(8),
         child: AnimatedPadding(
           duration: checkAnimationDuration,
@@ -96,11 +105,13 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
                 firstChild: Container(),
                 secondChild: Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: Icon(
-                    Icons.check,
-                    color: widget.selectedFontColor,
-                    size: 18,
-                  ),
+                  child: widget.showCheck
+                      ? Icon(
+                          Icons.check,
+                          color: widget.selectedFontColor,
+                          size: 18,
+                        )
+                      : Container(),
                 ),
                 duration: checkAnimationDuration,
                 crossFadeState:
@@ -114,12 +125,14 @@ class _CustomChoiceChipState extends State<CustomChoiceChip> with SingleTickerPr
             ],
           ),
         ),
-        onTap: () {
-          FocusScope.of(context).unfocus();
-          bool selected = !widget.selected;
-          widget.onMemberChosen(selected);
-          animateColor(selected);
-        },
+        onTap: widget.enabled
+            ? () {
+                FocusScope.of(context).unfocus();
+                bool selected = !widget.selected;
+                widget.onMemberChosen(selected);
+                animateColor(selected);
+              }
+            : null,
         onLongPress: widget.onLongPress,
       ),
     );

@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:csocsort_szamla/essentials/currencies.dart';
-import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

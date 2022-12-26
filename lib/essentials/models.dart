@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../config.dart';
 
 class Member {
@@ -27,7 +28,7 @@ class Member {
       balance: json['balance'] * 1.0,
       isAdmin: json['is_admin'] == 1,
       balanceOriginalCurrency: (json['original_balance'] ?? 0) * 1.0,
-      isCustomAmount: json['custom_amount'],
+      isCustomAmount: json['custom_amount'] ?? false,
     );
   }
 
@@ -155,4 +156,35 @@ class Payment {
         reactions:
             json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
   }
+}
+
+enum CategoryType {
+  food,
+  groceries,
+  transport,
+  entertainment,
+  shopping,
+  health,
+  bills,
+  other,
+}
+
+class Category {
+  CategoryType type;
+  IconData icon;
+  String text;
+  Category({@required this.type, @required this.icon, @required this.text}) {
+    assert(type != null);
+    assert(icon != null);
+    assert(text != null);
+  }
+  static List<Category> categories = [
+    Category(type: CategoryType.food, icon: Icons.fastfood, text: 'food'),
+    Category(type: CategoryType.groceries, icon: Icons.shopping_basket, text: 'groceries'),
+    Category(type: CategoryType.transport, icon: Icons.train, text: 'transport'),
+    Category(type: CategoryType.entertainment, icon: Icons.movie_filter, text: 'entertainment'),
+    Category(type: CategoryType.shopping, icon: Icons.shopping_bag, text: 'shopping'),
+    Category(type: CategoryType.health, icon: Icons.health_and_safety, text: 'health'),
+    Category(type: CategoryType.other, icon: Icons.more_horiz, text: 'other'),
+  ];
 }

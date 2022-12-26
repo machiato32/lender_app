@@ -3,12 +3,16 @@ import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
+import 'package:csocsort_szamla/essentials/widgets/custom_choice_chip.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/purchase/add_modify_purchase.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../essentials/widgets/error_message.dart';
 import '../shopping/shopping_list_entry.dart';
 
 class AddPurchaseRoute extends StatefulWidget {
@@ -25,6 +29,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
   _AddPurchaseRouteState() : super();
 
   var _formKey = GlobalKey<FormState>();
+  ExpandableController _expandableController = ExpandableController();
 
   Future<bool> _postPurchase(
       List<Member> members, double amount, String name, BuildContext context) async {
@@ -98,48 +103,82 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Center(
-                                child: Text(
-                                  'add_purchase_explanation'.tr(),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
                               noteTextField(context),
                               SizedBox(
-                                height: 15,
+                                height: 12,
                               ),
-                              Center(
-                                child: Text(
-                                  'amount_textbox_hint'.tr(),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
-                                ),
-                              ),
+                              // Center(
+                              //   child: Text(
+                              //     'amount_textbox_hint'.tr(),
+                              //     textAlign: TextAlign.center,
+                              //     style: Theme.of(context)
+                              //         .textTheme
+                              //         .bodySmall
+                              //         .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                              //   ),
+                              // ),
                               SizedBox(
-                                height: 10,
+                                height: 8,
                               ),
                               amountTextField(context),
                               SizedBox(
-                                height: 15,
+                                height: 20,
                               ),
-                              Center(
-                                child: Text(
-                                  'custom_amount_hint'.tr(),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                              purchaserChooser(context),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Divider(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Ki(k)nek:',
+                                    style: Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _expandableController.expanded =
+                                            !_expandableController.expanded;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.info_outline,
+                                      color: _expandableController.expanded
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Expandable(
+                                controller: _expandableController,
+                                collapsed: Container(),
+                                expanded: Center(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'add_purchase_explanation'.tr(),
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context).textTheme.bodySmall.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'custom_amount_hint'.tr(),
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context).textTheme.bodySmall.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -147,7 +186,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
                               ),
                               memberChooser(context),
                               SizedBox(
-                                height: 10,
+                                height: 20,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
