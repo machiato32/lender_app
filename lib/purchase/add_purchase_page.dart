@@ -136,7 +136,7 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Ki(k)nek:',
+                                    'to_who'.plural(2),
                                     style: Theme.of(context).textTheme.labelLarge,
                                   ),
                                   IconButton(

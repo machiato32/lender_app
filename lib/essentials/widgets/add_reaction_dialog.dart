@@ -33,7 +33,6 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
       bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       await httpPost(
           context: context, uri: '/' + widget.type + '/reaction', body: body, useGuest: useGuest);
-      // Future.delayed(delayTime()).then((value) => _onSendReaction(reaction));
       return true;
     } catch (_) {
       throw _;
@@ -47,27 +46,28 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         margin: EdgeInsets.fromLTRB(4, 0, 4, 4),
         decoration: BoxDecoration(
           gradient: e.userId == idToUse()
-              ? AppTheme.gradientFromTheme(currentThemeName, useSecondary: true)
+              ? AppTheme.gradientFromTheme(currentThemeName, useSecondaryContainer: true)
               : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-                child: Text(
-              e.nickname,
-              style: e.userId == idToUse()
-                  ? Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onPrimary)
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-              overflow: TextOverflow.ellipsis,
-            )),
+              child: Text(
+                e.nickname,
+                style: e.userId == idToUse()
+                    ? Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer)
+                    : Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             Text(e.reaction)
           ],
         ),
@@ -94,52 +94,42 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              constraints: BoxConstraints(maxHeight: 100),
-              child: Row(
+            Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(300)),
+                children: Reaction.possibleReactions.map(
+                  (reaction) {
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        _sendReaction(reaction);
+                        _onSendReaction(reaction);
+                      },
+                      child: Ink(
+                        padding: EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: widget.reactions.firstWhere(
+                                      (el) => el.userId == idToUse() && el.reaction == reaction,
+                                      orElse: () => null) !=
+                                  null
+                              ? Theme.of(context).colorScheme.secondaryContainer
+                              : Colors.transparent,
+                        ),
+                        child: Container(
+                          constraints: BoxConstraints(
+                              maxWidth: min(50, MediaQuery.of(context).size.width / 2 / 6)),
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              reaction,
+                              style: TextStyle(fontSize: 50),
+                            ),
+                          ),
+                        ),
                       ),
-                      // color: Colors.grey,
-                      child: Row(
-                          children: Reaction.possibleReactions
-                              .map((e) => Material(
-                                    type: MaterialType.transparency,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(50),
-                                      onTap: () {
-                                        _sendReaction(e);
-                                        _onSendReaction(e);
-                                      },
-                                      child: Ink(
-                                          padding: EdgeInsets.all(3),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                                            color: widget.reactions.firstWhere(
-                                                        (el) =>
-                                                            el.userId == idToUse() &&
-                                                            el.reaction == e,
-                                                        orElse: () => null) !=
-                                                    null
-                                                ? Theme.of(context).colorScheme.secondary
-                                                : Colors.transparent,
-                                          ),
-                                          child: Text(
-                                            e,
-                                            style: TextStyle(
-                                                fontSize: min(
-                                                    MediaQuery.of(context).size.width / 13, 50)),
-                                          )),
-                                    ),
-                                  ))
-                              .toList())),
-                ],
-              ),
-            ),
+                    );
+                  },
+                ).toList()),
             Visibility(
               visible: widget.reactions.length != 0,
               child: Column(

@@ -22,7 +22,7 @@ class _CategoryPickerIconButton extends State<CategoryPickerIconButton> {
             builder: (context) {
               return Dialog(
                 child: Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(25),
                   child: CategoryPickerDropdown(
                     defaultCategoryValue: widget.selectedCategory,
                     onCategoryChanged: (newCategory) {

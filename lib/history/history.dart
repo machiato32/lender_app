@@ -129,281 +129,444 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
             SizedBox(
               height: 20,
             ),
-            TabBar(
-              indicatorColor: Colors.transparent,
-              controller: _tabController,
-              onTap: (_newIndex) {
-                setState(() {
-                  _selectedIndex = _newIndex;
-                });
-              },
-              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-              tabs: <Widget>[
-                InkWell(
-                  splashFactory: InkSparkle.splashFactory,
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: () {
-                    _selectedIndex = 0;
-                    _tabController.animateTo(_selectedIndex);
-                    Future.delayed(Duration(milliseconds: 50)).then((value) {
+            Row(
+              // indicatorColor: Colors.transparent,
+              // controller: _tabController,
+              // onTap: (_newIndex) {
+              //   setState(() {
+              //     _selectedIndex = _newIndex;
+              //   });
+              // },
+              // overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+
+              children: <Widget>[
+                Flexible(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: () {
+                      _selectedIndex = 0;
                       setState(() {});
-                    });
-                  },
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: _selectedIndex == 0
-                          ? AppTheme.gradientFromTheme(currentThemeName)
-                          : LinearGradient(colors: [
-                              ElevationOverlay.applyOverlay(
-                                  context, Theme.of(context).colorScheme.surface, 10),
-                              ElevationOverlay.applyOverlay(
-                                  context, Theme.of(context).colorScheme.surface, 10)
-                            ]),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.shopping_cart,
-                            color: _selectedIndex == 0
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurfaceVariant),
-                        SizedBox(
-                          width: 3,
-                        ),
-                        Flexible(
-                          child: Text(
-                            'purchases'.tr(),
-                            style: Theme.of(context).textTheme.labelLarge.copyWith(
-                                color: _selectedIndex == 0
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : Theme.of(context).colorScheme.onSurfaceVariant),
-                            overflow: TextOverflow.ellipsis,
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: _selectedIndex == 0
+                            ? AppTheme.gradientFromTheme(currentThemeName)
+                            : LinearGradient(colors: [
+                                ElevationOverlay.applyOverlay(
+                                    context, Theme.of(context).colorScheme.surface, 10),
+                                ElevationOverlay.applyOverlay(
+                                    context, Theme.of(context).colorScheme.surface, 10)
+                              ]),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.shopping_cart,
+                              color: _selectedIndex == 0
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurfaceVariant),
+                          SizedBox(
+                            width: 3,
                           ),
-                        ),
-                      ],
+                          Flexible(
+                            child: Text(
+                              'purchases'.tr(),
+                              style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                  color: _selectedIndex == 0
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.onSurfaceVariant),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                InkWell(
-                  splashFactory: InkSparkle.splashFactory,
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: () {
-                    _selectedIndex = 1;
-                    _tabController.animateTo(_selectedIndex);
-                    Future.delayed(Duration(milliseconds: 50)).then((value) {
+                SizedBox(width: 20),
+                Flexible(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: () {
+                      _selectedIndex = 1;
                       setState(() {});
-                    });
-                  },
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: _selectedIndex == 1
-                          ? AppTheme.gradientFromTheme(currentThemeName)
-                          : LinearGradient(colors: [
-                              ElevationOverlay.applyOverlay(
-                                  context, Theme.of(context).colorScheme.surface, 10),
-                              ElevationOverlay.applyOverlay(
-                                  context, Theme.of(context).colorScheme.surface, 10)
-                            ]),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.attach_money,
-                            color: _selectedIndex == 1
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurfaceVariant),
-                        SizedBox(
-                          width: 3,
-                        ),
-                        Flexible(
-                          child: Text(
-                            'payments'.tr(),
-                            style: Theme.of(context).textTheme.labelLarge.copyWith(
-                                color: _selectedIndex == 1
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : Theme.of(context).colorScheme.onSurfaceVariant),
-                            overflow: TextOverflow.ellipsis,
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: _selectedIndex == 1
+                            ? AppTheme.gradientFromTheme(currentThemeName)
+                            : LinearGradient(colors: [
+                                ElevationOverlay.applyOverlay(
+                                    context, Theme.of(context).colorScheme.surface, 10),
+                                ElevationOverlay.applyOverlay(
+                                    context, Theme.of(context).colorScheme.surface, 10)
+                              ]),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.attach_money,
+                              color: _selectedIndex == 1
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurfaceVariant),
+                          SizedBox(
+                            width: 3,
                           ),
-                        ),
-                      ],
+                          Flexible(
+                            child: Text(
+                              'payments'.tr(),
+                              style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                  color: _selectedIndex == 1
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.onSurfaceVariant),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            Container(
-              height: 550,
-              child: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: _tabController,
-                children: <Widget>[
-                  FutureBuilder(
-                    future: _purchases,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data.length == 0) {
-                            return Padding(
-                              padding: EdgeInsets.all(25),
-                              child: Text(
-                                'nothing_to_show'.tr(),
-                                style: Theme.of(context).textTheme.bodyText1,
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          }
-                          return Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 490,
-                                child: Column(
-                                  children: _generatePurchases(snapshot.data),
-                                ),
-                              ),
-                              Visibility(
-                                  visible: (snapshot.data as List).length > 5,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GradientButton(
-                                        useSecondary: true,
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => AllHistoryRoute(
-                                                  startingIndex: _tabController.index),
-                                            ),
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.more_horiz,
-                                              size: 18,
-                                              color: Theme.of(context).colorScheme.onSecondary,
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text(
-                                              'more'.tr(),
-                                              style: Theme.of(context).textTheme.button.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSecondary),
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                          ],
+            AnimatedCrossFade(
+              crossFadeState:
+                  _selectedIndex == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+              duration: Duration(milliseconds: 100),
+              firstChild: FutureBuilder(
+                future: _purchases,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            'nothing_to_show'.tr(),
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            // height: 490,
+                            child: Column(
+                              children: _generatePurchases(snapshot.data),
+                            ),
+                          ),
+                          Visibility(
+                              visible: (snapshot.data as List).length > 5,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GradientButton(
+                                    useSecondary: true,
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AllHistoryRoute(startingIndex: _tabController.index),
                                         ),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.more_horiz,
+                                          size: 18,
+                                          color: Theme.of(context).colorScheme.onSecondary,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          'more'.tr(),
+                                          style: Theme.of(context).textTheme.button.copyWith(
+                                              color: Theme.of(context).colorScheme.onSecondary),
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ))
+                        ],
+                      );
+                    } else {
+                      return ErrorMessage(
+                        error: snapshot.error.toString(),
+                        locationOfError: 'purchase_history',
+                        callback: () {
+                          setState(() {
+                            _purchases = null;
+                            _purchases = _getPurchases();
+                          });
+                        },
+                      );
+                    }
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
+              secondChild: FutureBuilder(
+                future: _payments,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            'nothing_to_show'.tr(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            // height: 490,
+                            child: Column(children: _generatePayments(snapshot.data)),
+                          ),
+                          Visibility(
+                            visible: (snapshot.data as List).length > 5,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientButton(
+                                  useSecondary: true,
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AllHistoryRoute(
+                                                  startingIndex: _tabController.index,
+                                                )));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.more_horiz,
+                                        color: Theme.of(context).colorScheme.onSecondary,
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        'more'.tr(),
+                                        style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                            color: Theme.of(context).colorScheme.onSecondary),
                                       ),
                                     ],
-                                  ))
-                            ],
-                          );
-                        } else {
-                          return ErrorMessage(
-                            error: snapshot.error.toString(),
-                            locationOfError: 'purchase_history',
-                            callback: () {
-                              setState(() {
-                                _purchases = null;
-                                _purchases = _getPurchases();
-                              });
-                            },
-                          );
-                        }
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                  FutureBuilder(
-                    future: _payments,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data.length == 0) {
-                            return Padding(
-                              padding: EdgeInsets.all(25),
-                              child: Text(
-                                'nothing_to_show'.tr(),
-                                style: Theme.of(context).textTheme.bodyLarge,
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          }
-                          return Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 490,
-                                child: Column(children: _generatePayments(snapshot.data)),
-                              ),
-                              Visibility(
-                                visible: (snapshot.data as List).length > 5,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GradientButton(
-                                      useSecondary: true,
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => AllHistoryRoute(
-                                                      startingIndex: _tabController.index,
-                                                    )));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.more_horiz,
-                                            color: Theme.of(context).colorScheme.onSecondary,
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            'more'.tr(),
-                                            style: Theme.of(context).textTheme.labelLarge.copyWith(
-                                                color: Theme.of(context).colorScheme.onSecondary),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              )
-                            ],
-                          );
-                        } else {
-                          return ErrorMessage(
-                            error: snapshot.error.toString(),
-                            locationOfError: 'payment_history',
-                            callback: () {
-                              setState(() {
-                                _payments = null;
-                                _payments = _getPayments();
-                              });
-                            },
-                          );
-                        }
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ],
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    } else {
+                      return ErrorMessage(
+                        error: snapshot.error.toString(),
+                        locationOfError: 'payment_history',
+                        callback: () {
+                          setState(() {
+                            _payments = null;
+                            _payments = _getPayments();
+                          });
+                        },
+                      );
+                    }
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
               ),
             )
+            // Container(
+            //   // height: 550,
+            //   child: TabBarView(
+            //     physics: NeverScrollableScrollPhysics(),
+            //     controller: _tabController,
+            //     children: <Widget>[
+            //       FutureBuilder(
+            //         future: _purchases,
+            //         builder: (context, snapshot) {
+            //           if (snapshot.connectionState == ConnectionState.done) {
+            //             if (snapshot.hasData) {
+            //               if (snapshot.data.length == 0) {
+            //                 return Padding(
+            //                   padding: EdgeInsets.all(25),
+            //                   child: Text(
+            //                     'nothing_to_show'.tr(),
+            //                     style: Theme.of(context).textTheme.bodyText1,
+            //                     textAlign: TextAlign.center,
+            //                   ),
+            //                 );
+            //               }
+            //               return Column(
+            //                 children: <Widget>[
+            //                   SizedBox(
+            //                     height: 10,
+            //                   ),
+            //                   Container(
+            //                     // height: 490,
+            //                     child: Column(
+            //                       children: _generatePurchases(snapshot.data),
+            //                     ),
+            //                   ),
+            //                   Visibility(
+            //                       visible: (snapshot.data as List).length > 5,
+            //                       child: Row(
+            //                         mainAxisAlignment: MainAxisAlignment.center,
+            //                         children: [
+            //                           GradientButton(
+            //                             useSecondary: true,
+            //                             onPressed: () {
+            //                               Navigator.push(
+            //                                 context,
+            //                                 MaterialPageRoute(
+            //                                   builder: (context) => AllHistoryRoute(
+            //                                       startingIndex: _tabController.index),
+            //                                 ),
+            //                               );
+            //                             },
+            //                             child: Row(
+            //                               children: [
+            //                                 Icon(
+            //                                   Icons.more_horiz,
+            //                                   size: 18,
+            //                                   color: Theme.of(context).colorScheme.onSecondary,
+            //                                 ),
+            //                                 SizedBox(
+            //                                   width: 8,
+            //                                 ),
+            //                                 Text(
+            //                                   'more'.tr(),
+            //                                   style: Theme.of(context).textTheme.button.copyWith(
+            //                                       color: Theme.of(context).colorScheme.onSecondary),
+            //                                 ),
+            //                                 SizedBox(
+            //                                   width: 8,
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ))
+            //                 ],
+            //               );
+            //             } else {
+            //               return ErrorMessage(
+            //                 error: snapshot.error.toString(),
+            //                 locationOfError: 'purchase_history',
+            //                 callback: () {
+            //                   setState(() {
+            //                     _purchases = null;
+            //                     _purchases = _getPurchases();
+            //                   });
+            //                 },
+            //               );
+            //             }
+            //           }
+            //           return Center(child: CircularProgressIndicator());
+            //         },
+            //       ),
+            //       FutureBuilder(
+            //         future: _payments,
+            //         builder: (context, snapshot) {
+            //           if (snapshot.connectionState == ConnectionState.done) {
+            //             if (snapshot.hasData) {
+            //               if (snapshot.data.length == 0) {
+            //                 return Padding(
+            //                   padding: EdgeInsets.all(25),
+            //                   child: Text(
+            //                     'nothing_to_show'.tr(),
+            //                     style: Theme.of(context).textTheme.bodyLarge,
+            //                     textAlign: TextAlign.center,
+            //                   ),
+            //                 );
+            //               }
+            //               return Column(
+            //                 children: <Widget>[
+            //                   SizedBox(
+            //                     height: 10,
+            //                   ),
+            //                   Container(
+            //                     height: 490,
+            //                     child: Column(children: _generatePayments(snapshot.data)),
+            //                   ),
+            //                   Visibility(
+            //                     visible: (snapshot.data as List).length > 5,
+            //                     child: Row(
+            //                       mainAxisAlignment: MainAxisAlignment.center,
+            //                       children: [
+            //                         GradientButton(
+            //                           useSecondary: true,
+            //                           onPressed: () {
+            //                             Navigator.push(
+            //                                 context,
+            //                                 MaterialPageRoute(
+            //                                     builder: (context) => AllHistoryRoute(
+            //                                           startingIndex: _tabController.index,
+            //                                         )));
+            //                           },
+            //                           child: Row(
+            //                             children: [
+            //                               Icon(
+            //                                 Icons.more_horiz,
+            //                                 color: Theme.of(context).colorScheme.onSecondary,
+            //                               ),
+            //                               SizedBox(
+            //                                 width: 4,
+            //                               ),
+            //                               Text(
+            //                                 'more'.tr(),
+            //                                 style: Theme.of(context).textTheme.labelLarge.copyWith(
+            //                                     color: Theme.of(context).colorScheme.onSecondary),
+            //                               ),
+            //                             ],
+            //                           ),
+            //                         ),
+            //                       ],
+            //                     ),
+            //                   )
+            //                 ],
+            //               );
+            //             } else {
+            //               return ErrorMessage(
+            //                 error: snapshot.error.toString(),
+            //                 locationOfError: 'payment_history',
+            //                 callback: () {
+            //                   setState(() {
+            //                     _payments = null;
+            //                     _payments = _getPayments();
+            //                   });
+            //                 },
+            //               );
+            //             }
+            //           }
+            //           return Center(child: CircularProgressIndicator());
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ),

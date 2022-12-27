@@ -176,11 +176,12 @@ class _PaymentEntryState extends State<PaymentEntry> {
           ),
         ),
         PastReactionContainer(
-            reactedToId: widget.data.paymentId,
-            reactions: widget.data.reactions,
-            callback: this.callbackForReaction,
-            isSecondaryColor: widget.data.payerId == idToUse(),
-            type: 'payments')
+          reactedToId: widget.data.paymentId,
+          reactions: widget.data.reactions,
+          callback: this.callbackForReaction,
+          isSecondaryColor: widget.data.payerId == idToUse(),
+          type: 'payments',
+        )
       ],
     );
   }

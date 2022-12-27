@@ -229,7 +229,7 @@ class AddModifyPurchase {
                           height: 5,
                         ),
                         Text(
-                          'Kicsoda: ',
+                          'from_who'.tr(),
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ],

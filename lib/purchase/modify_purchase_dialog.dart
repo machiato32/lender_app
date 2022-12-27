@@ -103,7 +103,17 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
               ),
               Visibility(
                 visible: _index == 3,
-                child: memberChooser(context),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'to_who'.plural(2),
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(child: memberChooser(context)),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 15,

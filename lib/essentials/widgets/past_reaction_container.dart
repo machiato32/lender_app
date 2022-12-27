@@ -57,50 +57,41 @@ class PastReactionContainer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            InkWell(
-              onTap: () {
-                showDialog(
-                    builder: (context) => AddReactionDialog(
-                          type: type,
-                          reactions: reactions,
-                          reactToId: reactedToId,
-                          callback: callback,
-                        ),
-                    context: context);
-              },
-              borderRadius: BorderRadius.circular(15),
-              child: Container(
-                  padding: EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    color: (Theme.of(context).brightness == Brightness.light)
-                        ? Colors.grey[200].harmonizeWith(Theme.of(context).colorScheme.primary)
-                        : ElevationOverlay.applyOverlay(
-                            context, Theme.of(context).colorScheme.surface, 15),
-                    // boxShadow:  (Theme.of(context).brightness==Brightness.light && !isSecondaryColor)
-                    //     ?[
-                    //       BoxShadow(
-                    //         color: Colors.grey[500],
-                    //         offset: Offset(0.0, 1.5),
-                    //         blurRadius: 1.5,
-                    //       )
-                    //     ]
-                    //     : []
-                  ),
-                  child: Row(
-                      children: orderedReactions.map((e) {
-                    if (e != null && double.tryParse(e) != null) {
-                      return Text(e,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant));
-                    }
-                    return Text(
-                      e,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    );
-                  }).toList())),
+            Material(
+              type: MaterialType.canvas,
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                      builder: (context) => AddReactionDialog(
+                            type: type,
+                            reactions: reactions,
+                            reactToId: reactedToId,
+                            callback: callback,
+                          ),
+                      context: context);
+                },
+                borderRadius: BorderRadius.circular(10),
+                child: Ink(
+                    padding: EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.surfaceVariant),
+                    child: Row(
+                        children: orderedReactions.map((reaction) {
+                      if (reaction != null && double.tryParse(reaction) != null) {
+                        return Text(reaction,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant));
+                      }
+                      return Text(
+                        reaction,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      );
+                    }).toList())),
+              ),
             ),
           ],
         ),

@@ -395,7 +395,10 @@
     "amount_textbox_hint": "Tipp: bal oldalon megadhatod a tranzakció pénznemét.",
 
     "from_who": "Kicsoda:",
-    "to_who": "Ki(k)nek:",
+    "to_who": {
+        "one": "Kinek:",
+        "other": "Ki(k)nek:"
+    },
 
     "food": "Étel",
     "groceries": "Élelmiszer",

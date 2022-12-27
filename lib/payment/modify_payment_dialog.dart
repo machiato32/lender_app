@@ -94,7 +94,20 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> with AddModif
               ),
               Visibility(
                 visible: _index == 2,
-                child: memberChooser(context),
+                child: payerChooser(context),
+              ),
+              Visibility(
+                visible: _index == 3,
+                child: Row(
+                  children: [
+                    Text(
+                      'to_who'.plural(1),
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(child: memberChooser(context)),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 15,
@@ -116,7 +129,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> with AddModif
                   ),
                   GradientButton(
                     onPressed: () {
-                      if (_index != 2) {
+                      if (_index != 3) {
                         if (_formKey.currentState.validate()) {
                           FocusScope.of(context).unfocus();
                           setState(() {
@@ -146,7 +159,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> with AddModif
                         }
                       }
                     },
-                    child: Icon(_index == 2 ? Icons.check : Icons.navigate_next,
+                    child: Icon(_index == 3 ? Icons.check : Icons.navigate_next,
                         color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],

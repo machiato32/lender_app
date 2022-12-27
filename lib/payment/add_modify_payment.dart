@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:csocsort_szamla/essentials/currencies.dart';
+import 'package:csocsort_szamla/essentials/widgets/custom_choice_chip.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,8 @@ class AddModifyPayment {
   Payment _savedPayment;
   bool _alreadyInitializedSave = false;
   ThemeData _theme = AppTheme.themes[currentThemeName];
+  int payerId;
+  CrossFadeState purchaserSelector = CrossFadeState.showFirst;
 
   void initAddModifyPayment(
     BuildContext context,
@@ -49,6 +52,7 @@ class AddModifyPayment {
           savedPayment.amountOriginalCurrency.toMoneyString(savedPayment.originalCurrency);
     }
     members = getMembers(context);
+    payerId = idToUse();
   }
 
   Future<List<Member>> getMembers(BuildContext context, {bool overwriteCache = false}) async {
@@ -63,12 +67,10 @@ class AddModifyPayment {
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
       for (var member in decoded['data']['members']) {
-        if (member['user_id'] != idToUse()) {
-          members.add(Member(
-              nickname: member['nickname'],
-              balance: (member['balance'] * 1.0),
-              memberId: member['user_id']));
-        }
+        members.add(Member(
+            nickname: member['nickname'],
+            balance: (member['balance'] * 1.0),
+            memberId: member['user_id']));
       }
       return members;
     } catch (_) {
@@ -82,7 +84,8 @@ class AddModifyPayment {
       'currency': selectedCurrency,
       'amount': amount,
       'note': note,
-      'taker_id': toMember.memberId
+      'taker_id': toMember.memberId,
+      'payer_id': payerId,
     };
   }
 
@@ -152,6 +155,110 @@ class AddModifyPayment {
         onFieldSubmitted: (value) => _buttonPush(context),
       );
 
+  Center payerChooser(BuildContext context) => Center(
+        child: FutureBuilder(
+          future: members,
+          builder: (context, AsyncSnapshot<List<Member>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'from_who'.tr(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: AnimatedCrossFade(
+                          duration: Duration(milliseconds: 300),
+                          reverseDuration: Duration(seconds: 0),
+                          crossFadeState: purchaserSelector,
+                          firstChild: Visibility(
+                            visible: purchaserSelector == CrossFadeState.showFirst,
+                            child: CustomChoiceChip(
+                              enabled: false,
+                              selected: true,
+                              showCheck: false,
+                              noAnimation: true,
+                              selectedColor: Theme.of(context).colorScheme.tertiaryContainer,
+                              selectedFontColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                              notSelectedColor: Theme.of(context).colorScheme.surface,
+                              notSelectedFontColor: Theme.of(context).colorScheme.onSurface,
+                              fillRatio: 1,
+                              member: snapshot.data
+                                  .firstWhere((element) => element.memberId == payerId),
+                              onMemberChosen: (chosen) {},
+                            ),
+                          ),
+                          secondChild: MemberChips(
+                            allMembers: snapshot.data,
+                            allowMultiple: false,
+                            noAnimation: true,
+                            membersChosen: snapshot.data
+                                .where((element) => element.memberId == payerId)
+                                .toList(),
+                            membersChanged: (newMembers) {
+                              _setState(() {
+                                purchaserSelector = CrossFadeState.showFirst;
+                                if (newMembers.isNotEmpty) {
+                                  payerId = newMembers.first.memberId;
+                                  if (selectedMember != null &&
+                                      selectedMember.memberId == payerId) {
+                                    selectedMember = null;
+                                  }
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          _setState(() {
+                            if (purchaserSelector == CrossFadeState.showFirst) {
+                              purchaserSelector = CrossFadeState.showSecond;
+                            } else {
+                              purchaserSelector = CrossFadeState.showFirst;
+                            }
+                          });
+                        },
+                        icon: Icon(
+                          purchaserSelector == CrossFadeState.showSecond
+                              ? Icons.arrow_drop_up
+                              : Icons.arrow_drop_down,
+                          color: purchaserSelector == CrossFadeState.showSecond
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
+                        )),
+                  ],
+                );
+              }
+              return ErrorMessage(
+                error: snapshot.error.toString(),
+                locationOfError: 'add_payment',
+                callback: () {
+                  _setState(() {
+                    members = null;
+                    members = getMembers(context);
+                  });
+                },
+              );
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+      );
+
   Center memberChooser(BuildContext context) => Center(
         child: FutureBuilder(
           future: members,
@@ -167,7 +274,8 @@ class AddModifyPayment {
                 }
                 return MemberChips(
                   allowMultiple: false,
-                  allMembers: snapshot.data,
+                  allMembers:
+                      snapshot.data.where((element) => element.memberId != payerId).toList(),
                   membersChanged: (members) {
                     selectedMember = members.isEmpty ? null : members[0];
                   },

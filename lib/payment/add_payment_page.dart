@@ -97,6 +97,21 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> with AddModifyPayment
                               SizedBox(
                                 height: 20,
                               ),
+                              payerChooser(context),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Divider(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'to_who'.plural(1),
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               memberChooser(context),
                             ],
                           ),

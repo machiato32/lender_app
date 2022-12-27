@@ -1,4 +1,5 @@
 import 'package:csocsort_szamla/essentials/models.dart';
+import 'package:csocsort_szamla/essentials/widgets/custom_choice_chip.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -25,63 +26,60 @@ class CategoryPickerDropdown extends StatefulWidget {
 }
 
 class _CategoryPickerDropdown extends State<CategoryPickerDropdown> {
-  Category _defaultCurrencyValue;
+  // Category _defaultCurrencyValue;
 
   @override
   void initState() {
     super.initState();
-    _defaultCurrencyValue = widget.defaultCategoryValue;
+    // _defaultCurrencyValue = widget.defaultCategoryValue;
   }
 
   @override
   Widget build(BuildContext context) {
-    _defaultCurrencyValue = widget.defaultCategoryValue;
-    return ButtonTheme(
-      alignedDropdown: true,
-      child: DropdownButtonFormField(
-        decoration: InputDecoration(
-            filled: widget.filled,
-            contentPadding: widget.noContentPadding ? EdgeInsets.only(top: 0) : null),
-        elevation: 0,
-        isExpanded: true,
-        iconEnabledColor: widget.textColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
-        onChanged: (Category value) {
-          widget.onCategoryChanged(value);
-          setState(() {
-            _defaultCurrencyValue = value;
-          });
-        },
-        value: _defaultCurrencyValue,
-        borderRadius: BorderRadius.circular(12),
-        dropdownColor: ElevationOverlay.applySurfaceTint(
-            widget.dropdownColor ?? Theme.of(context).colorScheme.surface,
-            Theme.of(context).colorScheme.surfaceTint,
-            2),
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge
-            .copyWith(color: widget.textColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
-        menuMaxHeight: 500,
-        hint: Text('category_hint'.tr()),
-        items: Category.categories
-            .map((category) => DropdownMenuItem(
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(child: Text(category.text.tr())),
-                        Icon(
-                          category.icon,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                  ),
-                  value: category,
-                  onTap: () {},
-                ))
-            .toList(),
-      ),
+    // _defaultCurrencyValue = widget.defaultCategoryValue;
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      alignment: WrapAlignment.center,
+      children: Category.categories.map((category) {
+        return InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            widget.onCategoryChanged(category);
+          },
+          child: Ink(
+            width: 75,
+            // height: 75,
+            decoration: BoxDecoration(
+              color: widget.defaultCategoryValue == category
+                  ? Theme.of(context).colorScheme.tertiary
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  category.icon,
+                  color: widget.defaultCategoryValue == category
+                      ? Theme.of(context).colorScheme.onTertiary
+                      : Theme.of(context).colorScheme.primary,
+                ),
+                Text(
+                  category.text.tr(),
+                  style: Theme.of(context).textTheme.labelSmall.copyWith(
+                        color: widget.defaultCategoryValue == category
+                            ? Theme.of(context).colorScheme.onTertiary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
