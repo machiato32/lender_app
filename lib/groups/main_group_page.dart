@@ -111,6 +111,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       await httpPost(uri: '/logout', context: context, body: {});
       await clearAllCache();
       deleteUserId();
+      deleteUserCurrency();
       deleteGroupId();
       deleteGroupName();
       deleteGroupCurrency();
@@ -573,7 +574,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.all(Radius.circular(28)),
                     ),
                     leading: Icon(
-                      Icons.create,
+                      Icons.library_add,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     title: Text(

@@ -228,6 +228,7 @@ class _LoginPageState extends State<LoginPage> {
         trialVersion = decoded['data']['trial'] == 1;
         saveUsername(decoded['data']['username']);
         saveUserId(decoded['data']['id']);
+        saveUserCurrency(decoded['data']['default_currency']);
         saveApiToken(decoded['data']['api_token']);
         await clearAllCache();
         return await _selectGroup(decoded['data']['last_active_group']);

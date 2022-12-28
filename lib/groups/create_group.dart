@@ -133,7 +133,7 @@ class _CreateGroupState extends State<CreateGroup> {
                               children: <Widget>[
                                 Text(
                                   'currency_of_group'.tr(),
-                                  style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                                  style: Theme.of(context).textTheme.labelLarge.copyWith(
                                       color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 ),
                                 SizedBox(

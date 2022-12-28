@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:csocsort_szamla/user_settings/change_user_currency.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,8 @@ class _SettingsState extends State<Settings> {
       ResetTutorial(),
       Visibility(visible: showAds, child: PersonalisedAds()),
       AboutUs(),
-      DeleteAllData()
+      DeleteAllData(),
+      ChangeUserCurrency(),
     ];
   }
 }

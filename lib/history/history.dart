@@ -23,10 +23,9 @@ class History extends StatefulWidget {
   _HistoryState createState() => _HistoryState();
 }
 
-class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
+class _HistoryState extends State<History> {
   Future<List<Payment>> _payments;
   Future<List<Purchase>> _purchases;
-  TabController _tabController;
   int _selectedIndex;
   Future<List<Purchase>> _getPurchases({bool overwriteCache = false}) async {
     try {
@@ -83,7 +82,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _selectedIndex = widget.selectedIndex;
     _payments = null;
     _payments = _getPayments();
@@ -130,15 +128,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
               height: 20,
             ),
             Row(
-              // indicatorColor: Colors.transparent,
-              // controller: _tabController,
-              // onTap: (_newIndex) {
-              //   setState(() {
-              //     _selectedIndex = _newIndex;
-              //   });
-              // },
-              // overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-
               children: <Widget>[
                 Flexible(
                   child: InkWell(
@@ -275,7 +264,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              AllHistoryRoute(startingIndex: _tabController.index),
+                                              AllHistoryRoute(startingIndex: _selectedIndex),
                                         ),
                                       );
                                     },
@@ -317,7 +306,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       );
                     }
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return Padding(
+                    padding: const EdgeInsets.all(80),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
                 },
               ),
               secondChild: FutureBuilder(
@@ -356,7 +348,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => AllHistoryRoute(
-                                                  startingIndex: _tabController.index,
+                                                  startingIndex: _selectedIndex,
                                                 )));
                                   },
                                   child: Row(
@@ -394,179 +386,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       );
                     }
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return Padding(
+                    padding: const EdgeInsets.all(80),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
                 },
               ),
-            )
-            // Container(
-            //   // height: 550,
-            //   child: TabBarView(
-            //     physics: NeverScrollableScrollPhysics(),
-            //     controller: _tabController,
-            //     children: <Widget>[
-            //       FutureBuilder(
-            //         future: _purchases,
-            //         builder: (context, snapshot) {
-            //           if (snapshot.connectionState == ConnectionState.done) {
-            //             if (snapshot.hasData) {
-            //               if (snapshot.data.length == 0) {
-            //                 return Padding(
-            //                   padding: EdgeInsets.all(25),
-            //                   child: Text(
-            //                     'nothing_to_show'.tr(),
-            //                     style: Theme.of(context).textTheme.bodyText1,
-            //                     textAlign: TextAlign.center,
-            //                   ),
-            //                 );
-            //               }
-            //               return Column(
-            //                 children: <Widget>[
-            //                   SizedBox(
-            //                     height: 10,
-            //                   ),
-            //                   Container(
-            //                     // height: 490,
-            //                     child: Column(
-            //                       children: _generatePurchases(snapshot.data),
-            //                     ),
-            //                   ),
-            //                   Visibility(
-            //                       visible: (snapshot.data as List).length > 5,
-            //                       child: Row(
-            //                         mainAxisAlignment: MainAxisAlignment.center,
-            //                         children: [
-            //                           GradientButton(
-            //                             useSecondary: true,
-            //                             onPressed: () {
-            //                               Navigator.push(
-            //                                 context,
-            //                                 MaterialPageRoute(
-            //                                   builder: (context) => AllHistoryRoute(
-            //                                       startingIndex: _tabController.index),
-            //                                 ),
-            //                               );
-            //                             },
-            //                             child: Row(
-            //                               children: [
-            //                                 Icon(
-            //                                   Icons.more_horiz,
-            //                                   size: 18,
-            //                                   color: Theme.of(context).colorScheme.onSecondary,
-            //                                 ),
-            //                                 SizedBox(
-            //                                   width: 8,
-            //                                 ),
-            //                                 Text(
-            //                                   'more'.tr(),
-            //                                   style: Theme.of(context).textTheme.button.copyWith(
-            //                                       color: Theme.of(context).colorScheme.onSecondary),
-            //                                 ),
-            //                                 SizedBox(
-            //                                   width: 8,
-            //                                 ),
-            //                               ],
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ))
-            //                 ],
-            //               );
-            //             } else {
-            //               return ErrorMessage(
-            //                 error: snapshot.error.toString(),
-            //                 locationOfError: 'purchase_history',
-            //                 callback: () {
-            //                   setState(() {
-            //                     _purchases = null;
-            //                     _purchases = _getPurchases();
-            //                   });
-            //                 },
-            //               );
-            //             }
-            //           }
-            //           return Center(child: CircularProgressIndicator());
-            //         },
-            //       ),
-            //       FutureBuilder(
-            //         future: _payments,
-            //         builder: (context, snapshot) {
-            //           if (snapshot.connectionState == ConnectionState.done) {
-            //             if (snapshot.hasData) {
-            //               if (snapshot.data.length == 0) {
-            //                 return Padding(
-            //                   padding: EdgeInsets.all(25),
-            //                   child: Text(
-            //                     'nothing_to_show'.tr(),
-            //                     style: Theme.of(context).textTheme.bodyLarge,
-            //                     textAlign: TextAlign.center,
-            //                   ),
-            //                 );
-            //               }
-            //               return Column(
-            //                 children: <Widget>[
-            //                   SizedBox(
-            //                     height: 10,
-            //                   ),
-            //                   Container(
-            //                     height: 490,
-            //                     child: Column(children: _generatePayments(snapshot.data)),
-            //                   ),
-            //                   Visibility(
-            //                     visible: (snapshot.data as List).length > 5,
-            //                     child: Row(
-            //                       mainAxisAlignment: MainAxisAlignment.center,
-            //                       children: [
-            //                         GradientButton(
-            //                           useSecondary: true,
-            //                           onPressed: () {
-            //                             Navigator.push(
-            //                                 context,
-            //                                 MaterialPageRoute(
-            //                                     builder: (context) => AllHistoryRoute(
-            //                                           startingIndex: _tabController.index,
-            //                                         )));
-            //                           },
-            //                           child: Row(
-            //                             children: [
-            //                               Icon(
-            //                                 Icons.more_horiz,
-            //                                 color: Theme.of(context).colorScheme.onSecondary,
-            //                               ),
-            //                               SizedBox(
-            //                                 width: 4,
-            //                               ),
-            //                               Text(
-            //                                 'more'.tr(),
-            //                                 style: Theme.of(context).textTheme.labelLarge.copyWith(
-            //                                     color: Theme.of(context).colorScheme.onSecondary),
-            //                               ),
-            //                             ],
-            //                           ),
-            //                         ),
-            //                       ],
-            //                     ),
-            //                   )
-            //                 ],
-            //               );
-            //             } else {
-            //               return ErrorMessage(
-            //                 error: snapshot.error.toString(),
-            //                 locationOfError: 'payment_history',
-            //                 callback: () {
-            //                   setState(() {
-            //                     _payments = null;
-            //                     _payments = _getPayments();
-            //                   });
-            //                 },
-            //               );
-            //             }
-            //           }
-            //           return Center(child: CircularProgressIndicator());
-            //         },
-            //       ),
-            //     ],
-            //   ),
-            // )
+            ),
           ],
         ),
       ),

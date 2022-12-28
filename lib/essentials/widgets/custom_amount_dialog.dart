@@ -95,7 +95,7 @@ class _CustomAmountDialogState extends State<CustomAmountDialog> {
                   onUpdate: () {
                     double value = hasSubunit(currency) ? 0.01 : 1;
                     setState(() {
-                      if (sliderValue - value <= widget.maxValue) {
+                      if (sliderValue - value >= widget.minValue) {
                         sliderValue -= value;
                       }
                     });

@@ -45,6 +45,11 @@ void saveUserId(int newUserId) {
   _saveInt('current_user_id', newUserId);
 }
 
+void saveUserCurrency(String newUserCurrency) {
+  currentUserCurrency = newUserCurrency;
+  _saveString('current_user_currency', newUserCurrency);
+}
+
 void saveGroupName(String groupName) {
   currentGroupName = groupName;
   _saveString('current_group_name', groupName);
@@ -82,8 +87,8 @@ void saveGuestNickname(String newGuestNickname) {
 
 ///If [usersGroupIds] are already saved locally
 void saveUsersGroupIds() {
-  _getPrefs().then((value) => value.setStringList('users_group_ids',
-      usersGroupIds.map<String>((e) => e.toString()).toList()));
+  _getPrefs().then((value) => value.setStringList(
+      'users_group_ids', usersGroupIds.map<String>((e) => e.toString()).toList()));
 }
 
 ///If [usersGroups] are already saved locally
@@ -105,6 +110,11 @@ void deleteUsername() {
 void deleteUserId() {
   currentUserId = null;
   _delete('current_user_id');
+}
+
+void deleteUserCurrency() {
+  currentUserCurrency = null;
+  _delete('current_user_currency');
 }
 
 void deleteGroupName() {
@@ -157,6 +167,7 @@ Future loadAllPrefs() async {
     if (preferences.containsKey('current_username')) {
       currentUsername = preferences.getString('current_username');
       currentUserId = preferences.getInt('current_user_id');
+      currentUserCurrency = preferences.getString('current_user_currency');
       apiToken = preferences.getString('api_token');
     }
     if (preferences.containsKey('current_user')) {
@@ -169,10 +180,8 @@ Future loadAllPrefs() async {
     }
     if (preferences.containsKey('users_groups')) {
       usersGroups = preferences.getStringList('users_groups');
-      usersGroupIds = preferences
-          .getStringList('users_group_ids')
-          .map((e) => int.parse(e))
-          .toList();
+      usersGroupIds =
+          preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
     }
     if (preferences.containsKey('guest_nickname')) {
       guestNickname = preferences.getString('guest_nickname');

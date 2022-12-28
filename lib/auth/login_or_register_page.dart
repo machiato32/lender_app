@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'login_page.dart';
-import 'register_page.dart';
+import 'package:csocsort_szamla/auth/registration/name_page.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   final String inviteURL;
@@ -129,7 +129,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
             ),
             Center(
               child: Text(
-                'title'.tr().toUpperCase(),
+                'title'.tr(),
                 style: Theme.of(context)
                     .textTheme
                     .headlineMedium
@@ -156,11 +156,13 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
             GradientButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginPage(
-                              inviteURL: widget.inviteURL,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(
+                      inviteURL: widget.inviteURL,
+                    ),
+                  ),
+                );
               },
               child: Text(
                 'login'.tr(),
@@ -175,9 +177,13 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
             GradientButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RegisterPage(inviteURL: widget.inviteURL)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NamePage(
+                      inviteUrl: widget.inviteURL,
+                    ),
+                  ),
+                );
               },
               child: Text('register'.tr(),
                   style: Theme.of(context)

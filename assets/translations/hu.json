@@ -1,6 +1,6 @@
 {
-    "title": "Lender",
-    "subtitle": "Pénz- és adósságkezelő alkalmazás csoportoknak",
+    "title": "Dodo",
+    "subtitle": "Privacy-focused bill splitting",
 
     "login": "Bejelentkezés",
     "register": "Regisztráció",
@@ -197,11 +197,11 @@
     "add_reaction": "Reakció hozzáadása",
     "all_reactions": "Eddigi reakciók",
 
-    "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit és számokat használhatsz. Később a csoportban megadhatsz becenevet.",
+    "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit, számokat és a . karaktert használhatod. Később a csoportban megadhatsz becenevet.",
     "reminder_explanation": "Nem tároljuk e-mail címed, így amennyiben elfelejtenéd jelszavad, ezt az emlékeztetőt mutatjuk meg neked.",
 
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
-    "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót!",
+    "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót",
 
     "gradient_available_in_paid_version": "A színátmenetes és dinamikus témákat megveheted az alkalmazáson belül",
 
@@ -407,5 +407,20 @@
     "shopping": "Bevásárlás",
     "health": "Egészség",
     "other": "Egyéb",
-    "category_hint": "Válaszd ki a kategóriát"    
+    "category_hint": "Válaszd ki a kategóriát",
+
+    "change_user_currency": "Alapértelmezett pénznem megváltoztatása",
+    "change_user_currency_explanation": "Ezzel megváltoztatod azt a pénznemet, amelyben pl. az összefoglaló megjelenik.",
+
+    "pin": "Pin",
+    "confirm_pin": "Pin megerősítése",
+
+    "4_needed": "4 szám szükséges",
+
+    "we_are_concerned_your_privacy": "Figyelünk az adataid biztonságára",
+
+    "char_not_allowed": "A(z) „{}“ karakter nem megengedett",
+    "username_taken": "A felhasználónév már foglalt",
+
+    "pins_not_match": "A megadott PIN-ek nem egyeznek"
 }

@@ -44,6 +44,7 @@ class _JoinGroupState extends State<JoinGroup> {
       await httpPost(context: context, uri: '/logout', body: {});
       deleteApiToken();
       deleteUserId();
+      deleteUserCurrency();
       deleteGroupId();
       deleteGroupName();
     } catch (_) {

@@ -77,6 +77,7 @@ class Purchase {
   String name;
   List<Reaction> reactions;
   String originalCurrency;
+  Category category;
 
   Purchase({
     this.updatedAt,
@@ -90,6 +91,7 @@ class Purchase {
     this.name,
     this.reactions,
     this.originalCurrency,
+    this.category,
   });
 
   factory Purchase.fromJson(Map<String, dynamic> json) {
@@ -108,6 +110,7 @@ class Purchase {
       receivers: json['receivers'].map<Member>((element) => Member.fromJson(element)).toList(),
       reactions:
           json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList(),
+      category: Category.fromJson(json["category"]),
     );
   }
 }
@@ -139,22 +142,23 @@ class Payment {
 
   factory Payment.fromJson(Map<String, dynamic> json) {
     return Payment(
-        paymentId: json['payment_id'],
-        amount: (json['amount'] * 1.0),
-        updatedAt: json['updated_at'] == null
-            ? DateTime.now()
-            : DateTime.parse(json['updated_at']).toLocal(),
-        payerId: json['payer_id'],
-        payerUsername: json['payer_username'],
-        payerNickname: json['payer_nickname'],
-        takerId: json['taker_id'],
-        takerUsername: json['taker_username'],
-        takerNickname: json['taker_nickname'],
-        note: json['note'],
-        originalCurrency: json['original_currency'] ?? currentGroupCurrency,
-        amountOriginalCurrency: (json['original_amount'] ?? json['amount']) * 1.0,
-        reactions:
-            json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList());
+      paymentId: json['payment_id'],
+      amount: (json['amount'] * 1.0),
+      updatedAt: json['updated_at'] == null
+          ? DateTime.now()
+          : DateTime.parse(json['updated_at']).toLocal(),
+      payerId: json['payer_id'],
+      payerUsername: json['payer_username'],
+      payerNickname: json['payer_nickname'],
+      takerId: json['taker_id'],
+      takerUsername: json['taker_username'],
+      takerNickname: json['taker_nickname'],
+      note: json['note'],
+      originalCurrency: json['original_currency'] ?? currentGroupCurrency,
+      amountOriginalCurrency: (json['original_amount'] ?? json['amount']) * 1.0,
+      reactions:
+          json['reactions'].map<Reaction>((reaction) => Reaction.fromJson(reaction)).toList(),
+    );
   }
 }
 
@@ -178,6 +182,14 @@ class Category {
     assert(icon != null);
     assert(text != null);
   }
+
+  factory Category.fromJson(String categoryName) {
+    if (categoryName != null) {
+      return Category.categories.firstWhere((category) => category.text == categoryName);
+    }
+    return null;
+  }
+
   static List<Category> categories = [
     Category(type: CategoryType.food, icon: Icons.fastfood, text: 'food'),
     Category(type: CategoryType.groceries, icon: Icons.shopping_basket, text: 'groceries'),

@@ -21,6 +21,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
       deleteUserId();
       deleteUsersGroupIds();
       deleteUsername();
+      deleteUserCurrency();
       deleteUsersGroups();
       deleteGroupName();
       deleteGroupId();
@@ -34,9 +35,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
 
   void _onDeleteAllData() {
     Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginOrRegisterPage()),
-        (r) => false);
+        context, MaterialPageRoute(builder: (context) => LoginOrRegisterPage()), (r) => false);
   }
 
   @override
@@ -50,8 +49,10 @@ class _DeleteAllDataState extends State<DeleteAllData> {
             Center(
                 child: Text(
               'delete_all_data'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -60,8 +61,10 @@ class _DeleteAllDataState extends State<DeleteAllData> {
             Center(
               child: Text(
                 'delete_all_data_explanation'.tr(),
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -72,8 +75,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.delete_forever,
-                      color: Theme.of(context).colorScheme.onPrimary),
+                  child: Icon(Icons.delete_forever, color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
                     showDialog(
                             builder: (context) => ConfirmChoiceDialog(

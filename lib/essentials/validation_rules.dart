@@ -94,3 +94,18 @@ String matchString(List<dynamic> arguments) {
   }
   return null;
 }
+
+String allowedRegEx(List<dynamic> arguments) {
+  String value = arguments[0];
+  RegExp regExp = arguments[1];
+  String match = regExp.stringMatch(value);
+  if (match != null) {
+    return 'char_not_allowed'.tr(args: [match]);
+  }
+  return null;
+}
+
+String throwError(List<dynamic> arguments) {
+  String error = arguments[0];
+  return error.tr();
+}

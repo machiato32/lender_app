@@ -183,36 +183,57 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Flexible(
-                                    child: Text(
-                                  note,
-                                  style: mainTextStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
+                                  child: Text(
+                                    note,
+                                    style: mainTextStyle,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                                 Flexible(
-                                    child: Text(
-                                  names,
-                                  style: subTextStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                ))
+                                  child: Text(
+                                    names,
+                                    style: subTextStyle,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          amountOriginal,
-                          style: mainTextStyle,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              amountOriginal,
+                              style: mainTextStyle,
+                            ),
+                            Visibility(
+                              visible: received && bought,
+                              child: Text(
+                                amountToSelfOriginal,
+                                style: mainTextStyle,
+                              ),
+                            ),
+                          ],
                         ),
                         Visibility(
-                          visible: received && bought,
-                          child: Text(
-                            amountToSelfOriginal,
-                            style: mainTextStyle,
+                          visible: widget.purchase.category != null,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Icon(
+                              widget.purchase.category != null
+                                  ? widget.purchase.category.icon
+                                  : Icons.not_interested,
+                              color: widget.purchase.category != null
+                                  ? mainTextStyle.color
+                                  : Colors.transparent,
+                            ),
                           ),
                         ),
                       ],
