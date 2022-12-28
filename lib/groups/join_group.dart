@@ -45,6 +45,7 @@ class _JoinGroupState extends State<JoinGroup> {
       deleteApiToken();
       deleteUserId();
       deleteUserCurrency();
+      deleteUsesPassword();
       deleteGroupId();
       deleteGroupName();
     } catch (_) {
@@ -70,6 +71,11 @@ class _JoinGroupState extends State<JoinGroup> {
         usersGroups.add(decoded['data']['group_name']);
         saveUsersGroupIds();
         saveUsersGroups();
+        if ((decoded['data']['members'] as List<Map<String, dynamic>>)
+            .where((element) => element['is_guest'] == 1)
+            .isNotEmpty) {
+          //TODO: show merge guest
+        }
         Future.delayed(delayTime()).then((value) => _onJoinGroup());
       } else {
         return false;

@@ -5,6 +5,7 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/groups/dialogs/add_guest_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -102,14 +103,15 @@ class _InvitationState extends State<Invitation> {
               height: 10,
             ),
             Center(
-                child: Text(
-              'invitation_explanation'.tr(),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
-              textAlign: TextAlign.center,
-            )),
+              child: Text(
+                'invite_friends'.tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                textAlign: TextAlign.center,
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -118,11 +120,11 @@ class _InvitationState extends State<Invitation> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
+                    print(snapshot.data);
                     return Column(
                       children: [
                         Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
                               GradientButton(
                                 onPressed: () {
@@ -139,6 +141,30 @@ class _InvitationState extends State<Invitation> {
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
+                              SizedBox(height: 10),
+                              Center(
+                                child: Text(
+                                  'add_guests_offline'.tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              GradientButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AddGuestDialog(),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.person_add,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -158,107 +184,101 @@ class _InvitationState extends State<Invitation> {
                                       SizedBox(
                                         height: 7,
                                       ),
-                                      _needsApproval
-                                          ? Column(
-                                              children: [
-                                                Text(
-                                                  'approve_members'.tr(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleLarge
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  'approve_members_explanation'.tr(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleSmall
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: [
-                                                Text(
-                                                  'group_needs_approval'.tr(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleLarge
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  'group_needs_approval_explanation'.tr(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleSmall
-                                                      .copyWith(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            'group_needs_approval'.tr(),
+                                            style: Theme.of(context).textTheme.titleLarge.copyWith(
+                                                color: Theme.of(context).colorScheme.onSurface),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'group_needs_approval_explanation'.tr(),
+                                            style: Theme.of(context).textTheme.titleSmall.copyWith(
+                                                color: Theme.of(context).colorScheme.onSurface),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                       SizedBox(
                                         height: 5,
                                       ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            'needs_approval'.tr(),
+                                            style: Theme.of(context).textTheme.titleSmall.copyWith(
+                                                color: Theme.of(context).colorScheme.onSurface),
+                                          ),
+                                          Switch(
+                                            value: _needsApproval,
+                                            activeColor: Theme.of(context).colorScheme.primary,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _needsApproval = value;
+                                              });
+                                              showDialog(
+                                                  builder: (context) => FutureSuccessDialog(
+                                                        future: _updateNeedsApproval(),
+                                                        onDataTrue: () {
+                                                          _onUpdateNeedsApproval();
+                                                        },
+                                                        onDataFalse: () {
+                                                          Navigator.pop(context);
+                                                          setState(() {
+                                                            _needsApproval = !_needsApproval;
+                                                          });
+                                                        },
+                                                        onNoData: () {
+                                                          Navigator.pop(context);
+                                                          setState(() {
+                                                            _needsApproval = !_needsApproval;
+                                                          });
+                                                        },
+                                                      ),
+                                                  context: context,
+                                                  barrierDismissible: false);
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                       Visibility(
                                         visible: snapshot.data.length != 0,
-                                        child: Column(children: _generateMembers(snapshot.data)),
-                                      ),
-                                      SwitchListTile(
-                                        value: _needsApproval,
-                                        activeColor: Theme.of(context).colorScheme.primary,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _needsApproval = value;
-                                          });
-                                          showDialog(
-                                              builder: (context) => FutureSuccessDialog(
-                                                    future: _updateNeedsApproval(),
-                                                    onDataTrue: () {
-                                                      _onUpdateNeedsApproval();
-                                                    },
-                                                    onDataFalse: () {
-                                                      Navigator.pop(context);
-                                                      setState(() {
-                                                        _needsApproval = !_needsApproval;
-                                                      });
-                                                    },
-                                                    onNoData: () {
-                                                      Navigator.pop(context);
-                                                      setState(() {
-                                                        _needsApproval = !_needsApproval;
-                                                      });
-                                                    },
-                                                  ),
-                                              context: context,
-                                              barrierDismissible: false);
-                                        },
-                                        title: Text(
-                                          'needs_approval'.tr(),
-                                          style: Theme.of(context).textTheme.titleSmall.copyWith(
-                                              color: Theme.of(context).colorScheme.onSurface),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 5),
+                                            Divider(),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              'approve_members'.tr(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge
+                                                  .copyWith(
+                                                      color:
+                                                          Theme.of(context).colorScheme.onSurface),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              'approve_members_explanation'.tr(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall
+                                                  .copyWith(
+                                                      color:
+                                                          Theme.of(context).colorScheme.onSurface),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Column(children: _generateMembers(snapshot.data)),
+                                          ],
                                         ),
-                                        dense: true,
                                       ),
                                     ],
                                   );

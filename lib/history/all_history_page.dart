@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
-import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:csocsort_szamla/purchase/purchase_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -224,9 +222,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
             ),
       body: Column(
         children: [
-          IsGuestBanner(
-            callback: callback,
-          ),
           width < tabletViewWidth
               ? Expanded(
                   child: TabBarView(

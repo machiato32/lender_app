@@ -3,7 +3,6 @@ import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/payment/add_modify_payment.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -67,15 +66,6 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> with AddModifyPayment
             },
             child: Column(
               children: [
-                IsGuestBanner(
-                  callback: () {
-                    setState(() {
-                      clearGroupCache();
-                      members = null;
-                      members = getMembers(context);
-                    });
-                  },
-                ),
                 Expanded(
                   child: ListView(
                     shrinkWrap: true,

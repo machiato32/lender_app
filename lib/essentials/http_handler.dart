@@ -290,7 +290,8 @@ Future<http.Response> httpGet(
     //print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization":
+          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response =
         await http.get(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
@@ -338,7 +339,8 @@ Future<http.Response> httpPost(
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization":
+          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
     if (body != null) {
@@ -386,7 +388,8 @@ Future<http.Response> httpPut(
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization":
+          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response;
     if (body != null) {
@@ -431,7 +434,8 @@ Future<http.Response> httpDelete(
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + (useGuest ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization":
+          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
     };
     http.Response response =
         await http.delete(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);

@@ -279,12 +279,22 @@ class _MemberEntryState extends State<MemberEntry> {
                       ),
                       Center(
                         child: Visibility(
-                            visible: widget.member.isAdmin,
-                            child: Text(
-                              '👑  ', //itt van egy korona emoji lol
-                              style: mainTextStyle,
-                            )),
+                          visible: widget.member.isAdmin,
+                          child: Text(
+                            '👑  ', //itt van egy korona emoji lol
+                            style: mainTextStyle,
+                          ),
+                        ),
                       ),
+                      Center(
+                        child: Visibility(
+                          visible: widget.member.isGuest,
+                          child: Text(
+                            'guest'.tr(),
+                            style: mainTextStyle,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

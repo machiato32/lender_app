@@ -50,6 +50,11 @@ void saveUserCurrency(String newUserCurrency) {
   _saveString('current_user_currency', newUserCurrency);
 }
 
+void saveUsesPassword(bool newUsesPassword) {
+  usesPassword = newUsesPassword;
+  _saveBool('uses_password', newUsesPassword);
+}
+
 void saveGroupName(String groupName) {
   currentGroupName = groupName;
   _saveString('current_group_name', groupName);
@@ -132,6 +137,11 @@ void deleteGroupCurrency() {
   _delete('current_group_currency');
 }
 
+void deleteUsesPassword() {
+  usesPassword = null;
+  _delete('uses_password');
+}
+
 void deleteGuestApiToken() {
   guestApiToken = null;
   _delete('guest_api_token');
@@ -169,6 +179,17 @@ Future loadAllPrefs() async {
       currentUserId = preferences.getInt('current_user_id');
       currentUserCurrency = preferences.getString('current_user_currency');
       apiToken = preferences.getString('api_token');
+      if (preferences.containsKey('uses_password')) {
+        usesPassword = preferences.getBool('uses_password');
+      } else {
+        saveUsesPassword(true);
+      }
+    } else {
+      if (preferences.containsKey('uses_password')) {
+        usesPassword = preferences.getBool('uses_password');
+      } else {
+        saveUsesPassword(false);
+      }
     }
     if (preferences.containsKey('current_user')) {
       currentUsername = preferences.getString('current_user');

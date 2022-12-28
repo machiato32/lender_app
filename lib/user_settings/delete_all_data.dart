@@ -22,6 +22,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
       deleteUsersGroupIds();
       deleteUsername();
       deleteUserCurrency();
+      deleteUsesPassword();
       deleteUsersGroups();
       deleteGroupName();
       deleteGroupId();

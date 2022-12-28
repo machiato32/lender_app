@@ -7,6 +7,7 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/groups/dialogs/select_member_to_merge_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -112,29 +113,34 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.isCurrentUserAdmin,
-            child: SwitchListTile(
-              value: widget.member.isAdmin,
-              title: Text(
-                'Admin',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-              ),
-              activeColor: Theme.of(context).colorScheme.secondary,
-              onChanged: (value) {
-                showDialog(
-                    builder: (context) => FutureSuccessDialog(
-                          future: _changeAdmin(widget.member.memberId, value),
-                          dataTrueText: 'admin_scf',
-                          onDataTrue: () {
-                            _onChangeAdmin();
-                          },
-                        ),
-                    barrierDismissible: false,
-                    context: context);
-              },
+            visible: widget.isCurrentUserAdmin && !widget.member.isGuest,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Admin',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+                Switch(
+                  value: widget.member.isAdmin,
+                  activeColor: Theme.of(context).colorScheme.secondary,
+                  onChanged: (value) {
+                    showDialog(
+                        builder: (context) => FutureSuccessDialog(
+                              future: _changeAdmin(widget.member.memberId, value),
+                              dataTrueText: 'admin_scf',
+                              onDataTrue: () {
+                                _onChangeAdmin();
+                              },
+                            ),
+                        barrierDismissible: false,
+                        context: context);
+                  },
+                ),
+              ],
             ),
           ),
           Visibility(
@@ -228,6 +234,36 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                   ),
                 ),
               ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Visibility(
+            visible: widget.member.isGuest && widget.isCurrentUserAdmin,
+            child: Center(
+              child: GradientButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.merge, color: Theme.of(context).colorScheme.onPrimary),
+                    Text(
+                      'merge_guest'.tr(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => MergeGuestDialog(
+                      guestId: widget.member.memberId,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           SizedBox(

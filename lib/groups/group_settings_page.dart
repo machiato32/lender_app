@@ -216,36 +216,6 @@ class _GroupSettingState extends State<GroupSettings> {
       BoostGroup(),
       Visibility(
         visible: snapshot.data,
-        child: FutureBuilder(
-          future: _hasGuests,
-          builder: (context, hasGuestsSnapshot) {
-            if (hasGuestsSnapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData) {
-                return Column(
-                  key: guestsKey,
-                  children: [
-                    ManageGuests(hasGuests: hasGuestsSnapshot.data, bannerKey: widget.bannerKey),
-                  ],
-                );
-              } else {
-                return ErrorMessage(
-                  error: hasGuestsSnapshot.error,
-                  locationOfError: 'has_guests',
-                  callback: () {
-                    _hasGuests = null;
-                    _hasGuests = _getHasGuests();
-                  },
-                );
-              }
-            }
-            return LinearProgressIndicator(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-            );
-          },
-        ),
-      ),
-      Visibility(
-        visible: snapshot.data,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(15),
@@ -298,6 +268,7 @@ class _GroupSettingState extends State<GroupSettings> {
         ),
       ),
       GroupMembers(),
+      SizedBox(height: 80)
     ];
   }
 }

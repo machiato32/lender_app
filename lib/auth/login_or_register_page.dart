@@ -4,9 +4,7 @@ import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'login_page.dart';
-import 'package:csocsort_szamla/auth/registration/name_page.dart';
+import 'package:csocsort_szamla/auth/name_page.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   final String inviteURL;
@@ -121,31 +119,35 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                     });
                   }
                 },
-                child: Image(
-                  image: AssetImage('assets/dodo_color_glow3.png'),
-                  height: MediaQuery.of(context).size.width / 3,
+                child: ColorFiltered(
+                  colorFilter:
+                      ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+                  child: Image(
+                    image: AssetImage('assets/dodo.png'),
+                    height: MediaQuery.of(context).size.width / 3,
+                  ),
                 ),
               ),
             ),
+            SizedBox(
+              height: 25,
+            ),
             Center(
               child: Text(
-                'title'.tr(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
-                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
+                'title'.tr().toLowerCase(),
+                style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.w400,
+                    color: Theme.of(context).colorScheme.onSurface),
               ),
-            ),
-            SizedBox(
-              height: 10,
             ),
             Flexible(
                 child: Text(
-              'subtitle'.tr().toUpperCase(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+              'subtitle'.tr(),
+              style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.center,
             )),
             Flexible(
@@ -158,8 +160,9 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoginPage(
-                      inviteURL: widget.inviteURL,
+                    builder: (context) => NamePage(
+                      isLogin: true,
+                      inviteUrl: widget.inviteURL,
                     ),
                   ),
                 );

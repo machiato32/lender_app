@@ -16,11 +16,11 @@
     <application
         tools:replace="android:icon"
         android:name=".Application"
-        android:label="Lender"
+        android:label="Dodo"
         android:icon="@mipmap/dodo_icon">
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/dodo_white" />
+            android:resource="@drawable/dodo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@android:color/white" />

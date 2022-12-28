@@ -422,5 +422,15 @@
     "char_not_allowed": "A(z) „{}“ karakter nem megengedett",
     "username_taken": "A felhasználónév már foglalt",
 
-    "pins_not_match": "A megadott PIN-ek nem egyeznek"
+    "pins_not_match": "A megadott PIN-ek nem egyeznek",
+
+    "change_to_password": "Jelszó használata a bejelentkezéshez",
+    "change_to_pin": "Pin használata a bejelentkezéshez",
+    "password_login_deprecated": "A preferált bejelentkezési mód a PIN",
+    "password_login_deprecated_explanation": "Válts pinre a bejelentkezés után a felhasználói beállítások menüpont alatt.",
+
+    "guest_to_merge": "Vendég:",
+    "member_to_merge_into": "Tag akihez hozzá legyen rendelve:",
+    "needs_member": "A csoporttagot ki kell választanod!",
+    "guest": "Vendég"
 }

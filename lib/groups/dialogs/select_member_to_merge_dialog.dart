@@ -8,23 +8,27 @@ import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import '../main_group_page.dart';
 
-class MemberToMergeDialog extends StatefulWidget {
+class MergeGuestDialog extends StatefulWidget {
+  final int guestId;
+  MergeGuestDialog({@required this.guestId});
   @override
-  _MemberToMergeDialogState createState() => _MemberToMergeDialogState();
+  _MergeGuestDialogState createState() => _MergeGuestDialogState();
 }
 
-class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
-  Future<List<Member>> _members;
-  Member _dropdownValue;
+class _MergeGuestDialogState extends State<MergeGuestDialog> {
+  Future<List<Member>> _allMembers;
+  Member _selectedMember;
 
-  Future<bool> _mergeGuest(int memberId) async {
-    Map<String, dynamic> body = {'member_id': memberId, 'guest_id': guestUserId};
+  Future<bool> _mergeGuest() async {
+    Map<String, dynamic> body = {'member_id': _selectedMember.memberId, 'guest_id': widget.guestId};
     await httpPost(
         context: context, uri: '/groups/' + currentGroupId.toString() + '/merge_guest', body: body);
     Future.delayed(delayTime()).then((value) => _onMergeGuest());
@@ -42,7 +46,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
         context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }
 
-  Future<List<Member>> _getMembers() async {
+  Future<List<Member>> _getAllMembers() async {
     try {
       http.Response response = await httpGet(
           uri: generateUri(GetUriKeys.groupCurrent), context: context, useCache: false);
@@ -50,12 +54,12 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
       List<Member> members = [];
       print(decoded['data']['members']);
       for (var member in decoded['data']['members']) {
-        if (member['is_guest'] != 1) {
-          members.add(Member(
-              apiToken: member['api_token'],
-              nickname: member['nickname'],
-              memberId: member['user_id']));
-        }
+        members.add(Member(
+          apiToken: member['api_token'],
+          nickname: member['nickname'],
+          memberId: member['user_id'],
+          isGuest: member['is_guest'] == 1,
+        ));
       }
       return members;
     } catch (_) {
@@ -66,8 +70,8 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
   @override
   void initState() {
     super.initState();
-    _members = null;
-    _members = _getMembers();
+    _allMembers = null;
+    _allMembers = _getAllMembers();
   }
 
   @override
@@ -91,53 +95,38 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
               height: 10,
             ),
             FutureBuilder(
-              future: _members,
-              builder: (context, snapshot) {
+              future: _allMembers,
+              builder: (context, AsyncSnapshot<List<Member>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
-                    return DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          // fillColor: Theme.of(context).colorScheme.onSurface,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide.none,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'member_to_merge_into'.tr(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: MemberChips(
+                            allowMultiple: false,
+                            allMembers: snapshot.data.where((element) => !element.isGuest).toList(),
+                            membersChanged: (newMembers) {
+                              _selectedMember = newMembers[0];
+                            },
+                            membersChosen: _selectedMember != null ? [_selectedMember] : [],
                           ),
                         ),
-                        dropdownColor: ElevationOverlay.applySurfaceTint(
-                            Theme.of(context).colorScheme.surface,
-                            Theme.of(context).colorScheme.surfaceTint,
-                            2),
-                        elevation: 0,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                        hint: Text('select_member'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                        value: _dropdownValue,
-                        onChanged: (value) {
-                          setState(() {
-                            _dropdownValue = value;
-                          });
-                        },
-                        items: (snapshot.data as List<Member>).map((member) {
-                          return DropdownMenuItem(
-                            value: member,
-                            child: Text(member.nickname),
-                          );
-                        }).toList(),
-                      ),
+                      ],
                     );
                   }
                   return ErrorMessage(
                     callback: () {
-                      _members = null;
-                      _members = _getMembers();
+                      _allMembers = null;
+                      _allMembers = _getAllMembers();
                     },
                     error: snapshot.error,
                     locationOfError: 'merge_guest',
@@ -150,7 +139,7 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
               },
             ),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -161,27 +150,33 @@ class _MemberToMergeDialogState extends State<MemberToMergeDialog> {
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   onPressed: () {
-                    showDialog(
-                            builder: (context) => ConfirmChoiceDialog(
-                                  choice: 'sure_merge_guest',
-                                ),
-                            context: context)
-                        .then(
-                      (value) {
-                        if (value ?? false == true) {
-                          print(_dropdownValue.memberId);
-                          showDialog(
+                    if (_selectedMember != null) {
+                      showDialog(
+                        builder: (context) => ConfirmChoiceDialog(
+                          choice: 'sure_merge_guest',
+                        ),
+                        context: context,
+                      ).then(
+                        (value) {
+                          if (value ?? false == true) {
+                            showDialog(
                               builder: (context) => FutureSuccessDialog(
-                                    future: _mergeGuest(_dropdownValue.memberId),
-                                    dataTrueText: 'merge_scf',
-                                    onDataTrue: () {
-                                      _onMergeGuest();
-                                    },
-                                  ),
-                              context: context);
-                        }
-                      },
-                    );
+                                future: _mergeGuest(),
+                                dataTrueText: 'merge_scf',
+                                onDataTrue: () {
+                                  _onMergeGuest();
+                                },
+                              ),
+                              context: context,
+                            );
+                          }
+                        },
+                      );
+                    } else {
+                      FToast ft = FToast();
+                      ft.init(context);
+                      ft.showToast(child: errorToast('needs_member'.tr(), context));
+                    }
                   },
                 )
               ],

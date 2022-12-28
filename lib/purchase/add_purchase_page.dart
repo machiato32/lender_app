@@ -3,16 +3,12 @@ import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/widgets/custom_choice_chip.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/member_chips.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/purchase/add_modify_purchase.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../essentials/widgets/error_message.dart';
 import '../shopping/shopping_list_entry.dart';
 
 class AddPurchaseRoute extends StatefulWidget {
@@ -85,15 +81,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
             },
             child: Column(
               children: [
-                IsGuestBanner(
-                  callback: () {
-                    setState(() {
-                      clearGroupCache();
-                      members = null;
-                      members = getMembers(context);
-                    });
-                  },
-                ),
                 Expanded(
                   child: ListView(
                     children: <Widget>[

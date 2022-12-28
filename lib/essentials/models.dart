@@ -10,6 +10,7 @@ class Member {
   bool isAdmin;
   double balanceOriginalCurrency;
   bool isCustomAmount;
+  bool isGuest;
   Member({
     this.username,
     this.nickname,
@@ -19,6 +20,7 @@ class Member {
     this.apiToken,
     this.balanceOriginalCurrency,
     this.isCustomAmount,
+    this.isGuest,
   });
   factory Member.fromJson(Map<String, dynamic> json) {
     return Member(
@@ -29,6 +31,7 @@ class Member {
       isAdmin: json['is_admin'] == 1,
       balanceOriginalCurrency: (json['original_balance'] ?? 0) * 1.0,
       isCustomAmount: json['custom_amount'] ?? false,
+      isGuest: json['is_guest'] == 1,
     );
   }
 

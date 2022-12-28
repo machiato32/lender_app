@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../essentials/widgets/gradient_button.dart';
-import 'guest_switcher.dart';
 
 class ManageGuests extends StatelessWidget {
   final bool hasGuests;
@@ -15,26 +14,6 @@ class ManageGuests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget toastMessage = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: Theme.of(context).colorScheme.errorContainer,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-              child: Text('needs_choose_guest'.tr(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onErrorContainer))),
-        ],
-      ),
-    );
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(15),
@@ -66,7 +45,6 @@ class ManageGuests extends StatelessWidget {
               height: 10,
             ),
             Divider(),
-            Visibility(visible: hasGuests, child: GuestSwitcher(bannerKey: bannerKey)),
             SizedBox(
               height: 10,
             ),
@@ -148,14 +126,7 @@ class ManageGuests extends StatelessWidget {
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                         onPressed: () {
-                          if (guestApiToken != null) {
-                            showDialog(
-                                builder: (context) => MemberToMergeDialog(), context: context);
-                          } else {
-                            FToast ft = FToast();
-                            ft.init(context);
-                            ft.showToast(child: toastMessage);
-                          }
+                          showDialog(builder: (context) => MergeGuestDialog(), context: context);
                         },
                       ),
                     ],

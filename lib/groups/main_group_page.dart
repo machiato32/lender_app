@@ -11,7 +11,6 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/history/history.dart';
 import 'package:csocsort_szamla/main/group_settings_speed_dial.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
-import 'package:csocsort_szamla/main/is_guest_banner.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -112,6 +111,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       await clearAllCache();
       deleteUserId();
       deleteUserCurrency();
+      deleteUsesPassword();
       deleteGroupId();
       deleteGroupName();
       deleteGroupCurrency();
@@ -379,10 +379,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         Expanded(
           child: Column(
             children: [
-              IsGuestBanner(
-                key: _isGuestBannerKey,
-                callback: callback,
-              ),
               Expanded(
                 child: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
@@ -477,12 +473,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Expanded(
-                        child: Image(
-                          image: AssetImage('assets/dodo_color_glow3.png'),
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                              Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+                          child: Image(
+                            image: AssetImage('assets/dodo.png'),
+                          ),
                         ),
                       ),
                       Text(
-                        'Lender',
+                        'title'.tr().toLowerCase(),
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall

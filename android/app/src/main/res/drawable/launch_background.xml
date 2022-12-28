@@ -10,6 +10,6 @@
 <!--            android:src="@drawable/lender_landscape" />-->
 <!--    </item>-->
     <item
-        android:drawable="@drawable/logo_color"
+        android:drawable="@drawable/dodo"
         android:gravity="center" />
 </layer-list>
