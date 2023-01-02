@@ -1,13 +1,15 @@
-const String APP_URL =  'http://www.examp.le';
-const String TEST_URL = 'http://www.examp.le';
+const String APP_URL =  'https://www.examp.le/api';
+const String TEST_URL = 'https://test.examp.le/api';
 int currentVersion=YOUR_CURRENT_VERSION;
 bool useTest=false;
+bool usesPassword;
 String apiToken;
 String currentUsername;
 int currentUserId;
 String currentGroupName;
 int currentGroupId;
 String currentGroupCurrency;
+String currentUserCurrency;
 List<String> usersGroups;
 List<int> usersGroupIds;
 String guestApiToken;
