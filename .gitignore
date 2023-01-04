@@ -81,3 +81,5 @@ ad_management.dart
 
 /.flutter-plugins-dependencies
 /android/settings_aar.gradle
+
+**/GoogleService-Info.plist
