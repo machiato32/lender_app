@@ -29,11 +29,10 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
 
   Future<bool> _postPurchase(
       List<Member> members, double amount, String name, BuildContext context) async {
-    bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
     try {
       Map<String, dynamic> body = generateBody(name, amount, members);
 
-      await httpPost(uri: '/purchases', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/purchases', body: body, context: context);
       Future.delayed(delayTime()).then((value) => _onPostPurchase(context));
       return true;
     } catch (_) {
@@ -60,6 +59,12 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
 
   @override
   Widget build(BuildContext context) {
+    print(purchaserId == currentUserId);
+    print(!(membersMap.keys
+            .where((member) => membersMap[member])
+            .where((member) => member.memberId == currentUserId)
+            .isNotEmpty ||
+        purchaserId == currentUserId));
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -90,22 +95,10 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
+                              warningText(),
                               noteTextField(context),
                               SizedBox(
-                                height: 12,
-                              ),
-                              // Center(
-                              //   child: Text(
-                              //     'amount_textbox_hint'.tr(),
-                              //     textAlign: TextAlign.center,
-                              //     style: Theme.of(context)
-                              //         .textTheme
-                              //         .bodySmall
-                              //         .copyWith(color: Theme.of(context).colorScheme.onSurface),
-                              //   ),
-                              // ),
-                              SizedBox(
-                                height: 8,
+                                height: 20,
                               ),
                               amountTextField(context),
                               SizedBox(

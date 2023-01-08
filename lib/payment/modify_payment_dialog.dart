@@ -1,4 +1,3 @@
-import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -22,14 +21,9 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> with AddModif
 
   Future<bool> _updatePayment(double amount, String note, Member toMember, int paymentId) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = generateBody(note, amount, toMember);
 
-      await httpPut(
-          uri: '/payments/' + paymentId.toString(),
-          body: body,
-          context: context,
-          useGuest: useGuest);
+      await httpPut(uri: '/payments/' + paymentId.toString(), body: body, context: context);
       Future.delayed(delayTime()).then((value) => _onUpdatePayment());
       return true;
     } catch (_) {
@@ -84,6 +78,7 @@ class _ModifyPaymentDialogState extends State<ModifyPaymentDialog> with AddModif
               SizedBox(
                 height: 10,
               ),
+              warningText(),
               Visibility(
                 visible: _index == 0,
                 child: noteTextField(context),

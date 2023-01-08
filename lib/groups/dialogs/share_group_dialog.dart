@@ -25,8 +25,10 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             Center(
               child: Text(
                 'share'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             SizedBox(
@@ -44,8 +46,10 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             ),
             Text(
               'share_url'.tr(),
-              style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             Row(
@@ -54,8 +58,9 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
                 GradientButton(
                   onPressed: () {
                     Share.share(
-                        'https://www.lenderapp.net/join/' + widget.inviteCode,
-                        subject: 'invitation_to_lender'.tr());
+                      'https://www.lenderapp.net/join/' + widget.inviteCode,
+                      subject: 'invitation_to_lender'.tr(),
+                    );
                   },
                   child: Icon(
                     Icons.share,

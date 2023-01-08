@@ -18,11 +18,13 @@ bool showAds=false;
 bool useGradients=true;
 bool personalisedAds=false;
 bool trialVersion=false;
+bool ratedApp=false;
 String currentThemeName = "greenLightTheme";
 
 ///The userId to use in the current situation. Used when guests could be
 ///used as well.
 int idToUse() {
+  return currentUserId;
   return (guestNickname != null && guestGroupId == currentGroupId)
       ? guestUserId
       : currentUserId;

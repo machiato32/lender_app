@@ -89,7 +89,7 @@ class _PasswordPageState extends State<PasswordPage> {
                       MaterialPageRoute(
                         builder: (context) => LoginPinPage(
                           username: widget.username,
-                          inviteUrl: widget.username,
+                          inviteUrl: widget.inviteUrl,
                         ),
                       ),
                     );

@@ -1,11 +1,7 @@
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../../config.dart';
-import '../app_theme.dart';
 
 class VersionNotSupportedPage extends StatelessWidget {
   @override
@@ -41,8 +37,10 @@ class VersionNotSupportedPage extends StatelessWidget {
                 GradientButton(
                   child: Text(
                     'download_new_version'.tr(),
-                    style: Theme.of(context).textTheme.labelLarge.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   ),
                   onPressed: () {
                     launchUrlString('https://lenderapp.net');

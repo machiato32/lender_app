@@ -32,7 +32,6 @@ class _BalancesState extends State<Balances> {
 
   Future<bool> _postPayment(double amount, String note, int takerId) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {
         'group': currentGroupId,
         'amount': amount,
@@ -40,7 +39,7 @@ class _BalancesState extends State<Balances> {
         'taker_id': takerId
       };
 
-      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/payments', body: body, context: context);
       return true;
     } catch (_) {
       throw _;
@@ -65,11 +64,10 @@ class _BalancesState extends State<Balances> {
 
   Future<List<Member>> _getMembers() async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
-          context: context,
-          useGuest: useGuest);
+        uri: generateUri(GetUriKeys.groupCurrent, args: [currentGroupId.toString()]),
+        context: context,
+      );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -129,7 +127,7 @@ class _BalancesState extends State<Balances> {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                         Member currentMember = snapshot.data.firstWhere(
-                            (element) => element.memberId == idToUse(),
+                            (element) => element.memberId == currentUserId,
                             orElse: () => null);
                         print(currentGroupCurrency);
                         double currencyThreshold = threshold(currentGroupCurrency);
@@ -153,7 +151,7 @@ class _BalancesState extends State<Balances> {
                                   OutlinedButton(
                                     onPressed: () {
                                       List<Payment> payments = paymentsNeeded(snapshot.data)
-                                          .where((payment) => payment.payerId == idToUse())
+                                          .where((payment) => payment.payerId == currentUserId)
                                           .toList();
                                       showDialog(
                                           context: context,
@@ -325,14 +323,14 @@ class _BalancesState extends State<Balances> {
   List<Widget> _generateBalances(List<Member> members) {
     return members.map<Widget>((Member member) {
       TextStyle textStyle = Theme.of(context).textTheme.bodyLarge.copyWith(
-          color: member.memberId == idToUse()
+          color: member.memberId == currentUserId
               ? currentThemeName.contains('Gradient')
                   ? Theme.of(context).colorScheme.onPrimary
                   : Theme.of(context).colorScheme.onSecondary
               : Theme.of(context).colorScheme.onSurface);
       return Container(
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-          decoration: member.memberId == idToUse()
+          decoration: member.memberId == currentUserId
               ? BoxDecoration(
                   gradient: AppTheme.gradientFromTheme(currentThemeName,
                       useSecondary: true), //TODO: reset currency on group switch

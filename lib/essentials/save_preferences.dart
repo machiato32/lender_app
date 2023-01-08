@@ -70,24 +70,9 @@ void saveGroupCurrency(String groupCurrency) {
   _saveString('current_group_currency', groupCurrency);
 }
 
-void saveGuestApiToken(String newGuestApiToken) {
-  guestApiToken = newGuestApiToken;
-  _saveString('guest_api_token', newGuestApiToken);
-}
-
-void saveGuestGroupId(int newGuestGroupId) {
-  guestGroupId = newGuestGroupId;
-  _saveInt('guest_group_id', newGuestGroupId);
-}
-
-void saveGuestUserId(int newUserId) {
-  guestUserId = newUserId;
-  _saveInt('guest_user_id', newUserId);
-}
-
-void saveGuestNickname(String newGuestNickname) {
-  guestNickname = newGuestNickname;
-  _saveString('guest_nickname', newGuestNickname);
+void saveRatedApp(bool newRatedApp) {
+  ratedApp = newRatedApp;
+  _saveBool('rated_app', newRatedApp);
 }
 
 ///If [usersGroupIds] are already saved locally
@@ -142,24 +127,9 @@ void deleteUsesPassword() {
   _delete('uses_password');
 }
 
-void deleteGuestApiToken() {
-  guestApiToken = null;
-  _delete('guest_api_token');
-}
-
-void deleteGuestGroupId() {
-  guestGroupId = null;
-  _delete('guest_group_id');
-}
-
-void deleteGuestUserId() {
-  guestUserId = null;
-  _delete('guest_user_id');
-}
-
-void deleteGuestNickname() {
-  guestNickname = null;
-  _delete('guest_nickname');
+void deleteRatedApp() {
+  ratedApp = false;
+  _delete('rated_app');
 }
 
 void deleteUsersGroupIds() {
@@ -191,6 +161,11 @@ Future loadAllPrefs() async {
         saveUsesPassword(false);
       }
     }
+    if (preferences.containsKey('rated_app')) {
+      ratedApp = preferences.getBool('rated_app');
+    } else {
+      saveRatedApp(false);
+    }
     if (preferences.containsKey('current_user')) {
       currentUsername = preferences.getString('current_user');
     }
@@ -203,12 +178,6 @@ Future loadAllPrefs() async {
       usersGroups = preferences.getStringList('users_groups');
       usersGroupIds =
           preferences.getStringList('users_group_ids').map((e) => int.parse(e)).toList();
-    }
-    if (preferences.containsKey('guest_nickname')) {
-      guestNickname = preferences.getString('guest_nickname');
-      guestGroupId = preferences.getInt('guest_group_id');
-      guestApiToken = preferences.getString('guest_api_token');
-      guestUserId = preferences.getInt('guest_user_id');
     }
   });
 }

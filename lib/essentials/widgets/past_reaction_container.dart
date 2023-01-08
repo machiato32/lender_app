@@ -1,5 +1,4 @@
 import 'package:csocsort_szamla/essentials/models.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'add_reaction_dialog.dart';

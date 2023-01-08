@@ -1,7 +1,4 @@
-import 'package:csocsort_szamla/config.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AppTheme {
   AppTheme._();
@@ -38,6 +35,16 @@ class AppTheme {
     'amberDarkTheme': generateThemeData(
       Colors.amber[600],
       Brightness.dark,
+    ),
+    'dodoLightTheme': generateThemeData(
+      Color.fromARGB(255, 19, 152, 181),
+      Brightness.light,
+      themeName: 'dodoLightTheme',
+    ),
+    'dodoDarkTheme': generateThemeData(
+      Color.fromARGB(255, 19, 152, 181),
+      Brightness.dark,
+      themeName: 'dodoDarkTheme',
     ),
     'roseannaGradientLightTheme': generateThemeData(
       Color.fromARGB(255, 255, 175, 189),
@@ -274,6 +281,32 @@ class AppTheme {
         newColorScheme = colorScheme.copyWith(onPrimary: Color.fromARGB(255, 0, 20, 14));
       } else if (themeName.contains('rainbow')) {
         newColorScheme = colorScheme.copyWith(onPrimary: Colors.white);
+      } else if (themeName == 'dodoLightTheme') {
+        newColorScheme = colorScheme.copyWith(
+          primary: Color.fromARGB(255, 19, 152, 181),
+          secondary: Color.fromARGB(255, 247, 192, 0),
+          secondaryContainer: Color.fromARGB(255, 255, 223, 149),
+          onSecondaryContainer: Color.fromARGB(255, 37, 26, 0),
+        );
+      } else if (themeName == 'dodoDarkTheme') {
+        newColorScheme = colorScheme.copyWith(
+          primary: Color.fromARGB(255, 88, 214, 247),
+          onPrimary: Color.fromARGB(255, 0, 54, 66),
+          primaryContainer: Color.fromARGB(255, 0, 78, 94),
+          onPrimaryContainer: Color.fromARGB(255, 177, 235, 255),
+          secondary: Color.fromARGB(255, 245, 191, 0),
+          onSecondary: Color.fromARGB(255, 62, 46, 0),
+          secondaryContainer: Color.fromARGB(255, 163, 121, 0),
+          onSecondaryContainer: Color.fromARGB(255, 255, 239, 184),
+          tertiary: Color.fromARGB(255, 253, 187, 59),
+          onTertiary: Color.fromARGB(255, 66, 44, 0),
+          background: Color.fromARGB(255, 25, 28, 29),
+          onBackground: Color.fromARGB(255, 225, 227, 228),
+          surface: Color.fromARGB(255, 25, 28, 29),
+          onSurface: Color.fromARGB(255, 225, 227, 228),
+          surfaceVariant: Color.fromARGB(255, 64, 72, 75),
+          onSurfaceVariant: Color.fromARGB(255, 191, 200, 204),
+        );
       }
       return ThemeData.from(colorScheme: colorScheme, useMaterial3: true)
           .copyWith(

@@ -5,7 +5,6 @@ import 'dart:convert';
 
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 
-import '../essentials/app_theme.dart';
 import '../essentials/widgets/error_message.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -18,8 +17,7 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Future<String> _getPasswordReminder(String username) async {
     http.Response response = await httpGet(
-        context: context,
-        uri: generateUri(GetUriKeys.passwordReminder, args: [username]));
+        context: context, uri: generateUri(GetUriKeys.passwordReminder, args: [username]));
     Map<String, dynamic> decoded = jsonDecode(response.body);
     print(decoded);
     return decoded['data'];
@@ -36,8 +34,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         children: [
           Text(
             'your_password_reminder'.tr(),
-            style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
           SizedBox(
             height: 20,

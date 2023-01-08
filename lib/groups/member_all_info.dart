@@ -368,10 +368,6 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   void _onRemoveMember() async {
     //if removed member was chosen guest
-    deleteGuestGroupId();
-    deleteGuestApiToken();
-    deleteGuestNickname();
-    deleteGuestUserId();
     await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);

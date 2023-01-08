@@ -20,7 +20,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   TextEditingController _passwordReminderController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
   int _index = 0;
-  List<TextFormField> textFields = List<TextFormField>();
+  List<TextFormField> textFields = <TextFormField>[];
 
   Future<bool> _updatePassword(String oldPassword, String newPassword, String reminder) async {
     try {

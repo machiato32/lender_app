@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:http/http.dart' as http;
 
-import '../essentials/app_theme.dart';
 import 'in_app_purchase_page.dart';
 
 class GroupSettingsSpeedDial extends StatefulWidget {
@@ -22,10 +21,8 @@ class GroupSettingsSpeedDial extends StatefulWidget {
 class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
   Future<dynamic> _isGroupBoosted() async {
     try {
-      http.Response response = await httpGet(
-          context: context,
-          uri: generateUri(GetUriKeys.groupBoost),
-          useCache: false);
+      http.Response response =
+          await httpGet(context: context, uri: generateUri(GetUriKeys.groupBoost), useCache: false);
       Map<String, dynamic> decoded = jsonDecode(response.body);
       return decoded['data'];
     } catch (_) {
@@ -43,14 +40,18 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                   children: [
                     Text(
                       'statistics_not_available'.tr(),
-                      style: Theme.of(context).textTheme.titleLarge.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onSurface),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10),
                     Text('statistics_not_available_explanation'.tr(),
-                        style: Theme.of(context).textTheme.titleSmall.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            .copyWith(color: Theme.of(context).colorScheme.onSurface),
                         textAlign: TextAlign.center),
                     SizedBox(height: 15),
                     Row(
@@ -59,17 +60,14 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                         GradientButton(
                           child: ColorFiltered(
                               colorFilter: ColorFilter.mode(
-                                  Theme.of(context).colorScheme.onPrimary,
-                                  BlendMode.srcIn),
+                                  Theme.of(context).colorScheme.onPrimary, BlendMode.srcIn),
                               child: Image.asset(
                                 'assets/dodo_color.png',
                                 width: 25,
                               )),
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InAppPurchasePage()));
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => InAppPurchasePage()));
                           },
                         ),
                       ],
@@ -87,11 +85,8 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
         borderRadius: BorderRadius.circular(16),
       ),
       backgroundColor: Theme.of(context).colorScheme.tertiary,
-      child: Icon(Icons.show_chart,
-          color: Theme.of(context).colorScheme.onTertiary),
-      overlayColor: (Theme.of(context).brightness == Brightness.dark)
-          ? Colors.black
-          : Colors.white,
+      child: Icon(Icons.show_chart, color: Theme.of(context).colorScheme.onTertiary),
+      overlayColor: (Theme.of(context).brightness == Brightness.dark) ? Colors.black : Colors.white,
       curve: Curves.bounceIn,
       children: [
         SpeedDialChild(
@@ -126,8 +121,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       height: 20,
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
                         // gradient: boosted
                         //     ? AppTheme.gradientFromTheme(Theme.of(context))
@@ -141,9 +135,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       child: Text('statistics'.tr(),
                           style: Theme.of(context).textTheme.bodyLarge.copyWith(
                                 color: boosted
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .onTertiaryContainer
+                                    ? Theme.of(context).colorScheme.onTertiaryContainer
                                     : Theme.of(context).colorScheme.onError,
                               )),
                     ),
@@ -165,9 +157,8 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StatisticsPage(
-                              groupCreation: created == null
-                                  ? DateTime.parse('2020-01-17')
-                                  : created,
+                              groupCreation:
+                                  created == null ? DateTime.parse('2020-01-17') : created,
                             )));
               } else {
                 showNoStatisticsDialog();
@@ -193,8 +184,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       height: 20,
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
                       decoration: BoxDecoration(
                         // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
                         color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -202,9 +192,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                       ),
                       child: Text('export'.tr(),
                           style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer,
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
                               fontSize: 18)),
                     ),
                     SizedBox(
@@ -234,14 +222,12 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
     return FutureBuilder(
         future: _isGroupBoosted(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
             DateTime created;
             if (snapshot.data['created_at'] != null) {
               created = DateTime.parse(snapshot.data['created_at']).toLocal();
             }
-            if (snapshot.data['is_boosted'] == 1 ||
-                snapshot.data['trial'] == 1) {
+            if (snapshot.data['is_boosted'] == 1 || snapshot.data['trial'] == 1) {
               return _generateSpeedDial(true, created: created);
             } else {
               return _generateSpeedDial(false, created: created);

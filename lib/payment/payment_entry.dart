@@ -7,14 +7,13 @@ import 'package:csocsort_szamla/essentials/widgets/past_reaction_container.dart'
 import 'package:csocsort_szamla/payment/payment_all_info.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class PaymentEntry extends StatefulWidget {
   final bool isTappable;
   final Payment data;
   final Function({bool purchase, bool payment}) callback;
-
-  const PaymentEntry({this.data, this.callback, this.isTappable = true});
+  final int selectedMemberId;
+  const PaymentEntry({this.data, this.selectedMemberId, this.callback, this.isTappable = true});
 
   @override
   _PaymentEntryState createState() => _PaymentEntryState();
@@ -33,7 +32,7 @@ class _PaymentEntryState extends State<PaymentEntry> {
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
     Reaction oldReaction = widget.data.reactions
-        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
+        .firstWhere((element) => element.userId == currentUserId, orElse: () => null);
     bool alreadyReacted = oldReaction != null;
     bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
@@ -41,13 +40,14 @@ class _PaymentEntryState extends State<PaymentEntry> {
       setState(() {});
     } else if (!alreadyReacted) {
       widget.data.reactions.add(Reaction(
-          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
-          reaction: reaction,
-          userId: idToUse()));
+        nickname: currentUsername,
+        reaction: reaction,
+        userId: currentUserId,
+      ));
       setState(() {});
     } else {
       widget.data.reactions
-          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: currentUserId));
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -55,11 +55,12 @@ class _PaymentEntryState extends State<PaymentEntry> {
 
   @override
   Widget build(BuildContext context) {
+    int selectedMemberId = widget.selectedMemberId ?? currentUserId;
     date = DateFormat('yyyy/MM/dd - HH:mm').format(widget.data.updatedAt);
     note = (widget.data.note == '' || widget.data.note == null)
         ? 'no_note'.tr()
         : widget.data.note[0].toUpperCase() + widget.data.note.substring(1);
-    if (widget.data.payerId == idToUse()) {
+    if (widget.data.payerId == selectedMemberId) {
       takerName = widget.data.takerNickname;
       amount = widget.data.amountOriginalCurrency
           .toMoneyString(widget.data.originalCurrency, withSymbol: true);
@@ -108,16 +109,18 @@ class _PaymentEntryState extends State<PaymentEntry> {
             child: InkWell(
               onLongPress: !widget.isTappable
                   ? null
-                  : () {
-                      showDialog(
-                          builder: (context) => AddReactionDialog(
-                                type: 'payments',
-                                reactions: widget.data.reactions,
-                                reactToId: widget.data.paymentId,
-                                callback: this.callbackForReaction,
-                              ),
-                          context: context);
-                    },
+                  : selectedMemberId != currentUserId
+                      ? null
+                      : () {
+                          showDialog(
+                              builder: (context) => AddReactionDialog(
+                                    type: 'payments',
+                                    reactions: widget.data.reactions,
+                                    reactToId: widget.data.paymentId,
+                                    callback: this.callbackForReaction,
+                                  ),
+                              context: context);
+                        },
               onTap: !widget.isTappable
                   ? null
                   : () async {
@@ -175,12 +178,15 @@ class _PaymentEntryState extends State<PaymentEntry> {
             ),
           ),
         ),
-        PastReactionContainer(
-          reactedToId: widget.data.paymentId,
-          reactions: widget.data.reactions,
-          callback: this.callbackForReaction,
-          isSecondaryColor: widget.data.payerId == idToUse(),
-          type: 'payments',
+        Visibility(
+          visible: selectedMemberId == currentUserId,
+          child: PastReactionContainer(
+            reactedToId: widget.data.paymentId,
+            reactions: widget.data.reactions,
+            callback: this.callbackForReaction,
+            isSecondaryColor: widget.data.payerId == currentUserId,
+            type: 'payments',
+          ),
         )
       ],
     );

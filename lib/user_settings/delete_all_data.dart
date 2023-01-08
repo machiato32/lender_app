@@ -27,6 +27,7 @@ class _DeleteAllDataState extends State<DeleteAllData> {
       deleteGroupName();
       deleteGroupId();
       deleteGroupCurrency();
+      deleteRatedApp();
       Future.delayed(delayTime()).then((value) => _onDeleteAllData());
       return true;
     } catch (_) {

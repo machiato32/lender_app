@@ -23,8 +23,7 @@ class PaymentAllInfo extends StatefulWidget {
 class _PaymentAllInfoState extends State<PaymentAllInfo> {
   Future<bool> _deletePayment(int id) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(uri: '/payments/' + id.toString(), context: context, useGuest: useGuest);
+      await httpDelete(uri: '/payments/' + id.toString(), context: context);
       Future.delayed(delayTime()).then((value) => _onDeletePayment());
       return true;
     } catch (_) {
@@ -134,7 +133,7 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.payerId == idToUse(),
+            visible: widget.data.payerId == currentUserId,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

@@ -20,13 +20,12 @@ class _ImShoppingDialogState extends State<ImShoppingDialog> {
 
   Future<bool> _postImShopping(String store) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {'store': store};
       await httpPost(
-          context: context,
-          body: body,
-          uri: '/groups/' + currentGroupId.toString() + '/send_shopping_notification',
-          useGuest: useGuest);
+        context: context,
+        body: body,
+        uri: '/groups/' + currentGroupId.toString() + '/send_shopping_notification',
+      );
       Future.delayed(delayTime()).then((value) => _onPostImShopping());
       return true;
     } catch (_) {

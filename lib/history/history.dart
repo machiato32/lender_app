@@ -29,12 +29,11 @@ class _HistoryState extends State<History> {
   int _selectedIndex;
   Future<List<Purchase>> _getPurchases({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.purchasesFirst6),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+        uri: generateUri(GetUriKeys.purchases, queryParams: {'limit': '6'}),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<Purchase> purchaseData = [];
@@ -49,12 +48,11 @@ class _HistoryState extends State<History> {
 
   Future<List<Payment>> _getPayments({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.paymentsFirst6),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+        uri: generateUri(GetUriKeys.payments, queryParams: {'limit': '6'}),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<Payment> paymentData = [];
       for (var data in decoded) {
@@ -254,42 +252,40 @@ class _HistoryState extends State<History> {
                           ),
                           Visibility(
                               visible: (snapshot.data as List).length > 5,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GradientButton(
-                                    useSecondary: true,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              AllHistoryRoute(startingIndex: _selectedIndex),
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.more_horiz,
-                                          size: 18,
-                                          color: Theme.of(context).colorScheme.onSecondary,
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                          'more'.tr(),
-                                          style: Theme.of(context).textTheme.button.copyWith(
-                                              color: Theme.of(context).colorScheme.onSecondary),
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                      ],
-                                    ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: GradientButton(
+                                  useSecondary: true,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            AllHistoryRoute(startingIndex: _selectedIndex),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.more_horiz,
+                                        size: 18,
+                                        color: Theme.of(context).colorScheme.onSecondary,
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        'more'.tr(),
+                                        style: Theme.of(context).textTheme.button.copyWith(
+                                            color: Theme.of(context).colorScheme.onSecondary),
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ))
                         ],
                       );
@@ -337,38 +333,39 @@ class _HistoryState extends State<History> {
                             child: Column(children: _generatePayments(snapshot.data)),
                           ),
                           Visibility(
+                            //TODO: merge two buttons
                             visible: (snapshot.data as List).length > 5,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  useSecondary: true,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => AllHistoryRoute(
-                                                  startingIndex: _selectedIndex,
-                                                )));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.more_horiz,
-                                        color: Theme.of(context).colorScheme.onSecondary,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: GradientButton(
+                                useSecondary: true,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AllHistoryRoute(
+                                        startingIndex: _selectedIndex,
                                       ),
-                                      SizedBox(
-                                        width: 4,
-                                      ),
-                                      Text(
-                                        'more'.tr(),
-                                        style: Theme.of(context).textTheme.labelLarge.copyWith(
-                                            color: Theme.of(context).colorScheme.onSecondary),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.more_horiz,
+                                      color: Theme.of(context).colorScheme.onSecondary,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      'more'.tr(),
+                                      style: Theme.of(context).textTheme.labelLarge.copyWith(
+                                          color: Theme.of(context).colorScheme.onSecondary),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           )
                         ],

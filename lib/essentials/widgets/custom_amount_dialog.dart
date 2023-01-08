@@ -108,7 +108,7 @@ class _CustomAmountDialogState extends State<CustomAmountDialog> {
                     divisions: 20,
                     max: widget.maxValue,
                     min: widget.minValue,
-                    thumbColor: Theme.of(context).colorScheme.primary,
+                    thumbColor: Theme.of(context).colorScheme.secondary,
                     activeColor: Theme.of(context).colorScheme.secondary,
                     onChanged: (value) {
                       setState(() {

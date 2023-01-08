@@ -120,8 +120,11 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                   }
                 },
                 child: ColorFiltered(
-                  colorFilter:
-                      ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      currentThemeName.toLowerCase().contains('dodo')
+                          ? BlendMode.dst
+                          : BlendMode.srcIn),
                   child: Image(
                     image: AssetImage('assets/dodo.png'),
                     height: MediaQuery.of(context).size.width / 3,

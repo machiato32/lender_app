@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
-import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -38,10 +37,6 @@ class _MergeGuestDialogState extends State<MergeGuestDialog> {
   void _onMergeGuest() {
     clearGroupCache();
     deleteCache(uri: generateUri(GetUriKeys.userBalanceSum));
-    deleteGuestApiToken();
-    deleteGuestGroupId();
-    deleteGuestNickname();
-    deleteGuestUserId();
     Navigator.pushAndRemoveUntil(
         context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);
   }

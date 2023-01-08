@@ -1,23 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:csocsort_szamla/auth/login/login_methods.dart';
 import 'package:csocsort_szamla/auth/login/password_page.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:csocsort_szamla/auth/pin_pad.dart';
-import 'package:csocsort_szamla/auth/registration/currency_page.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../config.dart';
-import '../../essentials/http_handler.dart';
-import '../../essentials/models.dart';
-import '../../essentials/save_preferences.dart';
 import '../../essentials/widgets/future_success_dialog.dart';
 import '../../essentials/widgets/gradient_button.dart';
-import '../../groups/join_group.dart';
-import '../../groups/main_group_page.dart';
 
 class LoginPinPage extends StatefulWidget {
   final String inviteUrl;

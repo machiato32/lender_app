@@ -61,7 +61,9 @@ class _SelectBalanceCurrencyState extends State<SelectBalanceCurrency> {
               noContentPadding: true,
               showSymbol: false,
               textColor: widget.selectedCurrency != currentGroupCurrency
-                  ? Theme.of(context).colorScheme.onTertiaryContainer
+                  ? currentThemeName.contains('Gradient') //TODO
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onTertiaryContainer
                   : null,
               dropdownColor: widget.selectedCurrency != currentGroupCurrency
                   ? Theme.of(context).colorScheme.tertiaryContainer

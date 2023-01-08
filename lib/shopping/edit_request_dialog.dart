@@ -5,7 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../config.dart';
 import '../essentials/validation_rules.dart';
 
 class EditRequestDialog extends StatefulWidget {
@@ -24,13 +23,12 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
 
   Future<bool> _updateRequest(String newRequest) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {'name': newRequest};
       await httpPut(
-          uri: '/requests/' + widget.requestId.toString(),
-          context: context,
-          body: body,
-          useGuest: useGuest);
+        uri: '/requests/' + widget.requestId.toString(),
+        context: context,
+        body: body,
+      );
       Future.delayed(delayTime()).then((value) => _onUpdateRequest());
       return true;
     } catch (_) {
@@ -39,7 +37,7 @@ class _EditRequestDialogState extends State<EditRequestDialog> {
   }
 
   void _onUpdateRequest() {
-    deleteCache(uri: generateUri(GetUriKeys.requestsAll));
+    deleteCache(uri: generateUri(GetUriKeys.requests));
     Navigator.pop(context);
     Navigator.pop(context, true);
   }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/shopping/im_shopping_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +32,11 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<List<ShoppingRequestData>> _getShoppingList({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.requestsAll),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+          uri: generateUri(GetUriKeys.requests), context: context, overwriteCache: overwriteCache);
       Map<String, dynamic> decoded = jsonDecode(response.body);
 
-      List<ShoppingRequestData> shopping = new List<ShoppingRequestData>();
+      List<ShoppingRequestData> shopping = <ShoppingRequestData>[];
       decoded['data'].forEach((element) {
         shopping.add(ShoppingRequestData.fromJson(element));
       });
@@ -63,9 +58,8 @@ class _ShoppingListState extends State<ShoppingList> {
 
   Future<bool> _postShoppingRequest(String name) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = {'group': currentGroupId, 'name': name};
-      await httpPost(uri: '/requests', context: context, body: body, useGuest: useGuest);
+      await httpPost(uri: '/requests', context: context, body: body);
       Future.delayed(delayTime()).then((value) => _onPostShoppingRequest());
       return true;
     } catch (_) {

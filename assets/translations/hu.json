@@ -432,5 +432,19 @@
     "guest_to_merge": "Vendég:",
     "member_to_merge_into": "Tag akihez hozzá legyen rendelve:",
     "needs_member": "A csoporttagot ki kell választanod!",
-    "guest": "Vendég"
+    "guest": "Vendég",
+
+    "warning_wont_see": "Mivel nem te vetted és nem is te fizetsz, a tranzakciót az előzményeid között nem fogod látni!",
+
+    "thank_you": "Köszönjük szépen",
+    "even_one_rating_helps": "Nagyon örülünk, hogy tetszik az app. Légyszi értékeld a boltban😊. Már egy értékelés is sokat segít, hogy minél többen megtalálják!",
+    "to_store": "Értékelem😎",
+    "like_the_app": "Szereted használni a Dodot?🦤",
+    "rate_app": "Értékeld az appot",
+
+    "merge_with_guest": "Vendégfelhasználó átvétele",
+    "merge_with_guest_explanation": "A csoportban van(nak) vendégfelhasználó(k), akiknek a tranzakcióit eddig a többi tag intézte. Ha felismered magad valamelyikben, akkor most hozzárendelheted a korábbi tranzakcióit magadhoz.\n(Ha nem tudod, hogy ez mit jelent, akkor hagyd ki a lépést.)",
+    "guests_in_group": "A csoportban lévő vendég(ek):",
+    "skip": "Kihagyás",
+    "merge": "Összevonás"
 }

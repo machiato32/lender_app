@@ -30,9 +30,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         widget.type.substring(0, widget.type.length - 1) + "_id": widget.reactToId,
         "reaction": reaction
       };
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpPost(
-          context: context, uri: '/' + widget.type + '/reaction', body: body, useGuest: useGuest);
+      await httpPost(context: context, uri: '/' + widget.type + '/reaction', body: body);
       return true;
     } catch (_) {
       throw _;
@@ -45,7 +43,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
         padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
         margin: EdgeInsets.fromLTRB(4, 0, 4, 4),
         decoration: BoxDecoration(
-          gradient: e.userId == idToUse()
+          gradient: e.userId == currentUserId
               ? AppTheme.gradientFromTheme(currentThemeName, useSecondaryContainer: true)
               : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
           borderRadius: BorderRadius.circular(10),
@@ -56,7 +54,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
             Flexible(
               child: Text(
                 e.nickname,
-                style: e.userId == idToUse()
+                style: e.userId == currentUserId
                     ? Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -109,7 +107,7 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: widget.reactions.firstWhere(
-                                      (el) => el.userId == idToUse() && el.reaction == reaction,
+                                      (el) => el.userId == currentUserId && el.reaction == reaction,
                                       orElse: () => null) !=
                                   null
                               ? Theme.of(context).colorScheme.secondaryContainer

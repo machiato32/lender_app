@@ -2,7 +2,6 @@ import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../essentials/app_theme.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/validation_rules.dart';
 import '../essentials/widgets/future_success_dialog.dart';
