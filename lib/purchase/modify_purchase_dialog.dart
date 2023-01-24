@@ -72,7 +72,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
                 textAlign: TextAlign.center,
               )),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Center(
                   child: Text(
@@ -86,7 +86,6 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
               SizedBox(
                 height: 20,
               ),
-              warningText(),
               Visibility(
                 visible: _index == 0,
                 child: noteTextField(context),

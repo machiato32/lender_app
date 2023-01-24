@@ -44,7 +44,7 @@ class GradientButton extends StatelessWidget {
         ),
         child: InkWell(
             borderRadius: BorderRadius.circular(this.borderRadius),
-            onTap: this.onPressed, //TODO: fix home screen
+            onTap: this.disabled ? null : this.onPressed,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

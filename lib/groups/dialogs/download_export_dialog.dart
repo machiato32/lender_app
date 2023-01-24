@@ -79,30 +79,26 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                   .copyWith(fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Text('download_xls_explanation'.tr(),
                 style: Theme.of(context)
                     .textTheme
                     .titleSmall
                     .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  child: Icon(Icons.table_chart, color: Theme.of(context).colorScheme.onPrimary),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return FutureSuccessDialog(
-                          future: _downloadXls(),
-                        );
-                      },
+            SizedBox(height: 10),
+            GradientButton(
+              child: Icon(Icons.table_chart, color: Theme.of(context).colorScheme.onPrimary),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureSuccessDialog(
+                      future: _downloadXls(),
                     );
                   },
-                ),
-              ],
+                );
+              },
             ),
             SizedBox(height: 15),
             Column(
@@ -113,31 +109,26 @@ class _DownloadExportDialogState extends State<DownloadExportDialog> {
                       fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
                 Text('download_pdf_explanation'.tr(),
                     style: Theme.of(context)
                         .textTheme
                         .titleSmall
                         .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GradientButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return FutureSuccessDialog(
-                              future: _downloadPdf(),
-                            );
-                          },
+                SizedBox(height: 10),
+                GradientButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return FutureSuccessDialog(
+                          future: _downloadPdf(),
                         );
                       },
-                      child: Icon(Icons.picture_as_pdf,
-                          color: Theme.of(context).colorScheme.onPrimary),
-                    ),
-                  ],
+                    );
+                  },
+                  child: Icon(Icons.picture_as_pdf, color: Theme.of(context).colorScheme.onPrimary),
                 )
               ],
             ),

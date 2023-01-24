@@ -4,6 +4,7 @@ import 'package:csocsort_szamla/balance/select_balance_currency.dart';
 import 'package:csocsort_szamla/essentials/payments_needed.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
+import 'package:csocsort_szamla/groups/dialogs/add_guest_dialog.dart';
 import 'package:csocsort_szamla/groups/dialogs/share_group_dialog.dart';
 import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -408,10 +409,7 @@ class _BalancesState extends State<Balances> {
                   error: snapshot.error.toString(),
                   locationOfError: 'invitation',
                   callback: () {
-                    setState(() {
-                      // _invitation = null;
-                      // _invitation = _getInvitation();
-                    });
+                    setState(() {});
                   },
                 );
               }
@@ -435,12 +433,11 @@ class _BalancesState extends State<Balances> {
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            MainPage(selectedIndex: widget.bigScreen ? 1 : 2, scrollTo: 'guests')),
-                    (route) => false);
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AddGuestDialog();
+                    });
               },
             ),
           ],

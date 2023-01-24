@@ -1,6 +1,6 @@
 {
-    "title":"Lender",
-    "subtitle":"Money and debt management app designed for groups.",
+    "title":"Dodo",
+    "subtitle":"Privacy-focused bill splitting",
 
     "login":"Log in",
     "register":"Register",
@@ -97,8 +97,7 @@
     "members_explanation_admin": "Manage member permissions and nicknames",
     "modify": "Modify",
     "invitation_explanation": "Invite someone to the group",
-    "rename_group_explanation": "Rename the group if you don't like the name",
-    "shopping_list_explanation": "Write on the joint shopping list or tell your friends that you are shopping.",
+    "rename_group_explanation": "If you don't like the name",
     "history_explanation": "Follow, modify and revoke recent transactions",
 
     "pay": "Pay",
@@ -118,7 +117,7 @@
     "what_is_wrong": "What is wrong?",
 
     "want_edit": "Do you want to modify the item?",
-    "nothing_to_show": "It feels empty...",
+    "nothing_to_show": "So empty...",
 
     "i_m_shopping" : "I'm shopping",
     "where" : "Where?",
@@ -133,12 +132,6 @@
     "discover_shopping_description" : "\nEveryone in the group has access to this shopping list\n\nYou can use it travelling together or when sharing a flat.",
     "discover_group_settings_title": "Group settings",
     "discover_group_settings_description" : "\nAmongst other things this menu is used to invite people to the group and to change your nickname.",
-
-    "tutorial_2" : "The goal of Lender is to simplify the transactions of a group.\nYou can see, that in the above example one payment was saved.",
-    "tutorial_3" : "In a group everyone has a balance.\nPositive balance means the group owes you, while negative means you owe the group.",
-    "tutorial_4" : "You can determine who you should pay by looking at the balances, or alternatively by using the \"Who sould I pay?\" button.",
-    "welcome": "Thank you for registering!\n\nOn the next few pages you'll see a short tutorial explaining the usage of the app.",
-    "": "",
 
     "reset_tutorial": "Rewatch tutorial",
     "reset_tutorial_explanation": "You'll need to restart the app",
@@ -156,7 +149,7 @@
     "leave_group": "Leave group",
     "balance_at_least_0": "Your balance needs to be at least 0 to leave the group!",
     "kick_member": "Kick member",
-    "really_kick": "If you kick this member, his current balance will be added to your balance. Are you sure you want to kick him?",
+    "really_kick": "If you kick this member, their current balance will be added to your balance. Are you sure you want to kick them?",
     "really_leave": "If you leave, your current balance will be split between everyone else. Are you sure you want to leave?",
 
     "auto_payment": "Automatic payment",
@@ -173,18 +166,9 @@
     "change_group_currency": "Change group currency",
     "change_group_currency_explanation": "Change the currency of the group, but note that the balances will not be converted!",
 
-    "manage_guests": "Manage guests",
-    "manage_guests_explanation": "The guests are members controlled by the admins. They are not registered on their own.",
+    "merge_guest": "Assign guest to member",
     "add_guest": "Add guest",
-    "add_guest_explanation": "Add a new guest to the group",
-    "merge_guest": "Assign guest",
-    "merge_guest_explanation": "Remove the chosen guest and assign their past transactions to a real member in the group.",
-    "guest_switcher": "Switch guest",
-    "guest_switcher_explanation": "Choose the guest whose finances you want to manage.",
-    "sure_remove_guest": "Are you sure you want to remove them from the group?",
-    "needs_choose_guest": "A guest needs to be chosen",
     "sure_merge_guest": "Are you sure you want to assign the guest to the chosen member?",
-    "select_member": "Select member",
 
     "edit_request": "Edit shopping request",
     "edited_request": "Edited request",
@@ -229,7 +213,7 @@
     "buy": "Buy",
 
     "boost_group": "Boost group",
-    "boost_group_explanation": "Increase the group member limit to 30 and keep track of its statistics.",
+    "boost_group_explanation": "Increase the group member limit to 30 and keep track of the statistics.",
     "available": "Number of group-boosting Dodos: {}",
 
     "sure_boost": "Are you sure you want to boost the group?",
@@ -282,7 +266,7 @@
     "use_personalised_ads_explanation": "If you want to see personalised ads",
 
     "trial_version": "Trial time",
-    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These include the ad-free experience, the usage of gradient and dynamic themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
+    "trial_version_explanation": "You registered in the past two weeks, so you are using the app with certain bonuses. These include the ad-free experience, the usage of two-tone, gradient and dynamic themes and the access to group statistics. After two weeks you can buy these in the Dodo Store if you want.",
 
     "calculator": "Calculator",
     "calculator_explanation": "A simple calculator if you need it 😉",
@@ -394,5 +378,60 @@
     "custom_amount": "Custom amount",
     "custom_amount_explanation": "Set how much the chosen member should pay.",
     "reset": "Reset",
-    "chosen_amount": "Chosen amount: "
+    "chosen_amount": "Chosen amount: ",
+
+    "from_who": "Who:",
+    "to_who": {
+        "one": "For whom:",
+        "other": "For whom:"
+    },
+
+    "food": "Food",
+    "groceries": "Groceries",
+    "transport": "Transport",
+    "entertainment": "Entertainment",
+    "shopping": "Shopping",
+    "health": "Health",
+    "other": "Other",
+    "category_hint": "Choose the category",
+
+    "change_user_currency": "Change default currency",
+    "change_user_currency_explanation": "This is your default currency, the one in which the summary is shown.",
+
+    "pin": "Pin",
+    "confirm_pin": "Confirm pin",
+
+    "4_needed": "4 digits needed",
+
+    "we_are_concerned_your_privacy": "We keep your data safe",
+
+    "char_not_allowed": "You are not allowed to use the „{}“ character",
+    "username_taken": "The chosen username is already taken.",
+
+    "pins_not_match": "The two pins don't match",
+
+    "change_to_password": "Use password instead",
+    "change_to_pin": "Use pin instead",
+    "password_login_deprecated": "The preferred login method is the pin",
+    "password_login_deprecated_explanation": "Switch to using pin after login under the user settings menu.",
+
+    "member_to_merge_into": "Who to assign their transactions to:",
+    "needs_member": "Choose the member first",
+    "guest": "Guest",
+
+    "warning_wont_see": "Since you did not buy and you are not paying, you will not see the transaction in your history!",
+
+    "thank_you": "Thank you",
+    "even_one_rating_helps": "We're really glad you like the app. Please review it in store\uD83D\uDE0A. Every review helps to get more people to find it!",
+    "to_store": "Rate it😎",
+    "like_the_app": "Do you like the app?",
+    "rate_app": "Rate the app",
+
+    "merge_with_guest": "Assign guest",
+    "merge_with_guest_explanation": "The group has guest user(s) whose transactions have been handled by other members. If you recognise yourself as one of them, you can now associate their previous transactions with you.\n(If you don't know what this means, skip this step.)",
+    "guests_in_group": "Guest(s) in the group:",
+    "skip": "Skip",
+    "merge": "Assign",
+
+    "dual_tone_themes": "Dual tone themes"
 }

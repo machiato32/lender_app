@@ -63,12 +63,14 @@ class AddModifyPurchase {
       noteController.text = savedPurchase.name;
       amountController.text =
           savedPurchase.totalAmountOriginalCurrency.toMoneyString(savedPurchase.originalCurrency);
+      purchaserId = savedPurchase.buyerId;
+      //Note: the receivers are set after the list of members is received from the server.
     }
     members = getMembers(context);
     focusNode.addListener(() {
       _setState(() {});
     });
-    purchaserId = currentUserId;
+    purchaserId = purchaserId ?? currentUserId;
   }
 
   Map<String, dynamic> generateBody(String name, double amount, List<Member> members) {

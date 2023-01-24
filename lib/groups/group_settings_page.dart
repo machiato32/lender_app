@@ -111,7 +111,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   aspectRatio: width / 2 / height,
                                   child: ListView(
                                     controller: ScrollController(),
-                                    children: columnWidgets.take(4).toList(),
+                                    children: columnWidgets.take(2).toList(),
                                   ),
                                 ),
                                 AspectRatio(
@@ -119,7 +119,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   child: ListView(
                                     controller: ScrollController(),
                                     children:
-                                        columnWidgets.reversed.take(2).toList().reversed.toList(),
+                                        columnWidgets.reversed.take(4).toList().reversed.toList(),
                                   ),
                                 ),
                               ])

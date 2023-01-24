@@ -17,7 +17,7 @@ class _MergeOnJoinPageState extends State<MergeOnJoinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //TODO: test
+      //TODO: test, make HTTP request
       appBar: AppBar(
         title: Text('merge_with_guest'.tr()),
       ),

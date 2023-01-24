@@ -21,26 +21,38 @@ class _ColorPickerState extends State<ColorPicker> {
         theme: entry.value,
         themeName: entry.key,
         enabled: enabled,
+        dualColor: true,
       );
     }).toList();
   }
 
-  List<Widget> _getSolidColors() {
-    return AppTheme.themes.entries
-        .where((element) => (!element.key.contains('Gradient') && !element.key.contains('Dynamic')))
-        .map((entry) {
+  List<Widget> _getSimpleColors() {
+    return AppTheme.simpleColorThemes.map((entry) {
       return ColorElement(
-        theme: entry.value,
-        themeName: entry.key,
+        theme: AppTheme.themes[entry],
+        themeName: entry,
+      );
+    }).toList();
+  }
+
+  List<Widget> _getDualColors({bool enabled}) {
+    return AppTheme.dualColorThemes.map((entry) {
+      return ColorElement(
+        theme: AppTheme.themes[entry],
+        themeName: entry,
+        dualColor: true,
+        enabled: enabled,
       );
     }).toList();
   }
 
   List<Widget> _getGradientColors({bool enabled}) {
-    return AppTheme.themes.entries
-        .where((element) => element.key.contains('Gradient'))
-        .map((entry) {
-      return ColorElement(theme: entry.value, themeName: entry.key, enabled: enabled);
+    return AppTheme.gradientColors.keys.map((entry) {
+      return ColorElement(
+        theme: AppTheme.themes[entry],
+        themeName: entry,
+        enabled: enabled,
+      );
     }).toList();
   }
 
@@ -66,7 +78,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 alignment: WrapAlignment.center,
                 runSpacing: 5,
                 spacing: 5,
-                children: _getSolidColors(),
+                children: _getSimpleColors(),
               ),
             ),
             SizedBox(
@@ -77,15 +89,12 @@ class _ColorPickerState extends State<ColorPicker> {
               height: 7,
             ),
             Text(
-              'gradient_themes'.tr(),
+              'dual_tone_themes'.tr(),
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
                   .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 18),
               textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 3,
             ),
             Visibility(
               visible: !useGradients,
@@ -100,6 +109,25 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
             SizedBox(
               height: 7,
+            ),
+            Center(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                runSpacing: 5,
+                spacing: 5,
+                children: _getDualColors(enabled: useGradients),
+              ),
+            ),
+            Text(
+              'gradient_themes'.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 10,
             ),
             Center(
               child: Wrap(
@@ -162,7 +190,8 @@ class ColorElement extends StatefulWidget {
   final ThemeData theme;
   final String themeName;
   final bool enabled;
-  const ColorElement({this.theme, this.themeName, this.enabled = true});
+  final bool dualColor;
+  const ColorElement({this.theme, this.themeName, this.enabled = true, this.dualColor = false});
 
   @override
   _ColorElementState createState() => _ColorElementState();
@@ -184,7 +213,14 @@ class _ColorElementState extends State<ColorElement> {
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         gradient: (widget.themeName == currentThemeName)
-            ? AppTheme.gradientFromTheme(widget.themeName, useSecondary: true)
+            ? widget.dualColor
+                ? LinearGradient(
+                    colors: [widget.theme.colorScheme.primary, widget.theme.colorScheme.secondary],
+                    stops: [0.5, 0.5],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  )
+                : AppTheme.gradientFromTheme(widget.themeName, useSecondary: true)
             : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
         borderRadius: BorderRadius.circular(18),
       ),
@@ -211,7 +247,14 @@ class _ColorElementState extends State<ColorElement> {
         child: Ink(
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-            gradient: AppTheme.gradientFromTheme(widget.themeName),
+            gradient: widget.dualColor
+                ? LinearGradient(
+                    colors: [widget.theme.colorScheme.primary, widget.theme.colorScheme.secondary],
+                    stops: [0.5, 0.5],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  )
+                : AppTheme.gradientFromTheme(widget.themeName),
             border: Border.all(color: widget.theme.colorScheme.surface, width: 6),
             borderRadius: BorderRadius.circular(18),
           ),

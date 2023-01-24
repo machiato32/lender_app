@@ -132,25 +132,25 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 25,
-            ),
             Center(
               child: Text(
-                'title'.tr().toLowerCase(),
+                'title'.tr().toUpperCase(),
                 style: TextStyle(
                     fontSize: 50,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
             Flexible(
                 child: Text(
-              'subtitle'.tr(),
+              'subtitle'.tr().toUpperCase(),
               style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.onSurface),
+                fontSize: 28,
+                fontWeight: FontWeight.w300,
+                letterSpacing: 1.1,
+                color: Theme.of(context).colorScheme.onSurface,
+                height: 1.1,
+              ),
               textAlign: TextAlign.center,
             )),
             Flexible(

@@ -157,6 +157,7 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
+
   runApp(
     EasyLocalization(
       child: ChangeNotifierProvider<AppStateNotifier>(

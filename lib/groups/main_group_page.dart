@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
 import 'package:csocsort_szamla/essentials/save_preferences.dart';
-import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/create_group.dart';
 import 'package:csocsort_szamla/groups/group_settings_page.dart';
 import 'package:csocsort_szamla/groups/join_group.dart';
@@ -31,14 +30,10 @@ import '../essentials/currencies.dart';
 import '../essentials/models.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
-import '../main/custom_alert_dialog.dart';
 import '../main/iapp_not_supported_dialog.dart';
 import '../main/like_app_dialog.dart';
 import '../main/main_speed_dial.dart';
-import '../main/rate_app_dialog.dart';
-import '../main/report_a_bug_page.dart';
 import '../main/trial_version_dialog.dart';
-import '../main/tutorial_dialog.dart';
 
 class MainPage extends StatefulWidget {
   final int selectedHistoryIndex;
@@ -179,37 +174,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     scrollTo = widget.scrollTo;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       Future.delayed(Duration(seconds: 1)).then((value) => scrollTo = null);
-      bool showTutorial = true;
-      await SharedPreferences.getInstance().then((prefs) {
-        if (prefs.containsKey('show_tutorial')) {
-          showTutorial = prefs.getBool('show_tutorial');
-        }
-      });
-      if (showTutorial) {
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setBool('show_tutorial', false);
-        });
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return TutorialDialog();
-          },
-        );
-      }
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return CustomAlertDialog(
-      //         content: {
-      //           'title': 'some_title',
-      //           'body': [
-      //             'one text',
-      //             'another text',
-      //             'wow',
-      //           ]
-      //         },
-      //       );
-      //     });
     });
   }
 
@@ -234,7 +198,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     });
 
     if (!kIsWeb && !ratedApp && !trialVersion) {
-      if (Random().nextDouble() < 0.1) {
+      double r = Random().nextDouble();
+      print(r);
+      if (r < 0.15) {
         showDialog(context: context, builder: (context) => LikeTheAppDialog());
         // Don't show the dialog multiple times in one session. Value is not saved in the memory
         ratedApp = true;
@@ -506,7 +472,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ),
                       ),
                       Text(
-                        'title'.tr().toLowerCase(),
+                        'title'.tr().toUpperCase(),
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall
@@ -718,11 +684,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   String url = "";
                   switch (Platform.operatingSystem) {
                     case "android":
-                      url =
-                          "https://play.google.com/store/apps/details?id=csocsort.hu.machiato32.csocsort_szamla";
+                      url = "market://details?id=csocsort.hu.machiato32.csocsort_szamla";
                       break;
                     case "windows":
-                      url = "https://www.microsoft.com/store/productId/9NVB4CZJDSQ7";
+                      url = "ms-windows-store://pdp/?productid=9NVB4CZJDSQ7";
                       break;
                     case "ios":
                       url = "https://lenderapp.net"; //TODO

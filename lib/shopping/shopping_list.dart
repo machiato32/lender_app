@@ -205,7 +205,7 @@ class _ShoppingListState extends State<ShoppingList> {
               Column(
                 children: [
                   SizedBox(
-                    height: 250,
+                    height: 200,
                   ),
                   Expanded(
                     child: FutureBuilder(
@@ -260,16 +260,9 @@ class _ShoppingListState extends State<ShoppingList> {
                 ],
               ),
               Container(
-                height: 270,
+                height: 220,
                 color: Colors.transparent,
                 child: Card(
-                  margin: widget.bigScreen ? null : EdgeInsets.only(left: 0, right: 0),
-                  shape: widget.bigScreen
-                      ? null
-                      : RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-                        ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                     child: Column(
@@ -283,19 +276,6 @@ class _ShoppingListState extends State<ShoppingList> {
                               .titleLarge
                               .copyWith(color: Theme.of(context).colorScheme.onSurface),
                         )),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Center(
-                          child: Text(
-                            'shopping_list_explanation'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
                         SizedBox(
                           height: 20,
                         ),

@@ -32,11 +32,10 @@ class RateAppDialog extends StatelessWidget {
             String url = "";
             switch (Platform.operatingSystem) {
               case "android":
-                url =
-                    "https://play.google.com/store/apps/details?id=csocsort.hu.machiato32.csocsort_szamla";
+                url = "market://details?id=csocsort.hu.machiato32.csocsort_szamla";
                 break;
               case "windows":
-                url = "https://www.microsoft.com/store/productId/9NVB4CZJDSQ7";
+                url = "ms-windows-store://pdp/?productid=9NVB4CZJDSQ7";
                 break;
               case "ios":
                 url = "https://lenderapp.net"; //TODO

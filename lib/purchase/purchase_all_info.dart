@@ -132,80 +132,77 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
           SizedBox(
             height: 10,
           ),
-          Visibility(
-            visible: widget.purchase.buyerId == currentUserId,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                GradientButton(
-                  onPressed: () {
-                    showDialog(
-                      builder: (context) => ModifyPurchaseDialog(
-                        savedPurchase: widget.purchase,
-                      ),
-                      context: context,
-                    ).then((value) {
-                      if (value ?? false) {
-                        Navigator.pop(context, 'deleted');
-                      }
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        'modify'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    ],
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              GradientButton(
+                onPressed: () {
+                  showDialog(
+                    builder: (context) => ModifyPurchaseDialog(
+                      savedPurchase: widget.purchase,
+                    ),
+                    context: context,
+                  ).then((value) {
+                    if (value ?? false) {
+                      Navigator.pop(context, 'deleted');
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Text(
+                      'modify'.tr(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .button
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ],
                 ),
-                GradientButton(
-                  onPressed: () {
-                    showDialog(
-                            builder: (context) => ConfirmChoiceDialog(
-                                  choice: 'want_delete',
-                                ),
-                            context: context)
-                        .then((value) {
-                      if (value != null && value) {
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _deleteElement(widget.purchase.purchaseId),
-                                  dataTrueText: 'delete_scf',
-                                  onDataTrue: () {
-                                    _onDeleteElement();
-                                  },
-                                ),
-                            barrierDismissible: false,
-                            context: context);
-                      }
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        'revoke'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    ],
-                  ),
+              ),
+              GradientButton(
+                onPressed: () {
+                  showDialog(
+                          builder: (context) => ConfirmChoiceDialog(
+                                choice: 'want_delete',
+                              ),
+                          context: context)
+                      .then((value) {
+                    if (value != null && value) {
+                      showDialog(
+                          builder: (context) => FutureSuccessDialog(
+                                future: _deleteElement(widget.purchase.purchaseId),
+                                dataTrueText: 'delete_scf',
+                                onDataTrue: () {
+                                  _onDeleteElement();
+                                },
+                              ),
+                          barrierDismissible: false,
+                          context: context);
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Text(
+                      'revoke'.tr(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .button
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           )
         ],
       ),

@@ -13,8 +13,10 @@ class AboutUs extends StatelessWidget {
             Center(
               child: Text(
                 'about_us'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -24,8 +26,10 @@ class AboutUs extends StatelessWidget {
             Center(
                 child: Text(
               'about_us_explanation'.tr(),
-              style: Theme.of(context).textTheme.titleSmall.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -35,8 +39,7 @@ class AboutUs extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GradientButton(
-                  child: Icon(Icons.info,
-                      color: Theme.of(context).colorScheme.onPrimary),
+                  child: Icon(Icons.info, color: Theme.of(context).colorScheme.onPrimary),
                   onPressed: () {
                     showAboutDialog(
                       context: context,
@@ -44,16 +47,16 @@ class AboutUs extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           'about_us_text'.tr(),
-                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                           textAlign: TextAlign.justify,
                         )
                       ],
                       applicationIcon: Container(
                         child: Image(
-                          image: AssetImage('assets/dodo_color.png'),
+                          image: AssetImage('assets/dodo.png'),
                         ),
                         width: 24,
                         height: 24,

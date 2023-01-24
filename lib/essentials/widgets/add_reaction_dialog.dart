@@ -55,10 +55,10 @@ class _AddReactionDialogState extends State<AddReactionDialog> {
               child: Text(
                 e.nickname,
                 style: e.userId == currentUserId
-                    ? Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        .copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer)
+                    ? Theme.of(context).textTheme.bodyLarge.copyWith(
+                        color: currentThemeName.contains('Gradient')
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSecondaryContainer)
                     : Theme.of(context)
                         .textTheme
                         .bodyLarge

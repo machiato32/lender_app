@@ -74,7 +74,6 @@ flutter:
   assets:
     - assets/
     - assets/translations/
-    - assets/tutorial/
 
 msix_config:
   display_name: Lender

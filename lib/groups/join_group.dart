@@ -151,7 +151,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'Lender',
+                                    'DODO',
                                     style: Theme.of(context).textTheme.headlineSmall.copyWith(
                                         color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),

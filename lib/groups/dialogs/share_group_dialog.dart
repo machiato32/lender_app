@@ -37,13 +37,14 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             PrettyQr(
               data: widget.inviteCode,
               roundEdges: true,
-              size: MediaQuery.of(context).size.width > 300 ? 250 : 120,
+              size: MediaQuery.of(context).size.width > 350 ? 250 : 120,
               elementColor: Theme.of(context).colorScheme.onSurfaceVariant,
-              image: AssetImage('assets/dodo_color_glow3.png'),
+              image: AssetImage('assets/dodo.png'),
             ),
             SizedBox(
               height: 10,
             ),
+            Divider(),
             Text(
               'share_url'.tr(),
               style: Theme.of(context)
@@ -52,22 +53,18 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
                   .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  onPressed: () {
-                    Share.share(
-                      'https://www.lenderapp.net/join/' + widget.inviteCode,
-                      subject: 'invitation_to_lender'.tr(),
-                    );
-                  },
-                  child: Icon(
-                    Icons.share,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-              ],
+            SizedBox(height: 5),
+            GradientButton(
+              onPressed: () {
+                Share.share(
+                  'https://www.lenderapp.net/join/' + widget.inviteCode,
+                  subject: 'invitation_to_lender'.tr(),
+                );
+              },
+              child: Icon(
+                Icons.share,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ],
         ),

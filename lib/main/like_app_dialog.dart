@@ -11,7 +11,7 @@ class LikeTheAppDialog extends StatelessWidget {
       centerBody: true,
       content: {
         'title': 'like_the_app',
-        'body': ['']
+        'body': ['🦤']
       },
       actions: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
