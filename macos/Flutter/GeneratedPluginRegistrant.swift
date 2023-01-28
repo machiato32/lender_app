@@ -12,9 +12,9 @@ import firebase_messaging
 import flutter_local_notifications
 import in_app_purchase_storekit
 import mobile_scanner
-import path_provider_macos
+import path_provider_foundation
 import share_plus
-import shared_preferences_macos
+import shared_preferences_foundation
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {

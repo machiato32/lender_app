@@ -83,3 +83,4 @@ ad_management.dart
 /android/settings_aar.gradle
 
 **/GoogleService-Info.plist
+**/Info.plist
