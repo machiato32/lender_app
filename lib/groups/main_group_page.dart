@@ -331,7 +331,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       ),
                     ),
               builder: (context, isOnline) {
-                isOnline = isOnline || kIsWeb; //TODO: index html dolgok
+                isOnline = isOnline || kIsWeb;
                 return _body(isOnline, bigScreen);
               },
             ),
@@ -415,6 +415,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           setState(() {});
         },
         child: ListView(
+          physics: AlwaysScrollableScrollPhysics(),
           controller: ScrollController(),
           shrinkWrap: true,
           children: [
@@ -887,7 +888,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Icon(Icons.receipt_long)),
           label: 'shopping_list'.tr()),
       NavigationDestination(
-          //TODO: change user currency
           icon: DescribedFeatureOverlay(
             featureId: 'group_settings',
             tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
@@ -927,7 +927,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ],
             ),
           ),
-          label: 'group'.tr()), //TODO: bettername
+          label: 'group'.tr()),
       NavigationDestination(
         icon: DescribedFeatureOverlay(
           tapTarget: Icon(Icons.menu, color: Colors.black),

@@ -333,8 +333,7 @@ class _BalancesState extends State<Balances> {
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           decoration: member.memberId == currentUserId
               ? BoxDecoration(
-                  gradient: AppTheme.gradientFromTheme(currentThemeName,
-                      useSecondary: true), //TODO: reset currency on group switch
+                  gradient: AppTheme.gradientFromTheme(currentThemeName, useSecondary: true),
                   borderRadius: BorderRadius.circular(15),
                 )
               : null,

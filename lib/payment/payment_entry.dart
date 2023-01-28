@@ -30,7 +30,6 @@ class _PaymentEntryState extends State<PaymentEntry> {
   String amount;
 
   void callbackForReaction(String reaction) {
-    //TODO: currentNickname
     Reaction oldReaction = widget.data.reactions
         .firstWhere((element) => element.userId == currentUserId, orElse: () => null);
     bool alreadyReacted = oldReaction != null;

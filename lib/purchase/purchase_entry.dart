@@ -32,7 +32,6 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
   String amountToSelfOriginal = '';
 
   void callbackForReaction(String reaction) {
-    //TODO: currentNickname
     Reaction oldReaction = widget.purchase.reactions
         .firstWhere((element) => element.userId == currentUserId, orElse: () => null);
     bool alreadyReacted = oldReaction != null;

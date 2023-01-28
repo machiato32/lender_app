@@ -1,6 +1,6 @@
 {
-    "title":"Lender",
-    "subtitle":"Geld- und Schuldenmanagement app für Gruppen",
+    "title":"Dodo",
+    "subtitle":"Privacy-focused bill splitting",
 
     "login":"Anmelden",
     "register":"Registrieren",
@@ -197,7 +197,7 @@
     "add_reaction": "Reaktion hinzufügen",
     "all_reactions": "Vorherige Reaktionen",
 
-    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
+    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets, Zahlen und das \".\" Zeichen sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
     "reminder_explanation": "Wir kennen deine e-mail nicht, deshalb zeigen wir dir diese Erinnerung, falls du dein Passwort vergisst.",
 
     "accept_privacy_policy": "Ich akzeptiere die Datenschutzbestimmungen",

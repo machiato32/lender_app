@@ -34,7 +34,8 @@ class _RegisterPinPageState extends State<RegisterPinPage> {
             child: Column(
               children: [
                 Expanded(
-                  child: Center(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
                     child: ListView(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       shrinkWrap: true,

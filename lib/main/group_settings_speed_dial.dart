@@ -62,7 +62,7 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
                               colorFilter: ColorFilter.mode(
                                   Theme.of(context).colorScheme.onPrimary, BlendMode.srcIn),
                               child: Image.asset(
-                                'assets/dodo_color.png',
+                                'assets/dodo.png',
                                 width: 25,
                               )),
                           onPressed: () {
@@ -96,58 +96,37 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
             backgroundColor: boosted
                 ? Theme.of(context).colorScheme.tertiaryContainer
                 : Theme.of(context).colorScheme.error,
-            labelWidget: GestureDetector(
-              onTap: () {
-                //TODO
-                // if (boosted) {
-                //   Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => StatisticsPage(
-                //                 groupCreation: created == null
-                //                     ? DateTime.parse('2020-01-17')
-                //                     : created,
-                //               )));
-                // } else {
-                //   showNoStatisticsDialog();
-                // }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      height: 20,
+            labelWidget: Padding(
+              padding: EdgeInsets.only(right: 18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      color: boosted
+                          ? Theme.of(context).colorScheme.tertiaryContainer
+                          : Theme.of(context).colorScheme.error,
+                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        // gradient: boosted
-                        //     ? AppTheme.gradientFromTheme(Theme.of(context))
-                        //     : LinearGradient(
-                        //         colors: [Colors.grey[400], Colors.grey[400]]),
-                        color: boosted
-                            ? Theme.of(context).colorScheme.tertiaryContainer
-                            : Theme.of(context).colorScheme.error,
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                      ),
-                      child: Text('statistics'.tr(),
-                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                                color: boosted
-                                    ? Theme.of(context).colorScheme.onTertiaryContainer
-                                    : Theme.of(context).colorScheme.onError,
-                              )),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'statistics_explanation'.tr(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
+                    child: Text('statistics'.tr(),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                              color: boosted
+                                  ? Theme.of(context).colorScheme.onTertiaryContainer
+                                  : Theme.of(context).colorScheme.onError,
+                            )),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'statistics_explanation'.tr(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
             child: Icon(Icons.assessment),
@@ -167,43 +146,34 @@ class _GroupSettingsSpeedDialState extends State<GroupSettingsSpeedDial> {
         SpeedDialChild(
             foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
             backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-            labelWidget: GestureDetector(
-              onTap: () {
-                //TODO
-                // showDialog(
-                //   builder: (context) => DownloadExportDialog(),
-                //   context: context,
-                // );
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      height: 20,
+            labelWidget: Padding(
+              padding: EdgeInsets.only(right: 18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
+                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        // gradient: AppTheme.gradientFromTheme(Theme.of(context)),
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                      ),
-                      child: Text('export'.tr(),
-                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
-                              color: Theme.of(context).colorScheme.onTertiaryContainer,
-                              fontSize: 18)),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'export_explanation'.tr(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
+                    child: Text('export'.tr(),
+                        style: Theme.of(context).textTheme.bodyLarge.copyWith(
+                            color: Theme.of(context).colorScheme.onTertiaryContainer,
+                            fontSize: 18)),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'export_explanation'.tr(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
             child: Icon(Icons.table_chart),

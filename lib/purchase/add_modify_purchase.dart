@@ -378,27 +378,4 @@ class AddModifyPurchase {
           },
         ),
       );
-  AnimatedCrossFade warningText() {
-    bool isVisible = !(membersMap.keys
-            .where((member) => membersMap[member])
-            .where((member) => member.memberId == currentUserId)
-            .isNotEmpty ||
-        purchaserId == currentUserId);
-    CrossFadeState state = isVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst;
-    return AnimatedCrossFade(
-      duration: Duration(milliseconds: 100),
-      crossFadeState: state,
-      firstChild: Container(),
-      secondChild: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Center(
-          child: Text(
-            'warning_wont_see'.tr(),
-            style: theme.textTheme.titleMedium.copyWith(color: theme.colorScheme.error),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
 }

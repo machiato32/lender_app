@@ -17,7 +17,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
     'ad_gradient_bundle',
     'group_boost',
     'big_lender_bundle'
-  }; //TODO: ezt megerteni lol
+  };
   Map<String, int> sortBasic = {
     'remove_ads': 1,
     'gradients': 2,

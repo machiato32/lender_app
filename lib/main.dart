@@ -295,7 +295,7 @@ class _LenderAppState extends State<LenderApp> {
       });
     }
     if (isFirebasePlatformEnabled) {
-      var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo_white');
+      var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo');
       var initializationSettingsIOS = new IOSInitializationSettings();
       var initializationSettings = new InitializationSettings(
           android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
@@ -323,6 +323,7 @@ class _LenderAppState extends State<LenderApp> {
         setupInitialMessage();
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           print("onMessage: $message");
+          print(message.data);
           Map<String, dynamic> decoded = jsonDecode(message.data['payload']);
           print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(

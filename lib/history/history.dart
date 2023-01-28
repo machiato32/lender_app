@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
@@ -131,6 +132,7 @@ class _HistoryState extends State<History> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(30),
                     onTap: () {
+                      HapticFeedback.selectionClick();
                       _selectedIndex = 0;
                       setState(() {});
                     },
@@ -177,6 +179,7 @@ class _HistoryState extends State<History> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(30),
                     onTap: () {
+                      HapticFeedback.selectionClick();
                       _selectedIndex = 1;
                       setState(() {});
                     },

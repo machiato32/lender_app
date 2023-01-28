@@ -84,7 +84,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   void callback({bool purchase = false, bool payment = false}) {
     //TODO: rename
     if (!purchase && !payment) {
-      //IsGuestBanner callback
       clearGroupCache();
       setState(() {
         _payments = null;
@@ -227,7 +226,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
           ),
         ],
       ),
-      //TODO:hide on top
       floatingActionButton: Visibility(
         visible: width < tabletViewWidth,
         child: FloatingActionButton(

@@ -430,11 +430,9 @@
     "password_login_deprecated_explanation": "Válts pinre a bejelentkezés után a felhasználói beállítások menüpont alatt.",
 
     "guest_to_merge": "Vendég:",
-    "member_to_merge_into": "Tag akihez hozzá legyen rendelve:",
+    "member_to_merge_into": "Tag akihez a korábbi tranzakciói hozzá legyenek rendelve:",
     "needs_member": "A csoporttagot ki kell választanod!",
     "guest": "Vendég",
-
-    "warning_wont_see": "Mivel nem te vetted és nem is te fizetsz, a tranzakciót az előzményeid között nem fogod látni!",
 
     "thank_you": "Köszönjük szépen",
     "even_one_rating_helps": "Nagyon örülünk, hogy tetszik az app. Légyszi értékeld a boltban😊. Már egy értékelés is sokat segít, hogy minél többen megtalálják!",
@@ -448,5 +446,13 @@
     "skip": "Kihagyás",
     "merge": "Összevonás",
 
-    "dual_tone_themes": "Két tónusú témák"
+    "dual_tone_themes": "Két tónusú témák",
+
+    "change_pin": "Pin megváltoztatása",
+    "change_pin_explanation": "Változtasd meg a pint, amivel bejelentkezel az appba.",
+    "old_pin": "Régi pin",
+    "new_pin": "Új pin",
+    "new_pin_confirm": "Új pin megerősítése",
+    "change_pin_scf": "A pin megváltoztatása sikeres volt."
+
 }

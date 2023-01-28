@@ -90,7 +90,8 @@ class _GroupSettingState extends State<GroupSettings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
-          physics: widget.bigScreen ? NeverScrollableScrollPhysics() : null,
+          physics:
+              widget.bigScreen ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
           child: Column(
             children: <Widget>[
               FutureBuilder(

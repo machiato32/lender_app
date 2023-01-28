@@ -59,12 +59,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
 
   @override
   Widget build(BuildContext context) {
-    print(purchaserId == currentUserId);
-    print(!(membersMap.keys
-            .where((member) => membersMap[member])
-            .where((member) => member.memberId == currentUserId)
-            .isNotEmpty ||
-        purchaserId == currentUserId));
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -95,7 +89,6 @@ class _AddPurchaseRouteState extends State<AddPurchaseRoute> with AddModifyPurch
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              warningText(),
                               noteTextField(context),
                               SizedBox(
                                 height: 20,
