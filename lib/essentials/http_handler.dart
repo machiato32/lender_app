@@ -26,57 +26,61 @@ enum GetUriKeys {
   groupUnapprovedMembers,
   groupExportXls,
   groupExportPdf,
-  purchasesAll,
-  paymentsAll,
-  purchasesFirst6,
-  paymentsFirst6,
+  purchases,
+  payments,
   statisticsPayments,
   statisticsPurchases,
   statisticsAll,
-  requestsAll,
-  purchasesDate,
-  paymentsDate
+  requests,
 }
 
-List<String> getUris = [
-  '/groups/{}/has_guests',
-  '/groups/{}',
-  '/groups/{}/member',
-  '/groups',
-  '/balance',
-  '/password_reminder?username={}',
-  '/groups/{}/boost',
-  '/groups/{}/guests',
-  '/groups/{}/members/unapproved',
-  '/groups/{}/export/get_link_xls',
-  '/groups/{}/export/get_link_pdf',
-  '/purchases?group={}',
-  '/payments?group={}',
-  '/purchases?group={}&limit=6',
-  '/payments?group={}&limit=6',
-  '/groups/{}/statistics/payments?from_date={}&until_date={}',
-  '/groups/{}/statistics/purchases?from_date={}&until_date={}',
-  '/groups/{}/statistics/all?from_date={}&until_date={}',
-  '/requests?group={}',
-  '/purchases?group={}&from_date={}&until_date={}',
-  '/payments?group={}&from_date={}&until_date={}'
-]; //TODO: same for other types
+Map<GetUriKeys, String> getUris = {
+  GetUriKeys.groupHasGuests: '/groups/{}/has_guests',
+  GetUriKeys.groupCurrent: '/groups/{}',
+  GetUriKeys.groupMember: '/groups/{}/member',
+  GetUriKeys.groups: '/groups',
+  GetUriKeys.userBalanceSum: '/balance',
+  GetUriKeys.passwordReminder: '/password_reminder?username={}',
+  GetUriKeys.groupBoost: '/groups/{}/boost',
+  GetUriKeys.groupGuests: '/groups/{}/guests',
+  GetUriKeys.groupUnapprovedMembers: '/groups/{}/members/unapproved',
+  GetUriKeys.groupExportXls: '/groups/{}/export/get_link_xls',
+  GetUriKeys.groupExportPdf: '/groups/{}/export/get_link_pdf',
+  GetUriKeys.purchases: '/purchases?group={}',
+  GetUriKeys.payments: '/payments?group={}',
+  GetUriKeys.statisticsPayments: '/groups/{}/statistics/payments?from_date={}&until_date={}',
+  GetUriKeys.statisticsPurchases: '/groups/{}/statistics/purchases?from_date={}&until_date={}',
+  GetUriKeys.statisticsAll: '/groups/{}/statistics/all?from_date={}&until_date={}',
+  GetUriKeys.requests: '/requests?group={}',
+}; //TODO: same for other types
 
 enum HttpType { get, post, put, delete }
 
 ///Generates URI-s from enum values. The default value of [args] is [currentGroupId].
-String generateUri(GetUriKeys key, {HttpType type = HttpType.get, List<String> args}) {
+String generateUri(GetUriKeys key,
+    {HttpType type = HttpType.get, List<String> args, Map<String, String> queryParams}) {
+  //TODO: query paramms normalisan
   if (type == HttpType.get) {
     if (args == null) {
       args = [currentGroupId.toString()];
     }
-    String uri = getUris[key.index];
+    String uri = getUris[key];
     if (args != null) {
       for (String arg in args) {
         if (uri.contains('{}')) {
           uri = uri.replaceFirst('{}', arg);
         } else {
           break;
+        }
+      }
+    }
+    if (queryParams != null) {
+      if (queryParams.values.any((element) => element != null)) {
+        uri += !uri.contains('?') ? '?' : '&';
+      }
+      for (String name in queryParams.keys) {
+        if (queryParams[name] != null) {
+          uri += name + '=' + queryParams[name] + '&';
         }
       }
     }
@@ -270,12 +274,12 @@ Duration delayTime() {
   return Duration(milliseconds: 700);
 }
 
-Future<http.Response> httpGet(
-    {@required BuildContext context,
-    @required String uri,
-    bool overwriteCache = false,
-    bool useCache = true,
-    bool useGuest = false}) async {
+Future<http.Response> httpGet({
+  @required BuildContext context,
+  @required String uri,
+  bool overwriteCache = false,
+  bool useCache = true,
+}) async {
   try {
     useCache = useCache && !kIsWeb;
     if (useCache) {
@@ -290,8 +294,7 @@ Future<http.Response> httpGet(
     //print('nem cache...');
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization":
-          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
     };
     http.Response response =
         await http.get(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);
@@ -331,16 +334,15 @@ Future<http.Response> httpGet(
   }
 }
 
-Future<http.Response> httpPost(
-    {@required BuildContext context,
-    @required String uri,
-    Map<String, dynamic> body,
-    bool useGuest = false}) async {
+Future<http.Response> httpPost({
+  @required BuildContext context,
+  @required String uri,
+  Map<String, dynamic> body,
+}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization":
-          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
     };
     http.Response response;
     if (body != null) {
@@ -380,16 +382,15 @@ Future<http.Response> httpPost(
   }
 }
 
-Future<http.Response> httpPut(
-    {@required BuildContext context,
-    @required String uri,
-    Map<String, dynamic> body,
-    bool useGuest = false}) async {
+Future<http.Response> httpPut({
+  @required BuildContext context,
+  @required String uri,
+  Map<String, dynamic> body,
+}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization":
-          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
     };
     http.Response response;
     if (body != null) {
@@ -429,13 +430,11 @@ Future<http.Response> httpPut(
   }
 }
 
-Future<http.Response> httpDelete(
-    {@required BuildContext context, @required String uri, bool useGuest = false}) async {
+Future<http.Response> httpDelete({@required BuildContext context, @required String uri}) async {
   try {
     Map<String, String> header = {
       "Content-Type": "application/json",
-      "Authorization":
-          "Bearer " + (useGuest && false ? guestApiToken : (apiToken == null ? '' : apiToken))
+      "Authorization": "Bearer " + (apiToken == null ? '' : apiToken)
     };
     http.Response response =
         await http.delete(Uri.parse((useTest ? TEST_URL : APP_URL) + uri), headers: header);

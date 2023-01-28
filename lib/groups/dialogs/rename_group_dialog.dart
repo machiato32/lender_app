@@ -76,13 +76,8 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
                   controller: _groupNameController,
                   decoration: InputDecoration(
                     hintText: 'new_name'.tr(),
-                    filled: true,
                     prefixIcon: Icon(
                       Icons.group,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                   inputFormatters: [

@@ -6,6 +6,7 @@ import 'package:csocsort_szamla/essentials/widgets/confirm_choice_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
+import 'package:csocsort_szamla/main/iapp_not_supported_dialog.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -103,16 +104,24 @@ class _BoostGroupState extends State<BoostGroup> {
                             ),
                             SizedBox(height: 10),
                             GradientButton(
+                              useSecondary: true,
                               child: Icon(Icons.insights,
-                                  color: Theme.of(context).colorScheme.onPrimary),
+                                  color: Theme.of(context).colorScheme.onSecondary),
                               onPressed: () {
                                 if (snapshot.data['available_boosts'] == 0) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => InAppPurchasePage())).then((value) {
-                                    setState(() {});
-                                  });
+                                  if (isIAPPlatformEnabled) {
+                                    Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => InAppPurchasePage()))
+                                        .then((value) {
+                                      setState(() {});
+                                    });
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => IAPPNotSupportedDialog());
+                                  }
                                 } else {
                                   showDialog(
                                           builder: (context) => ConfirmChoiceDialog(

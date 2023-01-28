@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 class PurchaseEntry extends StatefulWidget {
   final Purchase purchase;
   final Function({bool purchase, bool payment}) callback;
-
-  const PurchaseEntry({this.purchase, this.callback});
+  final int selectedMemberId;
+  const PurchaseEntry({this.purchase, this.selectedMemberId, this.callback});
 
   @override
   _PurchaseEntryState createState() => _PurchaseEntryState();
@@ -32,9 +32,8 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
   String amountToSelfOriginal = '';
 
   void callbackForReaction(String reaction) {
-    //TODO: currentNickname
     Reaction oldReaction = widget.purchase.reactions
-        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
+        .firstWhere((element) => element.userId == currentUserId, orElse: () => null);
     bool alreadyReacted = oldReaction != null;
     bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
@@ -42,13 +41,14 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       setState(() {});
     } else if (!alreadyReacted) {
       widget.purchase.reactions.add(Reaction(
-          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
-          reaction: reaction,
-          userId: idToUse()));
+        nickname: currentUsername,
+        reaction: reaction,
+        userId: currentUserId,
+      ));
       setState(() {});
     } else {
       widget.purchase.reactions
-          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: currentUserId));
       widget.purchase.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -56,12 +56,14 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
 
   @override
   Widget build(BuildContext context) {
+    int selectedMemberId = widget.selectedMemberId ?? currentUserId;
     note = (widget.purchase.name == '')
         ? 'no_note'.tr()
         : widget.purchase.name[0].toUpperCase() + widget.purchase.name.substring(1);
-    bool bought = widget.purchase.buyerId == idToUse();
-    bool received =
-        widget.purchase.receivers.where((element) => element.memberId == idToUse()).isNotEmpty;
+    bool bought = widget.purchase.buyerId == selectedMemberId;
+    bool received = widget.purchase.receivers
+        .where((element) => element.memberId == selectedMemberId)
+        .isNotEmpty;
     /* Set icon, amount and names */
     if (bought && received) {
       leadingIcon = Icon(Icons.swap_horiz,
@@ -71,7 +73,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
       amountOriginal = widget.purchase.totalAmountOriginalCurrency
           .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       amountToSelfOriginal = (-widget.purchase.receivers
-              .firstWhere((element) => element.memberId == idToUse())
+              .firstWhere((element) => element.memberId == selectedMemberId)
               .balanceOriginalCurrency)
           .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       if (widget.purchase.receivers.length > 1) {
@@ -120,7 +122,7 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           Icon(Icons.call_received, color: Theme.of(context).colorScheme.onSurfaceVariant);
       names = widget.purchase.buyerNickname;
       amountOriginal = (-widget.purchase.receivers
-              .firstWhere((element) => element.memberId == idToUse())
+              .firstWhere((element) => element.memberId == selectedMemberId)
               .balanceOriginalCurrency)
           .toMoneyString(widget.purchase.originalCurrency, withSymbol: true);
       subTextStyle = Theme.of(context)
@@ -144,23 +146,26 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onLongPress: () {
-                showDialog(
-                    builder: (context) => AddReactionDialog(
-                          type: 'purchases',
-                          reactions: widget.purchase.reactions,
-                          reactToId: widget.purchase.purchaseId,
-                          callback: this.callbackForReaction,
-                        ),
-                    context: context);
-              },
+              onLongPress: selectedMemberId != currentUserId
+                  ? null
+                  : () {
+                      showDialog(
+                          builder: (context) => AddReactionDialog(
+                                type: 'purchases',
+                                reactions: widget.purchase.reactions,
+                                reactToId: widget.purchase.purchaseId,
+                                callback: this.callbackForReaction,
+                              ),
+                          context: context);
+                    },
               onTap: () async {
                 showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    backgroundColor: Theme.of(context).cardTheme.color,
-                    builder: (context) =>
-                        SingleChildScrollView(child: PurchaseAllInfo(widget.purchase))).then((val) {
+                  isScrollControlled: true,
+                  context: context,
+                  backgroundColor: Theme.of(context).cardTheme.color,
+                  builder: (context) =>
+                      SingleChildScrollView(child: PurchaseAllInfo(widget.purchase)),
+                ).then((val) {
                   if (val == 'deleted') widget.callback(purchase: true, payment: false);
                 });
               },
@@ -244,12 +249,15 @@ class _PurchaseEntryState extends State<PurchaseEntry> {
             ),
           ),
         ),
-        PastReactionContainer(
-          reactions: widget.purchase.reactions,
-          reactedToId: widget.purchase.purchaseId,
-          isSecondaryColor: bought,
-          type: 'purchases',
-          callback: this.callbackForReaction,
+        Visibility(
+          visible: selectedMemberId == currentUserId,
+          child: PastReactionContainer(
+            reactions: widget.purchase.reactions,
+            reactedToId: widget.purchase.purchaseId,
+            isSecondaryColor: bought,
+            type: 'purchases',
+            callback: this.callbackForReaction,
+          ),
         ),
       ],
     );

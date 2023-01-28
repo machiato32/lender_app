@@ -107,10 +107,7 @@ class _FutureSuccessDialogState extends State<FutureSuccessDialog> {
             Flexible(
               child: Text(
                 widget.dataFalseText.tr(),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    .copyWith(color: Theme.of(context).colorScheme.onError),
+                style: Theme.of(context).textTheme.labelLarge.copyWith(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),

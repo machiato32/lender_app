@@ -41,14 +41,10 @@ class _SelectBalanceCurrencyState extends State<SelectBalanceCurrency> {
           child: Ink(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              gradient: _selectedCurrency != currentGroupCurrency
-                  ? AppTheme.gradientFromTheme(currentThemeName, useTertiaryContainer: true)
-                  : LinearGradient(colors: [
-                      ElevationOverlay.applyOverlay(
-                          context, Theme.of(context).colorScheme.surface, 10),
-                      ElevationOverlay.applyOverlay(
-                          context, Theme.of(context).colorScheme.surface, 10)
-                    ]),
+              color: _selectedCurrency != currentGroupCurrency
+                  ? Theme.of(context).colorScheme.tertiaryContainer
+                  : ElevationOverlay.applyOverlay(
+                      context, Theme.of(context).colorScheme.surface, 10),
             ),
             width: 80,
             child: CurrencyPickerDropdown(

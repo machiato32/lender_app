@@ -1,6 +1,6 @@
 {
-    "title":"Lender",
-    "subtitle":"Geld- und Schuldenmanagement app für Gruppen",
+    "title":"Dodo",
+    "subtitle":"Privacy-focused bill splitting",
 
     "login":"Anmelden",
     "register":"Registrieren",
@@ -197,7 +197,7 @@
     "add_reaction": "Reaktion hinzufügen",
     "all_reactions": "Vorherige Reaktionen",
 
-    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
+    "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets, Zahlen und das \".\" Zeichen sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
     "reminder_explanation": "Wir kennen deine e-mail nicht, deshalb zeigen wir dir diese Erinnerung, falls du dein Passwort vergisst.",
 
     "accept_privacy_policy": "Ich akzeptiere die Datenschutzbestimmungen",
@@ -394,5 +394,60 @@
     "custom_amount": "Individueller Betrag",
     "custom_amount_explanation": "Setze fest wie viel das Mitglied zahlen soll.",
     "reset": "Zurücksetzen",
-    "chosen_amount": "Ausgewählter Betrag: "
+    "chosen_amount": "Ausgewählter Betrag: ",
+
+    "from_who": "Wer:",
+    "to_who": {
+        "one": "Für wen:",
+        "other": "Für wen:"
+    },
+
+    "food": "Essen",
+    "groceries": "Lebesmittel",
+    "transport": "Transport",
+    "entertainment": "Unterhaltung",
+    "shopping": "Einkauf",
+    "health": "Gesundheit",
+    "other": "Sonstiges",
+    "category_hint": "Wähle die Kategorie aus",
+
+    "change_user_currency": "Ändere die Standartwährung",
+    "change_user_currency_explanation": "Dies ist Ihre Standardwährung, in der z.B. die Zusammenfassung angezeigt wird.",
+
+    "pin": "Pin",
+    "confirm_pin": "Pin bestätigen",
+
+    "4_needed": "4 Ziffern nötig",
+
+    "we_are_concerned_your_privacy": "Wir halten deine Daten sicher",
+
+    "char_not_allowed": "Sie dürfen das/die Zeichen „{}“ nicht verwenden",
+    "username_taken": "Der gewählte Benutzername ist bereits vergeben.",
+
+    "pins_not_match": "Die beiden Pins stimmen nicht überein",
+
+    "change_to_password": "Stattdessen Passwort verwenden",
+    "change_to_pin": "Stattdessen Pin verwenden",
+    "password_login_deprecated": "Die bevorzugte Anmeldemethode ist mit Pin",
+    "password_login_deprecated_explanation": "Wechsele nach der Anmeldung in den Nutzereinstellungen zur Verwendung einer Pin",
+
+    "member_to_merge_into": "Wem sollen die Transaktionen zugeordnet sein:",
+    "needs_member": "Wähle zuerst ein Mitglied",
+    "guest": "Gast",
+
+    "warning_wont_see": "Da Sie nicht gekauft haben und nicht bezahlen, wird die Transaktion nicht in Ihrem Verlauf angezeigt.!",
+
+    "thank_you": "Vielen Dank",
+    "even_one_rating_helps": "Wir freuen uns sehr, dass dir die App gefällt. Bitte bewerte sie im Store.\uD83D\uDE0A Jede Bewertung hilft dabei, dass mehr Leute sie finden!",
+    "to_store": "Klar😎",
+    "like_the_app": "Gefällt dir die App?",
+    "rate_app": "App bewerten",
+
+    "merge_with_guest": "Gast zuordnen",
+    "merge_with_guest_explanation": "Die Gruppe hat einen oder mehrere Gastnutzer, deren Transaktionen von anderen Mitgliedern bearbeitet wurden. Wenn du dich selbst als eines dieser Mitglieder wiedererkennst, kannst du nun deren frühere Transaktionen mit dir in Verbindung bringen.\n(Wenn du nicht weißt, was das bedeutet, überspringe diesen Schritt).",
+    "guests_in_group": "Gastnutzer in der Gruppe:",
+    "skip": "Überspringen",
+    "merge": "Zuordnen",
+
+    "dual_tone_themes": "Zweifarbige Themen"
 }

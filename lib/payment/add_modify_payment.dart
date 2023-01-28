@@ -52,17 +52,16 @@ class AddModifyPayment {
           savedPayment.amountOriginalCurrency.toMoneyString(savedPayment.originalCurrency);
     }
     members = getMembers(context);
-    payerId = idToUse();
+    payerId = currentUserId;
   }
 
   Future<List<Member>> getMembers(BuildContext context, {bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+        uri: generateUri(GetUriKeys.groupCurrent),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -189,8 +188,8 @@ class AddModifyPayment {
                               selected: true,
                               showCheck: false,
                               noAnimation: true,
-                              selectedColor: Theme.of(context).colorScheme.tertiaryContainer,
-                              selectedFontColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                              selectedColor: Theme.of(context).colorScheme.secondaryContainer,
+                              selectedFontColor: Theme.of(context).colorScheme.onSecondaryContainer,
                               notSelectedColor: Theme.of(context).colorScheme.surface,
                               notSelectedFontColor: Theme.of(context).colorScheme.onSurface,
                               fillRatio: 1,
@@ -277,7 +276,9 @@ class AddModifyPayment {
                   allMembers:
                       snapshot.data.where((element) => element.memberId != payerId).toList(),
                   membersChanged: (members) {
-                    selectedMember = members.isEmpty ? null : members[0];
+                    _setState(() {
+                      selectedMember = members.isEmpty ? null : members[0];
+                    });
                   },
                   membersChosen: [selectedMember],
                 );
@@ -299,4 +300,25 @@ class AddModifyPayment {
           },
         ),
       );
+
+  AnimatedCrossFade warningText() {
+    bool isVisible = (selectedMember != null && selectedMember.memberId != currentUserId) &&
+        payerId != currentUserId;
+    CrossFadeState state = isVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst;
+    return AnimatedCrossFade(
+      duration: Duration(milliseconds: 100),
+      crossFadeState: state,
+      firstChild: Container(),
+      secondChild: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Center(
+          child: Text(
+            'warning_wont_see'.tr(),
+            style: _theme.textTheme.titleMedium.copyWith(color: _theme.colorScheme.error),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
 }

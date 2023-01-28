@@ -1,5 +1,4 @@
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/payment/payment_entry.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'models.dart';
 

@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:csocsort_szamla/auth/pin_number_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -35,10 +35,15 @@ class PinPad extends StatefulWidget {
     }
   }
   @override
-  State<PinPad> createState() => _PinPadState(); //TODO: savePinOrPassword
+  State<PinPad> createState() => _PinPadState();
 }
 
 class _PinPadState extends State<PinPad> {
+  bool isPinFieldNotEmpty() {
+    return (widget.isPinInput && widget.pin != '') ||
+        (!widget.isPinInput && widget.pinConfirm != '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,7 +51,8 @@ class _PinPadState extends State<PinPad> {
         Center(
           child: Ink(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color:
+                  ElevationOverlay.applyOverlay(context, Theme.of(context).colorScheme.surface, 8),
               borderRadius: BorderRadius.circular(12),
             ),
             height: 56,
@@ -68,13 +74,11 @@ class _PinPadState extends State<PinPad> {
                         textToShow = '•' * textToShow.length;
                       }
                     }
-
                     return Text(
                       textToShow,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: isPinFieldNotEmpty() ? 30 : null),
                     );
                   }),
                 ),
@@ -126,22 +130,66 @@ class _PinPadState extends State<PinPad> {
               children: [
                 TableRow(
                   children: ['1', '2', '3'].map((number) {
-                    return numberButton(number);
+                    return PinNumberButton(
+                      number: number,
+                      pin: widget.pin,
+                      pinConfirm: widget.pinConfirm,
+                      onValidationTextChanged: widget.onValidationTextChanged,
+                      onPinChanged: widget.onPinChanged,
+                      onPinConfirmChanged: widget.onPinConfirmChanged,
+                      onIsPinInputChanged: widget.onIsPinInputChanged,
+                      isPinInput: widget.isPinInput,
+                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    );
                   }).toList(),
                 ),
                 TableRow(
                   children: ['4', '5', '6'].map((number) {
-                    return numberButton(number);
+                    return PinNumberButton(
+                      number: number,
+                      pin: widget.pin,
+                      pinConfirm: widget.pinConfirm,
+                      onValidationTextChanged: widget.onValidationTextChanged,
+                      onPinChanged: widget.onPinChanged,
+                      onPinConfirmChanged: widget.onPinConfirmChanged,
+                      onIsPinInputChanged: widget.onIsPinInputChanged,
+                      isPinInput: widget.isPinInput,
+                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    );
                   }).toList(),
                 ),
                 TableRow(
                   children: ['7', '8', '9'].map((number) {
-                    return numberButton(number);
+                    return PinNumberButton(
+                      number: number,
+                      pin: widget.pin,
+                      pinConfirm: widget.pinConfirm,
+                      onValidationTextChanged: widget.onValidationTextChanged,
+                      onPinChanged: widget.onPinChanged,
+                      onPinConfirmChanged: widget.onPinConfirmChanged,
+                      onIsPinInputChanged: widget.onIsPinInputChanged,
+                      isPinInput: widget.isPinInput,
+                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    );
                   }).toList(),
                 ),
                 TableRow(
                   children: ['', '0', 'C'].map((number) {
-                    return numberButton(number);
+                    return (number == 'C' && isPinFieldNotEmpty()) || number == '0'
+                        ? PinNumberButton(
+                            number: number,
+                            onValidationTextChanged: widget.onValidationTextChanged,
+                            onPinChanged: widget.onPinChanged,
+                            onPinConfirmChanged: widget.onPinConfirmChanged,
+                            onIsPinInputChanged: widget.onIsPinInputChanged,
+                            isPinInput: widget.isPinInput,
+                            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                            textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                          )
+                        : Container();
                   }).toList(),
                 ),
               ],
@@ -149,75 +197,6 @@ class _PinPadState extends State<PinPad> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget numberButton(String number) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: number == '' ||
-                  (widget.isPinInput && number == 'C' && widget.pin == '') ||
-                  (!widget.isPinInput && number == 'C' && widget.pinConfirm == '')
-              ? null
-              : () {
-                  if (number != '' && number != 'C') {
-                    setState(() {
-                      if (widget.isPinInput) {
-                        if (widget.pin.length == 3) {
-                          widget.onPinChanged(widget.pin + number);
-                          widget.onValidationTextChanged(null);
-                        } else if (widget.pin.length < 4) {
-                          widget.onPinChanged(widget.pin + number);
-                        }
-                      } else {
-                        if (widget.pinConfirm.length == 3) {
-                          widget.onPinConfirmChanged(widget.pinConfirm + number);
-                          widget.onValidationTextChanged(null);
-                        } else if (widget.pinConfirm.length < 4) {
-                          widget.onPinConfirmChanged(widget.pinConfirm + number);
-                        }
-                      }
-                    });
-                  } else if (number == 'C') {
-                    setState(() {
-                      if (widget.isPinInput) {
-                        widget.onPinChanged('');
-                      } else {
-                        widget.onPinConfirmChanged('');
-                      }
-                    });
-                  }
-                },
-          child: Center(
-            child: Builder(builder: (context) {
-              if (number == 'C') {
-                if ((widget.isPinInput && widget.pin != '') ||
-                    (!widget.isPinInput && widget.pinConfirm != '')) {
-                  return Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  );
-                }
-                return Container();
-              }
-              if (number == '') {
-                return Container();
-              }
-              return Text(
-                number,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    .copyWith(color: Theme.of(context).colorScheme.primary),
-              );
-            }),
-          ),
-        ),
-      ),
     );
   }
 }

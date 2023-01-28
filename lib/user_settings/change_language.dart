@@ -1,9 +1,6 @@
-import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class LanguagePicker extends StatefulWidget {
   @override
@@ -30,8 +27,10 @@ class _LanguagePickerState extends State<LanguagePicker> {
             Center(
                 child: Text(
               'change_language'.tr(),
-              style: Theme.of(context).textTheme.titleLarge.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             )),
             SizedBox(height: 10),
             Center(
@@ -80,8 +79,7 @@ class _LanguageElementState extends State<LanguageElement> {
             //     : LinearGradient(colors: [Colors.white, Colors.white]),
             color: (widget.localeName == context.locale.languageCode)
                 ? Theme.of(context).colorScheme.secondary
-                : ElevationOverlay.applyOverlay(
-                    context, Theme.of(context).colorScheme.surface, 10),
+                : ElevationOverlay.applyOverlay(context, Theme.of(context).colorScheme.surface, 10),
             borderRadius: BorderRadius.circular(15)),
         child: Center(
             child: Text(widget.localeName.toUpperCase(),

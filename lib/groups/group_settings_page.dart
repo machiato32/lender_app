@@ -5,7 +5,6 @@ import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/groups/dialogs/change_group_currency_dialog.dart';
 import 'package:csocsort_szamla/groups/dialogs/rename_group_dialog.dart';
-import 'package:csocsort_szamla/groups/manage_guests.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -91,7 +90,8 @@ class _GroupSettingState extends State<GroupSettings> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
-          physics: widget.bigScreen ? NeverScrollableScrollPhysics() : null,
+          physics:
+              widget.bigScreen ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
           child: Column(
             children: <Widget>[
               FutureBuilder(
@@ -112,7 +112,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   aspectRatio: width / 2 / height,
                                   child: ListView(
                                     controller: ScrollController(),
-                                    children: columnWidgets.take(4).toList(),
+                                    children: columnWidgets.take(2).toList(),
                                   ),
                                 ),
                                 AspectRatio(
@@ -120,7 +120,7 @@ class _GroupSettingState extends State<GroupSettings> {
                                   child: ListView(
                                     controller: ScrollController(),
                                     children:
-                                        columnWidgets.reversed.take(2).toList().reversed.toList(),
+                                        columnWidgets.reversed.take(4).toList().reversed.toList(),
                                   ),
                                 ),
                               ])
@@ -215,7 +215,7 @@ class _GroupSettingState extends State<GroupSettings> {
       Invitation(isAdmin: snapshot.data),
       BoostGroup(),
       Visibility(
-        visible: snapshot.data,
+        visible: false && snapshot.data,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(15),

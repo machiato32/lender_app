@@ -31,6 +31,7 @@ class _GroupMembersState extends State<GroupMembers> {
       for (var member in decoded['data']['members']) {
         members.add(Member.fromJson(member));
       }
+      members.sort((member1, member2) => member1.nickname.compareTo(member2.nickname));
       currentMember = members.firstWhere((member) => member.memberId == currentUserId);
       members.remove(currentMember);
       members.insert(0, currentMember);

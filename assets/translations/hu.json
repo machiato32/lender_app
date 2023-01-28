@@ -203,7 +203,7 @@
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
     "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót",
 
-    "gradient_available_in_paid_version": "A színátmenetes és dinamikus témákat megveheted az alkalmazáson belül",
+    "gradient_available_in_paid_version": "A kéttónusú, színátmenetes és dinamikus témákat megveheted az alkalmazáson belül",
 
     "version_not_supported": "A verzió nem támogatott",
     "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
@@ -430,7 +430,29 @@
     "password_login_deprecated_explanation": "Válts pinre a bejelentkezés után a felhasználói beállítások menüpont alatt.",
 
     "guest_to_merge": "Vendég:",
-    "member_to_merge_into": "Tag akihez hozzá legyen rendelve:",
+    "member_to_merge_into": "Tag akihez a korábbi tranzakciói hozzá legyenek rendelve:",
     "needs_member": "A csoporttagot ki kell választanod!",
-    "guest": "Vendég"
+    "guest": "Vendég",
+
+    "thank_you": "Köszönjük szépen",
+    "even_one_rating_helps": "Nagyon örülünk, hogy tetszik az app. Légyszi értékeld a boltban😊. Már egy értékelés is sokat segít, hogy minél többen megtalálják!",
+    "to_store": "Értékelem😎",
+    "like_the_app": "Szereted használni az appot?",
+    "rate_app": "Értékeld az appot",
+
+    "merge_with_guest": "Vendégfelhasználó átvétele",
+    "merge_with_guest_explanation": "A csoportban van(nak) vendégfelhasználó(k), akiknek a tranzakcióit eddig a többi tag intézte. Ha felismered magad valamelyikben, akkor most hozzárendelheted a korábbi tranzakcióit magadhoz.\n(Ha nem tudod, hogy ez mit jelent, akkor hagyd ki a lépést.)",
+    "guests_in_group": "A csoportban lévő vendég(ek):",
+    "skip": "Kihagyás",
+    "merge": "Összevonás",
+
+    "dual_tone_themes": "Két tónusú témák",
+
+    "change_pin": "Pin megváltoztatása",
+    "change_pin_explanation": "Változtasd meg a pint, amivel bejelentkezel az appba.",
+    "old_pin": "Régi pin",
+    "new_pin": "Új pin",
+    "new_pin_confirm": "Új pin megerősítése",
+    "change_pin_scf": "A pin megváltoztatása sikeres volt."
+
 }

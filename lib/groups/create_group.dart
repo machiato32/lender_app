@@ -26,7 +26,7 @@ class _CreateGroupState extends State<CreateGroup> {
       TextEditingController(text: currentUsername[0].toUpperCase() + currentUsername.substring(1));
 
   var _formKey = GlobalKey<FormState>();
-  String _defaultCurrencyValue = "EUR"; //TODO: change to users currency
+  String _defaultCurrencyValue = currentUserCurrency;
 
   Future<bool> _createGroup(String groupName, String nickname, String currency) async {
     try {

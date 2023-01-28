@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:math';
 
 import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:csocsort_szamla/auth/login_or_register_page.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../balance/balances.dart';
 import '../config.dart';
@@ -29,10 +31,9 @@ import '../essentials/models.dart';
 import '../essentials/http_handler.dart';
 import '../essentials/widgets/error_message.dart';
 import '../main/iapp_not_supported_dialog.dart';
+import '../main/like_app_dialog.dart';
 import '../main/main_speed_dial.dart';
-import '../main/report_a_bug_page.dart';
 import '../main/trial_version_dialog.dart';
-import '../main/tutorial_dialog.dart';
 
 class MainPage extends StatefulWidget {
   final int selectedHistoryIndex;
@@ -116,10 +117,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       deleteGroupName();
       deleteGroupCurrency();
       deleteApiToken();
-      deleteGuestUserId();
-      deleteGuestNickname();
-      deleteGuestGroupId();
-      deleteGuestApiToken();
       deleteUsersGroups();
       deleteUsersGroupIds();
     } catch (_) {
@@ -177,29 +174,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     scrollTo = widget.scrollTo;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       Future.delayed(Duration(seconds: 1)).then((value) => scrollTo = null);
-      bool showTutorial = true;
-      await SharedPreferences.getInstance().then((prefs) {
-        if (prefs.containsKey('show_tutorial')) {
-          showTutorial = prefs.getBool('show_tutorial');
-        }
-      });
-      if (showTutorial) {
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setBool('show_tutorial', false);
-        });
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return TutorialDialog();
-          },
-        );
-      }
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void _handleDrawer(bool bigScreen) {
@@ -221,10 +196,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       _groups = null;
       _groups = _getGroups();
     });
+
+    if (!kIsWeb && !ratedApp && !trialVersion) {
+      double r = Random().nextDouble();
+      print(r);
+      if (r < 0.15) {
+        showDialog(context: context, builder: (context) => LikeTheAppDialog());
+        // Don't show the dialog multiple times in one session. Value is not saved in the memory
+        ratedApp = true;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
+      //TODO: for new version: save version code in storage, if version code is newer than the one in the storage, show dialog with news
+      //TODO: trial version ended dialog
+    });
+
     double width = MediaQuery.of(context).size.width;
     bool bigScreen = width > tabletViewWidth;
     if (bigScreen && _selectedIndex > 1) {
@@ -341,7 +331,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       ),
                     ),
               builder: (context, isOnline) {
-                isOnline = isOnline || kIsWeb; //TODO: index html dolgok
+                isOnline = isOnline || kIsWeb;
                 return _body(isOnline, bigScreen);
               },
             ),
@@ -353,7 +343,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         (kIsWeb || Platform.isWindows ? 56 : 0) - //appbar
-        (idToUse() == guestUserId ? 60 : 0) - // guestBanner
         (bigScreen ? 0 : 56) - //bottomNavbar
         adHeight();
     List<Widget> tabWidgets = _tabWidgets(isOnline, bigScreen, height, width);
@@ -426,6 +415,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           setState(() {});
         },
         child: ListView(
+          physics: AlwaysScrollableScrollPhysics(),
           controller: ScrollController(),
           shrinkWrap: true,
           children: [
@@ -458,9 +448,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return Ink(
       decoration: BoxDecoration(
         color: ElevationOverlay.applyOverlay(context, Theme.of(context).colorScheme.surface, 1),
-        borderRadius: BorderRadius.all(
-          Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
@@ -475,14 +463,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       Expanded(
                         child: ColorFiltered(
                           colorFilter: ColorFilter.mode(
-                              Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+                              Theme.of(context).colorScheme.primary,
+                              currentThemeName.toLowerCase().contains('dodo')
+                                  ? BlendMode.dst
+                                  : BlendMode.srcIn),
                           child: Image(
                             image: AssetImage('assets/dodo.png'),
                           ),
                         ),
                       ),
                       Text(
-                        'title'.tr().toLowerCase(),
+                        'title'.tr().toUpperCase(),
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall
@@ -642,7 +633,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 colorFilter: ColorFilter.mode(
                     Theme.of(context).colorScheme.onSurfaceVariant, BlendMode.srcIn),
                 child: Image.asset(
-                  'assets/dodo_color.png',
+                  'assets/dodo.png',
                   width: 25,
                 ),
               ),
@@ -667,6 +658,49 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     .textTheme
                     .labelLarge
                     .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: !kIsWeb,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(28)),
+                ),
+                leading: Icon(
+                  Icons.rate_review,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                dense: true,
+                title: Text(
+                  'rate_app'.tr(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+                onTap: () {
+                  String url = "";
+                  switch (Platform.operatingSystem) {
+                    case "android":
+                      url = "market://details?id=csocsort.hu.machiato32.csocsort_szamla";
+                      break;
+                    case "windows":
+                      url = "ms-windows-store://pdp/?productid=9NVB4CZJDSQ7";
+                      break;
+                    case "ios":
+                      url = "https://lenderapp.net"; //TODO
+                      break;
+                    default:
+                      url =
+                          "https://play.google.com/store/apps/details?id=csocsort.hu.machiato32.csocsort_szamla";
+                      break;
+                  }
+                  launchUrlString(url);
+                  saveRatedApp(true);
+                },
               ),
             ),
           ),
@@ -715,29 +749,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(28)),
-              ),
-              leading: Icon(
-                Icons.bug_report,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              dense: true,
-              title: Text(
-                'report_a_bug'.tr(),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    .copyWith(color: Theme.of(context).colorScheme.error),
-              ),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ReportABugPage()));
-              },
-            ),
-          ),
+          // Padding(//TODO: report bug
+          //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          //   child: ListTile(
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(28)),
+          //     ),
+          //     leading: Icon(
+          //       Icons.bug_report,
+          //       color: Theme.of(context).colorScheme.error,
+          //     ),
+          //     dense: true,
+          //     title: Text(
+          //       'report_a_bug'.tr(),
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .labelLarge
+          //           .copyWith(color: Theme.of(context).colorScheme.error),
+          //     ),
+          //     onTap: () {
+          //       Navigator.push(context, MaterialPageRoute(builder: (context) => ReportABugPage()));
+          //     },
+          //   ),
+          // ),
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -854,7 +888,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Icon(Icons.receipt_long)),
           label: 'shopping_list'.tr()),
       NavigationDestination(
-          //TODO: change user currency
           icon: DescribedFeatureOverlay(
             featureId: 'group_settings',
             tapTarget: Icon(Icons.supervisor_account, color: Colors.black),
@@ -894,7 +927,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ],
             ),
           ),
-          label: 'group'.tr()), //TODO: bettername
+          label: 'group'.tr()),
       NavigationDestination(
         icon: DescribedFeatureOverlay(
           tapTarget: Icon(Icons.menu, color: Colors.black),

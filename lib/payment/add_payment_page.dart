@@ -1,4 +1,3 @@
-import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/ad_management.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
@@ -19,10 +18,9 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> with AddModifyPayment
   Future<bool> _postPayment(
       double amount, String note, Member toMember, BuildContext context) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = generateBody(note, amount, toMember);
 
-      await httpPost(uri: '/payments', body: body, context: context, useGuest: useGuest);
+      await httpPost(uri: '/payments', body: body, context: context);
       Future.delayed(delayTime()).then((value) => _onPostPayment(context));
       return true;
     } catch (_) {
@@ -76,9 +74,7 @@ class _AddPaymentRouteState extends State<AddPaymentRoute> with AddModifyPayment
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              SizedBox(
-                                height: 10,
-                              ),
+                              warningText(),
                               noteTextField(context),
                               SizedBox(
                                 height: 20,

@@ -68,7 +68,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
   void callbackForReaction(String reaction) {
     //TODO: currentNickname
     Reaction oldReaction = widget.data.reactions
-        .firstWhere((element) => element.userId == idToUse(), orElse: () => null);
+        .firstWhere((element) => element.userId == currentUserId, orElse: () => null);
     bool alreadyReacted = oldReaction != null;
     bool sameReaction = alreadyReacted ? oldReaction.reaction == reaction : false;
     if (sameReaction) {
@@ -76,13 +76,14 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       setState(() {});
     } else if (!alreadyReacted) {
       widget.data.reactions.add(Reaction(
-          nickname: idToUse() == currentUserId ? currentUsername : guestNickname,
-          reaction: reaction,
-          userId: idToUse()));
+        nickname: currentUsername,
+        reaction: reaction,
+        userId: currentUserId,
+      ));
       setState(() {});
     } else {
       widget.data.reactions
-          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: idToUse()));
+          .add(Reaction(nickname: oldReaction.nickname, reaction: reaction, userId: currentUserId));
       widget.data.reactions.remove(oldReaction);
       setState(() {});
     }
@@ -103,7 +104,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
     boxDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(20),
     );
-    if (widget.data.requesterId == idToUse()) {
+    if (widget.data.requesterId == currentUserId) {
       icon = Icon(
         Icons.shopping_cart_outlined,
         color: Theme.of(context).colorScheme.primary,
@@ -117,7 +118,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
         child: Align(
             alignment: Alignment.centerRight,
             child: Icon(
-              widget.data.requesterId != idToUse() ? Icons.done : Icons.delete,
+              widget.data.requesterId != currentUserId ? Icons.done : Icons.delete,
               size: 30,
               color: Theme.of(context).textTheme.bodyText1.color,
             )),
@@ -126,12 +127,12 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
       background: Align(
           alignment: Alignment.centerLeft,
           child: Icon(
-            widget.data.requesterId != idToUse() ? Icons.attach_money : Icons.edit,
+            widget.data.requesterId != currentUserId ? Icons.attach_money : Icons.edit,
             size: 30,
             color: Theme.of(context).textTheme.bodyText1.color,
           )),
       onDismissed: (direction) {
-        if (widget.data.requesterId != idToUse()) {
+        if (widget.data.requesterId != currentUserId) {
           showDialog(
                   builder: (context) => FutureSuccessDialog(
                         future: _deleteFulfillShoppingRequest(widget.data.requestId, context),
@@ -274,7 +275,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
           PastReactionContainer(
             reactions: widget.data.reactions,
             reactedToId: widget.data.requestId,
-            isSecondaryColor: widget.data.requesterId == idToUse(),
+            isSecondaryColor: widget.data.requesterId == currentUserId,
             type: 'requests',
             callback: this.callbackForReaction,
           ),
@@ -285,8 +286,7 @@ class _ShoppingListEntryState extends State<ShoppingListEntry> {
 
   Future<bool> _deleteFulfillShoppingRequest(int id, var buildContext) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context);
       Future.delayed(delayTime()).then((value) => _onDeleteFulfillShoppingRequest());
       return true;
     } catch (_) {

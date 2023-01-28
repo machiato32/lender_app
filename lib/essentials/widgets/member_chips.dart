@@ -3,7 +3,6 @@ import 'package:csocsort_szamla/essentials/widgets/custom_amount_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'dart:math';
 
 import '../models.dart';
 
@@ -104,8 +103,8 @@ class _MemberChipsState extends State<MemberChips> {
       children: widget.allMembers.map<Widget>(
         (Member member) {
           double fillRatio;
-          Color selectedColor = Theme.of(context).colorScheme.tertiaryContainer;
-          Color selectedFontColor = Theme.of(context).colorScheme.onTertiaryContainer;
+          Color selectedColor = Theme.of(context).colorScheme.secondaryContainer;
+          Color selectedFontColor = Theme.of(context).colorScheme.onSecondaryContainer;
           if (widget.showDivisionDialog) {
             double maxMoney = widget.getMaxAmount();
             fillRatio = getInitialValue(member, maxMoney);
@@ -121,8 +120,8 @@ class _MemberChipsState extends State<MemberChips> {
               fillRatio = 0;
             }
             if (customAmounts.containsKey(member)) {
-              selectedColor = Theme.of(context).colorScheme.primaryContainer;
-              selectedFontColor = Theme.of(context).colorScheme.onPrimaryContainer;
+              selectedColor = Theme.of(context).colorScheme.tertiaryContainer;
+              selectedFontColor = Theme.of(context).colorScheme.onTertiaryContainer;
             }
           } else {
             fillRatio = membersChosen.contains(member) ? 1 : 0;

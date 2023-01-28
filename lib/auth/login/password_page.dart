@@ -1,5 +1,6 @@
 import 'package:csocsort_szamla/auth/login/login_methods.dart';
 import 'package:csocsort_szamla/auth/login/login_pin_page.dart';
+import 'package:csocsort_szamla/essentials/save_preferences.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -89,7 +90,7 @@ class _PasswordPageState extends State<PasswordPage> {
                       MaterialPageRoute(
                         builder: (context) => LoginPinPage(
                           username: widget.username,
-                          inviteUrl: widget.username,
+                          inviteUrl: widget.inviteUrl,
                         ),
                       ),
                     );
@@ -133,6 +134,7 @@ class _PasswordPageState extends State<PasswordPage> {
   }
 
   void _pushButton() {
+    saveUsesPassword(true);
     showDialog(
       context: context,
       builder: (context) => FutureSuccessDialog(

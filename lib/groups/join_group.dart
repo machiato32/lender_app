@@ -16,8 +16,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
+import '../essentials/models.dart';
 import '../essentials/validation_rules.dart';
 import 'create_group.dart';
+import 'merge_on_join_page.dart';
 import 'qr_scanner_page.dart';
 import 'main_group_page.dart';
 
@@ -71,10 +73,20 @@ class _JoinGroupState extends State<JoinGroup> {
         usersGroups.add(decoded['data']['group_name']);
         saveUsersGroupIds();
         saveUsersGroups();
-        if ((decoded['data']['members'] as List<Map<String, dynamic>>)
+        print(decoded['data']['members']);
+        List<Member> guests = (decoded['data']['members'] as List<dynamic>)
             .where((element) => element['is_guest'] == 1)
-            .isNotEmpty) {
-          //TODO: show merge guest
+            .map((e) => Member.fromJson(e))
+            .toList();
+        if (guests.isNotEmpty) {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MergeOnJoinPage(
+                guests: guests,
+              ),
+            ),
+          );
         }
         Future.delayed(delayTime()).then((value) => _onJoinGroup());
       } else {
@@ -139,7 +151,7 @@ class _JoinGroupState extends State<JoinGroup> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'Lender',
+                                    'DODO',
                                     style: Theme.of(context).textTheme.headlineSmall.copyWith(
                                         color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
@@ -328,9 +340,6 @@ class _JoinGroupState extends State<JoinGroup> {
                                             builder: (context) => FutureSuccessDialog(
                                                   future: _joinGroup(token, nickname),
                                                   dataTrueText: 'join_scf',
-                                                  onDataTrue: () {
-                                                    _onJoinGroup();
-                                                  },
                                                   dataFalse: Column(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [

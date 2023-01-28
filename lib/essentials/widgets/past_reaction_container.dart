@@ -1,5 +1,4 @@
 import 'package:csocsort_szamla/essentials/models.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'add_reaction_dialog.dart';
@@ -73,14 +72,14 @@ class PastReactionContainer extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(10),
                 child: Ink(
-                    padding: EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
+                    padding: EdgeInsets.only(top: 3, bottom: 4, left: 6, right: 5),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Theme.of(context).colorScheme.surfaceVariant),
                     child: Row(
                         children: orderedReactions.map((reaction) {
                       if (reaction != null && double.tryParse(reaction) != null) {
-                        return Text(reaction,
+                        return Text(reaction + ' ',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge

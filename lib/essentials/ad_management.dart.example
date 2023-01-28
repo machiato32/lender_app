@@ -31,7 +31,7 @@ class _AdUnitForSiteState extends State<AdUnitForSite> {
       request: AdRequest(),
       listener: BannerAdListener(),
     );
-    if (showAds) {
+    if (showAds && isAdPlatformEnabled) {
       ad.load();
     }
     super.initState();
@@ -39,7 +39,7 @@ class _AdUnitForSiteState extends State<AdUnitForSite> {
 
   @override
   Widget build(BuildContext context) {
-    if (ad.responseInfo == null && showAds) {
+    if (ad.responseInfo == null && showAds && isAdPlatformEnabled) {
       ad.load();
     }
     if (isAdPlatformEnabled) {

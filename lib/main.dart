@@ -18,12 +18,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -72,8 +72,8 @@ Future onSelectNotification(String payload) async {
       saveGroupName(groupName);
       //If he doesn't have a group yet -> create the necessary lists
       if (usersGroups == null) {
-        usersGroups = List<String>();
-        usersGroupIds = List<int>();
+        usersGroups = <String>[];
+        usersGroupIds = <int>[];
       }
       //Add the group to the list and save them to the cache
       usersGroups.add(groupName);
@@ -139,9 +139,16 @@ void main() async {
   HttpOverrides.global = new MyHttpOverrides();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String themeName = '';
+
   if (!preferences.containsKey('theme')) {
-    preferences.setString('theme', 'greenLightTheme');
-    themeName = 'greenLightTheme';
+    if (SchedulerBinding.instance.window.platformBrightness == Brightness.light) {
+      //TODO: test
+      preferences.setString('theme', 'dodoLightTheme');
+      themeName = 'dodoLightTheme';
+    } else {
+      preferences.setString('theme', 'dodoDarkTheme');
+      themeName = 'dodoDarkTheme';
+    }
   } else {
     themeName = preferences.getString('theme');
   }
@@ -150,6 +157,7 @@ void main() async {
   try {
     initURL = await getInitialLink();
   } catch (_) {}
+
   runApp(
     EasyLocalization(
       child: ChangeNotifierProvider<AppStateNotifier>(
@@ -287,7 +295,7 @@ class _LenderAppState extends State<LenderApp> {
       });
     }
     if (isFirebasePlatformEnabled) {
-      var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo_white');
+      var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo');
       var initializationSettingsIOS = new IOSInitializationSettings();
       var initializationSettings = new InitializationSettings(
           android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
@@ -315,6 +323,7 @@ class _LenderAppState extends State<LenderApp> {
         setupInitialMessage();
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           print("onMessage: $message");
+          print(message.data);
           Map<String, dynamic> decoded = jsonDecode(message.data['payload']);
           print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(

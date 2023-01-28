@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
 import '../../config.dart';
 import '../app_theme.dart';
@@ -13,6 +12,7 @@ class GradientButton extends StatelessWidget {
   final bool useSecondaryContainer;
   final bool usePrimaryContainer;
   final bool useTertiaryContainer;
+  final bool disabled;
   GradientButton({
     this.child,
     this.onPressed,
@@ -22,6 +22,7 @@ class GradientButton extends StatelessWidget {
     this.usePrimaryContainer = false,
     this.useTertiary = false,
     this.useTertiaryContainer = false,
+    this.disabled = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -30,18 +31,20 @@ class GradientButton extends StatelessWidget {
       height: 40,
       child: Ink(
         decoration: BoxDecoration(
-          gradient: AppTheme.gradientFromTheme(
-            currentThemeName,
-            useSecondary: this.useSecondary,
-            usePrimaryContainer: this.usePrimaryContainer,
-            useTertiaryContainer: this.useTertiary,
-            useSecondaryContainer: this.useSecondaryContainer,
-          ),
+          gradient: disabled
+              ? LinearGradient(colors: [Colors.grey, Colors.grey])
+              : AppTheme.gradientFromTheme(
+                  currentThemeName,
+                  useSecondary: this.useSecondary,
+                  usePrimaryContainer: this.usePrimaryContainer,
+                  useTertiaryContainer: this.useTertiary,
+                  useSecondaryContainer: this.useSecondaryContainer,
+                ),
           borderRadius: BorderRadius.circular(this.borderRadius),
         ),
         child: InkWell(
             borderRadius: BorderRadius.circular(this.borderRadius),
-            onTap: this.onPressed, //TODO: fix home screen
+            onTap: this.disabled ? null : this.onPressed,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

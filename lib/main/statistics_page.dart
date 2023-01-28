@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/app_theme.dart';
 import 'package:csocsort_szamla/essentials/widgets/error_message.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';

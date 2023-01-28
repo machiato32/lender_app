@@ -63,12 +63,14 @@ class AddModifyPurchase {
       noteController.text = savedPurchase.name;
       amountController.text =
           savedPurchase.totalAmountOriginalCurrency.toMoneyString(savedPurchase.originalCurrency);
+      purchaserId = savedPurchase.buyerId;
+      //Note: the receivers are set after the list of members is received from the server.
     }
     members = getMembers(context);
     focusNode.addListener(() {
       _setState(() {});
     });
-    purchaserId = idToUse();
+    purchaserId = purchaserId ?? currentUserId;
   }
 
   Map<String, dynamic> generateBody(String name, double amount, List<Member> members) {
@@ -77,7 +79,7 @@ class AddModifyPurchase {
       "group": currentGroupId,
       "amount": amount,
       "currency": selectedCurrency,
-      "category": selectedCategory.text,
+      "category": selectedCategory != null ? selectedCategory.text : null,
       "buyer_id": purchaserId,
       "receivers": members
           .map((member) => {
@@ -90,12 +92,11 @@ class AddModifyPurchase {
 
   Future<List<Member>> getMembers(BuildContext context, {bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response = await httpGet(
-          uri: generateUri(GetUriKeys.groupCurrent),
-          context: context,
-          overwriteCache: overwriteCache,
-          useGuest: useGuest);
+        uri: generateUri(GetUriKeys.groupCurrent),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
 
       Map<String, dynamic> decoded = jsonDecode(response.body);
       List<Member> members = [];
@@ -247,8 +248,8 @@ class AddModifyPurchase {
                               selected: true,
                               showCheck: false,
                               noAnimation: true,
-                              selectedColor: Theme.of(context).colorScheme.tertiaryContainer,
-                              selectedFontColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                              selectedColor: Theme.of(context).colorScheme.secondaryContainer,
+                              selectedFontColor: Theme.of(context).colorScheme.onSecondaryContainer,
                               notSelectedColor: Theme.of(context).colorScheme.surface,
                               notSelectedFontColor: Theme.of(context).colorScheme.onSurface,
                               fillRatio: 1,

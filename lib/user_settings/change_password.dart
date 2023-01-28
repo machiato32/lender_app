@@ -1,3 +1,4 @@
+import 'package:csocsort_szamla/config.dart';
 import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,9 +21,11 @@ class _ChangePasswordState extends State<ChangePassword> {
           children: <Widget>[
             Center(
               child: Text(
-                'change_password'.tr(),
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                (usesPassword ? 'change_password' : 'change_pin').tr(),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -31,9 +34,11 @@ class _ChangePasswordState extends State<ChangePassword> {
             ),
             Center(
                 child: Text(
-              'change_password_explanation'.tr(),
-              style: Theme.of(context).textTheme.titleSmall.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              (usesPassword ? 'change_password_explanation' : 'change_pin_explanation').tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             )),
             SizedBox(
@@ -48,9 +53,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   onPressed: () {
-                    showDialog(
-                        builder: (context) => ChangePasswordDialog(),
-                        context: context);
+                    showDialog(builder: (context) => ChangePasswordDialog(), context: context);
                   },
                 ),
               ],

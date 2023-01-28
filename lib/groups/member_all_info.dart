@@ -95,60 +95,61 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
               )),
             ],
           ),
-          SizedBox(
-            height: 5,
-          ),
-          Center(
-            child: Visibility(
-                visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
+          Visibility(
+            visible: widget.member.isAdmin && !widget.isCurrentUserAdmin,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5),
                 child: Text(
                   'Admin',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
                       .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                )),
-          ),
-          SizedBox(
-            height: 10,
+                ),
+              ),
+            ),
           ),
           Visibility(
             visible: widget.isCurrentUserAdmin && !widget.member.isGuest,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Admin',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                ),
-                Switch(
-                  value: widget.member.isAdmin,
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                  onChanged: (value) {
-                    showDialog(
-                        builder: (context) => FutureSuccessDialog(
-                              future: _changeAdmin(widget.member.memberId, value),
-                              dataTrueText: 'admin_scf',
-                              onDataTrue: () {
-                                _onChangeAdmin();
-                              },
-                            ),
-                        barrierDismissible: false,
-                        context: context);
-                  },
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Admin',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ),
+                  Switch(
+                    value: widget.member.isAdmin,
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    onChanged: (value) {
+                      showDialog(
+                          builder: (context) => FutureSuccessDialog(
+                                future: _changeAdmin(widget.member.memberId, value),
+                                dataTrueText: 'admin_scf',
+                                onDataTrue: () {
+                                  _onChangeAdmin();
+                                },
+                              ),
+                          barrierDismissible: false,
+                          context: context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           Visibility(
             visible: widget.isCurrentUserAdmin || widget.member.memberId == currentUserId,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: GradientButton(
                   onPressed: () {
                     showDialog(
                             builder: (context) => ChangeNicknameDialog(
@@ -180,18 +181,15 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 10,
           ),
           Visibility(
             visible: widget.isCurrentUserAdmin && widget.member.memberId != currentUserId,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: GradientButton(
                   onPressed: () {
                     showDialog(
                             builder: (context) => ConfirmLeaveDialog(
@@ -233,48 +231,45 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Visibility(
-            visible: widget.member.isGuest && widget.isCurrentUserAdmin,
-            child: Center(
-              child: GradientButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.merge, color: Theme.of(context).colorScheme.onPrimary),
-                    Text(
-                      'merge_guest'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                    ),
-                  ],
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => MergeGuestDialog(
-                      guestId: widget.member.memberId,
-                    ),
-                  );
-                },
               ),
             ),
           ),
-          SizedBox(
-            height: 10,
+          Visibility(
+            visible: widget.member.isGuest && widget.isCurrentUserAdmin,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: GradientButton(
+                  child: Row(
+                    children: [
+                      Icon(Icons.merge, color: Theme.of(context).colorScheme.onPrimary),
+                      Text(
+                        'merge_guest'.tr(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => MergeGuestDialog(
+                        guestId: widget.member.memberId,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
           Visibility(
             visible: widget.member.memberId == currentUserId,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: GradientButton(
                   onPressed: () {
                     double currencyThreshold =
                         (currencies[currentGroupCurrency]['subunit'] == 1 ? 0.01 : 1) / 2;
@@ -328,7 +323,7 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           )
         ],
@@ -368,10 +363,6 @@ class _MemberAllInfoState extends State<MemberAllInfo> {
 
   void _onRemoveMember() async {
     //if removed member was chosen guest
-    deleteGuestGroupId();
-    deleteGuestApiToken();
-    deleteGuestNickname();
-    deleteGuestUserId();
     await clearGroupCache();
     Navigator.pushAndRemoveUntil(
         context, MaterialPageRoute(builder: (context) => MainPage()), (r) => false);

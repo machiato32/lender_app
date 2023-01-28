@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../essentials/models.dart';
+import 'history_filter.dart';
 
 class AllHistoryRoute extends StatefulWidget {
   ///Defines whether to show purchases (0) or payments (1)
@@ -30,27 +31,21 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   ScrollController _paymentScrollController = ScrollController();
   TabController _tabController;
   int _selectedIndex = 0;
+  bool _showFilter = false;
+  int _selectedMemberId = currentUserId;
 
   Future<List<Purchase>> _getPurchases({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response;
-      if (_startDate != null && _endDate != null) {
-        String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
-        String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
-        response = await httpGet(
-            uri: generateUri(GetUriKeys.purchasesDate,
-                args: [currentGroupId.toString(), startDate, endDate]),
-            context: context,
-            overwriteCache: overwriteCache,
-            useGuest: useGuest);
-      } else {
-        response = await httpGet(
-            uri: generateUri(GetUriKeys.purchasesAll),
-            context: context,
-            overwriteCache: overwriteCache,
-            useGuest: useGuest);
-      }
+      response = await httpGet(
+        uri: generateUri(GetUriKeys.purchases, queryParams: {
+          'start_date': _startDate == null ? null : DateFormat('yyyy-MM-dd').format(_startDate),
+          'end_date': _endDate == null ? null : DateFormat('yyyy-MM-dd').format(_endDate),
+          'user_id': _selectedMemberId.toString(),
+        }),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<Purchase> purchaseData = [];
       for (var data in decoded) {
@@ -64,24 +59,16 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
 
   Future<List<Payment>> _getPayments({bool overwriteCache = false}) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       http.Response response;
-      if (_startDate != null && _endDate != null) {
-        String startDate = DateFormat('yyyy-MM-dd').format(_startDate);
-        String endDate = DateFormat('yyyy-MM-dd').format(_endDate);
-        response = await httpGet(
-            uri: generateUri(GetUriKeys.paymentsDate,
-                args: [currentGroupId.toString(), startDate, endDate]),
-            context: context,
-            overwriteCache: overwriteCache,
-            useGuest: useGuest);
-      } else {
-        response = await httpGet(
-            uri: generateUri(GetUriKeys.paymentsAll),
-            context: context,
-            overwriteCache: overwriteCache,
-            useGuest: useGuest);
-      }
+      response = await httpGet(
+        uri: generateUri(GetUriKeys.payments, queryParams: {
+          'start_date': _startDate == null ? null : DateFormat('yyyy-MM-dd').format(_startDate),
+          'end_date': _endDate == null ? null : DateFormat('yyyy-MM-dd').format(_endDate),
+          'user_id': _selectedMemberId.toString(),
+        }),
+        context: context,
+        overwriteCache: overwriteCache,
+      );
 
       List<dynamic> decoded = jsonDecode(response.body)['data'];
       List<Payment> paymentData = [];
@@ -95,8 +82,8 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
   }
 
   void callback({bool purchase = false, bool payment = false}) {
+    //TODO: rename
     if (!purchase && !payment) {
-      //IsGuestBanner callback
       clearGroupCache();
       setState(() {
         _payments = null;
@@ -108,16 +95,14 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
     }
     setState(() {
       if (payment) {
-        deleteCache(uri: generateUri(GetUriKeys.paymentsAll));
-        deleteCache(uri: generateUri(GetUriKeys.paymentsFirst6));
+        deleteCache(uri: generateUri(GetUriKeys.payments));
         deleteCache(
             uri: 'payments?group=$currentGroupId&from_date', multipleArgs: true); //payments date
         _payments = null;
         _payments = _getPayments(overwriteCache: true);
       }
       if (purchase) {
-        deleteCache(uri: generateUri(GetUriKeys.purchasesAll));
-        deleteCache(uri: generateUri(GetUriKeys.purchasesFirst6));
+        deleteCache(uri: generateUri(GetUriKeys.purchases));
         deleteCache(
             uri: 'purchases?group=$currentGroupId&from_date', multipleArgs: true); //purchases date
         _purchases = null;
@@ -156,47 +141,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
               .titleLarge
               .copyWith(color: Theme.of(context).colorScheme.onBackground),
         ),
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //       gradient: AppTheme.gradientFromTheme(Theme.of(context))),
-        // ),
         actions: [
           IconButton(
-            icon: Icon(_startDate != null ? Icons.highlight_off : Icons.date_range),
-            onPressed: () async {
-              if (_startDate != null) {
-                setState(() {
-                  _startDate = null;
-                  _endDate = null;
-                  _purchases = null;
-                  _purchases = _getPurchases();
-
-                  _payments = null;
-                  _payments = _getPayments();
-                });
-              } else {
-                DateTimeRange range = await showDateRangePicker(
-                    context: context,
-                    firstDate: DateTime.parse('2020-01-17'),
-                    lastDate: DateTime.now(),
-                    currentDate: DateTime.now(),
-                    initialDateRange: DateTimeRange(
-                        start: DateTime.now().subtract(Duration(days: 30)), end: DateTime.now()),
-                    builder: (context, child) {
-                      return child;
-                    });
-                if (range != null) {
-                  _startDate = range.start;
-                  _endDate = range.end;
-                  setState(() {
-                    _purchases = null;
-                    _purchases = _getPurchases();
-
-                    _payments = null;
-                    _payments = _getPayments();
-                  });
-                }
-              }
+            icon: Icon(_showFilter ? Icons.arrow_drop_up : Icons.filter_list_alt),
+            onPressed: () {
+              setState(() {
+                _showFilter = !_showFilter;
+              });
             },
           )
         ],
@@ -222,6 +173,26 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
             ),
       body: Column(
         children: [
+          AnimatedCrossFade(
+            duration: Duration(milliseconds: 250),
+            crossFadeState: _showFilter ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            firstChild: Container(),
+            secondChild: Visibility(
+                visible: _showFilter,
+                child: HistoryFilter(
+                  onValuesChanged: (Member newMemberChosen) {
+                    setState(() {
+                      _selectedMemberId = newMemberChosen.memberId;
+                      _showFilter = false;
+                    });
+                    _purchases = null;
+                    _purchases = _getPurchases();
+                    _payments = null;
+                    _payments = _getPayments();
+                  },
+                  selectedMember: _selectedMemberId,
+                )),
+          ),
           width < tabletViewWidth
               ? Expanded(
                   child: TabBarView(
@@ -255,7 +226,6 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
           ),
         ],
       ),
-      //TODO:hide on top
       floatingActionButton: Visibility(
         visible: width < tabletViewWidth,
         child: FloatingActionButton(
@@ -415,6 +385,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         weekEntries.add(PaymentEntry(
           data: data,
           callback: callback,
+          selectedMemberId: _selectedMemberId,
         ));
         allEntries.add(Center(
           child: Container(
@@ -434,6 +405,7 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         weekEntries.add(PaymentEntry(
           data: data,
           callback: callback,
+          selectedMemberId: _selectedMemberId,
         ));
       }
     }
@@ -532,11 +504,13 @@ class _AllHistoryRouteState extends State<AllHistoryRoute> with TickerProviderSt
         weekEntries.add(PurchaseEntry(
           purchase: data,
           callback: callback,
+          selectedMemberId: _selectedMemberId,
         ));
       } else {
         weekEntries.add(PurchaseEntry(
           purchase: data,
           callback: callback,
+          selectedMemberId: _selectedMemberId,
         ));
       }
     }

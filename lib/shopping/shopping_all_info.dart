@@ -2,7 +2,6 @@ import 'package:csocsort_szamla/essentials/widgets/gradient_button.dart';
 import 'package:csocsort_szamla/shopping/edit_request_dialog.dart';
 import 'package:csocsort_szamla/shopping/shopping_list_entry.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:csocsort_szamla/config.dart';
@@ -24,8 +23,7 @@ class ShoppingAllInfo extends StatefulWidget {
 class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
   Future<bool> _fulfillShoppingRequest(int id) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context);
       Future.delayed(delayTime()).then((value) => _onFulfillShoppingRequest());
       return true;
     } catch (_) {
@@ -40,8 +38,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
 
   Future<bool> _deleteShoppingRequest(int id) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
-      await httpDelete(uri: '/requests/' + id.toString(), context: context, useGuest: useGuest);
+      await httpDelete(uri: '/requests/' + id.toString(), context: context);
       Future.delayed(delayTime()).then((value) => _onDeleteShoppingRequest());
       return true;
     } catch (_) {
@@ -117,7 +114,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             height: 10,
           ),
           Visibility(
-            visible: widget.data.requesterId == idToUse(),
+            visible: widget.data.requesterId == currentUserId,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -199,7 +196,7 @@ class _ShoppingAllInfoState extends State<ShoppingAllInfo> {
             ),
           ),
           Visibility(
-            visible: widget.data.requesterId != idToUse(),
+            visible: widget.data.requesterId != currentUserId,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

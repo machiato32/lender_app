@@ -1,5 +1,3 @@
-import 'package:csocsort_szamla/config.dart';
-import 'package:csocsort_szamla/essentials/currencies.dart';
 import 'package:csocsort_szamla/essentials/models.dart';
 import 'package:csocsort_szamla/essentials/http_handler.dart';
 import 'package:csocsort_szamla/essentials/widgets/future_success_dialog.dart';
@@ -24,14 +22,13 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
   Future<bool> _updatePurchase(List<Member> members, double amount, String name, int purchaseId,
       BuildContext context) async {
     try {
-      bool useGuest = guestNickname != null && guestGroupId == currentGroupId;
       Map<String, dynamic> body = generateBody(name, amount, members);
 
       await httpPut(
-          uri: '/purchases/' + purchaseId.toString(),
-          body: body,
-          context: context,
-          useGuest: useGuest);
+        uri: '/purchases/' + purchaseId.toString(),
+        body: body,
+        context: context,
+      );
       Future.delayed(delayTime()).then((value) => _onUpdatePurchase());
       return true;
     } catch (_) {
@@ -75,7 +72,7 @@ class _ModifyPurchaseDialogState extends State<ModifyPurchaseDialog> with AddMod
                 textAlign: TextAlign.center,
               )),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Center(
                   child: Text(
