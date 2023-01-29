@@ -104,7 +104,14 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
               Flexible(
                   child: Text(
                       ' - ' +
-                          widget.data.amount.toMoneyString(currentGroupCurrency, withSymbol: true),
+                          widget.data.amount.toMoneyString(currentGroupCurrency, withSymbol: true) +
+                          (widget.data.originalCurrency != currentGroupCurrency
+                              ? (' (' +
+                                  widget.data.amountOriginalCurrency.toMoneyString(
+                                      widget.data.originalCurrency,
+                                      withSymbol: true) +
+                                  ')')
+                              : ''),
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -132,83 +139,80 @@ class _PaymentAllInfoState extends State<PaymentAllInfo> {
           SizedBox(
             height: 10,
           ),
-          Visibility(
-            visible: widget.data.payerId == currentUserId,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                GradientButton(
-                    onPressed: () {
-                      showDialog(
-                              builder: (context) => ModifyPaymentDialog(
-                                    savedPayment: widget.data,
-                                  ),
-                              context: context)
-                          .then((value) {
-                        if (value ?? false) {
-                          Navigator.pop(context, 'deleted');
-                        }
-                      });
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
-                        SizedBox(
-                          width: 3,
-                        ),
-                        Flexible(
-                          child: Text(
-                            'modify'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            overflow: TextOverflow.clip,
-                          ),
-                        ),
-                      ],
-                    )),
-                GradientButton(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              GradientButton(
                   onPressed: () {
                     showDialog(
-                      builder: (context) => ConfirmChoiceDialog(
-                        choice: 'want_delete',
-                      ),
-                      context: context,
-                    ).then((value) {
-                      if (value != null && value) {
-                        showDialog(
-                            builder: (context) => FutureSuccessDialog(
-                                  future: _deletePayment(widget.data.paymentId),
-                                  dataTrueText: 'delete_scf',
-                                  onDataTrue: () {
-                                    _onDeletePayment();
-                                  },
+                            builder: (context) => ModifyPaymentDialog(
+                                  savedPayment: widget.data,
                                 ),
-                            barrierDismissible: false,
-                            context: context);
+                            context: context)
+                        .then((value) {
+                      if (value ?? false) {
+                        Navigator.pop(context, 'deleted');
                       }
                     });
                   },
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
+                      Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
                       SizedBox(
                         width: 3,
                       ),
-                      Text(
-                        'revoke'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                      Flexible(
+                        child: Text(
+                          'modify'.tr(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                          overflow: TextOverflow.clip,
+                        ),
                       ),
                     ],
-                  ),
-                )
-              ],
-            ),
+                  )),
+              GradientButton(
+                onPressed: () {
+                  showDialog(
+                    builder: (context) => ConfirmChoiceDialog(
+                      choice: 'want_delete',
+                    ),
+                    context: context,
+                  ).then((value) {
+                    if (value != null && value) {
+                      showDialog(
+                          builder: (context) => FutureSuccessDialog(
+                                future: _deletePayment(widget.data.paymentId),
+                                dataTrueText: 'delete_scf',
+                                onDataTrue: () {
+                                  _onDeletePayment();
+                                },
+                              ),
+                          barrierDismissible: false,
+                          context: context);
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Text(
+                      'revoke'.tr(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ],
       ),

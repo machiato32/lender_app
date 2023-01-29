@@ -361,13 +361,6 @@ class _JoinGroupState extends State<JoinGroup> {
                                                           GradientButton(
                                                             child: Row(
                                                               children: [
-                                                                Icon(Icons.check,
-                                                                    color: Theme.of(context)
-                                                                        .colorScheme
-                                                                        .onPrimary),
-                                                                SizedBox(
-                                                                  width: 3,
-                                                                ),
                                                                 Text(
                                                                   'okay'.tr(),
                                                                   style: Theme.of(context)

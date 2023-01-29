@@ -12,8 +12,9 @@ import 'package:csocsort_szamla/essentials/models.dart';
 
 class PurchaseAllInfo extends StatefulWidget {
   final Purchase purchase;
+  final int selectedMemberId;
 
-  PurchaseAllInfo(this.purchase);
+  PurchaseAllInfo(this.purchase, this.selectedMemberId);
 
   @override
   _PurchaseAllInfoState createState() => _PurchaseAllInfoState();
@@ -103,8 +104,30 @@ class _PurchaseAllInfoState extends State<PurchaseAllInfo> {
               Flexible(
                   child: Text(
                       ' - ' +
-                          widget.purchase.totalAmount
-                              .toMoneyString(currentGroupCurrency, withSymbol: true),
+                          (widget.purchase.buyerId == widget.selectedMemberId
+                              ? (widget.purchase.totalAmount
+                                      .toMoneyString(currentGroupCurrency, withSymbol: true) +
+                                  (widget.purchase.originalCurrency != currentGroupCurrency
+                                      ? (' (' +
+                                          widget.purchase.totalAmountOriginalCurrency.toMoneyString(
+                                              widget.purchase.originalCurrency,
+                                              withSymbol: true) +
+                                          ')')
+                                      : ''))
+                              : (widget.purchase.receivers
+                                      .firstWhere((element) => element.memberId == currentUserId)
+                                      .balance
+                                      .toMoneyString(currentGroupCurrency, withSymbol: true) +
+                                  (widget.purchase.originalCurrency != currentGroupCurrency
+                                      ? (' (' +
+                                          widget.purchase.receivers
+                                              .firstWhere(
+                                                  (element) => element.memberId == currentUserId)
+                                              .balanceOriginalCurrency
+                                              .toMoneyString(widget.purchase.originalCurrency,
+                                                  withSymbol: true) +
+                                          ')')
+                                      : ''))),
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge

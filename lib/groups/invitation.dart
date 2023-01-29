@@ -329,8 +329,6 @@ class _InvitationState extends State<Invitation> {
         height: 65,
         margin: EdgeInsets.only(top: 4),
         decoration: BoxDecoration(
-          // gradient:
-          //     AppTheme.gradientFromTheme(Theme.of(context), useSecondary: true),
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(15),
           boxShadow: (Theme.of(context).brightness == Brightness.light)
@@ -481,69 +479,60 @@ class _ApproveMemberState extends State<ApproveMember> {
           SizedBox(
             height: 5,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                onPressed: () {
-                  showDialog(
-                      builder: (context) => FutureSuccessDialog(
-                            future: _postApproveMember(widget.member.memberId, true),
-                          ),
-                      context: context);
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      'approve'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                    ),
-                  ],
+          GradientButton(
+            onPressed: () {
+              showDialog(
+                  builder: (context) => FutureSuccessDialog(
+                        future: _postApproveMember(widget.member.memberId, true),
+                      ),
+                  context: context);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
-              )
-            ],
+                SizedBox(
+                  width: 3,
+                ),
+                Text(
+                  'approve'.tr(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                onPressed: () {
-                  showDialog(
-                      builder: (context) => FutureSuccessDialog(
-                            future: _postApproveMember(widget.member.memberId, false),
-                          ),
-                      context: context);
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.clear,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      'disapprove'.tr(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                    ),
-                  ],
+          SizedBox(height: 10),
+          GradientButton(
+            onPressed: () {
+              showDialog(
+                  builder: (context) => FutureSuccessDialog(
+                        future: _postApproveMember(widget.member.memberId, false),
+                      ),
+                  context: context);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.clear,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
-              )
-            ],
+                SizedBox(
+                  width: 3,
+                ),
+                Text(
+                  'disapprove'.tr(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+              ],
+            ),
           )
         ],
       ),
