@@ -57,7 +57,7 @@ class _ShareGroupDialogState extends State<ShareGroupDialog> {
             GradientButton(
               onPressed: () {
                 Share.share(
-                  'https://www.lenderapp.net/join/' + widget.inviteCode,
+                  'https://dodoapp.net/join/' + widget.inviteCode,
                   subject: 'invitation_to_lender'.tr(),
                 );
               },

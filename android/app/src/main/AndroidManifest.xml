@@ -57,19 +57,19 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="lenderapp.net"
+                    android:host="dodoapp.net"
                     android:pathPrefix="/join"/>
                 <data
                     android:scheme="https"
-                    android:host="www.lenderapp.net"
+                    android:host="www.dodoapp.net"
                     android:pathPrefix="/join"/>
                 <data
                     android:scheme="http"
-                    android:host="lenderapp.net"
+                    android:host="dodoapp.net"
                     android:pathPrefix="/join"/>
                 <data
                     android:scheme="http"
-                    android:host="www.lenderapp.net"
+                    android:host="www.dodoapp.net"
                     android:pathPrefix="/join"/>
                 <data
                     android:scheme="lenderapp"

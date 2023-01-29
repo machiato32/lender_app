@@ -133,7 +133,7 @@ class _NamePageState extends State<NamePage> {
                                     Flexible(
                                       child: TextButton(
                                         onPressed: () {
-                                          launchUrlString('https://lenderapp.net/privacy-policy');
+                                          launchUrlString('https://dodoapp.net/privacy-policy');
                                         },
                                         child: Text(
                                           'accept_privacy_policy'.tr() + '*',

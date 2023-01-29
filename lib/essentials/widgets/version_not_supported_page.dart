@@ -43,7 +43,7 @@ class VersionNotSupportedPage extends StatelessWidget {
                         .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   ),
                   onPressed: () {
-                    launchUrlString('https://lenderapp.net');
+                    launchUrlString('https://dodoapp.net');
                   },
                 ),
               ],

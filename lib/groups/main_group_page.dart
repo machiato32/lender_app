@@ -695,7 +695,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       url = "ms-windows-store://pdp/?productid=9NVB4CZJDSQ7";
                       break;
                     case "ios":
-                      url = "https://lenderapp.net"; //TODO
+                      url = "itms-apps://itunes.apple.com/app/id1558223634?action=write-review";
                       break;
                     default:
                       url =
