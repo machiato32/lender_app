@@ -12,6 +12,7 @@ import 'package:csocsort_szamla/groups/join_group.dart';
 import 'package:csocsort_szamla/history/history.dart';
 import 'package:csocsort_szamla/main/group_settings_speed_dial.dart';
 import 'package:csocsort_szamla/main/in_app_purchase_page.dart';
+import 'package:csocsort_szamla/main/trial_ended_dialog.dart';
 import 'package:csocsort_szamla/shopping/shopping_list.dart';
 import 'package:csocsort_szamla/user_settings/user_settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -212,7 +213,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
       //TODO: for new version: save version code in storage, if version code is newer than the one in the storage, show dialog with news
-      //TODO: trial version ended dialog
+      if (trialJustEnded) {
+        showDialog(context: context, builder: (context) => TrialEndedDialog());
+        trialJustEnded = false;
+      }
     });
 
     double width = MediaQuery.of(context).size.width;

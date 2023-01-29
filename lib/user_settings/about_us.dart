@@ -43,7 +43,7 @@ class AboutUs extends StatelessWidget {
                   onPressed: () {
                     showAboutDialog(
                       context: context,
-                      applicationName: 'Lender',
+                      applicationName: 'Dodo',
                       children: <Widget>[
                         Text(
                           'about_us_text'.tr(),
@@ -55,11 +55,10 @@ class AboutUs extends StatelessWidget {
                         )
                       ],
                       applicationIcon: Container(
-                        child: Image(
-                          image: AssetImage('assets/dodo.png'),
+                        child: Image.asset(
+                          'assets/dodo.png',
+                          height: 35,
                         ),
-                        width: 24,
-                        height: 24,
                       ),
                       routeSettings: RouteSettings(
                           // arguments: ,

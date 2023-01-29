@@ -25,7 +25,6 @@
     "rename_group":"Rename group",
     "new_name":"New name",
     "invitation":"Invitation",
-    "copied":"Copied",
     "members":"Members",
 
     "groups":"Groups",
@@ -58,13 +57,8 @@
     "error": "An error occurred!",
     "back": "Back",
 
-    "example_name": "jack",
-    "not_alterable": "Not alterable later!",
-
-    "want_make_admin": "Do you want to make them an admin?",
     "yes": "Yes",
     "no": "No",
-    "make_admin": "Make them admin",
 
     "login_required": "You need to log in again!",
     "purchases": "Purchases",
@@ -82,9 +76,8 @@
 
     "per_person": " {}/person",
     "no_amount": "No amount given!",
-    "amount_not_negative": "The amount cannot be negative!",
     "purchase_scf": "The purchase was saved successfully!",
-    "invitation_to_lender": "Invitation to a Lender group",
+    "invitation_to_lender": "Invitation to a Dodo group",
 
     "field_empty": "The field cannot be empty!",
     "not_valid_num": "You did'n enter a number!",
@@ -116,8 +109,7 @@
     "bug": "Bug",
     "what_is_wrong": "What is wrong?",
 
-    "want_edit": "Do you want to modify the item?",
-    "nothing_to_show": "So empty...",
+    "nothing_to_show": "Nothing to show yet...",
 
     "i_m_shopping" : "I'm shopping",
     "where" : "Where?",
@@ -175,14 +167,13 @@
 
     "about_us": "About us",
     "about_us_explanation": "Informations about us and the app",
-    "about_us_text": "Two guys bored and making apps like this.\n\nShout out to Anna Hegyi, Ábel Kocsis and Sára Kata Kovács, and to everyone testing our app.\n\nTake care, your devs",
+    "about_us_text": "The app was developed by two students.\n\nA big thank you to Anna Hegyi, and Sára Kata Kovács for the translations and to Ábel Kocsis for the help with the privacy policy. And also to everyone who tested the app!\uD83D\uDE09\n\nAll the best, your devs",
 
     "reactions": "Reactions",
     "add_reaction": "Add reaction",
     "all_reactions": "Past reactions",
 
     "username_explanation": "You're going to use the username for logging into the app. Only the english lowecase letters and numbers are allowed. Later you will be able to assign yourself a nickname for each group.",
-    "reminder_explanation": "We aren't storing you e-mail, so if you forget your password, we will show you this reminder.",
 
     "accept_privacy_policy": "I accept the privacy policy",
     "must_accept_privacy_policy": "You have to accept the privacy policy!",
@@ -190,7 +181,7 @@
     "gradient_available_in_paid_version": "You can buy the gradient and dynamic themes through the app",
 
     "version_not_supported": "The version is not supported",
-    "version_not_supported_explanation": "We updated Lender to a new version. With this change some of the features in your versions will not work.",
+    "version_not_supported_explanation": "We updated Dodo to a new version. With this change some of the features in your versions will not work.",
     "download_new_version": "Download the new version",
 
     "in_app_purchase": "Dodo Store",
@@ -198,16 +189,16 @@
     "if_not_working": "If this does't help",
     "report_this_error": "Report the bug",
 
-    "remove_ads": "Ad-free Lender",
-    "remove_ads_explanation": "Enjoy Lender in its full reality.\nRemove the ads.",
-    "group_boost": "Group-boosting Dodos",
-    "group_boost_explanation": "Boost the group member limit to 30 and unlock its statistics.\nThe bundle contains Dodos enough for 2 groups.",
-    "ad_gradient_bundle": "Small Lender bundle",
-    "ad_gradient_bundle_explanation":"Enjoy Lender in its full beauty.\nRemove ads, unlock gradient and dynamic themes.",
-    "gradients": "Gradient and dynamic themes",
-    "gradients_explanation": "Enjoy Lender in all of its colors.\nUnlock the gradient and dynamic themes. (Our favorite is the orange one 😉)",
-    "big_lender_bundle": "Big Lender Bundle",
-    "big_lender_bundle_explanation": "This is the small Lender bundle, but we added group-boosting Dodos enough for 1 group.",
+    "remove_ads": "Ad-free Experience",
+    "remove_ads_explanation": "Experience Dodo without interruptions.\nRemove advertisements.",
+    "group_boost": "Group Boosting Dodos",
+    "group_boost_explanation": "Expand the group member limit to 30 and access group statistics.\nThe bundle includes enough Dodos for 2 groups.",
+    "ad_gradient_bundle": "Basic Dodo Bundle",
+    "ad_gradient_bundle_explanation": "Enjoy a seamless Dodo experience.\nRemove ads and unlock gradient and dynamic themes.",
+    "gradients": "Gradient and Dual-Tone Themes",
+    "gradients_explanation": "Experience the full color palette of Dodo.\nUnlock gradient and dual-tone themes. (Our favorite is the orange theme 😉)",
+    "big_lender_bundle": "Extended Dodo Bundle",
+    "big_lender_bundle_explanation": "This bundle includes the basic Dodo bundle plus group-boosting Dodos for 1 group.",
 
     "price": "Price: ",
     "buy": "Buy",
@@ -342,11 +333,6 @@
 
     "im_shopping_explanation": "Your friends will be notified, that you are shopping",
 
-    "just_few_things_left": "Just one step left",
-
-    "acting_as": "Acting as {}",
-
-
     "group_needs_approval": "Admin approval",
     "group_needs_approval_explanation": "Decide whether it needs an admin's approval to join the group",
 
@@ -433,5 +419,16 @@
     "skip": "Skip",
     "merge": "Assign",
 
-    "dual_tone_themes": "Dual tone themes"
+    "dual_tone_themes": "Dual tone themes",
+
+    "change_pin": "Change pin",
+    "change_pin_explanation": "Change the pin with which you access your account.",
+    "old_pin": "Old pin",
+    "new_pin": "New pin",
+    "new_pin_confirm": "Confirm new pin",
+    "change_pin_scf": "Changed pin successfully.",
+
+    "trial_ended": "Trial time ended",
+    "trial_ended_explanation": "From now on you will see ads and you will only be able to use the simple color themes.",
+    "trial_ended_explanation_2": "If you want to keep using these functions (and support us) you can buy them in the Dodo shop."
 }

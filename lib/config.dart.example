@@ -20,6 +20,7 @@ bool showAds=false;
 bool useGradients=true;
 bool personalisedAds=false;
 bool trialVersion=false;
+bool trialJustEnded = false;
 bool ratedApp=false;
 String currentThemeName = "greenLightTheme";
 

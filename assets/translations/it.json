@@ -1,6 +1,6 @@
 {
-    "title":"Lender",
-    "subtitle":"Un'applicazione per gruppi da gestire soldi e debiti",
+    "title":"Dodo",
+    "subtitle":"Privacy-focused bill splitting",
 
     "login":"Accedi",
     "register":"Crea un account",
@@ -25,7 +25,6 @@
     "rename_group":"Rinomina il gruppo",
     "new_name": "Nome nuovo",
     "invitation":"Invito",
-    "copied":"Copiato",
     "members":"Membri",
 
     "groups":"Gruppi",
@@ -58,13 +57,8 @@
     "error": "Un'errore è accaduto!",
     "back": "Indietro",
 
-    "example_name": "peppino",
-    "not_alterable": "Non alterabile!",
-
-    "want_make_admin": "Vorresti farlo/la admin?",
     "yes": "Sì",
     "no": "No",
-    "make_admin": "Sia admin!",
 
     "login_required": "Purtroppo devi accedere di nuovo!",
     "purchases": "Acquisti",
@@ -82,9 +76,8 @@
 
     "per_person": " {}/persona",
     "no_amount": "Non hai aggiunto la somma!",
-    "amount_not_negative": "La sommma totale non può essere negativa!",
     "purchase_scf": "L'acquisto è stato registrato con successo!",
-    "invitation_to_lender": "Invito ad un gruppo Lender",
+    "invitation_to_lender": "Invito ad un gruppo Dodo",
 
     "field_empty": "Il campo non può essere vuoto!",
     "not_valid_num": "Usa solo numeri!",
@@ -97,8 +90,7 @@
     "members_explanation_admin": "Gesti il potere dei membri ed i soprannomi",
     "modify": "Modifica",
     "invitation_explanation": "Invita qualcuno al gruppo",
-    "rename_group_explanation": "Rinomina il gruppo se non ti piace il cui nome",
-    "shopping_list_explanation": "Scrivi sulla lista comune o dici agli altri che sei in negozio",
+    "rename_group_explanation": "Se non ti piace il cui nome",
     "history_explanation": "Segui, modifica e revoca le tue transazioni precedenti",
 
     "pay": "Pago",
@@ -117,7 +109,6 @@
     "bug": "Errore",
     "what_is_wrong": "Che c'è che non va?",
 
-    "want_edit": "Vorresti revocare l'articolo?",
     "nothing_to_show": "Silenzio...",
 
     "i_m_shopping" : "Sono in negozio",
@@ -133,12 +124,6 @@
     "discover_shopping_description" : "\nQuesta lista è visibile per tutti i membri del gruppo.\n\nLa potete usare in vacanza o con i coinquilini.",
     "discover_group_settings_title": "Impostazioni del gruppo",
     "discover_group_settings_description" : "\nQui puoi, tra l'altro, invitare nuovi membri, modificare il tuo soprannove e guardare le statistiche del gruppo.",
-
-    "tutorial_2" : "Lo scopo del Lender è semplificare le transazioni del tuo gruppo. Come puoi vedere sull'animazione, c'è bisogno una transazione meno.",
-    "tutorial_3" : "Ogni membro del gruppo disporre di un saldo.\nSe il tuo saldo è positivo, gli altri devono a te, mentre in caso del saldo negativo tu sei in debito.",
-    "tutorial_4" : "Potresti decidere a chi devi pagare mettendo in considerazione i saldi oppure puoi usare il bottone \"A chi dovrei pagare?\".",
-    "welcome": "Grazie per esserti registrato a Lender! In seguito ti mostriamo l'uso dell'app tramite un tutorial.",
-    "": "",
 
     "reset_tutorial": "Rivedi il tutorial",
     "reset_tutorial_explanation": "Per farlo devi riavviare l'app!",
@@ -173,32 +158,22 @@
     "change_group_currency": "Cambia la valuta del gruppo",
     "change_group_currency_explanation": "Cambia la valuta ma non dimenticare che i tuoi debiti attuali non saranno convertiti!",
 
-    "manage_guests": "Gestisci gli ospiti",
-    "manage_guests_explanation": "Gli opsiti sono membri che vengono gestiti dagli admin perché non sono regitrati.",
     "add_guest": "Aggiungi ospiti",
-    "add_guest_explanation": "Aggiungi nuovi ospiti al gruppo",
     "merge_guest": "Assegna l'ospite",
-    "merge_guest_explanation": "Togli l'ospite e assegna le sue transazioni precedenti ad un membro del gruppo.",
-    "guest_switcher": "Scambia ospite",
-    "guest_switcher_explanation": "Scegli l'ospite le cui finanze vorresti gestire.",
-    "sure_remove_guest": "Vorresti sicuramente togliere l'ospite dal gruppo?",
-    "needs_choose_guest": "Devi prima scegliere un opsite.",
     "sure_merge_guest": "Vorresti sicuramente assegnarci l'ospite?",
-    "select_member": "Scegli un membro",
 
     "edit_request": "Modifico la richiesta",
     "edited_request": "Richiesta modificata",
 
     "about_us": "Di noi",
     "about_us_explanation": "Informazioni di noi e dell'applicazione",
-    "about_us_text": "L'app è nata grazie a due universitari annoiati.\n\nUn applauso speciale a Anna Hegyi, Ábel Kocsis e Sára Kata Kovács, inoltre a tutti che testava l'applicazione.\n\nIn gamba, gli sviluppatori",
+    "about_us_text": "L'applicazione è stata sviluppata da due studenti.\n\nUn grande ringraziamento ad Anna Hegyi e Sára Kata Kovács per le traduzioni e ad Ábel Kocsis per l'aiuto con l'informativa sulla privacy. E anche a tutti coloro che hanno testato l'applicazione!😉\n\nTutti i migliori, i vostri sviluppatori",
 
     "reactions": "Reazioni",
     "add_reaction": "Aggiungi reazione",
     "all_reactions": "Reazioni precedenti",
 
     "username_explanation": "Usando il tu nome utente puoi accandere all'app. Puoi utilizzare solo le lettere minuscole dell'alfabeto inglese e numeri. Più tardi nel gruppo potrai aggiungerti qualsiasi soprannome.",
-    "reminder_explanation": "Non mettiamo in memoria il tuo indirizzo di e-mail, così se dimentichi la tua password, ti mostreremo questo promemoria.",
 
     "accept_privacy_policy": "Accetto la normativa sulla privacy.",
     "must_accept_privacy_policy": "Devi accettare la normativa sulla privacy!",
@@ -214,16 +189,16 @@
     "if_not_working": "Se questo non aiuta",
     "report_this_error": "Annuncia l'errore",
 
-    "remove_ads": "Ad-free Lender",
-    "remove_ads_explanation": "Godi l'app completamente.\nRimuovi le pubblicità.",
-    "group_boost": "Gruppo-sviluppante Dodos",
-    "group_boost_explanation": "Aumenta il numero dei membri possibili nel gruppo a 30 persone e apri le statistiche.\nIl pacco contiene dodos abbastanza per 2 gruppi.",
-    "ad_gradient_bundle": "Piccolo Lender Pacco",
-    "ad_gradient_bundle_explanation":"Godi l'app nella sua bellezza totale.\nRimuovi le pubblicità e apri i temi gradienti.",
-    "gradients": "Temi gradienti",
-    "gradients_explanation": "Godi tutti i colori dell'app.\nApri i temi gradienti. (Il nostro preferito è l'arancione. 😉)",
-    "big_lender_bundle": "Grande Lender Pacco",
-    "big_lender_bundle_explanation": "Il Piccolo Lender Pacco con dodos abbastanza per sviluppare 1 gruppo.",
+    "remove_ads": "Esperienza senza annunci",
+    "remove_ads_explanation": "Vivi l'esperienza di Dodo senza interruzioni.\nRimuovi gli annunci pubblicitari",
+    "group_boost": "Gruppo che potenzia Dodos",
+    "group_boost_explanation": "Espandi il limite di membri del gruppo a 30 e accedi alle statistiche del gruppo.\nIl pacchetto include abbastanza Dodos per 2 gruppi",
+    "ad_gradient_bundle": "Pacchetto Dodo di base",
+    "ad_gradient_bundle_explanation": "Godetevi un'esperienza Dodo senza soluzione di continuità.\nRimuovete gli annunci e sbloccate i temi gradienti e dinamici.",
+    "gradienti": "Temi a gradiente e a doppia tonalità",
+    "gradienti_spiegazione": "Sperimenta l'intera tavolozza di colori di Dodo.\nSblocca i temi a gradiente e a doppia tonalità. (Il nostro preferito è il tema arancione 😉 )",
+    "big_lender_bundle": "Pacchetto Dodo esteso",
+    "big_lender_bundle_explanation": "Questo pacchetto comprende il pacchetto Dodo di base più i Dodos che aumentano il gruppo per 1 gruppo",
 
     "price": "Prezzo: ",
     "buy": "Compra",
@@ -355,7 +330,104 @@
 
     "im_shopping_explanation": "I tuoi amici ricevono una notificazione quando sei in negozio",
 
-    "just_few_things_left": "Solo alcune cose tafare",
+    "gruppo_necessita_di_approvazione": "Approvazione dell'amministratore",
+    "group_needs_approval_explanation": "Decide se ha bisogno dell'approvazione di un amministratore per entrare nel gruppo",
 
-    "acting_as": "Stai {}"
+    "boost_group_boosted_explanation": "Questo gruppo è già stato potenziato \uD83D\uDE0E. Ciò significa che è possibile vedere le statistiche del gruppo e che il limite di membri è arrivato a 30",
+
+    "Condividi": "Condividi il gruppo",
+    "share_url": "Oppure invita i tuoi amici con un messaggio",
+    "scan_code": "Leggi il codice QR",
+    "paste_code": "Oppure incolla l'invito:",
+
+    "gradient_themes" : "Temi gradienti",
+    "dynamic_themes" : "Temi dinamici",
+    "dynamic_themes_explanation" : "Questi temi cambiano dinamicamente quando si modifica la preferenza del colore del sistema (se disponibile)",
+
+    "in_app_purchase_description": "Annunci e temi colore",
+    "iapp_not_supported": "Il negozio non è abilitato sulla vostra piattaforma",
+    "iapp_not_supported_explanation": "Gli articoli in app (es. no ads, temi a colori) al momento possono essere acquistati solo nell'app Android.Se non possiedi un dispositivo Android ma vuoi comunque acquistare qualcosa scrivi un'email a developer@lenderapp.net.",
+    "no_camera_access": "L'app non ha il permesso di accedere alla fotocamera",
+
+    "suggerimento_personalizzato": "Suggerimento: premere a lungo su un membro in basso per personalizzare l'importo pagato",
+    "add_purchase_explanation": "Per impostazione predefinita, l'importo sarà suddiviso in parti uguali tra i membri selezionati",
+
+    "first_give_amount_toast": "Digita prima un importo!",
+    "cant_add_custom_amount_toast": "L'importo da pagare non può essere personalizzato",
+    "no_money_left_toast": "Hai già distribuito l'intero importo",
+    "custom_above_amount_toast": "L'intero importo era inferiore al valore personalizzato impostato in precedenza",
+    "sum_above_amount_toast": "La somma dei valori personalizzati era superiore all'intero importo",
+
+    "importo_personalizzato": "Importo personalizzato",
+    "custom_amount_explanation": "Imposta quanto deve pagare il membro scelto",
+    "reset": "Reset",
+    "importo_scelto": "Importo scelto: ",
+
+    "da_chi": "Chi:",
+    "to_who": {
+        "uno": "Per chi:",
+        "altro": "Per chi:"
+    },
+
+    "cibo": "Cibo",
+    "generi alimentari": "generi alimentari",
+    "trasporto": "Trasporti",
+    "intrattenimento": "Intrattenimento",
+    "shopping": "Shopping",
+    "salute": "Salute",
+    "altro": "Altro",
+    "category_hint": "Scegliere la categoria",
+
+    "change_user_currency": "Cambia la valuta predefinita",
+    "change_user_currency_explanation": "Questa è la valuta predefinita, quella in cui viene mostrato il riepilogo",
+
+    "pin": "Pin",
+    "confirm_pin": "Conferma pin",
+
+    "4_necessario": "4 cifre necessarie",
+
+    "Siamo_preoccupati_della_vostra_privacy": "Teniamo al sicuro i vostri dati",
+
+    "char_not_allowed": "Non è consentito utilizzare il carattere „{}“",
+    "username_taken": "Il nome utente scelto è già occupato",
+
+    "pins_not_match": "I due pin non corrispondono",
+
+    "change_to_password": "Usa invece la password",
+    "change_to_pin": "Usa invece il pin",
+    "password_login_deprecato": "Il metodo di accesso preferito è il pin",
+    "password_login_deprecato_spiegazione": "Passa all'uso del pin dopo il login nel menu delle impostazioni utente",
+
+    "membro_da_fondere_in": "A chi assegnare le proprie transazioni:",
+    "needs_member": "Scegliere prima il membro",
+    "guest": "Ospite",
+
+    "warning_wont_see": "Poiché non hai acquistato e non stai pagando, non vedrai la transazione nella tua cronologia!",
+
+    "thank_you": "Grazie",
+    "even_one_rating_helps": "Siamo davvero contenti che l'app ti piaccia. Per favore, recensiscila in negozio. Ogni recensione aiuta a farla trovare a più persone!",
+    "to_store": "Valutala😎",
+    "like_the_app": "Ti piace l'app?",
+    "rate_app": "Vota l'app",
+
+    "unisci_con_ospite": "Assegna ospite",
+    "merge_with_guest_explanation": "Il gruppo ha degli utenti ospiti le cui transazioni sono state gestite da altri membri. Se vi riconoscete come uno di loro, potete ora associare le loro transazioni precedenti a voi (se non sapete cosa significa, saltate questo passaggio)",
+    "ospiti_nel_gruppo": "Ospiti nel gruppo:",
+    "salta": "Salta",
+    "merge": "Assegna",
+
+    "dual_tone_themes": "Temi dual tone",
+
+    "change_pin": "Cambia pin",
+    "change_pin_explanation": "Cambia il pin con cui accedi al tuo account",
+    "old_pin": "Vecchio pin",
+    "new_pin": "Nuovo pin",
+    "new_pin_confirm": "Conferma nuovo pin",
+    "change_pin_scf": "Cambiato pin con successo",
+
+    "trial_ended": "Il tempo di prova è terminato",
+    "trial_ended_explanation": "D'ora in poi vedrete gli annunci e potrete utilizzare solo i temi a colori semplici",
+    "trial_ended_explanation_2": "Se vuoi continuare a usare queste funzioni (e sostenerci) puoi acquistarle nel negozio Dodo."
+
+
 }
