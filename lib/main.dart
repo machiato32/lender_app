@@ -119,7 +119,7 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   if (!kIsWeb) {
     isIAPPlatformEnabled = Platform.isAndroid;
-    isAdPlatformEnabled = Platform.isAndroid;
+    isAdPlatformEnabled = Platform.isAndroid || Platform.isIOS;
     isFirebasePlatformEnabled = Platform.isAndroid;
     if (isAdPlatformEnabled) {
       MobileAds.instance.initialize();
