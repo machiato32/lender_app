@@ -93,19 +93,19 @@ Future onSelectNotification(String payload) async {
         if (details == 'payment') {
           selectedIndex = 1;
         }
-        getIt.get<NavigationService>().navigateToAnyadForce(
+        getIt.get<NavigationService>().navigateToAndRemove(
             MaterialPageRoute(builder: (context) => MainPage(selectedHistoryIndex: selectedIndex)));
       } else if (page == 'shopping') {
         int selectedTab = 1;
-        getIt.get<NavigationService>().navigateToAnyadForce(
+        getIt.get<NavigationService>().navigateToAndRemove(
             MaterialPageRoute(builder: (context) => MainPage(selectedIndex: selectedTab)));
       } else if (page == 'store') {
         getIt
             .get<NavigationService>()
-            .navigateToAnyadForce(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
+            .navigateToAndRemove(MaterialPageRoute(builder: (context) => InAppPurchasePage()));
       } else if (page == 'group_settings') {
         int selectedTab = 2;
-        getIt.get<NavigationService>().navigateToAnyadForce(
+        getIt.get<NavigationService>().navigateToAndRemove(
             MaterialPageRoute(builder: (context) => MainPage(selectedIndex: selectedTab)));
       }
     }
@@ -200,11 +200,11 @@ class _LenderAppState extends State<LenderApp> {
       _link = link;
       setState(() {
         if (currentUserId != null) {
-          getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(
+          getIt.get<NavigationService>().navigateTo(MaterialPageRoute(
               builder: (context) =>
                   JoinGroup(inviteURL: _link, fromAuth: (currentGroupId == null) ? true : false)));
         } else {
-          getIt.get<NavigationService>().navigateToAnyad(MaterialPageRoute(
+          getIt.get<NavigationService>().navigateTo(MaterialPageRoute(
               builder: (context) => LoginOrRegisterPage(
                     inviteURL: _link,
                   )));
@@ -323,7 +323,6 @@ class _LenderAppState extends State<LenderApp> {
         setupInitialMessage();
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           print("onMessage: $message");
-          print(message.data);
           Map<String, dynamic> decoded = jsonDecode(message.data['payload']);
           print(decoded);
           var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
@@ -349,7 +348,7 @@ class _LenderAppState extends State<LenderApp> {
     _getExchangeRates();
     _supportedVersion().then((value) {
       if (!(value ?? true)) {
-        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
+        getIt.get<NavigationService>().navigateToAndRemove(MaterialPageRoute(
               builder: (context) => VersionNotSupportedPage(),
             ));
       }
@@ -403,11 +402,17 @@ class _LenderAppState extends State<LenderApp> {
       useGradients = decoded['data']['gradients_enabled'] == 1;
       personalisedAds = decoded['data']['personalised_ads'] == 1;
       trialVersion = decoded['data']['trial'] == 1;
+      if (decoded['data']['trial'] == null) {
+        //Means that the trial just ended
+        trialJustEnded = true;
+      }
       if (currentGroupId == null && decoded['data']['last_active_group'] != null) {
         currentGroupId = decoded['data']['last_active_group'];
-        getIt.get<NavigationService>().navigateToAnyadForce(MaterialPageRoute(
-              builder: (context) => MainPage(),
-            ));
+        getIt.get<NavigationService>().navigateToAndRemove(
+              MaterialPageRoute(
+                builder: (context) => MainPage(),
+              ),
+            );
       }
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if (!useGradients && preferences.getString('theme').contains('Gradient')) {

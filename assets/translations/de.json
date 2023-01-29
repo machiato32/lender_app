@@ -25,7 +25,6 @@
     "rename_group":"Gruppe umbenennen",
     "new_name":"Neuer Name",
     "invitation":"Einladung",
-    "copied":"Kopiert",
     "members":"Mitglieder",
 
     "groups":"Gruppen",
@@ -58,13 +57,8 @@
     "error": "Ein Fehler ist aufgetreten!",
     "back": "Zurück",
 
-    "example_name": "daniel",
-    "not_alterable": "Später nicht änderbar!",
-
-    "want_make_admin": "Möchtest du, dass er/sie Admin wird?",
     "yes": "Ja",
     "no": "Nein",
-    "make_admin": "Mache ihn/sie zum Admin",
 
     "login_required": "Leider musst du dich neu anmelden!",
     "purchases": "Einkäufe",
@@ -82,9 +76,8 @@
 
     "per_person": " {}/Person",
     "no_amount": "Du hast keine Summe angegeben!",
-    "amount_not_negative": "Die Summe darf nicht negativ sein!",
     "purchase_scf": "Der Einkauf wurde erfolgreich gebucht!",
-    "invitation_to_lender": "Einladung zu einer Lender Gruppe",
+    "invitation_to_lender": "Einladung zu einer Dodo Gruppe",
 
     "field_empty": "Dieses Feld darf nicht leer sein!",
     "not_valid_num": "Du hast keine Zahl angegeben!",
@@ -97,8 +90,7 @@
     "members_explanation_admin": "Verwalte die Genehmigungen und Spitznamen der Mitglieder",
     "modify": "Ändern",
     "invitation_explanation": "Lade jemanden in die Gruppe ein",
-    "rename_group_explanation": "Benenne die Gruppe um, wenn dir der Name nicht gefällt",
-    "shopping_list_explanation": "Schreibe auf den gemeinsamen Einkaufszettel oder sag den Anderen bescheid, dass du gerade Einkaufen bist",
+    "rename_group_explanation": "Wenn dir der Name nicht gefällt",
     "history_explanation": "Verfolge, ziehe zurück und ändere deine früheren Transaktionen",
 
     "pay": "Zahlen",
@@ -117,8 +109,7 @@
     "bug": "Fehler",
     "what_is_wrong": "Was ist der Fehler?",
 
-    "want_edit": "Möchtest du den Artikel ändern?",
-    "nothing_to_show": "Es fühlt sich so leer an...",
+    "nothing_to_show": "Hier ist noch nichts...",
 
     "i_m_shopping" : "Ich bin in einem Laden",
     "where" : "Wo?",
@@ -133,12 +124,6 @@
     "discover_shopping_description" : "\nDiese Einkaufsliste sehen alle Mitglieder der Gruppe.\n\nIhr könnt sie zum Beispiel auf einer gemeinsamen Reise oder in einer WG benutzen.",
     "discover_group_settings_title": "Gruppeneinstellungen",
     "discover_group_settings_description" : "\nUnter anderem kannst du hier neue Mitglieder zur Gruppe einladen, deinen Spitznamen ändern oder dir die Statistiken ansehen.",
-
-    "tutorial_2" : "Das Ziel von Lender ist das vereinfachern der Transaktionen in deiner Gruppe.\nWie du oben sehen kannst, konnte Lender hier eine Zahlung ersparen.",
-    "tutorial_3" : "In der Gruppe verfügt jeder über ein Konto.\nPositiv bedeutet, dass die Gruppe dir schuldet, negativ dass du der Gruppe schuldig bist.",
-    "tutorial_4" : "An wen du zahlen solltest kannst du anhand der Konten entscheiden, außerdem kannst du den \"An wen soll ich zahlen?\" Knopf benutzen.",
-    "welcome": "Danke schön, dass du registriert hast!\n\nIn den nächsten paar Seiten werden wir dir die Benutzung der App zeigen.",
-    "": "",
 
     "reset_tutorial": "Tutorial neu anschauen",
     "reset_tutorial_explanation": "Dafür musst du die App neustarten",
@@ -173,32 +158,22 @@
     "change_group_currency": "Ändere die Gruppenwährung",
     "change_group_currency_explanation": "Ändere die Währung der Gruppe, aber achte darauf, dass die bisherigen Kontostände nicht umgerechnet werden!",
     
-    "manage_guests": "Gäste verwalten",
-    "manage_guests_explanation": "Gäste sind Mitglieder die von den Administratoren verwaltet werden. Sie haben sich nicht registriert.",
     "add_guest": "Gast hinzufügen",
-    "add_guest_explanation": "Einen neuen Gast in die Gruppe aufnehmen",
     "merge_guest": "Gast zuweisen",
-    "merge_guest_explanation": "Entferne den Gast und weise seine vorherigen Transaktionen einem echten Midglied zu.",
-    "guest_switcher": "Gast wechseln",
-    "guest_switcher_explanation": "Wähle den Gast wessen Finanzen du verwalten möchtest.",
-    "sure_remove_guest": "Bist du sicher, dass du den Gast von der Gruppe entfernen möchtest?",
-    "needs_choose_guest": "Zuerst musst du einen Gast auswählen",
     "sure_merge_guest": "Bist du sicher, dass du den Gast jemanden zuweisen möchtest?",
-    "select_member": "Mitglied auswählen",
 
     "edit_request": "Element ändern",
     "edited_request": "Geändertes Element",
 
     "about_us": "Über uns",
     "about_us_explanation": "Infos über die Entwickler und die App",
-    "about_us_text": "Zwei Jungs die in Langeweile Apps entwickeln.\n\nEin großes Dankeschön an Anna Hegyi, Ábel Kocsis und Sára Kata Kovács, und an allen, die die App getestet haben!\uD83D\uDE09\n\nAlles gute, deine Entwickler",
+    "about_us_text": "Die App wurde von zwei Studenten entwickelt.\n\nEin großes Dankeschön an Anna Hegyi, und Sára Kata Kovács für die Übersetzungen und and Ábel Kocsis für die Hilfe bei der Datenschutzerklärung. Und außerdem an allen, die die App getestet haben!\uD83D\uDE09\n\nAlles gute, deine Entwickler",
 
     "reactions": "Reaktionen",
     "add_reaction": "Reaktion hinzufügen",
     "all_reactions": "Vorherige Reaktionen",
 
     "username_explanation": "Du wirst deinen Benutzernamen for das Einloggen in die App benutzen. Nur kleine Buchstaben des englischen Alphabets, Zahlen und das \".\" Zeichen sind erlaubt. Später kannst du dir in der Gruppe einen Spitznamen erstellen.",
-    "reminder_explanation": "Wir kennen deine e-mail nicht, deshalb zeigen wir dir diese Erinnerung, falls du dein Passwort vergisst.",
 
     "accept_privacy_policy": "Ich akzeptiere die Datenschutzbestimmungen",
     "must_accept_privacy_policy": "Du musst die Datenschutzbestimmungen akzeptieren!",
@@ -206,7 +181,7 @@
     "gradient_available_in_paid_version": "Du kannst dir die Farbübergängigen Themen in der App kaufen.",
 
     "version_not_supported": "Diese Version ist nicht unterstüzt",
-    "version_not_supported_explanation": "Wir haben eine neue Lender Version eingeführt. Mit dieser Änderung werden ein Paar Funktionen in deiner Version nicht Funktionieren.",
+    "version_not_supported_explanation": "Wir haben eine neue Dodo Version eingeführt. Mit dieser Änderung werden ein Paar Funktionen in deiner Version nicht Funktionieren.",
     "download_new_version": "Die neue Version herunterladen",
 
     "in_app_purchase": "Dodo Laden",
@@ -214,16 +189,16 @@
     "if_not_working": "Falls das nicht hilft",
     "report_this_error": "Melde den Fehler",
 
-    "remove_ads": "Lender ohne Anzeigen",
-    "remove_ads_explanation": "Erlebe Lender in seiner ganzen Realität.\nEntferne die Anzeigen.",
+    "remove_ads": "Werbefreies Erlebnis",
+    "remove_ads_explanation": "Erlebe Dodo ohne Unterbrechungen.\nEntferne die Anzeigen.",
     "group_boost": "Gruppenboostende Dodos",
     "group_boost_explanation": "Booste den Limit für Gruppenmitglieder auf 30 und schalte die Statistiken für die Gruppe frei.\nDas Paket enthält genug Dodos für 2 Gruppen.",
-    "ad_gradient_bundle": "Kleines Lender Paket",
-    "ad_gradient_bundle_explanation":"Erlebe Lender in seiner vollen Schönheit.\nEntferne Anzeigen und Schalte Farbübergängige Themen frei.",
-    "gradients": "Farbübergängige Themen",
-    "gradients_explanation": "Erlebe Lender in all seinen Farben.\nSchalte die Farbübergändigen Themen frei. (Unser Liebling ist Orange 😉)",
-    "big_lender_bundle": "Großes Lender Paket",
-    "big_lender_bundle_explanation": "Das ist ein Kleines Lender Paket, nur geben wir Gruppenboostende Dodos genug für eine Gruppe dazu.",
+    "ad_gradient_bundle": "Basic Dodo Paket",
+    "ad_gradient_bundle_explanation":"Genieße ein nahtloses Dodo-Erlebnis.\nEntferne Anzeigen und Schalte farbübergängige und dual-tone Themen frei.",
+    "gradients": "Farbübergängige und dual-tone Themen",
+    "gradients_explanation": "Erlebe die gesamte Farbpalette von Dodo.\nSchalte die farbübergändigen und zweifarbigen Themen frei.",
+    "big_lender_bundle": "Erweitertes Dodo Paket",
+    "big_lender_bundle_explanation": "Dieses Paket enthält das Basic Paket, wir geben dir Gruppenboostende Dodos genug für eine Gruppe dazu.",
 
     "price": "Preis: ",
     "buy": "Kaufen",
@@ -359,10 +334,6 @@
 
     "im_shopping_explanation": "Deine Freunde werden benachrichtigt, dass du gerade in einem Laden bist",
 
-    "just_few_things_left": "Nur noch dieser Schritt übrig",
-
-    "acting_as": "Du bist {}",
-
     "group_needs_approval": "Admin Genehmigung",
     "group_needs_approval_explanation": "Entscheide ob eine Genehmigung eines Admins nötig ist um der Gruppe beizutreten",
 
@@ -449,5 +420,16 @@
     "skip": "Überspringen",
     "merge": "Zuordnen",
 
-    "dual_tone_themes": "Zweifarbige Themen"
+    "dual_tone_themes": "Zweifarbige Themen",
+
+    "change_pin": "Pin ändern",
+    "change_pin_explanation": "Ändern Sie die Pin, mit der Sie auf Ihr Konto zugreifen.",
+    "old_pin": "Alte Pin",
+    "neue_pin": "Neue Pin",
+    "new_pin_confirm": "Neue Pin bestätigen",
+    "change_pin_scf": "Pin erfolgreich geändert.",
+
+    "trial_ended": "Probezeit zuende",
+    "trial_ended_explanation": "Von nun an wirst du in der App Werbung sehen und kannst nur noch die einfachen Farbthemen verwenden.",
+    "trial_ended_explanation_2": "Wenn du diese Funktionen weiter nutzen (und uns unterstützen) möchtest, kannst du sie im Dodo-Shop kaufen."
 }

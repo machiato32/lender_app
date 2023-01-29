@@ -136,9 +136,6 @@ class _MemberChipsState extends State<MemberChips> {
             fillRatio: fillRatio * 1.0,
             noAnimation: widget.noAnimation,
             onMemberChosen: (selected) {
-              if (widget.customAmountsChanged != null) {
-                widget.customAmountsChanged(customAmounts);
-              }
               setState(() {
                 if (widget.allowMultiple) {
                   if (selected) {
@@ -146,6 +143,9 @@ class _MemberChipsState extends State<MemberChips> {
                   } else {
                     membersChosen.remove(member);
                     customAmounts.remove(member);
+                    if (customAmounts.length == membersChosen.length) {
+                      customAmounts.clear();
+                    }
                   }
                 } else {
                   if (selected) {
@@ -158,6 +158,9 @@ class _MemberChipsState extends State<MemberChips> {
                 }
                 widget.membersChanged(membersChosen);
               });
+              if (widget.customAmountsChanged != null) {
+                widget.customAmountsChanged(customAmounts);
+              }
             },
             onLongPress: !widget.showDivisionDialog
                 ? null

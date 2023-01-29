@@ -30,81 +30,83 @@ class _LoginPinPageState extends State<LoginPinPage> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 500),
-          child: Column(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 500),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      children: [
+                        PinPad(
+                          pin: _pin,
+                          onPinChanged: (newPin) => setState(() => _pin = newPin),
+                          validationText: _validationText,
+                          onValidationTextChanged: (newText) =>
+                              setState(() => _validationText = newText),
+                          useConfirm: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PasswordPage(
+                          username: widget.username,
+                          inviteUrl: widget.inviteUrl,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'change_to_password'.tr(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                    textAlign: TextAlign.center,
+                  ), //TODO: forgot PIN, forgot password
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 15, 30, 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PinPad(
-                        pin: _pin,
-                        onPinChanged: (newPin) => setState(() => _pin = newPin),
-                        validationText: _validationText,
-                        onValidationTextChanged: (newText) =>
-                            setState(() => _validationText = newText),
-                        useConfirm: false,
+                      GradientButton(
+                        child: Icon(
+                          Icons.arrow_left,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      GradientButton(
+                        child: Icon(
+                          Icons.send,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        onPressed: () {
+                          if (_pin.length == 4) {
+                            _pushedButton();
+                          } else {
+                            setState(() {
+                              _validationText = '4_needed';
+                            });
+                          }
+                        },
                       ),
                     ],
                   ),
                 ),
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PasswordPage(
-                        username: widget.username,
-                        inviteUrl: widget.inviteUrl,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  'change_to_password'.tr(),
-                  style: Theme.of(context).textTheme.labelLarge,
-                  textAlign: TextAlign.center,
-                ), //TODO: forgot PIN, forgot password
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 15, 30, 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GradientButton(
-                      child: Icon(
-                        Icons.arrow_left,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    GradientButton(
-                      child: Icon(
-                        Icons.send,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      onPressed: () {
-                        if (_pin.length == 4) {
-                          _pushedButton();
-                        } else {
-                          setState(() {
-                            _validationText = '4_needed';
-                          });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

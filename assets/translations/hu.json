@@ -25,7 +25,6 @@
     "rename_group": "Csoport átnevezése",
     "new_name": "Új név",
     "invitation": "Meghívó",
-    "copied": "Másolva",
     "members": "Tagok",
 
     "groups": "Csoportok",
@@ -58,13 +57,8 @@
     "error": "Hiba történt!",
     "back": "Vissza",
 
-    "example_name": "sanyika",
-    "not_alterable": "Nem változtatható!",
-
-    "want_make_admin": "Adminná szeretnéd tenni?",
     "yes": "Igen",
     "no": "Nem",
-    "make_admin": "Legyen admin",
 
     "login_required": "Sajnos újra be kell jelentkezned!",
     "purchases": "Bevásárlások",
@@ -82,9 +76,8 @@
 
     "per_person": " {}/fő",
     "no_amount": "Nem adtál meg összeget!",
-    "amount_not_negative": "A végösszeg nem lehet negatív!",
     "purchase_scf": "A bevásárlást sikeresen könyveltük!",
-    "invitation_to_lender": "Meghívó Lender csoportba",
+    "invitation_to_lender": "Meghívó Dodo csoportba",
 
     "field_empty": "A mező nem lehet üres!",
     "not_valid_num": "Nem számot adtál meg!",
@@ -97,8 +90,7 @@
     "members_explanation_admin": "Kezeld a tagok jogosultságát, becenevét",
     "modify": "Módosítás",
     "invitation_explanation": "Hívj meg valakit a csoportba",
-    "rename_group_explanation": "Nevezd át a csoportod, ha nem tetszik a neve",
-    "shopping_list_explanation": "Írj a közös bevásárlólistára, vagy szólj a többieknek, hogy éppen boltban vagy",
+    "rename_group_explanation": "Ha nem tetszik a neve",
     "history_explanation": "Kövesd nyomon, vond vissza és módosítsd korábbi tranzakcióid",
 
     "pay": "Fizetés",
@@ -117,8 +109,7 @@
     "bug": "Hiba",
     "what_is_wrong": "A probléma",
 
-    "want_edit": "Változtatni szeretnéd a tételt?",
-    "nothing_to_show": "Nagy az üresség...",
+    "nothing_to_show": "Itt még nincs semmi...",
 
     "i_m_shopping" : "Vásárolni vagyok",
     "where" : "Hol?",
@@ -133,12 +124,6 @@
     "discover_shopping_description" : "\nEzt a bevásárlólistát a csoport összes tagja látja.\n\nFelhasználhatjátok pl. nyaraláson közös bevásárláshoz vagy lakótársakként, hogy ne mindenki külön menjen boltba.",
     "discover_group_settings_title": "Csoport beállításai",
     "discover_group_settings_description" : "\nTöbbek között itt hívhatsz meg új tagokat, változtathatod meg a beceneved, illetve nézheted a csoport statisztikáit.",
-
-    "tutorial_2" : "A Lender célja a csoportod tranzakcióinak leegyszerűsítése.\nAhogy láthatod, az animáción, eggyel kevesebb fizetésre volt szükség.",
-    "tutorial_3" : "A csoport összes tagja rendelkezik egy egyenleggel.\nPozitív egyenleg esetén neked tartoznak, míg negatív esetén te tartozol a csoportnak.",
-    "tutorial_4" : "Azt, hogy kinek fizess, az egyenlegek alapján döntheted el, vagy használhatod a \"Kinek fizessek?\" gombot.",
-    "welcome": "Köszönjük, hogy regisztráltál a Lenderbe!\n\nA következőkben egy rövid tutorialban mutatjuk be az alkalmazás használatát.",
-    "": "",
 
     "reset_tutorial": "Tutorial újranézése",
     "reset_tutorial_explanation": "Ehhez újra kell indítanod az alkalmazást",
@@ -173,32 +158,22 @@
     "change_group_currency": "Csoport pénznemének megváltoztatása",
     "change_group_currency_explanation": "Változtasd meg a pénznemet, de ügyelj rá, hogy a jelenlegi tartozások nem lesznek átváltva!",
 
-    "manage_guests": "Vendégek kezelése",
-    "manage_guests_explanation": "A vendégek olyan csoporttagok, akiket csak az adminok kezelhetnek, nincsenek regisztrálva",
     "add_guest": "Vendég hozzáadása",
-    "add_guest_explanation": "Adj hozzá új vendéget a csoporthoz",
     "merge_guest": "Vendég hozzárendelése",
-    "merge_guest_explanation": "Távolítsd el a vendéget, és rendeld hozzá a korábbi eseményeit a csoport egy tagjához.",
-    "guest_switcher": "Vendég váltása",
-    "guest_switcher_explanation": "Válaszd ki a vendéget, akinek pénzügyeit kezelni szeretnéd",
-    "sure_remove_guest": "Biztosan el akarod távolítani a vendéget a csoportból?",
-    "needs_choose_guest": "Előbb válassz ki egy vendéget a vendégválasztó felületen",
     "sure_merge_guest": "Biztosan hozzá szeretnéd rendelni a vendéget?",
-    "select_member": "Válassz egy tagot",
 
     "edit_request": "Elem szerkesztése",
     "edited_request": "Szerkesztett elem",
 
     "about_us": "Rólunk",
     "about_us_explanation": "Az alkalmazás névjegye",
-    "about_us_text": "Ezt az alkalmazást két egyetemista fejlesztette unalmában.\n\nKülön köszönet Hegyi Annának, Kocsis Ábelnek, és Kovács Sára Katának, emellett mindenkinek, aki tesztelte, és visszajelzést küldött az alkalmazásról.\n\nMinden jót, a fejlesztők",
+    "about_us_text": "Ezt az alkalmazást két egyetemista fejlesztette.\n\nKülön köszönet Hegyi Annának és Kovács Sára Katának a fordításokhoz, valamint Kocsis Ábelnek az adatvédelmi nyilatkozattal kapcsolatos segítségért. Emellett mindenkinek, aki tesztelte, és visszajelzést küldött az alkalmazásról.\n\nMinden jót, a fejlesztők",
 
     "reactions": "Reakciók",
     "add_reaction": "Reakció hozzáadása",
     "all_reactions": "Eddigi reakciók",
 
     "username_explanation": "A felhasználóneveddel tudsz belépni az alkalmazásba, csak az angol ABC kis betűit, számokat és a . karaktert használhatod. Később a csoportban megadhatsz becenevet.",
-    "reminder_explanation": "Nem tároljuk e-mail címed, így amennyiben elfelejtenéd jelszavad, ezt az emlékeztetőt mutatjuk meg neked.",
 
     "accept_privacy_policy": "Elfogadom az adatvédelmi tájékoztatót",
     "must_accept_privacy_policy": "El kell fogadnod az adatvédelmi tájékoztatót",
@@ -206,24 +181,24 @@
     "gradient_available_in_paid_version": "A kéttónusú, színátmenetes és dinamikus témákat megveheted az alkalmazáson belül",
 
     "version_not_supported": "A verzió nem támogatott",
-    "version_not_supported_explanation": "Új Lender verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
+    "version_not_supported_explanation": "Új Dodo verziót vezettünk be, emiatt a verziód néhány eleme már nem támogatott.",
     "download_new_version": "Töltsd le az új verziót",
 
-    "in_app_purchase": "Dodó Bolt",
+    "in_app_purchase": "Dodo Bolt",
 
     "if_not_working": "Hogyha ez nem segít",
     "report_this_error": "Jelentsd a hibát",
 
-    "remove_ads": "Reklámmentes Lender",
-    "remove_ads_explanation": "Élvezd a Lendert teljes valójában.\nTávolítsd el a reklámokat.",
+    "remove_ads": "Reklámmentes Dodo",
+    "remove_ads_explanation": "Élvezd a Dodot megszakítások nélkül.\nTávolítsd el a reklámokat.",
     "group_boost": "Csoportfejlesztő Dodók",
     "group_boost_explanation": "Növeld meg a csoport létszámát 30 főre, és kövessétek nyomon a statisztikáit.\nA csomag 2 csoporthoz elegendő Dodót tartalmaz.",
-    "ad_gradient_bundle": "Kis Lender csomag",
-    "ad_gradient_bundle_explanation":"Élvezd a Lendert teljes szépségében.\nTávolítsd el a reklámokat, engedélyezd a színátmenetes és dinamikus témákat.",
-    "gradients": "Színátmenetes témák",
-    "gradients_explanation": "Élvezd a Lendert minden színben.\nEngedélyezd a színátmenetes témákat. (A mi kedvencünk a narancssárga 😉)",
-    "big_lender_bundle": "Nagy Lender csomag",
-    "big_lender_bundle_explanation": "A kis Lender csomaghoz hozzácsaptunk 1 csoport fejlesztéséhez elegendő Dodót.",
+    "ad_gradient_bundle": "Alap Dodo csomag",
+    "ad_gradient_bundle_explanation":"Élvezd a zökkenőmentes Dodo élményt.\nTávolítsd el a reklámokat, engedélyezd a színátmenetes és kéttónusú témákat.",
+    "gradients": "Színátmenetes és kéttónusú témák",
+    "gradients_explanation": "Tapasztald meg a Dodo teljes színpalettáját.\nEngedélyezd a színátmenetes és kéttónusú témákat.",
+    "big_lender_bundle": "Bővített Dodo csomag",
+    "big_lender_bundle_explanation": "Az alap Dodo csomaghoz hozzácsaptunk 1 csoport fejlesztéséhez elegendő Dodót.",
 
     "price": "Ár: ",
     "buy": "Vásárlás",
@@ -355,10 +330,6 @@
 
     "im_shopping_explanation": "A barátaid értesítést kapnak róla, hogy hol vagy",
 
-    "just_few_things_left": "Már csak néhány lépés van hátra",
-
-    "acting_as": "{}-t kezeled",
-
     "group_needs_approval": "Admin beleegyezés",
     "group_needs_approval_explanation": "Döntsd el, hogy a csoportba való csatlakozáshoz szükséges-e az adminok beleegyezése",
 
@@ -453,6 +424,10 @@
     "old_pin": "Régi pin",
     "new_pin": "Új pin",
     "new_pin_confirm": "Új pin megerősítése",
-    "change_pin_scf": "A pin megváltoztatása sikeres volt."
+    "change_pin_scf": "A pin megváltoztatása sikeres volt.",
+
+    "trial_ended": "A próbaidő lejárt",
+    "trial_ended_explanation": "Mostantól látni fogsz az alkalmazásban reklámokat és csak az egyszínű témákat használhatod, emellett a csoport statisztikáit sem láthatod.",
+    "trial_ended_explanation_2": "Ha mégis használni szeretnéd ezeket a funkciókat (vagy támogatni szeretnél minket), vedd meg őketa a Dodó boltban."
 
 }
