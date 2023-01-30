@@ -1,21 +1,21 @@
 {
-    "name": "Lender - money and debtmanagement designed for groups",
-    "short_name": "Lender",
+    "name": "Dodo - privacy-focused bill splitting",
+    "short_name": "Dodo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Privacy-focused bill splitting.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
+            "src": "icons/web-192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-512.png",
+            "src": "icons/web-512.png",
             "sizes": "512x512",
             "type": "image/png"
         }

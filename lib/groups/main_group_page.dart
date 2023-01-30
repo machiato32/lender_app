@@ -468,7 +468,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         child: ColorFiltered(
                           colorFilter: ColorFilter.mode(
                               Theme.of(context).colorScheme.primary,
-                              currentThemeName.toLowerCase().contains('dodo')
+                              currentThemeName.toLowerCase().contains('dodo') && !kIsWeb
                                   ? BlendMode.dst
                                   : BlendMode.srcIn),
                           child: Image(
@@ -687,7 +687,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 onTap: () {
                   String url = "";
-                  switch (Platform.operatingSystem) {
+                  String platform = kIsWeb ? "web" : Platform.operatingSystem;
+                  switch (platform) {
                     case "android":
                       url = "market://details?id=csocsort.hu.machiato32.csocsort_szamla";
                       break;

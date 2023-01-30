@@ -295,9 +295,9 @@ class _LenderAppState extends State<LenderApp> {
         // _handlePurchaseUpdates(purchases);
       });
     }
-    initUniLinks();
-    _link = widget.initURL;
     if (isFirebasePlatformEnabled) {
+      initUniLinks();
+      _link = widget.initURL;
       var initializationSettingsAndroid = new AndroidInitializationSettings('@drawable/dodo');
       final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = new InitializationSettings(
