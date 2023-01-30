@@ -408,6 +408,7 @@ class _HistoryState extends State<History> {
       return PaymentEntry(
         data: element,
         callback: callback,
+        selectedMemberId: currentUserId,
       );
     }).toList();
   }
@@ -421,6 +422,7 @@ class _HistoryState extends State<History> {
       return PurchaseEntry(
         purchase: element,
         callback: callback,
+        selectedMemberId: currentUserId,
       );
     }).toList();
   }
