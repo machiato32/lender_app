@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -85,7 +88,11 @@ class _PinNumberButtonState extends State<PinNumberButton> with SingleTickerProv
                     (!widget.isPinInput && widget.number == 'C' && widget.pinConfirm == '')
                 ? null
                 : () {
-                    HapticFeedback.vibrate();
+                    if (!kIsWeb && Platform.isAndroid) {
+                      HapticFeedback.vibrate();
+                    } else {
+                      HapticFeedback.heavyImpact();
+                    }
                     if (widget.number != '' && widget.number != 'C') {
                       setState(() {
                         if (widget.isPinInput) {

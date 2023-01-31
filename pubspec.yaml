@@ -76,10 +76,10 @@ flutter:
     - assets/translations/
 
 msix_config:
-  display_name: Lender
+  display_name: Dodo
   publisher_display_name: DevsWithTheDodos
   identity_name: 26756DevsWithTheDodos.Lender
-  msix_version: 2.0.0.0
+  msix_version: 3.0.1.0
   logo_path: ./assets/dodo.png
   publisher: CN=82952EEE-FBE0-4538-ACE4-293472CC6306
   store: true

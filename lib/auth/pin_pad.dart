@@ -181,6 +181,8 @@ class _PinPadState extends State<PinPad> {
                     return (number == 'C' && isPinFieldNotEmpty()) || number == '0'
                         ? PinNumberButton(
                             number: number,
+                            pin: widget.pin,
+                            pinConfirm: widget.pinConfirm,
                             onValidationTextChanged: widget.onValidationTextChanged,
                             onPinChanged: widget.onPinChanged,
                             onPinConfirmChanged: widget.onPinConfirmChanged,
